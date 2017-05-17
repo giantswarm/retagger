@@ -17,11 +17,65 @@ type Tag struct {
 
 var Images = []Image{
 	Image{
+		Name: "gcr.io/google_containers/defaultbackend",
+		Tags: []Tag{
+			Tag{
+				Sha: "a64c8ed5df00c9f238ecdeb28eb4ed226faace573695e290a99d92d503593e87",
+				Tag: "1.2",
+			},
+		},
+	},
+	Image{
+		Name: "gcr.io/google_containers/kube-state-metrics",
+		Tags: []Tag{
+			Tag{
+				Sha: "e913a24b0a0a89e23968d5e3fbf99501d17c04011fb54b24df0aca6bea232022",
+				Tag: "v0.5.0",
+			},
+		},
+	},
+	Image{
+		Name: "gcr.io/google_containers/nginx-ingress-controller",
+		Tags: []Tag{
+			Tag{
+				Sha: "995427304f514ac1b70b2c74ee3c6d4d4ea687fb2dc63a1816be15e41cf0e063",
+				Tag: "0.9.0-beta.3",
+			},
+		},
+	},
+	Image{
+		Name: "prom/prometheus",
+		Tags: []Tag{
+			Tag{
+				Sha: "33c41643b9f3504ff5381a306fad5ca90269cafdcc1495c43cade31f462f3933",
+				Tag: "v1.6.2",
+			},
+		},
+	},
+	Image{
+		Name: "quay.io/coreos/etcd-operator",
+		Tags: []Tag{
+			Tag{
+				Sha: "efa735007e3c989c99dc76a1c8adcd1ea492b02804669dc9d95bb59706d96c89",
+				Tag: "v0.1.0",
+			},
+		},
+	},
+	Image{
 		Name: "quay.io/coreos/hyperkube",
 		Tags: []Tag{
 			Tag{
 				Sha: "5ff22b5c65d5b93aa948b79028dc136a22cda2f049283103f10bd45650b47312",
 				Tag: "v1.5.2_coreos.2",
+			},
+		},
+	},
+	Image{
+		Name: "quay.io/prometheus/node-exporter",
+		Tags: []Tag{
+			Tag{
+				Sha: "b376a1b4f6734ed610b448603bc0560106c2e601471b49f72dda5bd40da095dd",
+				Tag: "v0.14.0",
 			},
 		},
 	},
