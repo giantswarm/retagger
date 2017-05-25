@@ -22,6 +22,12 @@ func TestRetaggedName(t *testing.T) {
 			},
 			expectedName: "quay.io/giantswarm/prometheus",
 		},
+		{
+			image: Image{
+				Name: "golang",
+			},
+			expectedName: "quay.io/giantswarm/golang",
+		},
 	}
 
 	for _, test := range tests {
