@@ -20,6 +20,10 @@ var Images = []Image{
 		Name: "gcr.io/google_containers/defaultbackend",
 		Tags: []Tag{
 			Tag{
+				Sha: "ee3aa1187023d0197e3277833f19d9ef7df26cee805fef32663e06c7412239f9",
+				Tag: "1.0",
+			},
+			Tag{
 				Sha: "a64c8ed5df00c9f238ecdeb28eb4ed226faace573695e290a99d92d503593e87",
 				Tag: "1.2",
 			},
