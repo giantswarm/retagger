@@ -61,6 +61,15 @@ var Images = []Image{
 		},
 	},
 	Image{
+		Name: "grafana/grafana",
+		Tags: []Tag{
+			Tag{
+				Sha: "2b08adb787f0b6c30a6cb13c46fdbae90e8f98d8570bdf468efd9d5ea4974b1a",
+				Tag: "4.4.1",
+			},
+		},
+	},
+	Image{
 		Name: "prom/prometheus",
 		Tags: []Tag{
 			Tag{
