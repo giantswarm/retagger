@@ -107,13 +107,13 @@ var Images = []Image{
 				Tag: "v1.6.4_coreos.0",
 			},
 			Tag{
-                                Sha: "b26b7a598382e9db0623dd999f5506746a076b866f12188010f6c07fef26e4da",
-                                Tag: "v1.6.7_coreos.0",
-                        },
+				Sha: "b26b7a598382e9db0623dd999f5506746a076b866f12188010f6c07fef26e4da",
+				Tag: "v1.6.7_coreos.0",
+			},
 			Tag{
-                                Sha: "cc57bd170e562ab699b6dd2244f2683018214c8228591dc641cffce0f0f92037",
-                                Tag: "v1.7.1_coreos.0",
-                        },
+				Sha: "cc57bd170e562ab699b6dd2244f2683018214c8228591dc641cffce0f0f92037",
+				Tag: "v1.7.1_coreos.0",
+			},
 		},
 	},
 	Image{
