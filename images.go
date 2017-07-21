@@ -117,6 +117,15 @@ var Images = []Image{
 		},
 	},
 	Image{
+		Name: "quay.io/prometheus/alertmanager",
+		Tags: []Tag{
+			Tag{
+				Sha: "2843872cb4cd20da5b75286a5a2ac25a17ec1ae81738ba5f75d5ee8794b82eaf",
+				Tag: "v0.7.1",
+			},
+		},
+	},
+	Image{
 		Name: "quay.io/prometheus/node-exporter",
 		Tags: []Tag{
 			Tag{
