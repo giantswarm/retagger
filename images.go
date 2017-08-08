@@ -49,6 +49,10 @@ var Images = []Image{
 				Sha: "897b86cd624e3d5b6e69c3b0336f10726ac6314736bef96d6eedec6b6eb7712b",
 				Tag: "0.9.0-beta.7",
 			},
+			Tag{
+				Sha: "03fd8fc46018d09b4050d4daaf50bff73c80936994b374319ed33cbb2c1684f4",
+				Tag: "0.9.0-beta.11",
+			},
 		},
 	},
 	Image{
@@ -113,6 +117,15 @@ var Images = []Image{
 			Tag{
 				Sha: "44472a474d3e150bb9516dcd1380275d10ba5e57065347dd8f8aabfe64db9457",
 				Tag: "v1.7.3_coreos.0",
+			},
+		},
+	},
+	Image{
+		Name: "quay.io/prometheus/alertmanager",
+		Tags: []Tag{
+			Tag{
+				Sha: "2843872cb4cd20da5b75286a5a2ac25a17ec1ae81738ba5f75d5ee8794b82eaf",
+				Tag: "v0.7.1",
 			},
 		},
 	},
