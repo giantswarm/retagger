@@ -99,10 +99,6 @@ var Images = []Image{
 		Name: "quay.io/coreos/hyperkube",
 		Tags: []Tag{
 			Tag{
-				Sha: "5ff22b5c65d5b93aa948b79028dc136a22cda2f049283103f10bd45650b47312",
-				Tag: "v1.5.2_coreos.2",
-			},
-			Tag{
 				Sha: "297f45919160ea076831cd067833ad3b64c789fcb3491016822e6f867d16dcd5",
 				Tag: "v1.6.4_coreos.0",
 			},
@@ -113,6 +109,10 @@ var Images = []Image{
 			Tag{
 				Sha: "cc57bd170e562ab699b6dd2244f2683018214c8228591dc641cffce0f0f92037",
 				Tag: "v1.7.1_coreos.0",
+			},
+			Tag{
+				Sha: "44472a474d3e150bb9516dcd1380275d10ba5e57065347dd8f8aabfe64db9457",
+				Tag: "v1.7.3_coreos.0",
 			},
 		},
 	},
