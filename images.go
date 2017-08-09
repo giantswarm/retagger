@@ -138,6 +138,15 @@ var Images = []Image{
 			},
 		},
 	},
+	Image{
+		Name: "redis",
+		Tags: []Tag{
+			Tag{
+				Sha: "848b4fd76a5dacb56988af810a6e86719e313cf4e1186f3d3050384686dbc120",
+				Tag: "3.2.10",
+			},
+		},
+	},
 }
 
 func RetaggedName(registry, organisation string, image Image) string {
