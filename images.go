@@ -144,7 +144,7 @@ var Images = []Image{
 			Tag{
 				Sha: "848b4fd76a5dacb56988af810a6e86719e313cf4e1186f3d3050384686dbc120",
 				Tag: "3.2.10",
-			}
+			},
 		},
 	},
 }
