@@ -63,12 +63,12 @@ var Images = []Image{
 		Name: "golang",
 		Tags: []Tag{
 			Tag{
-				Sha: "51f988b1a86f528c2e40681175088b5312b96bba9bea0f05bdb7ab504425c52d",
-				Tag: "1.8.3",
-			},
-			Tag{
 				Sha: "0bc4b605f127ebcda9c96d8b0411780e8dcc03ee695c5f9cdf6298f9977b8ca8",
 				Tag: "1.9.0",
+			},
+			Tag{
+				Sha: "f755ff87e4b7a5f597a4ed5f0a1013dd5550f21615ce71312936dc36988cb274",
+				Tag: "1.9.1",
 			},
 		},
 	},
