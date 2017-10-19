@@ -167,6 +167,15 @@ var Images = []Image{
 			},
 		},
 	},
+	Image{
+		Name: "quay.io/coreos/flannel",
+		Tags: []Tag{
+			Tag{
+				Sha: "1b401bf0c30bada9a539389c3be652b58fe38463361edf488e6543c8761d4970",
+				Tag: "v0.9.0-amd64",
+			},
+		},
+	},
 }
 
 func RetaggedName(registry, organisation string, image Image) string {
