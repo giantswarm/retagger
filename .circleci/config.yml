@@ -14,5 +14,5 @@ jobs:
       - deploy:
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              ./architect deploy
+              ./retagger
             fi
