@@ -40,6 +40,10 @@ var Images = []Image{
 				Sha: "b8b536771d5c23a9344c90662b2ca9ba00421e050ae593264bc51803470a2526",
 				Tag: "v1.0.1",
 			},
+			Tag{
+				Sha: "53416b3d560a1b821b7e302460a387fef887ce72206c3ccbf82fd9e2d1f71fd9",
+				Tag: "v1.1.0",
+			},
 		},
 	},
 	Image{
@@ -86,6 +90,15 @@ var Images = []Image{
 		},
 	},
 	Image{
+		Name: "nginx",
+		Tags: []Tag{
+			Tag{
+				Sha: "5269659b61c4f19a3528a9c22f9fa8f4003e186d6cb528d21e411578d1e16bdb",
+				Tag: "1.12.2",
+			},
+		},
+	},
+	Image{
 		Name: "prom/prometheus",
 		Tags: []Tag{
 			Tag{
@@ -108,6 +121,15 @@ var Images = []Image{
 			Tag{
 				Sha: "2a1ff56062861e3eaf216899e6e73fdff311e5842d2446223924a9cc69f2cc69",
 				Tag: "v0.3.2",
+			},
+		},
+	},
+	Image{
+		Name: "quay.io/coreos/flannel",
+		Tags: []Tag{
+			Tag{
+				Sha: "1b401bf0c30bada9a539389c3be652b58fe38463361edf488e6543c8761d4970",
+				Tag: "v0.9.0-amd64",
 			},
 		},
 	},
@@ -172,15 +194,6 @@ var Images = []Image{
 			Tag{
 				Sha: "848b4fd76a5dacb56988af810a6e86719e313cf4e1186f3d3050384686dbc120",
 				Tag: "3.2.10",
-			},
-		},
-	},
-	Image{
-		Name: "quay.io/coreos/flannel",
-		Tags: []Tag{
-			Tag{
-				Sha: "1b401bf0c30bada9a539389c3be652b58fe38463361edf488e6543c8761d4970",
-				Tag: "v0.9.0-amd64",
 			},
 		},
 	},
