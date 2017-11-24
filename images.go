@@ -99,6 +99,15 @@ var Images = []Image{
 		},
 	},
 	Image{
+		Name: "prom/cloudwatch-exporter",
+		Tags: []Tag{
+			Tag{
+				Sha: "7ce6d17ad3360ed5d5dddc57ebf13dc7d676900c40a22b3144a8a17af352c399",
+				Tag: "0.4",
+			},
+		},
+	},
+	Image{
 		Name: "prom/prometheus",
 		Tags: []Tag{
 			Tag{
