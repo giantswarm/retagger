@@ -173,10 +173,6 @@ var Images = []Image{
 				Sha: "131eb9d7665d3cc2f909a71e58ec53f27ef88e4fd6f2dda843a7bf4a043078e4",
 				Tag: "v1.8.1_coreos.0",
 			},
-			Tag{
-				Sha: "f36d7a7c2079f7103092e6a825defa3f97ab971e4a15a18a26234dea4a0f113f",
-				Tag: "v1.9.0-alpha.1",
-			},
 		},
 	},
 	Image{
