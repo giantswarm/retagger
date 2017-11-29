@@ -27,7 +27,7 @@ func main() {
 		log.Fatalf("could not get registry password")
 	}
 
-	login := exec.Command("docker", "login", "--email=\" \"", "-u", registryUsername, "-p", registryPassword, registry)
+	login := exec.Command("docker", "login", "-u", registryUsername, "-p", registryPassword, registry)
 	if err := Run(login); err != nil {
 		log.Fatalf("could not login to registry: %v", err)
 	}
