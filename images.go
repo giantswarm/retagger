@@ -30,6 +30,15 @@ var Images = []Image{
 		},
 	},
 	Image{
+		Name: "gcr.io/google_containers/hyperkube",
+		Tags: []Tag{
+			Tag{
+				Sha: "39b49865ac5faa4787af92a5a7d00161e467005047976ce8ab9da284b5acb9da",
+				Tag: "v1.9.0-beta.1",
+			},
+		},
+	},
+	Image{
 		Name: "gcr.io/google_containers/kube-state-metrics",
 		Tags: []Tag{
 			Tag{
