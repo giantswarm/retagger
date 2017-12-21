@@ -17,6 +17,24 @@ type Tag struct {
 
 var Images = []Image{
 	Image{
+		Name: "docker.elastic.co/elasticsearch/elasticsearch",
+		Tags: []Tag{
+			Tag{
+				Sha: "9e6c7d3c370a17736c67b2ac503751702e35a1336724741d00ed9b3d00434fcb",
+				Tag: "6.1.1",
+			},
+		},
+	},
+	Image{
+		Name: "docker.elastic.co/kibana/kibana",
+		Tags: []Tag{
+			Tag{
+				Sha: "6cccb1dc8b9caf656dd8c8527dcae5ff9d90e33f74f9d563f18f829b96fbbbff",
+				Tag: "6.1.1",
+			},
+		},
+	},
+	Image{
 		Name: "gcr.io/google_containers/defaultbackend",
 		Tags: []Tag{
 			Tag{
