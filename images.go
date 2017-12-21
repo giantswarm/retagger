@@ -17,20 +17,29 @@ type Tag struct {
 
 var Images = []Image{
 	Image{
-		Name: "docker.elastic.co/elasticsearch/elasticsearch",
+		Name: "docker.elastic.co/elasticsearch/elasticsearch-oss",
 		Tags: []Tag{
 			Tag{
-				Sha: "9e6c7d3c370a17736c67b2ac503751702e35a1336724741d00ed9b3d00434fcb",
+				Sha: "e86f0491edab3d0fd20a1aa0218fda795e12f20e7fe07a454101d7446b29522d",
 				Tag: "6.1.1",
 			},
 		},
 	},
 	Image{
-		Name: "docker.elastic.co/kibana/kibana",
+		Name: "docker.elastic.co/kibana/kibana-oss",
 		Tags: []Tag{
 			Tag{
-				Sha: "6cccb1dc8b9caf656dd8c8527dcae5ff9d90e33f74f9d563f18f829b96fbbbff",
+				Sha: "306af26503cd751440f55428c2d7c14d09105ed125e5a9fc0b8d29206042053e",
 				Tag: "6.1.1",
+			},
+		},
+	},
+	Image{
+		Name: "fluent/fluentd-kubernetes-daemonset",
+		Tags: []Tag{
+			Tag{
+				Sha: "721d539e5edc941566c2422c7b6f3838fc0c96543b1853eb4d9acb3c70d5bc6b",
+				Tag: "v0.12-alpine-elasticsearch",
 			},
 		},
 	},
