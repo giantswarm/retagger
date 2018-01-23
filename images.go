@@ -108,15 +108,6 @@ var Images = []Image{
 		},
 	},
 	Image{
-		Name: "quay.io/kubernetes-ingress-controller/nginx-ingress-controller",
-		Tags: []Tag{
-			Tag{
-				Sha: "cee8b233374e489b324a415f169b674aedfd4c8e7f400d22dd96a08dabca4316",
-				Tag: "0.10.0",
-			},
-		},
-	},
-	Image{
 		Name: "golang",
 		Tags: []Tag{
 			Tag{
@@ -233,6 +224,15 @@ var Images = []Image{
 			Tag{
 				Sha: "0d659da66e80396f7fbe1352878d1013b30f15a728924ee3eaff1cc79a38b825",
 				Tag: "v1.8.4_coreos.0",
+			},
+		},
+	},
+	Image{
+		Name: "quay.io/kubernetes-ingress-controller/nginx-ingress-controller",
+		Tags: []Tag{
+			Tag{
+				Sha: "cee8b233374e489b324a415f169b674aedfd4c8e7f400d22dd96a08dabca4316",
+				Tag: "0.10.0",
 			},
 		},
 	},
