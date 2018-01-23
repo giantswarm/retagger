@@ -108,6 +108,15 @@ var Images = []Image{
 		},
 	},
 	Image{
+		Name: "quay.io/kubernetes-ingress-controller/nginx-ingress-controller",
+		Tags: []Tag{
+			Tag{
+				Sha: "cee8b233374e489b324a415f169b674aedfd4c8e7f400d22dd96a08dabca4316",
+				Tag: "0.10.0",
+			},
+		},
+	},
+	Image{
 		Name: "golang",
 		Tags: []Tag{
 			Tag{
