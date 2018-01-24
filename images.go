@@ -17,6 +17,15 @@ type Tag struct {
 
 var Images = []Image{
 	Image{
+		Name: "coredns/coredns",
+		Tags: []Tag{
+			Tag{
+				Sha: "d291f8b87eab26845a0c4605df4194924806712c4f624b9a9ddfc9d382b3ddbd",
+				Tag: "1.0.4",
+			},
+		},
+	},
+	Image{
 		Name: "docker.elastic.co/elasticsearch/elasticsearch-oss",
 		Tags: []Tag{
 			Tag{
