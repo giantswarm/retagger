@@ -23,6 +23,10 @@ var Images = []Image{
 				Sha: "d291f8b87eab26845a0c4605df4194924806712c4f624b9a9ddfc9d382b3ddbd",
 				Tag: "1.0.4",
 			},
+			Tag{
+				Sha: "a01b8b7465f8ce5326e1589c7bbed1b99322804c472872a03edb60fbedaaa6f6",
+				Tag: "1.0.5",
+			},
 		},
 	},
 	Image{
@@ -250,6 +254,10 @@ var Images = []Image{
 			Tag{
 				Sha: "4f0cabc2f810c7eaec9fe3002bef0666e15309e30156ef780efeaa5bae1a311f",
 				Tag: "0.10.1",
+			},
+			Tag{
+				Sha: "20fb21709d0fa52c5f873ba68d464e04981d0cedf07e900f8a9def6874cf4cee",
+				Tag: "0.10.2",
 			},
 		},
 	},
