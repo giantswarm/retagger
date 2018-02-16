@@ -82,16 +82,16 @@ var Images = []Image{
 		Name: "gcr.io/google_containers/hyperkube",
 		Tags: []Tag{
 			Tag{
-				Sha: "39b49865ac5faa4787af92a5a7d00161e467005047976ce8ab9da284b5acb9da",
-				Tag: "v1.9.0-beta.1",
-			},
-			Tag{
 				Sha: "3e7e58f6bc4f28c3ba36e88ed2220695922c0304db802e72b20b987f1c89b126",
 				Tag: "v1.9.0",
 			},
 			Tag{
 				Sha: "cd3430a6fbbffa6f52f7233c08237477ef374424baf45df8e33c5dc9b1f87177",
 				Tag: "v1.9.2",
+			},
+			Tag{
+				Sha: "7653dfb091e9524ecb1c2c472ec27e9d2e0ff9addc199d91b5c532a2cdba5b9e",
+				Tag: "v1.9.3",
 			},
 		},
 	},
@@ -213,51 +213,6 @@ var Images = []Image{
 			Tag{
 				Sha: "1b401bf0c30bada9a539389c3be652b58fe38463361edf488e6543c8761d4970",
 				Tag: "v0.9.0-amd64",
-			},
-		},
-	},
-	Image{
-		Name: "quay.io/coreos/hyperkube",
-		Tags: []Tag{
-			Tag{
-				Sha: "297f45919160ea076831cd067833ad3b64c789fcb3491016822e6f867d16dcd5",
-				Tag: "v1.6.4_coreos.0",
-			},
-			Tag{
-				Sha: "b26b7a598382e9db0623dd999f5506746a076b866f12188010f6c07fef26e4da",
-				Tag: "v1.6.7_coreos.0",
-			},
-			Tag{
-				Sha: "cc57bd170e562ab699b6dd2244f2683018214c8228591dc641cffce0f0f92037",
-				Tag: "v1.7.1_coreos.0",
-			},
-			Tag{
-				Sha: "44472a474d3e150bb9516dcd1380275d10ba5e57065347dd8f8aabfe64db9457",
-				Tag: "v1.7.3_coreos.0",
-			},
-			Tag{
-				Sha: "95d545f94e011a01517b220367c4c02a4559a72acc951737af22e81b98f78377",
-				Tag: "v1.7.5_coreos.0",
-			},
-			Tag{
-				Sha: "3b9d27edc492a5b37cb415d172a6df5885a17d8d68b75a893531a76b1431adfa",
-				Tag: "v1.7.11_coreos.0",
-			},
-			Tag{
-				Sha: "8755aefadd070df7b26e49ce2998209547eca7bd4054e5dbb434615407374753",
-				Tag: "v1.8.0_coreos.0",
-			},
-			Tag{
-				Sha: "131eb9d7665d3cc2f909a71e58ec53f27ef88e4fd6f2dda843a7bf4a043078e4",
-				Tag: "v1.8.1_coreos.0",
-			},
-			Tag{
-				Sha: "0d659da66e80396f7fbe1352878d1013b30f15a728924ee3eaff1cc79a38b825",
-				Tag: "v1.8.4_coreos.0",
-			},
-			Tag{
-				Sha: "6d138fa463330786e22d0d2fef3d47c894036f701d884ced45dfbaf8d4895ff4",
-				Tag: "v1.8.7_coreos.0",
 			},
 		},
 	},
