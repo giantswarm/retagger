@@ -98,8 +98,8 @@ var Images = []Image{
 				Tag: "v1.9.3",
 			},
 			Tag{
-				Sha: "e3245f0d94b6fdd77a8bc08dd5f8b52dbea7e1e2603d2a3dbb56bd253f602e90",
-				Tag: "v1.10.0-beta.0",
+				Sha: "29730a07f998bed2becaf2d7677be17a45bc87273cdf3f643d0d1b2dca5d0631",
+				Tag: "v1.10.0-beta.1",
 			},
 		},
 	},
