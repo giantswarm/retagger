@@ -52,15 +52,6 @@ var Images = []Image{
 		},
 	},
 	Image{
-		Name: "fluent/fluentd-kubernetes-daemonset",
-		Tags: []Tag{
-			Tag{
-				Sha: "721d539e5edc941566c2422c7b6f3838fc0c96543b1853eb4d9acb3c70d5bc6b",
-				Tag: "v0.12-alpine-elasticsearch",
-			},
-		},
-	},
-	Image{
 		Name: "gcr.io/google-containers/fluentd-elasticsearch",
 		Tags: []Tag{
 			Tag{
