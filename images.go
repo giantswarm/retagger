@@ -52,11 +52,18 @@ var Images = []Image{
 		},
 	},
 	Image{
+		// see https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/fluentd-elasticsearch/fluentd-es-ds.yaml
 		Name: "gcr.io/google-containers/fluentd-elasticsearch",
 		Tags: []Tag{
+			// from k8s.gcr.io/fluentd-elasticsearch:v2.0.3
 			Tag{
 				Sha: "0bee097b7f7f23c2fc79a1ad39beabe97832b6ceb8e03e12408f16e99ac56d3a",
 				Tag: "v2.0.3",
+			},
+			// from k8s.gcr.io/fluentd-elasticsearch:v2.0.4
+			Tag{
+				Sha: "b8c94527b489fb61d3d81ce5ad7f3ddbb7be71e9620a3a36e2bede2f2e487d73",
+				Tag: "v2.0.4",
 			},
 		},
 	},
