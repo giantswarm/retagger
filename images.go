@@ -34,6 +34,15 @@ var Images = []Image{
 		},
 	},
 	Image{
+		Name: "dduportal/bats",
+		Tags: []Tag{
+			Tag{
+				Sha: "b2d533b27109f7c9ea1e270e23f212c47906346f9cffaa4da6da48ed9d8031da",
+				Tag: "0.4.0",
+			},
+		},
+	},
+	Image{
 		Name: "docker.elastic.co/elasticsearch/elasticsearch-oss",
 		Tags: []Tag{
 			Tag{
