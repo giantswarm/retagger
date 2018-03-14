@@ -276,6 +276,10 @@ var Images = []Image{
 				Sha: "848b4fd76a5dacb56988af810a6e86719e313cf4e1186f3d3050384686dbc120",
 				Tag: "3.2.10",
 			},
+			Tag{
+				Sha: "002a1870fa2ffd11dbd7438527a2c17f794f6962f5d3a4f048f848963ab954a8",
+				Tag: "3.2.11-alpine",
+			},
 		},
 	},
 }
