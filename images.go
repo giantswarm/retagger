@@ -239,8 +239,8 @@ var Images = []Image{
 		Name: "quay.io/coreos/flannel",
 		Tags: []Tag{
 			Tag{
-				Sha: "1b401bf0c30bada9a539389c3be652b58fe38463361edf488e6543c8761d4970",
-				Tag: "v0.9.0-amd64",
+				Sha: "88f2b4d96fae34bfff3d46293f7f18d1f9f3ca026b4a4d288f28347fcb6580ac",
+				Tag: "v0.10.0-amd64",
 			},
 		},
 	},
