@@ -61,6 +61,15 @@ var Images = []Image{
 		},
 	},
 	Image{
+		Name: "fluent/fluent-bit-0.13-dev",
+		Tags: []Tag{
+			Tag{
+				Sha: "002a1870fa2ffd11dbd7438527a2c17f794f6962f5d3a4f048f848963ab954a8",
+				Tag: "0.12",
+			},
+		},
+	},
+	Image{
 		// see https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/fluentd-elasticsearch/fluentd-es-ds.yaml
 		Name: "gcr.io/google-containers/fluentd-elasticsearch",
 		Tags: []Tag{
