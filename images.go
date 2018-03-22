@@ -58,6 +58,11 @@ var Images = []Image{
 				Sha: "306af26503cd751440f55428c2d7c14d09105ed125e5a9fc0b8d29206042053e",
 				Tag: "6.1.1",
 			},
+			// via https://www.elastic.co/guide/en/kibana/6.1/_pulling_the_image.html
+			Tag{
+				Sha: "f9addd642b184a81daa77c4301a800009aa714296220549ad1c61a22ca9bb8d3",
+				Tag: "6.1.4",
+			},
 		},
 	},
 	Image{
