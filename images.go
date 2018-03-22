@@ -66,6 +66,15 @@ var Images = []Image{
 		},
 	},
 	Image{
+		Name: "fluent/fluent-bit-0.13-dev",
+		Tags: []Tag{
+			Tag{
+				Sha: "35dc60953dba55bd696c3997e0d4a8f54f331c2295e568c8b9899b9209346a7f",
+				Tag: "0.12",
+			},
+		},
+	},
+	Image{
 		// see https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/fluentd-elasticsearch/fluentd-es-ds.yaml
 		Name: "gcr.io/google-containers/fluentd-elasticsearch",
 		Tags: []Tag{
@@ -108,6 +117,10 @@ var Images = []Image{
 			Tag{
 				Sha: "7653dfb091e9524ecb1c2c472ec27e9d2e0ff9addc199d91b5c532a2cdba5b9e",
 				Tag: "v1.9.3",
+			},
+			Tag{
+				Sha: "a31961a719a1d0ade89149a6a8db5181cbef461baa6ef049681c31c0e48d9f1e",
+				Tag: "v1.9.5",
 			},
 			Tag{
 				Sha: "29730a07f998bed2becaf2d7677be17a45bc87273cdf3f643d0d1b2dca5d0631",
@@ -235,8 +248,8 @@ var Images = []Image{
 		Name: "quay.io/coreos/flannel",
 		Tags: []Tag{
 			Tag{
-				Sha: "1b401bf0c30bada9a539389c3be652b58fe38463361edf488e6543c8761d4970",
-				Tag: "v0.9.0-amd64",
+				Sha: "88f2b4d96fae34bfff3d46293f7f18d1f9f3ca026b4a4d288f28347fcb6580ac",
+				Tag: "v0.10.0-amd64",
 			},
 		},
 	},
@@ -258,6 +271,10 @@ var Images = []Image{
 			Tag{
 				Sha: "885b65cec9e58c4829be447af4b0b00ecc40c09e0b9e9f662374f308e536c217",
 				Tag: "0.11.0",
+			},
+			Tag{
+				Sha: "36523a0b8b35b082211caa2bebb95c43578f85a51c03a28599b39a13b27965cb",
+				Tag: "0.12.0",
 			},
 		},
 	},
