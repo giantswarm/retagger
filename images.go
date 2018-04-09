@@ -107,24 +107,16 @@ var Images = []Image{
 		Name: "gcr.io/google_containers/hyperkube",
 		Tags: []Tag{
 			Tag{
-				Sha: "3e7e58f6bc4f28c3ba36e88ed2220695922c0304db802e72b20b987f1c89b126",
-				Tag: "v1.9.0",
-			},
-			Tag{
-				Sha: "cd3430a6fbbffa6f52f7233c08237477ef374424baf45df8e33c5dc9b1f87177",
-				Tag: "v1.9.2",
-			},
-			Tag{
-				Sha: "7653dfb091e9524ecb1c2c472ec27e9d2e0ff9addc199d91b5c532a2cdba5b9e",
-				Tag: "v1.9.3",
-			},
-			Tag{
 				Sha: "a31961a719a1d0ade89149a6a8db5181cbef461baa6ef049681c31c0e48d9f1e",
 				Tag: "v1.9.5",
 			},
 			Tag{
-				Sha: "29730a07f998bed2becaf2d7677be17a45bc87273cdf3f643d0d1b2dca5d0631",
-				Tag: "v1.10.0-beta.1",
+				Sha: "ef1169d8ed08a69fb31a9aaafdceced4200dc9bea0ec03751f3638ae28646f51",
+				Tag: "v1.9.6",
+			},
+			Tag{
+				Sha: "898d145786fb66532cb66223c5d3b270010c0da48c013cd97326808a8eca980a",
+				Tag: "v1.10.0",
 			},
 		},
 	},
