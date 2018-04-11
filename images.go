@@ -139,6 +139,11 @@ var Images = []Image{
 				Sha: "953a3b6bf0046333c656fcfa2fc3a08f4055dc3fbd5b1dcdcdf865a2534db526",
 				Tag: "v1.2.0",
 			},
+		},
+	},
+	Image{
+		Name: "quay.io/coreos/kube-state-metrics",
+		Tags: []Tag{
 			Tag{
 				Sha: "f053462579a86ff5b14941635b659089dae31e207472b72551d5f7339b143a54",
 				Tag: "v1.3.0",
