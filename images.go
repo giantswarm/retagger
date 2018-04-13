@@ -149,6 +149,12 @@ var Images = []Image{
 				Tag: "v1.3.0",
 			},
 		},
+		Tags: []Tag{
+			Tag{
+				Sha: "3054e18f76bb96de6faba2001c212c40766e517b56b424dacafe4a97eada5dda",
+				Tag: "v1.3.1",
+			},
+		},
 	},
 	Image{
 		Name: "gcr.io/google_containers/nginx-ingress-controller",
