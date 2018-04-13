@@ -115,8 +115,8 @@ var Images = []Image{
 				Tag: "v1.9.6",
 			},
 			Tag{
-				Sha: "898d145786fb66532cb66223c5d3b270010c0da48c013cd97326808a8eca980a",
-				Tag: "v1.10.0",
+				Sha: "ec0ab56584d9c6577076c345fa7ebd35394b006769bc1cee69ff1f3409aa352d",
+				Tag: "v1.10.1",
 			},
 		},
 	},
