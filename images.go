@@ -69,8 +69,8 @@ var Images = []Image{
 		Name: "fluent/fluent-bit-0.13-dev",
 		Tags: []Tag{
 			Tag{
-				Sha: "a4f22b6de839b5ca88e7092f8c238ecd983c1fc73288bdaabdf0ce67e6c3252c",
-				Tag: "0.15",
+				Sha: "f41081bed4870c910df045e489c067fd05fd09fb06de6ceece39fba713fa185e",
+				Tag: "0.16",
 			},
 		},
 	},
@@ -148,8 +148,6 @@ var Images = []Image{
 				Sha: "f053462579a86ff5b14941635b659089dae31e207472b72551d5f7339b143a54",
 				Tag: "v1.3.0",
 			},
-		},
-		Tags: []Tag{
 			Tag{
 				Sha: "3054e18f76bb96de6faba2001c212c40766e517b56b424dacafe4a97eada5dda",
 				Tag: "v1.3.1",
