@@ -336,18 +336,18 @@ var Images = []Image{
 		},
 	},
 	Image{
-                Name: "vault",
-                Tags: []Tag{
-                        Tag{
-                                Sha: "87f3caef34d1da704e4ba3cfa1f0ce03469c5bd4bc2b18ea728ce76d5d494f08",
-                                Tag: "0.9.3",
-                        },
-                        Tag{
-                                Sha: "8d2813d4fbc145d867218b60e13b29941edf60d1c0929964db42879a1aacc889",
-                                Tag: "0.10.1",
-                        },
-                },
-        },
+		Name: "vault",
+		Tags: []Tag{
+			Tag{
+				Sha: "87f3caef34d1da704e4ba3cfa1f0ce03469c5bd4bc2b18ea728ce76d5d494f08",
+				Tag: "0.9.3",
+			},
+			Tag{
+				Sha: "8d2813d4fbc145d867218b60e13b29941edf60d1c0929964db42879a1aacc889",
+				Tag: "0.10.1",
+			},
+		},
+	},
 }
 
 func RetaggedName(registry, organisation string, image Image) string {
