@@ -86,8 +86,25 @@ var Images = []Image{
 		Name: "quay.io/giantswarm/etcd",
 		Tags: []Tag{
 			Tag{
+				Sha: "21c257bb292251372178f57fdefbced6b1e5f0c3b5214314701990454099eae0",
+				Tag: "v3.2.7",
+			},
+			Tag{
 				Sha: "454e69370d87554dcb4272833b8f07ce1b5d457caa153bda4070b76d89a1cc97",
 				Tag: "v3.3.1",
+			},
+			Tag{
+				Sha: "4c7a42533605b66c9f9a28b5476d31de1b80a98a694dca62de2a75b945a6dbc3",
+				Tag: "v3.3.3",
+			},
+		},
+	},
+	Image{
+		Name: "gcr.io/google_containers/pause-amd64",
+		Tags: []Tag{
+			Tag{
+				Sha: "59eec8837a4d942cc19a52b8c09ea75121acc38114a2c68b98983ce9356b8610",
+				Tag: "3.1",
 			},
 		},
 	},
