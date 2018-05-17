@@ -38,6 +38,60 @@ var Images = []Image{
 		},
 	},
 	Image{
+		Name: "quay.io/calico/node",
+		Tags: []Tag{
+			Tag{
+				Sha: "77f21d72021ed7ccb0fa6fac2ce0a466536ead17bfb7e3e28afcf93a31d6e896",
+				Tag: "v3.0.5",
+			},
+		},
+	},
+	Image{
+		Name: "quay.io/calico/cni",
+		Tags: []Tag{
+			Tag{
+				Sha: "a5de754aeab76601fd7bbe0ff1622ab49060a13c25f5d43ae15ccbf1fe46fef7",
+				Tag: "v2.0.4",
+			},
+		},
+	},
+	Image{
+		Name: "quay.io/calico/kube-controllers",
+		Tags: []Tag{
+			Tag{
+				Sha: "58ddfd9de2e91b160440c3ede51d3cb7c0250450d047d9ba34d874c59b710619",
+				Tag: "v2.0.3",
+			},
+		},
+	},
+	Image{
+		Name: "quay.io/calico/typha",
+		Tags: []Tag{
+			Tag{
+				Sha: "e5f7143147254b9ddfa3620aeb0151ae10d29bcd2e62d83d20b25fe54a5fcbdc",
+				Tag: "v0.6.3",
+			},
+		},
+	},
+	Image{
+		Name: "jetstack/kube-lego",
+		Tags: []Tag{
+			Tag{
+				Sha: "10e19105596be0ee03b2a38879dd0f1e72bff26230961c22796136defcc3c7cb",
+				Tag: "0.1.5",
+			},
+		},
+	},
+	Image{
+		Name: "quay.io/giantswarm/etcd",
+		Tags: []Tag{
+			Tag{
+				Sha: "454e69370d87554dcb4272833b8f07ce1b5d457caa153bda4070b76d89a1cc97",
+				Tag: "v3.3.1",
+			},
+		},
+	},
+	Image{
 		Name: "dduportal/bats",
 		Tags: []Tag{
 			Tag{
