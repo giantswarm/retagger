@@ -109,6 +109,19 @@ var Images = []Image{
 		},
 	},
 	Image{
+		Name: "alpine",
+		Tags: []Tag{
+			Tag{
+				Sha: "3d44fa76c2c83ed9296e4508b436ff583397cac0f4bad85c2b4ecc193ddb5106",
+				Tag: "3.6",
+			},
+			Tag{
+				Sha: "7df6db5aa61ae9480f52f0b3a06a140ab98d427f86d8d5de0bedab9b8df6b1c0",
+				Tag: "3.7",
+			},
+		},
+	},
+	Image{
 		Name: "dduportal/bats",
 		Tags: []Tag{
 			Tag{
