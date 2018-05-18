@@ -83,7 +83,7 @@ var Images = []Image{
 		},
 	},
 	Image{
-		Name: "quay.io/giantswarm/etcd",
+		Name: "quay.io/coreos/etcd",
 		Tags: []Tag{
 			Tag{
 				Sha: "21c257bb292251372178f57fdefbced6b1e5f0c3b5214314701990454099eae0",
