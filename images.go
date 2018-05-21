@@ -432,6 +432,15 @@ var Images = []Image{
 			},
 		},
 	},
+	Image{
+		Name: "gcr.io/kubernetes-helm/tiller",
+		Tags: []Tag{
+			Tag{
+				Sha: "394fb7d5f2fbaca54f6a0dec387cef926f6ae359786c89f7da67db173b97a322",
+				Tag: "v2.8.1",
+			},
+		},
+	},
 }
 
 func RetaggedName(registry, organisation string, image Image) string {
