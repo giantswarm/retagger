@@ -313,6 +313,10 @@ var Images = []Image{
 				Sha: "5269659b61c4f19a3528a9c22f9fa8f4003e186d6cb528d21e411578d1e16bdb",
 				Tag: "1.12.2",
 			},
+			Tag{
+				Sha: "0fb320e2a1b1620b4905facb3447e3d84ad36da0b2c8aa8fe3a5a81d1187b884",
+				Tag: "1.13.12",
+			},
 		},
 	},
 	Image{
@@ -433,15 +437,6 @@ var Images = []Image{
 			Tag{
 				Sha: "8d2813d4fbc145d867218b60e13b29941edf60d1c0929964db42879a1aacc889",
 				Tag: "0.10.1",
-			},
-		},
-	},
-	Image{
-		Name: "nginx",
-		Tags: []Tag{
-			Tag{
-				Sha: "0fb320e2a1b1620b4905facb3447e3d84ad36da0b2c8aa8fe3a5a81d1187b884",
-				Tag: "1.13.12",
 			},
 		},
 	},
