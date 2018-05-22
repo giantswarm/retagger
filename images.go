@@ -300,6 +300,10 @@ var Images = []Image{
 				Sha: "6397aafb899ef7a9ca61c2ef80863dbebce504620b044954d80203e0b8c1ada4",
 				Tag: "4.6.3",
 			},
+			Tag{
+				Sha: "364bec4a39ecbec744ea4270aae35f6554eb6f2047b3ee08f7b5f1134857c32c",
+				Tag: "5.1.3",
+			},
 		},
 	},
 	Image{
@@ -433,11 +437,33 @@ var Images = []Image{
 		},
 	},
 	Image{
+		Name: "nginx",
+		Tags: []Tag{
+			Tag{
+				Sha: "0fb320e2a1b1620b4905facb3447e3d84ad36da0b2c8aa8fe3a5a81d1187b884",
+				Tag: "1.13.12",
+			},
+		},
+	},
+	Image{
+		Name: "busybox",
+		Tags: []Tag{
+			Tag{
+				Sha: "58ac43b2cc92c687a32c8be6278e50a063579655fe3090125dcb2af0ff9e1a64",
+				Tag: "1.28.3",
+			},
+		},
+	},
+	Image{
 		Name: "gcr.io/kubernetes-helm/tiller",
 		Tags: []Tag{
 			Tag{
 				Sha: "394fb7d5f2fbaca54f6a0dec387cef926f6ae359786c89f7da67db173b97a322",
 				Tag: "v2.8.1",
+			},
+			Tag{
+				Sha: "9b373c71ea2dfdb7d42a6c6dada769cf93be682df7cfabb717748bdaef27d10a",
+				Tag: "v2.8.2",
 			},
 		},
 	},
