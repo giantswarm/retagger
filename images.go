@@ -419,6 +419,24 @@ var Images = []Image{
 		},
 	},
 	Image{
+		Name: "quay.io/jetstack/cert-manager-controller",
+		Tags: []Tag{
+			Tag{
+				Sha: "61546385c284af5620ac1e861943e73164a6ac37ec76520ef43be2ec2bd769fb",
+				Tag: "v0.2.5",
+			},
+		},
+	},
+	Image{
+		Name: "quay.io/jetstack/cert-manager-ingress-shim",
+		Tags: []Tag{
+			Tag{
+				Sha: "544b8602ee566d7ca22aa9e76a92dde4c2ca8dab642f75ea3a4b0a577193632a",
+				Tag: "v0.2.5",
+			},
+		},
+	},
+	Image{
 		Name: "redis",
 		Tags: []Tag{
 			Tag{
