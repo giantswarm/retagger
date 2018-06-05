@@ -480,6 +480,15 @@ var Images = []Image{
 			},
 		},
 	},
+	Image{
+		Name: "registry.opensource.zalan.do/teapot/external-dns",
+		Tags: []Tag{
+			Tag{
+				Sha: "0c6e7c59bd204db7dd13c98e8ec6b1af5b9b102f0badc091d50683458570c6c6",
+				Tag: "v0.5.2-3-g6c05028",
+			},
+		},
+	},
 }
 
 func RetaggedName(registry, organisation string, image Image) string {
