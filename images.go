@@ -394,6 +394,10 @@ var Images = []Image{
 				Sha: "36523a0b8b35b082211caa2bebb95c43578f85a51c03a28599b39a13b27965cb",
 				Tag: "0.12.0",
 			},
+			Tag{
+				Sha: "7b79e1bc6437e6376dadf558e012adde6395bb28dee4a38ce08c7e5c9f220178",
+				Tag: "0.15.0",
+			},
 		},
 	},
 	Image{
