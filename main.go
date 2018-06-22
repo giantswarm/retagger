@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"os/exec"
 )
@@ -27,34 +29,53 @@ func main() {
 		log.Fatalf("could not get registry password")
 	}
 
+	quayToken := os.Getenv("QUAY_TOKEN")
+	if quayToken == "" {
+		log.Fatalf("could not get quay token")
+	}
+
 	login := exec.Command("docker", "login", "-u", registryUsername, "-p", registryPassword, registry)
 	if err := Run(login); err != nil {
 		log.Fatalf("could not login to registry: %v", err)
 	}
 
+	client := &http.Client{}
+
 	for _, image := range Images {
 		for _, tag := range image.Tags {
 			log.Printf("managing: %v, %v, %v", image.Name, tag.Sha, tag.Tag)
 
-			retaggedName := RetaggedName(registry, registryOrganisation, image)
-			shaName := ShaName(image.Name, tag.Sha)
+			url := fmt.Sprintf("https://quay.io/api/v1/repository/%s/tag/%s/images", ImageName(registryOrganisation, image), tag.Tag)
+			req, err := http.NewRequest(http.MethodGet, url, nil)
+			if err != nil {
+				log.Fatalf("could not create request: %v", err)
+			}
+			req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", quayToken))
 
-			retaggedNameWithTag := ImageWithTag(retaggedName, tag.Tag)
-
-			log.Printf("checking if image has already been retagged")
-			pullRetag := exec.Command("docker", "pull", retaggedNameWithTag)
-			if err := Run(pullRetag); err == nil {
+			res, err := client.Do(req)
+			if err != nil {
+				log.Fatalf("could not check if image retagged: %v", err)
+			}
+			switch res.StatusCode {
+			case http.StatusOK:
 				log.Printf("retagged image already exists, skipping")
 				continue
-			} else {
-				log.Printf("retagged image probably does not exist: %v", err)
+			case http.StatusNotFound:
+				log.Printf("retagged image does not exist")
+			default:
+				log.Printf("could not check retag status: %v", res.StatusCode)
 			}
+
+			shaName := ShaName(image.Name, tag.Sha)
 
 			log.Printf("pulling original image")
 			pullOriginal := exec.Command("docker", "pull", shaName)
 			if err := Run(pullOriginal); err != nil {
 				log.Fatalf("could not pull image: %v", err)
 			}
+
+			retaggedName := RetaggedName(registry, registryOrganisation, image)
+			retaggedNameWithTag := ImageWithTag(retaggedName, tag.Tag)
 
 			log.Printf("retagging image")
 			retag := exec.Command("docker", "tag", shaName, retaggedNameWithTag)
