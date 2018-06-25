@@ -2,6 +2,41 @@ package main
 
 import "testing"
 
+func TestImageName(t *testing.T) {
+	organisation := "giantswarm"
+
+	tests := []struct {
+		image        Image
+		expectedName string
+	}{
+		{
+			image: Image{
+				Name: "quay.io/coreos/hyperkube",
+			},
+			expectedName: "giantswarm/hyperkube",
+		},
+		{
+			image: Image{
+				Name: "prom/prometheus",
+			},
+			expectedName: "giantswarm/prometheus",
+		},
+		{
+			image: Image{
+				Name: "golang",
+			},
+			expectedName: "giantswarm/golang",
+		},
+	}
+
+	for _, test := range tests {
+		returnedName := ImageName(organisation, test.image)
+		if returnedName != test.expectedName {
+			t.Fatalf("'%v' != '%v'", returnedName, test.expectedName)
+		}
+	}
+}
+
 func TestRetaggedName(t *testing.T) {
 	registry := "quay.io"
 	organisation := "giantswarm"
