@@ -29,18 +29,6 @@ type Registry struct {
 	username     string
 }
 
-func (r *Registry) Login() error {
-	login := exec.Command("docker", "login", "-u", r.username, "-p", r.password, r.host)
-	if err := Run(login); err != nil {
-		return fmt.Errorf("could not login to registry: %v", err)
-	}
-	return nil
-}
-
-func checkParams(cfg *RegistryConfig) error {
-	return nil
-}
-
 func NewRegistry(cfg *RegistryConfig) (*Registry, error) {
 	if cfg.Client == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Client must not be empty", cfg)
@@ -76,6 +64,14 @@ func NewRegistry(cfg *RegistryConfig) (*Registry, error) {
 	}
 
 	return qr, nil
+}
+
+func (r *Registry) Login() error {
+	login := exec.Command("docker", "login", "-u", r.username, "-p", r.password, r.host)
+	if err := Run(login); err != nil {
+		return fmt.Errorf("could not login to registry: %v", err)
+	}
+	return nil
 }
 
 func (r *Registry) CheckImageTagExists(image, tag string) (bool, error) {
