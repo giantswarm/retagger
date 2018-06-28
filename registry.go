@@ -2,11 +2,9 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os/exec"
-	"strings"
 
 	"github.com/giantswarm/microerror"
 )
@@ -81,7 +79,7 @@ func NewRegistry(cfg *RegistryConfig) (*Registry, error) {
 }
 
 func (r *Registry) CheckImageTagExists(image, tag string) (bool, error) {
-	url := fmt.Sprintf("https://%s/v2/%s/tags/list", r.host, ImageName(r.organisation, image))
+	url := fmt.Sprintf("https://%s/api/v1/repository/%s/tag/%s/images", r.host, ImageName(r.organisation, image), tag)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return false, microerror.Mask(err)
@@ -96,12 +94,7 @@ func (r *Registry) CheckImageTagExists(image, tag string) (bool, error) {
 
 	switch res.StatusCode {
 	case http.StatusOK:
-		bodyBytes, err := ioutil.ReadAll(res.Body)
-		if err != nil {
-			return false, microerror.Mask(err)
-		}
-		bodyString := string(bodyBytes)
-		return strings.Contains(bodyString, tag), nil
+		return true, nil
 	default:
 		log.Printf("could not check retag status: %v", res.StatusCode)
 		return false, nil
