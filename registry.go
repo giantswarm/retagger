@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os/exec"
 	"strings"
@@ -101,11 +102,10 @@ func (r *Registry) CheckImageTagExists(image, tag string) (bool, error) {
 		}
 		bodyString := string(bodyBytes)
 		return strings.Contains(bodyString, tag), nil
-	case http.StatusNotFound:
+	default:
+		log.Printf("could not check retag status: %v", res.StatusCode)
 		return false, nil
 	}
-
-	return false, microerror.Maskf(invalidStatusCodeError, "expected 200 or 404, got %d", res.StatusCode)
 }
 
 func (r *Registry) Retag(image, sha, tag string) (string, error) {
