@@ -11,6 +11,7 @@ jobs:
             ./architect version
       - run:
           command: ./architect build
+      - run: ./retagger
       - deploy:
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then

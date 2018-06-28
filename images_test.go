@@ -30,7 +30,7 @@ func TestImageName(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		returnedName := ImageName(organisation, test.image)
+		returnedName := ImageName(organisation, test.image.Name)
 		if returnedName != test.expectedName {
 			t.Fatalf("'%v' != '%v'", returnedName, test.expectedName)
 		}
@@ -66,7 +66,7 @@ func TestRetaggedName(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		returnedName := RetaggedName(registry, organisation, test.image)
+		returnedName := RetaggedName(registry, organisation, test.image.Name)
 		if returnedName != test.expectedName {
 			t.Fatalf("'%v' != '%v'", returnedName, test.expectedName)
 		}

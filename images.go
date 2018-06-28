@@ -358,14 +358,14 @@ var Images = []Image{
 	},
 }
 
-func ImageName(organisation string, image Image) string {
-	parts := strings.Split(image.Name, "/")
+func ImageName(organisation string, image string) string {
+	parts := strings.Split(image, "/")
 
 	return fmt.Sprintf("%v/%v", organisation, parts[len(parts)-1])
 }
 
-func RetaggedName(registry, organisation string, image Image) string {
-	parts := strings.Split(image.Name, "/")
+func RetaggedName(registry, organisation string, image string) string {
+	parts := strings.Split(image, "/")
 
 	return fmt.Sprintf("%v/%v/%v", registry, organisation, parts[len(parts)-1])
 }
