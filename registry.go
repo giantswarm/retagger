@@ -129,7 +129,7 @@ func (r *Registry) Retag(image, sha, tag string) (string, error) {
 }
 
 func (r *Registry) getToken(req *http.Request) (string, error) {
-	const authorizationHeaderKey = "Www-Authenticate"
+	const authenticationHeaderKey = "www-authenticate"
 
 	res, err := r.client.Do(req)
 	if err != nil {
@@ -137,13 +137,21 @@ func (r *Registry) getToken(req *http.Request) (string, error) {
 	}
 	defer res.Body.Close()
 
-	authorizationHeaderValue := res.Header[authorizationHeaderKey]
-	if len(authorizationHeaderValue) == 0 {
-		// no need for authorization
+	var authenticationHeaderValue []string
+	// the authentication header be found as www-authenticate, Www-Authenticate or
+	// WWW-Authenticate.
+	for k, v := range res.Header {
+		if strings.ToLower(k) == authenticationHeaderKey {
+			authenticationHeaderValue = v
+			break
+		}
+	}
+	if len(authenticationHeaderValue) == 0 {
+		// no need for authentication
 		return "", nil
 	}
 
-	authURL, err := getAuthURL(authorizationHeaderValue[0])
+	authURL, err := getAuthURL(authenticationHeaderValue[0])
 	if err != nil {
 		return "", microerror.Mask(err)
 	}
