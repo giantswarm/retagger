@@ -1,18 +1,47 @@
+retag: &retag
+    machine: true
+    steps:
+    - checkout
+
+    - attach_workspace:
+        at: .
+
+    - run: ./retagger
+
+
 version: 2
 jobs:
   build:
     machine: true
     steps:
-      - checkout
-      - run:
-          command: |
-            wget -q $(curl -sS -H "Authorization: token $RELEASE_TOKEN" https://api.github.com/repos/giantswarm/architect/releases/latest | grep browser_download_url | head -n 1 | cut -d '"' -f 4)
-            chmod +x ./architect
-            ./architect version
-      - run:
-          command: ./architect build
-      - deploy:
-          command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              ./retagger
-            fi
+    - checkout
+    - run: |
+        wget -q $(curl -sS -H "Authorization: token $RELEASE_TOKEN" https://api.github.com/repos/giantswarm/architect/releases/latest | grep browser_download_url | head -n 1 | cut -d '"' -f 4)
+        chmod +x ./architect
+        ./architect version
+    - run: ./architect build
+    - persist_to_workspace:
+        root: .
+        paths:
+        - ./retagger
+
+  retagQuay:
+    environment:
+      REGISTRY: "quay.io"
+      REGISTRY_ORGANISATION: "giantswarm"
+
+    <<: *retag
+
+
+workflows:
+  version: 2
+  build_e2e:
+    jobs:
+    - build
+
+    - retagQuay:
+        filters:
+          branches:
+            only: master
+        requires:
+        - build
