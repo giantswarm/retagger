@@ -101,9 +101,7 @@ func (r *Registry) Retag(image, sha, tag string) (string, error) {
 	retaggedName := RetaggedName(r.host, r.organisation, image)
 	retaggedNameWithTag := ImageWithTag(retaggedName, tag)
 
-	shaName := ShaName(image, tag)
-
-	retag := exec.Command("docker", "tag", shaName, retaggedNameWithTag)
+	retag := exec.Command("docker", "tag", sha, retaggedNameWithTag)
 	err := Run(retag)
 	if err != nil {
 		return "", microerror.Mask(err)
