@@ -138,8 +138,8 @@ func (r *Registry) getToken(req *http.Request) (string, error) {
 	defer res.Body.Close()
 
 	var authenticationHeaderValue []string
-	// the authentication header be found as www-authenticate, Www-Authenticate or
-	// WWW-Authenticate.
+	// the authentication header can be found as www-authenticate, Www-Authenticate
+	// or WWW-Authenticate.
 	for k, v := range res.Header {
 		if strings.ToLower(k) == authenticationHeaderKey {
 			authenticationHeaderValue = v
