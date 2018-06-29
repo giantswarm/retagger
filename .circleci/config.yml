@@ -38,7 +38,7 @@ jobs:
         at: .
     - run: |
         echo 'export REGISTRY_USERNAME=${ALIYUN_USERNAME}' >> $BASH_ENV
-        echo 'export REGISTRY_PASSWORD=${ALITUN_PASSWORD}' >> $BASH_ENV
+        echo 'export REGISTRY_PASSWORD=${ALIYUN_PASSWORD}' >> $BASH_ENV
         source $BASH_ENV
     - run: ./retagger
 
@@ -57,6 +57,7 @@ workflows:
     - retagAliyun:
         #filters:
         #  branches:
-        #    only: master
+        #
+        only: master
         requires:
         - build
