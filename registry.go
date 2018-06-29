@@ -17,7 +17,6 @@ type RegistryConfig struct {
 	Host         string
 	Organisation string
 	Password     string
-	Token        string
 	Username     string
 }
 
@@ -27,7 +26,6 @@ type Registry struct {
 	host         string
 	organisation string
 	password     string
-	token        string
 	username     string
 }
 
@@ -59,17 +57,12 @@ func NewRegistry(cfg *RegistryConfig) (*Registry, error) {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Password must not be empty", cfg)
 	}
 
-	if cfg.Token == "" {
-		return nil, microerror.Maskf(invalidConfigError, "%T.Token must not be empty", cfg)
-	}
-
 	qr := &Registry{
 		client: cfg.Client,
 
 		host:         cfg.Host,
 		organisation: cfg.Organisation,
 		password:     cfg.Password,
-		token:        cfg.Token,
 		username:     cfg.Username,
 	}
 
