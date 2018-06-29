@@ -17,3 +17,10 @@ var invalidStatusCodeError = microerror.New("invalid status code")
 func IsInvalidStatusCode(err error) bool {
 	return microerror.Cause(err) == invalidStatusCodeError
 }
+
+var invalidAuthenticateChallengeError = microerror.New("invalid authenticate challenge")
+
+// IsInvalidAuthenticateChallenge asserts invalidAuthenticateChallengeError.
+func IsInvalidAuthenticateChallenge(err error) bool {
+	return microerror.Cause(err) == invalidAuthenticateChallengeError
+}

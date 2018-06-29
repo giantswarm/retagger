@@ -14,7 +14,6 @@ func main() {
 		Host:         os.Getenv("REGISTRY"),
 		Organisation: os.Getenv("REGISTRY_ORGANISATION"),
 		Password:     os.Getenv("REGISTRY_PASSWORD"),
-		Token:        os.Getenv("QUAY_TOKEN"),
 		Username:     os.Getenv("REGISTRY_USERNAME"),
 	}
 
