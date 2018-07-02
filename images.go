@@ -356,6 +356,15 @@ var Images = []Image{
 			},
 		},
 	},
+	Image{
+		Name: "quay.io/giantswarm/docker-kubectl",
+		Tags: []Tag{
+			Tag{
+				Sha: "995bd3fee6899569d5d9ab77948f25d6bc2e9a95efa988de37c6b8c3095ac819",
+				Tag: "8cabd75bacbcdad7ac5d85efc3ca90c2fabf023b ",
+			},
+		},
+	},
 }
 
 func ImageName(organisation string, image string) string {
