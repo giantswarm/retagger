@@ -181,17 +181,15 @@ var Images = []Image{
 			},
 		},
 	},
-	/*
-		Image{
-			Name: "quay.io/coreos/kube-state-metrics",
-			Tags: []Tag{
-				Tag{
-					Sha: "3054e18f76bb96de6faba2001c212c40766e517b56b424dacafe4a97eada5dda",
-					Tag: "v1.3.1",
-				},
+	Image{
+		Name: "quay.io/coreos/kube-state-metrics",
+		Tags: []Tag{
+			Tag{
+				Sha: "fa2e6d33183755f924f05744c282386f38e962160f66ad0b6a8a24a36884fb9a",
+				Tag: "v1.3.1",
 			},
 		},
-	*/
+	},
 	Image{
 		Name: "gcr.io/google_containers/nginx-ingress-controller",
 		Tags: []Tag{
