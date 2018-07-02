@@ -1,14 +1,3 @@
-retag: &retag
-    machine: true
-    steps:
-    - checkout
-
-    - attach_workspace:
-        at: .
-
-    - run: ./retagger
-
-
 version: 2
 jobs:
   build:
@@ -29,8 +18,29 @@ jobs:
     environment:
       REGISTRY: "quay.io"
       REGISTRY_ORGANISATION: "giantswarm"
+    machine: true
+    steps:
+    - attach_workspace:
+        at: .
+    - run: |
+        echo 'export REGISTRY_USERNAME=${QUAY_USERNAME}' >> $BASH_ENV
+        echo 'export REGISTRY_PASSWORD=${QUAY_PASSWORD}' >> $BASH_ENV
+        source $BASH_ENV
+    - run: ./retagger
 
-    <<: *retag
+  retagAliyun:
+    environment:
+      REGISTRY: "registry-intl.cn-shanghai.aliyuncs.com"
+      REGISTRY_ORGANISATION: "giantswarm"
+    machine: true
+    steps:
+    - attach_workspace:
+        at: .
+    - run: |
+        echo 'export REGISTRY_USERNAME=${ALIYUN_USERNAME}' >> $BASH_ENV
+        echo 'export REGISTRY_PASSWORD=${ALIYUN_PASSWORD}' >> $BASH_ENV
+        source $BASH_ENV
+    - run: ./retagger
 
 
 workflows:
@@ -38,8 +48,13 @@ workflows:
   build_e2e:
     jobs:
     - build
-
     - retagQuay:
+        filters:
+          branches:
+            only: master
+        requires:
+        - build
+    - retagAliyun:
         filters:
           branches:
             only: master
