@@ -29,6 +29,10 @@ var Images = []Image{
 		Name: "quay.io/calico/node",
 		Tags: []Tag{
 			Tag{
+				Sha: "77f21d72021ed7ccb0fa6fac2ce0a466536ead17bfb7e3e28afcf93a31d6e896",
+				Tag: "v3.0.5",
+			},
+			Tag{
 				Sha: "f5c53992c20d15d5976f9ee9ac776d63de833c5abd26e127fc638c75e9e2f5d4",
 				Tag: "v3.0.8",
 			},
@@ -38,6 +42,10 @@ var Images = []Image{
 		Name: "quay.io/calico/cni",
 		Tags: []Tag{
 			Tag{
+				Sha: "a5de754aeab76601fd7bbe0ff1622ab49060a13c25f5d43ae15ccbf1fe46fef7",
+				Tag: "v2.0.4",
+			},
+			Tag{
 				Sha: "91f3b7a4a1004269ed09f9d856395046a56e9984c782ca0b037ad88c1b90c11e",
 				Tag: "v2.0.6",
 			},
@@ -46,6 +54,10 @@ var Images = []Image{
 	Image{
 		Name: "quay.io/calico/kube-controllers",
 		Tags: []Tag{
+			Tag{
+				Sha: "58ddfd9de2e91b160440c3ede51d3cb7c0250450d047d9ba34d874c59b710619",
+				Tag: "v2.0.3",
+			},
 			Tag{
 				Sha: "378cc28e1b588b0b7e68bee4432c3fc76d6b718dfffbbfec01434fbffbf18188",
 				Tag: "v2.0.5",
@@ -158,6 +170,10 @@ var Images = []Image{
 		Name: "gcr.io/google_containers/defaultbackend",
 		Tags: []Tag{
 			Tag{
+				Sha: "ee3aa1187023d0197e3277833f19d9ef7df26cee805fef32663e06c7412239f9",
+				Tag: "1.0",
+			},
+			Tag{
 				Sha: "a64c8ed5df00c9f238ecdeb28eb4ed226faace573695e290a99d92d503593e87",
 				Tag: "1.2",
 			},
@@ -265,6 +281,10 @@ var Images = []Image{
 	Image{
 		Name: "quay.io/kubernetes-ingress-controller/nginx-ingress-controller",
 		Tags: []Tag{
+			Tag{
+				Sha: "36523a0b8b35b082211caa2bebb95c43578f85a51c03a28599b39a13b27965cb",
+				Tag: "0.12.0",
+			},
 			Tag{
 				Sha: "7b79e1bc6437e6376dadf558e012adde6395bb28dee4a38ce08c7e5c9f220178",
 				Tag: "0.15.0",
