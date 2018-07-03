@@ -365,6 +365,15 @@ var Images = []Image{
 			},
 		},
 	},
+	Image{
+		Name: "quay.io/giantswarm/k8s-migrator",
+		Tags: []Tag{
+			Tag{
+				Sha: "9259af85d5a7f395feab8162b4d47a79f6b53a897568bc3a9d9d4908a8ac0de2",
+				Tag: "4a4c553280d99b28cb0114797ba59aa380e808b1",
+			},
+		},
+	},
 }
 
 func ImageName(organisation string, image string) string {
