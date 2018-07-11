@@ -403,6 +403,15 @@ var Images = []Image{
 			},
 		},
 	},
+	Image{
+		Name: "gcr.io/heptio-images/sonobuoy",
+		Tags: []Tag{
+			Tag{
+				Sha: "9f2a352b44143c8c4dc72ea2df07d1b3c9d37e45a2ebcfa72c048cca17b9d6eb",
+				Tag: "v0.10.0",
+			},
+		},
+	},
 }
 
 func ImageName(organisation string, image string) string {
