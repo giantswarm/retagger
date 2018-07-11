@@ -394,6 +394,15 @@ var Images = []Image{
 			},
 		},
 	},
+	Image{
+		Name: "quay.io/giantswarm/k8s-setup-network-environment",
+		Tags: []Tag{
+			Tag{
+				Sha: "e337d03e569e53b246f4dea91359efbabe7b3ddc78878e1875d0c7aaf0e17fd5",
+				Tag: "1f4ffc52095ac368847ce3428ea99b257003d9b9",
+			},
+		},
+	},
 }
 
 func ImageName(organisation string, image string) string {
