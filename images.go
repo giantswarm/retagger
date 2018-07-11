@@ -412,6 +412,15 @@ var Images = []Image{
 			},
 		},
 	},
+	Image{
+		Name: "gcr.io/heptio-images/kube-conformance",
+		Tags: []Tag{
+			Tag{
+				Sha: "4b63b91265ed0e4a986db9ce4bab22f590d773108713f806180990bd0e0c0806",
+				Tag: "v1.11",
+			},
+		},
+	},
 }
 
 func ImageName(organisation string, image string) string {
