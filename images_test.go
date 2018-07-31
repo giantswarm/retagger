@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"sort"
+	"testing"
+)
 
 func TestImageName(t *testing.T) {
 	organisation := "giantswarm"
@@ -91,5 +94,20 @@ func TestShaName(t *testing.T) {
 		if returnedName != test.expectedName {
 			t.Fatalf("'%v' != '%v'", returnedName, test.expectedName)
 		}
+	}
+}
+
+func TestImagesOrderedAlphabetically(t *testing.T) {
+	imageNames := []string{}
+	for _, image := range Images {
+		imageNames = append(imageNames, image.Name)
+	}
+
+	if !sort.StringsAreSorted(imageNames) {
+		t.Logf("images are not sorted alphabetically")
+		t.Logf("have \n%v", imageNames)
+		sort.Strings(imageNames)
+		t.Logf("want \n%v", imageNames)
+		t.Fail()
 	}
 }

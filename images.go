@@ -17,95 +17,29 @@ type Tag struct {
 
 var Images = []Image{
 	Image{
-		Name: "coredns/coredns",
-		Tags: []Tag{
-			Tag{
-				Sha: "399cc5b2e2f0d599ef22f43aab52492e88b4f0fd69da9b10545e95a4253c86ce",
-				Tag: "1.1.1",
-			},
-		},
-	},
-	Image{
-		Name: "quay.io/calico/node",
-		Tags: []Tag{
-			Tag{
-				Sha: "77f21d72021ed7ccb0fa6fac2ce0a466536ead17bfb7e3e28afcf93a31d6e896",
-				Tag: "v3.0.5",
-			},
-			Tag{
-				Sha: "f5c53992c20d15d5976f9ee9ac776d63de833c5abd26e127fc638c75e9e2f5d4",
-				Tag: "v3.0.8",
-			},
-		},
-	},
-	Image{
-		Name: "quay.io/calico/cni",
-		Tags: []Tag{
-			Tag{
-				Sha: "a5de754aeab76601fd7bbe0ff1622ab49060a13c25f5d43ae15ccbf1fe46fef7",
-				Tag: "v2.0.4",
-			},
-			Tag{
-				Sha: "91f3b7a4a1004269ed09f9d856395046a56e9984c782ca0b037ad88c1b90c11e",
-				Tag: "v2.0.6",
-			},
-		},
-	},
-	Image{
-		Name: "quay.io/calico/kube-controllers",
-		Tags: []Tag{
-			Tag{
-				Sha: "58ddfd9de2e91b160440c3ede51d3cb7c0250450d047d9ba34d874c59b710619",
-				Tag: "v2.0.3",
-			},
-			Tag{
-				Sha: "378cc28e1b588b0b7e68bee4432c3fc76d6b718dfffbbfec01434fbffbf18188",
-				Tag: "v2.0.5",
-			},
-		},
-	},
-	Image{
-		Name: "quay.io/calico/typha",
-		Tags: []Tag{
-			Tag{
-				Sha: "35334ae788a460f62b1668470a359e3affd7cbbb2c6b6782c560d691754d7686",
-				Tag: "v0.6.6",
-			},
-		},
-	},
-	Image{
-		Name: "jetstack/kube-lego",
-		Tags: []Tag{
-			Tag{
-				Sha: "10e19105596be0ee03b2a38879dd0f1e72bff26230961c22796136defcc3c7cb",
-				Tag: "0.1.5",
-			},
-		},
-	},
-	Image{
-		Name: "quay.io/coreos/etcd",
-		Tags: []Tag{
-			Tag{
-				Sha: "05c576849d6af2d30551a28e3dd7ba480a94b20dc48f5ac0a56ddf7e4f2c2269",
-				Tag: "v3.3.8",
-			},
-		},
-	},
-	Image{
-		Name: "gcr.io/google_containers/pause-amd64",
-		Tags: []Tag{
-			Tag{
-				Sha: "59eec8837a4d942cc19a52b8c09ea75121acc38114a2c68b98983ce9356b8610",
-				Tag: "3.1",
-			},
-		},
-	},
-	Image{
 		Name: "alpine",
 		Tags: []Tag{
 			Tag{
 				Sha: "7df6db5aa61ae9480f52f0b3a06a140ab98d427f86d8d5de0bedab9b8df6b1c0",
 				Tag: "3.7",
+			},
+		},
+	},
+	Image{
+		Name: "busybox",
+		Tags: []Tag{
+			Tag{
+				Sha: "58ac43b2cc92c687a32c8be6278e50a063579655fe3090125dcb2af0ff9e1a64",
+				Tag: "1.28.3",
+			},
+		},
+	},
+	Image{
+		Name: "coredns/coredns",
+		Tags: []Tag{
+			Tag{
+				Sha: "399cc5b2e2f0d599ef22f43aab52492e88b4f0fd69da9b10545e95a4253c86ce",
+				Tag: "1.1.1",
 			},
 		},
 	},
@@ -156,17 +90,6 @@ var Images = []Image{
 		},
 	},
 	Image{
-		// see https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/fluentd-elasticsearch/fluentd-es-ds.yaml
-		Name: "gcr.io/google-containers/fluentd-elasticsearch",
-		Tags: []Tag{
-			// from k8s.gcr.io/fluentd-elasticsearch:v2.0.4
-			Tag{
-				Sha: "b8c94527b489fb61d3d81ce5ad7f3ddbb7be71e9620a3a36e2bede2f2e487d73",
-				Tag: "v2.0.4",
-			},
-		},
-	},
-	Image{
 		Name: "gcr.io/google_containers/defaultbackend",
 		Tags: []Tag{
 			Tag{
@@ -176,6 +99,17 @@ var Images = []Image{
 			Tag{
 				Sha: "a64c8ed5df00c9f238ecdeb28eb4ed226faace573695e290a99d92d503593e87",
 				Tag: "1.2",
+			},
+		},
+	},
+	Image{
+		// see https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/fluentd-elasticsearch/fluentd-es-ds.yaml
+		Name: "gcr.io/google_containers/fluentd-elasticsearch",
+		Tags: []Tag{
+			// from k8s.gcr.io/fluentd-elasticsearch:v2.0.4
+			Tag{
+				Sha: "b8c94527b489fb61d3d81ce5ad7f3ddbb7be71e9620a3a36e2bede2f2e487d73",
+				Tag: "v2.0.4",
 			},
 		},
 	},
@@ -202,20 +136,47 @@ var Images = []Image{
 		},
 	},
 	Image{
-		Name: "quay.io/coreos/kube-state-metrics",
-		Tags: []Tag{
-			Tag{
-				Sha: "fa2e6d33183755f924f05744c282386f38e962160f66ad0b6a8a24a36884fb9a",
-				Tag: "v1.3.1",
-			},
-		},
-	},
-	Image{
 		Name: "gcr.io/google_containers/nginx-ingress-controller",
 		Tags: []Tag{
 			Tag{
 				Sha: "03fd8fc46018d09b4050d4daaf50bff73c80936994b374319ed33cbb2c1684f4",
 				Tag: "0.9.0-beta.11",
+			},
+		},
+	},
+	Image{
+		Name: "gcr.io/google_containers/pause-amd64",
+		Tags: []Tag{
+			Tag{
+				Sha: "59eec8837a4d942cc19a52b8c09ea75121acc38114a2c68b98983ce9356b8610",
+				Tag: "3.1",
+			},
+		},
+	},
+	Image{
+		Name: "gcr.io/heptio-images/kube-conformance",
+		Tags: []Tag{
+			Tag{
+				Sha: "4b63b91265ed0e4a986db9ce4bab22f590d773108713f806180990bd0e0c0806",
+				Tag: "v1.11",
+			},
+		},
+	},
+	Image{
+		Name: "gcr.io/heptio-images/sonobuoy",
+		Tags: []Tag{
+			Tag{
+				Sha: "9f2a352b44143c8c4dc72ea2df07d1b3c9d37e45a2ebcfa72c048cca17b9d6eb",
+				Tag: "v0.10.0",
+			},
+		},
+	},
+	Image{
+		Name: "gcr.io/kubernetes-helm/tiller",
+		Tags: []Tag{
+			Tag{
+				Sha: "9b373c71ea2dfdb7d42a6c6dada769cf93be682df7cfabb717748bdaef27d10a",
+				Tag: "v2.8.2",
 			},
 		},
 	},
@@ -234,6 +195,15 @@ var Images = []Image{
 			Tag{
 				Sha: "b5591419cfa3a930cecdddff0a338c03296d29b617d9f340dc72ee839dd1c5be",
 				Tag: "5.2.2",
+			},
+		},
+	},
+	Image{
+		Name: "jetstack/kube-lego",
+		Tags: []Tag{
+			Tag{
+				Sha: "10e19105596be0ee03b2a38879dd0f1e72bff26230961c22796136defcc3c7cb",
+				Tag: "0.1.5",
 			},
 		},
 	},
@@ -265,6 +235,63 @@ var Images = []Image{
 		},
 	},
 	Image{
+		Name: "quay.io/calico/cni",
+		Tags: []Tag{
+			Tag{
+				Sha: "a5de754aeab76601fd7bbe0ff1622ab49060a13c25f5d43ae15ccbf1fe46fef7",
+				Tag: "v2.0.4",
+			},
+			Tag{
+				Sha: "91f3b7a4a1004269ed09f9d856395046a56e9984c782ca0b037ad88c1b90c11e",
+				Tag: "v2.0.6",
+			},
+		},
+	},
+	Image{
+		Name: "quay.io/calico/kube-controllers",
+		Tags: []Tag{
+			Tag{
+				Sha: "58ddfd9de2e91b160440c3ede51d3cb7c0250450d047d9ba34d874c59b710619",
+				Tag: "v2.0.3",
+			},
+			Tag{
+				Sha: "378cc28e1b588b0b7e68bee4432c3fc76d6b718dfffbbfec01434fbffbf18188",
+				Tag: "v2.0.5",
+			},
+		},
+	},
+	Image{
+		Name: "quay.io/calico/node",
+		Tags: []Tag{
+			Tag{
+				Sha: "77f21d72021ed7ccb0fa6fac2ce0a466536ead17bfb7e3e28afcf93a31d6e896",
+				Tag: "v3.0.5",
+			},
+			Tag{
+				Sha: "f5c53992c20d15d5976f9ee9ac776d63de833c5abd26e127fc638c75e9e2f5d4",
+				Tag: "v3.0.8",
+			},
+		},
+	},
+	Image{
+		Name: "quay.io/calico/typha",
+		Tags: []Tag{
+			Tag{
+				Sha: "35334ae788a460f62b1668470a359e3affd7cbbb2c6b6782c560d691754d7686",
+				Tag: "v0.6.6",
+			},
+		},
+	},
+	Image{
+		Name: "quay.io/coreos/etcd",
+		Tags: []Tag{
+			Tag{
+				Sha: "05c576849d6af2d30551a28e3dd7ba480a94b20dc48f5ac0a56ddf7e4f2c2269",
+				Tag: "v3.3.8",
+			},
+		},
+	},
+	Image{
 		Name: "quay.io/coreos/etcd-operator",
 		Tags: []Tag{
 			Tag{
@@ -279,6 +306,60 @@ var Images = []Image{
 			Tag{
 				Sha: "88f2b4d96fae34bfff3d46293f7f18d1f9f3ca026b4a4d288f28347fcb6580ac",
 				Tag: "v0.10.0-amd64",
+			},
+		},
+	},
+	Image{
+		Name: "quay.io/coreos/kube-state-metrics",
+		Tags: []Tag{
+			Tag{
+				Sha: "fa2e6d33183755f924f05744c282386f38e962160f66ad0b6a8a24a36884fb9a",
+				Tag: "v1.3.1",
+			},
+		},
+	},
+	Image{
+		Name: "quay.io/giantswarm/docker-kubectl",
+		Tags: []Tag{
+			Tag{
+				Sha: "995bd3fee6899569d5d9ab77948f25d6bc2e9a95efa988de37c6b8c3095ac819",
+				Tag: "8cabd75bacbcdad7ac5d85efc3ca90c2fabf023b",
+			},
+		},
+	},
+	Image{
+		Name: "quay.io/giantswarm/k8s-migrator",
+		Tags: []Tag{
+			Tag{
+				Sha: "9259af85d5a7f395feab8162b4d47a79f6b53a897568bc3a9d9d4908a8ac0de2",
+				Tag: "4a4c553280d99b28cb0114797ba59aa380e808b1",
+			},
+		},
+	},
+	Image{
+		Name: "quay.io/giantswarm/k8s-setup-network-environment",
+		Tags: []Tag{
+			Tag{
+				Sha: "e337d03e569e53b246f4dea91359efbabe7b3ddc78878e1875d0c7aaf0e17fd5",
+				Tag: "1f4ffc52095ac368847ce3428ea99b257003d9b9",
+			},
+		},
+	},
+	Image{
+		Name: "quay.io/jetstack/cert-manager-controller",
+		Tags: []Tag{
+			Tag{
+				Sha: "61546385c284af5620ac1e861943e73164a6ac37ec76520ef43be2ec2bd769fb",
+				Tag: "v0.2.5",
+			},
+		},
+	},
+	Image{
+		Name: "quay.io/jetstack/cert-manager-ingress-shim",
+		Tags: []Tag{
+			Tag{
+				Sha: "544b8602ee566d7ca22aa9e76a92dde4c2ca8dab642f75ea3a4b0a577193632a",
+				Tag: "v0.2.5",
 			},
 		},
 	},
@@ -322,60 +403,11 @@ var Images = []Image{
 		},
 	},
 	Image{
-		Name: "quay.io/jetstack/cert-manager-controller",
-		Tags: []Tag{
-			Tag{
-				Sha: "61546385c284af5620ac1e861943e73164a6ac37ec76520ef43be2ec2bd769fb",
-				Tag: "v0.2.5",
-			},
-		},
-	},
-	Image{
-		Name: "quay.io/jetstack/cert-manager-ingress-shim",
-		Tags: []Tag{
-			Tag{
-				Sha: "544b8602ee566d7ca22aa9e76a92dde4c2ca8dab642f75ea3a4b0a577193632a",
-				Tag: "v0.2.5",
-			},
-		},
-	},
-	Image{
 		Name: "redis",
 		Tags: []Tag{
 			Tag{
 				Sha: "002a1870fa2ffd11dbd7438527a2c17f794f6962f5d3a4f048f848963ab954a8",
 				Tag: "3.2.11-alpine",
-			},
-		},
-	},
-	Image{
-		Name: "vault",
-		Tags: []Tag{
-			Tag{
-				Sha: "8d2813d4fbc145d867218b60e13b29941edf60d1c0929964db42879a1aacc889",
-				Tag: "0.10.1",
-			},
-			Tag{
-				Sha: "366eddc65d233c7b43269ba80e27aeb1269837beadd011c8d7b3daa999cce70a",
-				Tag: "0.10.3",
-			},
-		},
-	},
-	Image{
-		Name: "busybox",
-		Tags: []Tag{
-			Tag{
-				Sha: "58ac43b2cc92c687a32c8be6278e50a063579655fe3090125dcb2af0ff9e1a64",
-				Tag: "1.28.3",
-			},
-		},
-	},
-	Image{
-		Name: "gcr.io/kubernetes-helm/tiller",
-		Tags: []Tag{
-			Tag{
-				Sha: "9b373c71ea2dfdb7d42a6c6dada769cf93be682df7cfabb717748bdaef27d10a",
-				Tag: "v2.8.2",
 			},
 		},
 	},
@@ -389,47 +421,15 @@ var Images = []Image{
 		},
 	},
 	Image{
-		Name: "quay.io/giantswarm/docker-kubectl",
+		Name: "vault",
 		Tags: []Tag{
 			Tag{
-				Sha: "995bd3fee6899569d5d9ab77948f25d6bc2e9a95efa988de37c6b8c3095ac819",
-				Tag: "8cabd75bacbcdad7ac5d85efc3ca90c2fabf023b",
+				Sha: "8d2813d4fbc145d867218b60e13b29941edf60d1c0929964db42879a1aacc889",
+				Tag: "0.10.1",
 			},
-		},
-	},
-	Image{
-		Name: "quay.io/giantswarm/k8s-migrator",
-		Tags: []Tag{
 			Tag{
-				Sha: "9259af85d5a7f395feab8162b4d47a79f6b53a897568bc3a9d9d4908a8ac0de2",
-				Tag: "4a4c553280d99b28cb0114797ba59aa380e808b1",
-			},
-		},
-	},
-	Image{
-		Name: "quay.io/giantswarm/k8s-setup-network-environment",
-		Tags: []Tag{
-			Tag{
-				Sha: "e337d03e569e53b246f4dea91359efbabe7b3ddc78878e1875d0c7aaf0e17fd5",
-				Tag: "1f4ffc52095ac368847ce3428ea99b257003d9b9",
-			},
-		},
-	},
-	Image{
-		Name: "gcr.io/heptio-images/sonobuoy",
-		Tags: []Tag{
-			Tag{
-				Sha: "9f2a352b44143c8c4dc72ea2df07d1b3c9d37e45a2ebcfa72c048cca17b9d6eb",
-				Tag: "v0.10.0",
-			},
-		},
-	},
-	Image{
-		Name: "gcr.io/heptio-images/kube-conformance",
-		Tags: []Tag{
-			Tag{
-				Sha: "4b63b91265ed0e4a986db9ce4bab22f590d773108713f806180990bd0e0c0806",
-				Tag: "v1.11",
+				Sha: "366eddc65d233c7b43269ba80e27aeb1269837beadd011c8d7b3daa999cce70a",
+				Tag: "0.10.3",
 			},
 		},
 	},
