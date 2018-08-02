@@ -75,8 +75,8 @@ var Images = []Image{
 		Name: "fluent/fluent-bit",
 		Tags: []Tag{
 			Tag{
-				Sha: "af9e67b215a67d35bdb45723913cc25ff0ae585a65f8632d091f54005d56f5f8",
-				Tag: "0.13.5",
+				Sha: "8548a80d9637e9e5e5081b26779ba1c131a825ff96ec7685207aab245229faed",
+				Tag: "0.13.6",
 			},
 		},
 	},
