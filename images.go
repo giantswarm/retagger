@@ -117,7 +117,7 @@ var Images = []Image{
 		Name: "gcr.io/google_containers/hyperkube",
 		Tags: []Tag{
 			Tag{
-				Sha: "f500aefa0ae532538052751314148185c0304a55d635ac375e56c14358756ae4",
+				Sha: "f380059a8090b5d29da8d99844af3ac4a015514e9c8bed05cc78d92aa3f80837",
 				Tag: "v1.11.2",
 			},
 		},
