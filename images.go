@@ -177,6 +177,15 @@ var Images = []Image{
 		},
 	},
 	Image{
+		Name: "gfkse/oauth2_proxy",
+		Tags: []Tag{
+			Tag{
+				Sha: "4bba1afcd3af85b550b42647e92b3fab36448c75e1af611a65644f77f4dde314",
+				Tag: "kubernetes-3-ca-certs",
+			},
+		},
+	},
+	Image{
 		Name: "golang",
 		Tags: []Tag{
 			Tag{
