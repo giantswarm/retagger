@@ -430,6 +430,15 @@ var Images = []Image{
 		},
 	},
 	Image{
+		Name: "sysdig/falco",
+		Tags: []Tag{
+			Tag{
+				Sha: "3533054a0543e4a2eb4f4c61d68d5d3a39e5886a65d07f011d45044a5c470ccd",
+				Tag: "0.11.1",
+			},
+		},
+	},
+	Image{
 		Name: "vault",
 		Tags: []Tag{
 			Tag{
