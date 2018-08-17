@@ -117,12 +117,8 @@ var Images = []Image{
 		Name: "gcr.io/google_containers/hyperkube",
 		Tags: []Tag{
 			Tag{
-				Sha: "9ef46393310efe17746df1349a31ae7b9dd998655253cf392aa18b9888a8756c",
-				Tag: "v1.11.0",
-			},
-			Tag{
-				Sha: "f500aefa0ae532538052751314148185c0304a55d635ac375e56c14358756ae4",
-				Tag: "v1.11.1",
+				Sha: "f380059a8090b5d29da8d99844af3ac4a015514e9c8bed05cc78d92aa3f80837",
+				Tag: "v1.11.2",
 			},
 		},
 	},
@@ -177,6 +173,15 @@ var Images = []Image{
 			Tag{
 				Sha: "9b373c71ea2dfdb7d42a6c6dada769cf93be682df7cfabb717748bdaef27d10a",
 				Tag: "v2.8.2",
+			},
+		},
+	},
+	Image{
+		Name: "gfkse/oauth2_proxy",
+		Tags: []Tag{
+			Tag{
+				Sha: "4bba1afcd3af85b550b42647e92b3fab36448c75e1af611a65644f77f4dde314",
+				Tag: "kubernetes-3-ca-certs",
 			},
 		},
 	},
