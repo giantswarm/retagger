@@ -198,8 +198,8 @@ var Images = []Image{
 		Name: "grafana/grafana",
 		Tags: []Tag{
 			Tag{
-				Sha: "b5591419cfa3a930cecdddff0a338c03296d29b617d9f340dc72ee839dd1c5be",
-				Tag: "5.2.2",
+				Sha: "86d8159672941cafb67f2d1a134d119ba7f7aa933e801e98bf6e18bc94394203",
+				Tag: "5.2.3",
 			},
 		},
 	},
