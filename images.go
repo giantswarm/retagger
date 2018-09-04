@@ -132,6 +132,15 @@ var Images = []Image{
 		},
 	},
 	Image{
+		Name: "gcr.io/google_containers/metrics-server-amd64",
+		Tags: []Tag{
+			Tag{
+				Sha: "6f4a027083d92fd0f28d1aca83364e376e440625ca9a403f1d2d50adaa298d88",
+				Tag: "v0.3.0",
+			},
+		},
+	},
+	Image{
 		Name: "gcr.io/google_containers/nginx-ingress-controller",
 		Tags: []Tag{
 			Tag{
