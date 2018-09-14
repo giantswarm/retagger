@@ -288,8 +288,8 @@ var Images = []Image{
 		Name: "quay.io/coreos/etcd",
 		Tags: []Tag{
 			Tag{
-				Sha: "05c576849d6af2d30551a28e3dd7ba480a94b20dc48f5ac0a56ddf7e4f2c2269",
-				Tag: "v3.3.8",
+				Sha: "ea49a3d44a50a50770bff84eab87bac2542c7171254c4d84c609b8c66aefc211",
+				Tag: "v3.3.9",
 			},
 		},
 	},
