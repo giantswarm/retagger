@@ -243,8 +243,8 @@ var Images = []Image{
 		Name: "prom/prometheus",
 		Tags: []Tag{
 			Tag{
-				Sha: "7d99455a045a6c89c0dbee6e1fe659eb83bd3a19e171606bc0fd10eb0e34a7dc",
-				Tag: "v2.3.2",
+				Sha: "12b3591bdba2ea2527791b8dc6100e4f1f11ea17f49bf76e1d0750615f37b6c7",
+				Tag: "v2.4.0",
 			},
 		},
 	},
