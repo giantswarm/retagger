@@ -135,6 +135,10 @@ var Images = []Image{
 		Name: "gcr.io/google_containers/metrics-server-amd64",
 		Tags: []Tag{
 			Tag{
+				Sha: "78938f933822856f443e6827fe5b37d6cc2f74ae888ac8b33d06fdbe5f8c658b",
+				Tag: "v0.3.1",
+			},
+			Tag{
 				Sha: "6f4a027083d92fd0f28d1aca83364e376e440625ca9a403f1d2d50adaa298d88",
 				Tag: "v0.3.0",
 			},
