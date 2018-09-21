@@ -226,6 +226,15 @@ var Images = []Image{
 		},
 	},
 	Image{
+		Name: "jimschubert/swagger-codegen-cli",
+		Tags: []Tag{
+			Tag{
+				Sha: "1d929c3de13d97fa351b2a76e48f306be6080d697cbbc4c1b6b6fb407f5d9a5e",
+				Tag: "2.2.3",
+			},
+		},
+	},
+	Image{
 		Name: "nginx",
 		Tags: []Tag{
 			Tag{
