@@ -202,8 +202,8 @@ var Images = []Image{
 		Name: "golang",
 		Tags: []Tag{
 			Tag{
-				Sha: "80fa52964480e2e32dc2a82a04dfd41797787383a547f2498baaa87584bae672",
-				Tag: "1.10.3",
+				Sha: "a325153f1f1e2edb76a76ad789aff172b89dd6178e8f74d39ef87c04d87d1961",
+				Tag: "1.10.4",
 			},
 		},
 	},
