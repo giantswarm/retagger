@@ -122,16 +122,6 @@ var Images = []Image{
 			},
 		},
 	},
-	// add custom builded image so retagger push it to china registry
-	Image{
-		Name: "quay.io/giantswarm/hyperkube",
-		Tags: []Tag{
-			Tag{
-				Sha: "d96ebeebdc60121ad42c6e48c21827d413cbeef2ac345eb2bf02f91b34257a53",
-				Tag: "v1.11.1-cec4fb8023db783fbf26fb056bf6c76abfcd96cf-giantswarm",
-			},
-		},
-	},
 	Image{
 		Name: "gcr.io/google_containers/kube-state-metrics",
 		Tags: []Tag{
@@ -349,6 +339,16 @@ var Images = []Image{
 			Tag{
 				Sha: "995bd3fee6899569d5d9ab77948f25d6bc2e9a95efa988de37c6b8c3095ac819",
 				Tag: "8cabd75bacbcdad7ac5d85efc3ca90c2fabf023b",
+			},
+		},
+	},
+	// add custom builded image so retagger push it to china registry
+	Image{
+		Name: "quay.io/giantswarm/hyperkube",
+		Tags: []Tag{
+			Tag{
+				Sha: "d96ebeebdc60121ad42c6e48c21827d413cbeef2ac345eb2bf02f91b34257a53",
+				Tag: "v1.11.1-cec4fb8023db783fbf26fb056bf6c76abfcd96cf-giantswarm",
 			},
 		},
 	},
