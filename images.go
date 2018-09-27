@@ -122,6 +122,16 @@ var Images = []Image{
 			},
 		},
 	},
+	// add custom builded image so retagger push it to china registry
+	Image{
+		Name: "quay.io/giantswarm/hyperkube",
+		Tags: []Tag{
+			Tag{
+				Sha: "d96ebeebdc60121ad42c6e48c21827d413cbeef2ac345eb2bf02f91b34257a53",
+				Tag: "v1.11.1-cec4fb8023db783fbf26fb056bf6c76abfcd96cf-giantswarm",
+			},
+		},
+	},
 	Image{
 		Name: "gcr.io/google_containers/kube-state-metrics",
 		Tags: []Tag{
