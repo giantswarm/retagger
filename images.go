@@ -265,8 +265,8 @@ var Images = []Image{
 		Name: "quay.io/calico/cni",
 		Tags: []Tag{
 			Tag{
-				Sha: "3920e919df656e7061aee02fcd747a0c8d662394f13a41ba5c308f558d201a60",
-				Tag: "v3.2.2",
+				Sha: "ae3352d2c5dc1631a82777b4f584655d78089d9c8aa5bcdf535dfc0f5deea87a",
+				Tag: "v3.2.3",
 			},
 		},
 	},
@@ -274,8 +274,8 @@ var Images = []Image{
 		Name: "quay.io/calico/kube-controllers",
 		Tags: []Tag{
 			Tag{
-				Sha: "5674fdae4fe3de66e1f44b05752b3e6ab89acd700e2022b01d80e0313483d3ee",
-				Tag: "v3.2.2",
+				Sha: "68c1c7c4664b5a0927ad0b56f51c31a5473ffe62d6d3c8210c2becefa6fef4a9",
+				Tag: "v3.2.3",
 			},
 		},
 	},
@@ -283,8 +283,8 @@ var Images = []Image{
 		Name: "quay.io/calico/node",
 		Tags: []Tag{
 			Tag{
-				Sha: "4f5d33b338a66d02b13738a1e3a5156ffd9333aa4e1798d1e3db106d9412f952",
-				Tag: "v3.2.2",
+				Sha: "e546014887cd5663cdd199d3a84dfc355cfe704dedfd1b489c799e040e7e828f",
+				Tag: "v3.2.3",
 			},
 		},
 	},
@@ -292,8 +292,8 @@ var Images = []Image{
 		Name: "quay.io/calico/typha",
 		Tags: []Tag{
 			Tag{
-				Sha: "09bfe25f9ec0ad656aa91ecb14f7cb9c7b095d5cd3675c3af1227b5dc4740c5f",
-				Tag: "v3.2.2",
+				Sha: "c87cd08dd92b8c9faf23ff56dc05253df9ef84b20f12e0acc91a1e86b45b38cf",
+				Tag: "v3.2.3",
 			},
 		},
 	},
