@@ -235,6 +235,15 @@ var Images = []Image{
 		},
 	},
 	Image{
+		Name: "k8s.gcr.io/hyperkube",
+		Tags: []Tag{
+			Tag{
+				Sha: "1992a861f09f0694462ee3aadf7da2964d21449c1a60db32d560ccacf66f1dff",
+				Tag: "v1.12.1",
+			},
+		},
+	},
+	Image{
 		Name: "nginx",
 		Tags: []Tag{
 			Tag{
