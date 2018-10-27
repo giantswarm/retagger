@@ -242,8 +242,8 @@ var Images = []Image{
 		Name: "k8s.gcr.io/hyperkube",
 		Tags: []Tag{
 			Tag{
-				Sha: "1992a861f09f0694462ee3aadf7da2964d21449c1a60db32d560ccacf66f1dff",
-				Tag: "v1.12.1",
+				Sha: "e2309a5be0dc795787ab4502da73f832b40f3c009120924f64789e652c8d8e0b",
+				Tag: "v1.12.2",
 			},
 		},
 	},
