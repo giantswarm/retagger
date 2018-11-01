@@ -93,13 +93,14 @@ The `retagger` works inside a CI build. On merges to master, the binary is execu
 
 ### Running
 
-The environment variables `REGISTRY`, `REGISTRY_ORGANISATION`, `REGISTRY_USERNAME`, `REGISTRY_PASSWORD`, and `QUAY_TOKEN` need to be set.
-`QUAY_TOKEN` is a Quay OAuth Access Token. See https://docs.quay.io/api/ for documentation.
+The environment variables `REGISTRY`, `REGISTRY_ORGANISATION`, `REGISTRY_USERNAME`, and `REGISTRY_PASSWORD` need to be set.
 
 Executing
+
 ```
 ./retagger
 ```
+
 will iterate through the defined images, pull them from a public registry, and push them to the specified private registry.
 
 ### How to build/test
