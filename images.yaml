@@ -1,211 +1,211 @@
 - name: alpine
   tags:
-  - tag: "3.7"
-    sha: 7df6db5aa61ae9480f52f0b3a06a140ab98d427f86d8d5de0bedab9b8df6b1c0
+  - sha: 7df6db5aa61ae9480f52f0b3a06a140ab98d427f86d8d5de0bedab9b8df6b1c0
+    tag: "3.7"
 - name: busybox
   tags:
-  - tag: 1.28.3
-    sha: 58ac43b2cc92c687a32c8be6278e50a063579655fe3090125dcb2af0ff9e1a64
+  - sha: 58ac43b2cc92c687a32c8be6278e50a063579655fe3090125dcb2af0ff9e1a64
+    tag: 1.28.3
 - name: coredns/coredns
   tags:
-  - tag: 1.2.2
-    sha: 3e2be1cec87aca0b74b7668bbe8c02964a95a402e45ceb51b2252629d608d03a
+  - sha: 3e2be1cec87aca0b74b7668bbe8c02964a95a402e45ceb51b2252629d608d03a
+    tag: 1.2.2
 - name: dduportal/bats
   tags:
-  - tag: 0.4.0
-    sha: b2d533b27109f7c9ea1e270e23f212c47906346f9cffaa4da6da48ed9d8031da
+  - sha: b2d533b27109f7c9ea1e270e23f212c47906346f9cffaa4da6da48ed9d8031da
+    tag: 0.4.0
 - name: docker.elastic.co/elasticsearch/elasticsearch-oss
   tags:
-  - tag: 6.1.1
-    sha: e86f0491edab3d0fd20a1aa0218fda795e12f20e7fe07a454101d7446b29522d
+  - sha: e86f0491edab3d0fd20a1aa0218fda795e12f20e7fe07a454101d7446b29522d
+    tag: 6.1.1
 - name: docker.elastic.co/kibana/kibana-oss
   comment: via https://www.elastic.co/guide/en/kibana/6.1/_pulling_the_image.html
   tags:
-  - tag: 6.1.4
-    sha: f9addd642b184a81daa77c4301a800009aa714296220549ad1c61a22ca9bb8d3
+  - sha: f9addd642b184a81daa77c4301a800009aa714296220549ad1c61a22ca9bb8d3
+    tag: 6.1.4
 - name: fluent/fluent-bit
   tags:
-  - tag: 0.14.6
-    sha: 6861ee5ea81fbbacf8802c622d9305930b341acc0800bbf30205b4d74ce2b486
+  - sha: 6861ee5ea81fbbacf8802c622d9305930b341acc0800bbf30205b4d74ce2b486
+    tag: 0.14.6
 - name: fluent/fluent-bit-0.13-dev
   tags:
-  - tag: "0.18"
-    sha: 0ae482ad3e8d951a66090b968389f2a11b0b16b8a208b5edb4ccb0ca5800b90d
+  - sha: 0ae482ad3e8d951a66090b968389f2a11b0b16b8a208b5edb4ccb0ca5800b90d
+    tag: "0.18"
 - name: gcr.io/google_containers/defaultbackend
   tags:
-  - tag: "1.0"
-    sha: ee3aa1187023d0197e3277833f19d9ef7df26cee805fef32663e06c7412239f9
-  - tag: "1.2"
-    sha: a64c8ed5df00c9f238ecdeb28eb4ed226faace573695e290a99d92d503593e87
+  - sha: ee3aa1187023d0197e3277833f19d9ef7df26cee805fef32663e06c7412239f9
+    tag: "1.0"
+  - sha: a64c8ed5df00c9f238ecdeb28eb4ed226faace573695e290a99d92d503593e87
+    tag: "1.2"
 - name: gcr.io/google_containers/fluentd-elasticsearch
   comment: see https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/fluentd-elasticsearch/fluentd-es-ds.yaml
   tags:
-  - tag: v2.0.4
-    sha: b8c94527b489fb61d3d81ce5ad7f3ddbb7be71e9620a3a36e2bede2f2e487d73
+  - sha: b8c94527b489fb61d3d81ce5ad7f3ddbb7be71e9620a3a36e2bede2f2e487d73
+    tag: v2.0.4
 - name: gcr.io/google_containers/hyperkube
   tags:
-  - tag: v1.11.3
-    sha: ac62a2f03cb254ca31654fe49492bf21d2282f8c1cbffa7c91518af0fb5f3c73
+  - sha: ac62a2f03cb254ca31654fe49492bf21d2282f8c1cbffa7c91518af0fb5f3c73
+    tag: v1.11.3
 - name: gcr.io/google_containers/kube-state-metrics
   tags:
-  - tag: v1.2.0
-    sha: 953a3b6bf0046333c656fcfa2fc3a08f4055dc3fbd5b1dcdcdf865a2534db526
+  - sha: 953a3b6bf0046333c656fcfa2fc3a08f4055dc3fbd5b1dcdcdf865a2534db526
+    tag: v1.2.0
 - name: gcr.io/google_containers/metrics-server-amd64
   tags:
-  - tag: v0.3.1
-    sha: 78938f933822856f443e6827fe5b37d6cc2f74ae888ac8b33d06fdbe5f8c658b
-  - tag: v0.3.0
-    sha: 6f4a027083d92fd0f28d1aca83364e376e440625ca9a403f1d2d50adaa298d88
+  - sha: 78938f933822856f443e6827fe5b37d6cc2f74ae888ac8b33d06fdbe5f8c658b
+    tag: v0.3.1
+  - sha: 6f4a027083d92fd0f28d1aca83364e376e440625ca9a403f1d2d50adaa298d88
+    tag: v0.3.0
 - name: gcr.io/google_containers/nginx-ingress-controller
   tags:
-  - tag: 0.9.0-beta.11
-    sha: 03fd8fc46018d09b4050d4daaf50bff73c80936994b374319ed33cbb2c1684f4
+  - sha: 03fd8fc46018d09b4050d4daaf50bff73c80936994b374319ed33cbb2c1684f4
+    tag: 0.9.0-beta.11
 - name: gcr.io/google_containers/pause-amd64
   tags:
-  - tag: "3.1"
-    sha: 59eec8837a4d942cc19a52b8c09ea75121acc38114a2c68b98983ce9356b8610
+  - sha: 59eec8837a4d942cc19a52b8c09ea75121acc38114a2c68b98983ce9356b8610
+    tag: "3.1"
 - name: gcr.io/heptio-images/kube-conformance
   tags:
-  - tag: v1.11
-    sha: 4b63b91265ed0e4a986db9ce4bab22f590d773108713f806180990bd0e0c0806
+  - sha: 4b63b91265ed0e4a986db9ce4bab22f590d773108713f806180990bd0e0c0806
+    tag: v1.11
 - name: gcr.io/heptio-images/sonobuoy
   tags:
-  - tag: v0.10.0
-    sha: 9f2a352b44143c8c4dc72ea2df07d1b3c9d37e45a2ebcfa72c048cca17b9d6eb
+  - sha: 9f2a352b44143c8c4dc72ea2df07d1b3c9d37e45a2ebcfa72c048cca17b9d6eb
+    tag: v0.10.0
 - name: gcr.io/kubernetes-helm/tiller
   tags:
-  - tag: v2.8.2
-    sha: 9b373c71ea2dfdb7d42a6c6dada769cf93be682df7cfabb717748bdaef27d10a
+  - sha: 9b373c71ea2dfdb7d42a6c6dada769cf93be682df7cfabb717748bdaef27d10a
+    tag: v2.8.2
 - name: gfkse/oauth2_proxy
   tags:
-  - tag: kubernetes-3-ca-certs
-    sha: 4bba1afcd3af85b550b42647e92b3fab36448c75e1af611a65644f77f4dde314
+  - sha: 4bba1afcd3af85b550b42647e92b3fab36448c75e1af611a65644f77f4dde314
+    tag: kubernetes-3-ca-certs
 - name: golang
   tags:
-  - tag: 1.11.1
-    sha: 63ec0e29aeba39c0fe2fc6551c9ca7fa16ddf95394d77ccee75bc7062526a96c
+  - sha: 63ec0e29aeba39c0fe2fc6551c9ca7fa16ddf95394d77ccee75bc7062526a96c
+    tag: 1.11.1
 - name: grafana/grafana
   tags:
-  - tag: 5.3.2
-    sha: 214d44aa104b26c36b235da13c0b5ca9baa75057bcd14edcea58bbbe8b596792
-  - tag: 5.2.3
-    sha: 86d8159672941cafb67f2d1a134d119ba7f7aa933e801e98bf6e18bc94394203
+  - sha: 214d44aa104b26c36b235da13c0b5ca9baa75057bcd14edcea58bbbe8b596792
+    tag: 5.3.2
+  - sha: 86d8159672941cafb67f2d1a134d119ba7f7aa933e801e98bf6e18bc94394203
+    tag: 5.2.3
 - name: jetstack/kube-lego
   tags:
-  - tag: 0.1.5
-    sha: 10e19105596be0ee03b2a38879dd0f1e72bff26230961c22796136defcc3c7cb
+  - sha: 10e19105596be0ee03b2a38879dd0f1e72bff26230961c22796136defcc3c7cb
+    tag: 0.1.5
 - name: jimschubert/swagger-codegen-cli
   tags:
-  - tag: 2.2.3
-    sha: 1d929c3de13d97fa351b2a76e48f306be6080d697cbbc4c1b6b6fb407f5d9a5e
+  - sha: 1d929c3de13d97fa351b2a76e48f306be6080d697cbbc4c1b6b6fb407f5d9a5e
+    tag: 2.2.3
 - name: k8s.gcr.io/hyperkube
   tags:
-  - tag: v1.12.2
-    sha: e2309a5be0dc795787ab4502da73f832b40f3c009120924f64789e652c8d8e0b
+  - sha: e2309a5be0dc795787ab4502da73f832b40f3c009120924f64789e652c8d8e0b
+    tag: v1.12.2
 - name: nginx
   tags:
-  - tag: 1.13.12
-    sha: 0fb320e2a1b1620b4905facb3447e3d84ad36da0b2c8aa8fe3a5a81d1187b884
+  - sha: 0fb320e2a1b1620b4905facb3447e3d84ad36da0b2c8aa8fe3a5a81d1187b884
+    tag: 1.13.12
 - name: prom/cloudwatch-exporter
   tags:
-  - tag: "0.4"
-    sha: 7ce6d17ad3360ed5d5dddc57ebf13dc7d676900c40a22b3144a8a17af352c399
+  - sha: 7ce6d17ad3360ed5d5dddc57ebf13dc7d676900c40a22b3144a8a17af352c399
+    tag: "0.4"
 - name: prom/prometheus
   tags:
-  - tag: v2.4.2
-    sha: bfd84a6db8e6b34ab9a37dcc36ce6c22ef492a12e0f950bef6446a3cf104b966
+  - sha: bfd84a6db8e6b34ab9a37dcc36ce6c22ef492a12e0f950bef6446a3cf104b966
+    tag: v2.4.2
 - name: quay.io/calico/cni
   tags:
-  - tag: v3.2.3
-    sha: ae3352d2c5dc1631a82777b4f584655d78089d9c8aa5bcdf535dfc0f5deea87a
+  - sha: ae3352d2c5dc1631a82777b4f584655d78089d9c8aa5bcdf535dfc0f5deea87a
+    tag: v3.2.3
 - name: quay.io/calico/kube-controllers
   tags:
-  - tag: v3.2.3
-    sha: 68c1c7c4664b5a0927ad0b56f51c31a5473ffe62d6d3c8210c2becefa6fef4a9
+  - sha: 68c1c7c4664b5a0927ad0b56f51c31a5473ffe62d6d3c8210c2becefa6fef4a9
+    tag: v3.2.3
 - name: quay.io/calico/node
   tags:
-  - tag: v3.2.3
-    sha: e546014887cd5663cdd199d3a84dfc355cfe704dedfd1b489c799e040e7e828f
+  - sha: e546014887cd5663cdd199d3a84dfc355cfe704dedfd1b489c799e040e7e828f
+    tag: v3.2.3
 - name: quay.io/calico/typha
   tags:
-  - tag: v3.2.3
-    sha: c87cd08dd92b8c9faf23ff56dc05253df9ef84b20f12e0acc91a1e86b45b38cf
+  - sha: c87cd08dd92b8c9faf23ff56dc05253df9ef84b20f12e0acc91a1e86b45b38cf
+    tag: v3.2.3
 - name: quay.io/coreos/etcd
   tags:
-  - tag: v3.3.9
-    sha: ea49a3d44a50a50770bff84eab87bac2542c7171254c4d84c609b8c66aefc211
+  - sha: ea49a3d44a50a50770bff84eab87bac2542c7171254c4d84c609b8c66aefc211
+    tag: v3.3.9
 - name: quay.io/coreos/etcd-operator
   tags:
-  - tag: v0.3.2
-    sha: 2a1ff56062861e3eaf216899e6e73fdff311e5842d2446223924a9cc69f2cc69
+  - sha: 2a1ff56062861e3eaf216899e6e73fdff311e5842d2446223924a9cc69f2cc69
+    tag: v0.3.2
 - name: quay.io/coreos/flannel
   tags:
-  - tag: v0.10.0-amd64
-    sha: 88f2b4d96fae34bfff3d46293f7f18d1f9f3ca026b4a4d288f28347fcb6580ac
+  - sha: 88f2b4d96fae34bfff3d46293f7f18d1f9f3ca026b4a4d288f28347fcb6580ac
+    tag: v0.10.0-amd64
 - name: quay.io/coreos/kube-state-metrics
   tags:
-  - tag: v1.3.1
-    sha: fa2e6d33183755f924f05744c282386f38e962160f66ad0b6a8a24a36884fb9a
+  - sha: fa2e6d33183755f924f05744c282386f38e962160f66ad0b6a8a24a36884fb9a
+    tag: v1.3.1
 - name: quay.io/giantswarm/docker-kubectl
   tags:
-  - tag: 8cabd75bacbcdad7ac5d85efc3ca90c2fabf023b
-    sha: 995bd3fee6899569d5d9ab77948f25d6bc2e9a95efa988de37c6b8c3095ac819
+  - sha: 995bd3fee6899569d5d9ab77948f25d6bc2e9a95efa988de37c6b8c3095ac819
+    tag: 8cabd75bacbcdad7ac5d85efc3ca90c2fabf023b
 - name: quay.io/giantswarm/hyperkube
   comment: add custom builded image so retagger push it to china registry
   tags:
-  - tag: v1.11.1-cec4fb8023db783fbf26fb056bf6c76abfcd96cf-giantswarm
-    sha: d96ebeebdc60121ad42c6e48c21827d413cbeef2ac345eb2bf02f91b34257a53
+  - sha: d96ebeebdc60121ad42c6e48c21827d413cbeef2ac345eb2bf02f91b34257a53
+    tag: v1.11.1-cec4fb8023db783fbf26fb056bf6c76abfcd96cf-giantswarm
 - name: quay.io/giantswarm/k8s-migrator
   tags:
-  - tag: 4a4c553280d99b28cb0114797ba59aa380e808b1
-    sha: 9259af85d5a7f395feab8162b4d47a79f6b53a897568bc3a9d9d4908a8ac0de2
+  - sha: 9259af85d5a7f395feab8162b4d47a79f6b53a897568bc3a9d9d4908a8ac0de2
+    tag: 4a4c553280d99b28cb0114797ba59aa380e808b1
 - name: quay.io/giantswarm/k8s-setup-network-environment
   tags:
-  - tag: 1f4ffc52095ac368847ce3428ea99b257003d9b9
-    sha: e337d03e569e53b246f4dea91359efbabe7b3ddc78878e1875d0c7aaf0e17fd5
+  - sha: e337d03e569e53b246f4dea91359efbabe7b3ddc78878e1875d0c7aaf0e17fd5
+    tag: 1f4ffc52095ac368847ce3428ea99b257003d9b9
 - name: quay.io/jetstack/cert-manager-controller
   tags:
-  - tag: v0.2.5
-    sha: 61546385c284af5620ac1e861943e73164a6ac37ec76520ef43be2ec2bd769fb
-  - tag: v0.4.0
-    sha: 3ff035464d9349f5b1d23a2fef9c9b8419026671506a5be5cbae6e958ac46802
+  - sha: 61546385c284af5620ac1e861943e73164a6ac37ec76520ef43be2ec2bd769fb
+    tag: v0.2.5
+  - sha: 3ff035464d9349f5b1d23a2fef9c9b8419026671506a5be5cbae6e958ac46802
+    tag: v0.4.0
 - name: quay.io/jetstack/cert-manager-ingress-shim
   tags:
-  - tag: v0.2.5
-    sha: 544b8602ee566d7ca22aa9e76a92dde4c2ca8dab642f75ea3a4b0a577193632a
+  - sha: 544b8602ee566d7ca22aa9e76a92dde4c2ca8dab642f75ea3a4b0a577193632a
+    tag: v0.2.5
 - name: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
   tags:
-  - tag: 0.12.0
-    sha: 36523a0b8b35b082211caa2bebb95c43578f85a51c03a28599b39a13b27965cb
-  - tag: 0.15.0
-    sha: 7b79e1bc6437e6376dadf558e012adde6395bb28dee4a38ce08c7e5c9f220178
-  - tag: 0.16.2
-    sha: 84ed5290a91c53b4c224a724a251347dfc8cf2bca4be06e32f642c396eb02429
+  - sha: 36523a0b8b35b082211caa2bebb95c43578f85a51c03a28599b39a13b27965cb
+    tag: 0.12.0
+  - sha: 7b79e1bc6437e6376dadf558e012adde6395bb28dee4a38ce08c7e5c9f220178
+    tag: 0.15.0
+  - sha: 84ed5290a91c53b4c224a724a251347dfc8cf2bca4be06e32f642c396eb02429
+    tag: 0.16.2
 - name: quay.io/prometheus/alertmanager
   tags:
-  - tag: v0.7.1
-    sha: 2843872cb4cd20da5b75286a5a2ac25a17ec1ae81738ba5f75d5ee8794b82eaf
-  - tag: v0.15.0
-    sha: 0ed4a8f776c5570b9e8152a670d3087a73164b20476a6a94768468759fbb5ad8
+  - sha: 2843872cb4cd20da5b75286a5a2ac25a17ec1ae81738ba5f75d5ee8794b82eaf
+    tag: v0.7.1
+  - sha: 0ed4a8f776c5570b9e8152a670d3087a73164b20476a6a94768468759fbb5ad8
+    tag: v0.15.0
 - name: quay.io/prometheus/node-exporter
   tags:
-  - tag: v0.15.1
-    sha: fc004c4a3d1096d5a0f144b1093daa9257a573ce1fde5a9b8511e59a7080a1bb
+  - sha: fc004c4a3d1096d5a0f144b1093daa9257a573ce1fde5a9b8511e59a7080a1bb
+    tag: v0.15.1
 - name: redis
   tags:
-  - tag: 3.2.11-alpine
-    sha: 002a1870fa2ffd11dbd7438527a2c17f794f6962f5d3a4f048f848963ab954a8
+  - sha: 002a1870fa2ffd11dbd7438527a2c17f794f6962f5d3a4f048f848963ab954a8
+    tag: 3.2.11-alpine
 - name: registry.opensource.zalan.do/teapot/external-dns
   tags:
-  - tag: v0.5.2-3-g6c05028
-    sha: 0c6e7c59bd204db7dd13c98e8ec6b1af5b9b102f0badc091d50683458570c6c6
+  - sha: 0c6e7c59bd204db7dd13c98e8ec6b1af5b9b102f0badc091d50683458570c6c6
+    tag: v0.5.2-3-g6c05028
 - name: sysdig/falco
   tags:
-  - tag: 0.11.1
-    sha: 3533054a0543e4a2eb4f4c61d68d5d3a39e5886a65d07f011d45044a5c470ccd
+  - sha: 3533054a0543e4a2eb4f4c61d68d5d3a39e5886a65d07f011d45044a5c470ccd
+    tag: 0.11.1
 - name: vault
   tags:
-  - tag: 0.10.1
-    sha: 8d2813d4fbc145d867218b60e13b29941edf60d1c0929964db42879a1aacc889
-  - tag: 0.10.3
-    sha: 366eddc65d233c7b43269ba80e27aeb1269837beadd011c8d7b3daa999cce70a
+  - sha: 8d2813d4fbc145d867218b60e13b29941edf60d1c0929964db42879a1aacc889
+    tag: 0.10.1
+  - sha: 366eddc65d233c7b43269ba80e27aeb1269837beadd011c8d7b3daa999cce70a
+    tag: 0.10.3
