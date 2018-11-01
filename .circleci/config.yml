@@ -9,7 +9,7 @@ jobs:
         name: Validate YAML
         command: |
             docker run --rm -ti \
-            -v $CIRCLE_WORKING_DIRECTORY:/workdir \
+            -v $PWD:/workdir \
             giantswarm/yamllint \
             -d '{extends: default, rules: {line-length: {max: 200}, document-start: disable}}' \
             images.yaml
