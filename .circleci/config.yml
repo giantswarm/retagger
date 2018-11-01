@@ -4,11 +4,26 @@ jobs:
     machine: true
     steps:
     - checkout
-    - run: |
-        wget -q $(curl -sS -H "Authorization: token $RELEASE_TOKEN" https://api.github.com/repos/giantswarm/architect/releases/latest | grep browser_download_url | head -n 1 | cut -d '"' -f 4)
-        chmod +x ./architect
-        ./architect version
-    - run: ./architect build
+
+    - run:
+        name: Validate YAML
+        command: |
+            docker run --rm -ti \
+            -v $CIRCLE_WORKING_DIRECTORY:/workdir \
+            giantswarm/yamllint \
+            -d '{extends: default, rules: {line-length: {max: 200}, document-start: disable}}' \
+            images.yaml
+    - run:
+        name: Install architect
+        command: |
+            wget -q $(curl -sS -H "Authorization: token $RELEASE_TOKEN" https://api.github.com/repos/giantswarm/architect/releases/latest | grep browser_download_url | head -n 1 | cut -d '"' -f 4)
+            chmod +x ./architect
+            ./architect version
+
+    - run:
+        name: architect build
+        command: ./architect build
+
     - persist_to_workspace:
         root: .
         paths:
@@ -22,11 +37,17 @@ jobs:
     steps:
     - attach_workspace:
         at: .
-    - run: |
-        echo 'export REGISTRY_USERNAME=${QUAY_USERNAME}' >> $BASH_ENV
-        echo 'export REGISTRY_PASSWORD=${QUAY_PASSWORD}' >> $BASH_ENV
-        source $BASH_ENV
-    - run: ./retagger
+
+    - run:
+        name: Set registry credentials
+        command: |
+            echo 'export REGISTRY_USERNAME=${QUAY_USERNAME}' >> $BASH_ENV
+            echo 'export REGISTRY_PASSWORD=${QUAY_PASSWORD}' >> $BASH_ENV
+            source $BASH_ENV
+
+    - run:
+        name: Execute retagger
+        command: ./retagger
 
   retagAliyun:
     environment:
@@ -36,11 +57,17 @@ jobs:
     steps:
     - attach_workspace:
         at: .
-    - run: |
-        echo 'export REGISTRY_USERNAME=${ALIYUN_USERNAME}' >> $BASH_ENV
-        echo 'export REGISTRY_PASSWORD=${ALIYUN_PASSWORD}' >> $BASH_ENV
-        source $BASH_ENV
-    - run: ./retagger
+
+    - run:
+        name: Set registry credentials
+        command: |
+            echo 'export REGISTRY_USERNAME=${ALIYUN_USERNAME}' >> $BASH_ENV
+            echo 'export REGISTRY_PASSWORD=${ALIYUN_PASSWORD}' >> $BASH_ENV
+            source $BASH_ENV
+
+    - run:
+        name: Execute retagger
+        command: ./retagger
 
 
 workflows:
