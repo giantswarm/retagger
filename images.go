@@ -19,8 +19,10 @@ type Image struct {
 // Tag represents a specific version of a docker image, represented by a tag
 // and verfified through the SHA checksum.
 type Tag struct {
-	Tag string `yaml:"tag"`
+	// Sha is the image SHA to pull from the original source.
 	Sha string `yaml:"sha"`
+	// Tag is the tag we apply to the pulled image.
+	Tag string `yaml:"tag"`
 }
 
 // Images is the datastructure that will hold all image definitions.
