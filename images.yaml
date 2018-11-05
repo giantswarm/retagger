@@ -152,8 +152,8 @@
     tag: v0.10.0-amd64
 - name: quay.io/coreos/kube-state-metrics
   tags:
-  - sha: fa2e6d33183755f924f05744c282386f38e962160f66ad0b6a8a24a36884fb9a
-    tag: v1.3.1
+  - sha: 6685342bbd645754b1aabdd9b663691109ec680645af261288289e62571ac201
+    tag: v1.4.0
 - name: quay.io/giantswarm/docker-kubectl
   tags:
   - sha: 995bd3fee6899569d5d9ab77948f25d6bc2e9a95efa988de37c6b8c3095ac819
