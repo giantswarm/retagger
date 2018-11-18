@@ -156,6 +156,11 @@
   tags:
   - sha: 995bd3fee6899569d5d9ab77948f25d6bc2e9a95efa988de37c6b8c3095ac819
     tag: 8cabd75bacbcdad7ac5d85efc3ca90c2fabf023b
+- name: quay.io/giantswarm/docker-strongswan
+  tags:
+  - sha: 0deee46507d8d9c354b9e924f969dfb370083539a7130531b575e05a09603a31
+    tag: d432793577e07bfe6856d3739e6bca3d91db71e4
+  comment: push docker-strongswan also to china registry
 - name: quay.io/giantswarm/hyperkube
   comment: add custom builded image so retagger push it to china registry
   tags:
