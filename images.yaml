@@ -44,8 +44,8 @@
     tag: v2.0.4
 - name: gcr.io/google_containers/hyperkube
   tags:
-  - sha: ac62a2f03cb254ca31654fe49492bf21d2282f8c1cbffa7c91518af0fb5f3c73
-    tag: v1.11.3
+  - sha: a36f9497dacfac277ca706ef245a04682ec9f5a7afa0ad27036d08e7c108d57b
+    tag: v1.12.3
 - name: gcr.io/google_containers/kube-state-metrics
   tags:
   - sha: 953a3b6bf0046333c656fcfa2fc3a08f4055dc3fbd5b1dcdcdf865a2534db526
