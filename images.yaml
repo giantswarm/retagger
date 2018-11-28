@@ -192,6 +192,8 @@
     tag: 0.15.0
   - sha: 84ed5290a91c53b4c224a724a251347dfc8cf2bca4be06e32f642c396eb02429
     tag: 0.16.2
+  - sha: 617076c3e3d4d0638a4927702530d8456bda64c67194f6daed272a59e93b992f
+    tag: 0.21.0
 - name: quay.io/prometheus/alertmanager
   tags:
   - sha: 2843872cb4cd20da5b75286a5a2ac25a17ec1ae81738ba5f75d5ee8794b82eaf
