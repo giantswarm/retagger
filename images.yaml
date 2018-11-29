@@ -16,8 +16,8 @@
     tag: 0.4.0
 - name: docker.elastic.co/elasticsearch/elasticsearch-oss
   tags:
-  - sha: e86f0491edab3d0fd20a1aa0218fda795e12f20e7fe07a454101d7446b29522d
-    tag: 6.1.1
+  - sha: 4f2bd6a008c41d83aeb8e5ac95412d47b667d21d4df7c67c41b9baec15a78164
+    tag: 6.1.4
 - name: docker.elastic.co/kibana/kibana-oss
   comment: via https://www.elastic.co/guide/en/kibana/6.1/_pulling_the_image.html
   tags:
