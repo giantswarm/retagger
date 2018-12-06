@@ -46,6 +46,8 @@
   tags:
   - sha: a36f9497dacfac277ca706ef245a04682ec9f5a7afa0ad27036d08e7c108d57b
     tag: v1.12.3
+  - sha: cd489bbbe890efbcdb4b595ef6c876e4ebaca7e91113bdf68e6c0cb48574fc68
+    tag: v1.13.0
 - name: gcr.io/google_containers/kube-state-metrics
   tags:
   - sha: 953a3b6bf0046333c656fcfa2fc3a08f4055dc3fbd5b1dcdcdf865a2534db526
