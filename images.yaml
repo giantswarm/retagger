@@ -33,7 +33,7 @@
     tag: "0.18"
 - name: fluent/fluentd-kubernetes-daemonset
   tags:
-  - sha: sha256:f9fa60dab5e7a6ae4adbe972a2fc22cf7eaa148df74cde4cd7f57e7019260451
+  - sha: f9fa60dab5e7a6ae4adbe972a2fc22cf7eaa148df74cde4cd7f57e7019260451
     tag: "v1.3-debian-cloudwatch"
 - name: gcr.io/google_containers/defaultbackend
   tags:
