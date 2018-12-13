@@ -16,8 +16,8 @@
     tag: 0.4.0
 - name: docker.elastic.co/elasticsearch/elasticsearch-oss
   tags:
-  - sha: e86f0491edab3d0fd20a1aa0218fda795e12f20e7fe07a454101d7446b29522d
-    tag: 6.1.1
+  - sha: 4f2bd6a008c41d83aeb8e5ac95412d47b667d21d4df7c67c41b9baec15a78164
+    tag: 6.1.4
 - name: docker.elastic.co/kibana/kibana-oss
   comment: via https://www.elastic.co/guide/en/kibana/6.1/_pulling_the_image.html
   tags:
@@ -48,8 +48,10 @@
     tag: v2.0.4
 - name: gcr.io/google_containers/hyperkube
   tags:
-  - sha: ac62a2f03cb254ca31654fe49492bf21d2282f8c1cbffa7c91518af0fb5f3c73
-    tag: v1.11.3
+  - sha: a36f9497dacfac277ca706ef245a04682ec9f5a7afa0ad27036d08e7c108d57b
+    tag: v1.12.3
+  - sha: cd489bbbe890efbcdb4b595ef6c876e4ebaca7e91113bdf68e6c0cb48574fc68
+    tag: v1.13.0
 - name: gcr.io/google_containers/kube-state-metrics
   tags:
   - sha: 953a3b6bf0046333c656fcfa2fc3a08f4055dc3fbd5b1dcdcdf865a2534db526
@@ -78,8 +80,8 @@
     tag: v0.10.0
 - name: gcr.io/kubernetes-helm/tiller
   tags:
-  - sha: 9b373c71ea2dfdb7d42a6c6dada769cf93be682df7cfabb717748bdaef27d10a
-    tag: v2.8.2
+  - sha: 67b4962dd091bfca1398853f55b6414ac433042560c1a163520dd0811c0e2e28
+    tag: v2.12.0
 - name: gfkse/oauth2_proxy
   tags:
   - sha: 4bba1afcd3af85b550b42647e92b3fab36448c75e1af611a65644f77f4dde314
@@ -100,10 +102,18 @@
   tags:
   - sha: 1d929c3de13d97fa351b2a76e48f306be6080d697cbbc4c1b6b6fb407f5d9a5e
     tag: 2.2.3
+- name: k8s.gcr.io/cluster-autoscaler
+  tags:
+  - sha: 419aae477c126fb9bf04e95f3562b7e5082522869d1d0e4c5426ad1ca8b9abcb
+    tag: v1.12.1
 - name: k8s.gcr.io/hyperkube
   tags:
-  - sha: e2309a5be0dc795787ab4502da73f832b40f3c009120924f64789e652c8d8e0b
-    tag: v1.12.2
+  - sha: ed2ad9b3113387db4e6cd6eb3f98bda871cef9d896c07bc0d16c7ca76f0c2094
+    tag: v1.10.11
+  - sha: 8b613bba2376a5e80c8b247e265ae712cb3a88f4623f058168585f9744fc67b3
+    tag: v1.11.5
+  - sha: a36f9497dacfac277ca706ef245a04682ec9f5a7afa0ad27036d08e7c108d57b
+    tag: v1.12.3
 - name: nginx
   tags:
   - sha: 0fb320e2a1b1620b4905facb3447e3d84ad36da0b2c8aa8fe3a5a81d1187b884
@@ -196,6 +206,8 @@
     tag: 0.15.0
   - sha: 84ed5290a91c53b4c224a724a251347dfc8cf2bca4be06e32f642c396eb02429
     tag: 0.16.2
+  - sha: 617076c3e3d4d0638a4927702530d8456bda64c67194f6daed272a59e93b992f
+    tag: 0.21.0
 - name: quay.io/prometheus/alertmanager
   tags:
   - sha: 2843872cb4cd20da5b75286a5a2ac25a17ec1ae81738ba5f75d5ee8794b82eaf
@@ -214,6 +226,10 @@
   tags:
   - sha: 0c6e7c59bd204db7dd13c98e8ec6b1af5b9b102f0badc091d50683458570c6c6
     tag: v0.5.2-3-g6c05028
+- name: shelmangroup/coreos-nvidia-driver-installer
+  tags:
+  - sha: 57be3ae881d61ea5f55ad6068bcc61708515ad17994884170b3e5df5b40856d3
+    tag: 1.0.0
 - name: sysdig/falco
   tags:
   - sha: 3533054a0543e4a2eb4f4c61d68d5d3a39e5886a65d07f011d45044a5c470ccd
