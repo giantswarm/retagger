@@ -92,8 +92,8 @@
     tag: 1.11.1
 - name: grafana/grafana
   tags:
-  - sha: 810a8db3af112d7c870b80f1339adc0986325ead9d3f1e195ae0a5bb5261014e
-    tag: 5.3.4
+  - sha: b9a31857e86e9cf43552605bd7f3c990c123f8792ab6bea8f499db1a1bdb7d53
+    tag: 5.4.2
 - name: jetstack/kube-lego
   tags:
   - sha: 10e19105596be0ee03b2a38879dd0f1e72bff26230961c22796136defcc3c7cb
