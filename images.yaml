@@ -88,8 +88,8 @@
     tag: kubernetes-3-ca-certs
 - name: golang
   tags:
-  - sha: 63ec0e29aeba39c0fe2fc6551c9ca7fa16ddf95394d77ccee75bc7062526a96c
-    tag: 1.11.1
+  - sha: 200819b56ab8a3d4fb83e8210738ba6ae628fd159efa2a7c84ef044e56214a3a
+    tag: 1.11.3
 - name: grafana/grafana
   tags:
   - sha: b9a31857e86e9cf43552605bd7f3c990c123f8792ab6bea8f499db1a1bdb7d53
