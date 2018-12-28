@@ -8,8 +8,8 @@
     tag: 1.28.3
 - name: coredns/coredns
   tags:
-  - sha: 3e2be1cec87aca0b74b7668bbe8c02964a95a402e45ceb51b2252629d608d03a
-    tag: 1.2.2
+  - sha: e030773c7fee285435ed7fc7623532ee54c4c1c4911fb24d95cd0170a8a768bc
+    tag: 1.3.0
 - name: dduportal/bats
   tags:
   - sha: b2d533b27109f7c9ea1e270e23f212c47906346f9cffaa4da6da48ed9d8031da
@@ -94,10 +94,6 @@
   tags:
   - sha: b9a31857e86e9cf43552605bd7f3c990c123f8792ab6bea8f499db1a1bdb7d53
     tag: 5.4.2
-- name: jetstack/kube-lego
-  tags:
-  - sha: 10e19105596be0ee03b2a38879dd0f1e72bff26230961c22796136defcc3c7cb
-    tag: 0.1.5
 - name: jimschubert/swagger-codegen-cli
   tags:
   - sha: 1d929c3de13d97fa351b2a76e48f306be6080d697cbbc4c1b6b6fb407f5d9a5e
@@ -128,32 +124,24 @@
     tag: v2.4.2
 - name: quay.io/calico/cni
   tags:
-  - sha: 44abaceee0936e60ee867ff3059ae9752710aaea8c25ac6e15a75bbdf3eb25a2
-    tag: v3.3.0
-  - sha: ae3352d2c5dc1631a82777b4f584655d78089d9c8aa5bcdf535dfc0f5deea87a
-    tag: v3.2.3
+  - sha: 526f0c585f66fc70d79062463d78a324f053c406b69a600fc282c2aaa74c4428
+    tag: v3.4.0
 - name: quay.io/calico/kube-controllers
   tags:
-  - sha: dc3d6bfe9e76e84f020f7222ab2f4c31665996f5f4912994bc8efcd868a42650
-    tag: v3.3.0
-  - sha: 68c1c7c4664b5a0927ad0b56f51c31a5473ffe62d6d3c8210c2becefa6fef4a9
-    tag: v3.2.3
+  - sha: 75047a8f1e3a2adcc4bc58338fc26157c7d209972b7f0cdf6c76dad4dae676bd
+    tag: v3.4.0
 - name: quay.io/calico/node
   tags:
-  - sha: ee71733f64ab7c8f20f8f324a7962803c2499f0ab36b6cd60c0ce154a87cea3a
-    tag: v3.3.0
-  - sha: e546014887cd5663cdd199d3a84dfc355cfe704dedfd1b489c799e040e7e828f
-    tag: v3.2.3
+  - sha: 264d7de573a956f8914de93fbade66bdc7fd86f22a8f4e9a99ebdbb9e45b66f7
+    tag: v3.4.0
 - name: quay.io/calico/typha
   tags:
-  - sha: 5786a583102fbeeb7a799818bb43d9a51b0ddea7c995c48c391b3b58f45518c6
-    tag: v3.3.0
-  - sha: c87cd08dd92b8c9faf23ff56dc05253df9ef84b20f12e0acc91a1e86b45b38cf
-    tag: v3.2.3
+  - sha: 6387a9e8a6e85049cc1b491ec70f3351023a039b5d194b5054d7942ffd31cc46
+    tag: v3.4.0
 - name: quay.io/coreos/etcd
   tags:
-  - sha: ea49a3d44a50a50770bff84eab87bac2542c7171254c4d84c609b8c66aefc211
-    tag: v3.3.9
+  - sha: cb9cee3d9d49050e7682fde0a9b26d6948a0117b1b4367b8170fcaa3960a57b8
+    tag: v3.3.10
 - name: quay.io/coreos/etcd-operator
   tags:
   - sha: 2a1ff56062861e3eaf216899e6e73fdff311e5842d2446223924a9cc69f2cc69
