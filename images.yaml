@@ -46,12 +46,6 @@
   tags:
   - sha: b8c94527b489fb61d3d81ce5ad7f3ddbb7be71e9620a3a36e2bede2f2e487d73
     tag: v2.0.4
-- name: gcr.io/google_containers/hyperkube
-  tags:
-  - sha: a36f9497dacfac277ca706ef245a04682ec9f5a7afa0ad27036d08e7c108d57b
-    tag: v1.12.3
-  - sha: cd489bbbe890efbcdb4b595ef6c876e4ebaca7e91113bdf68e6c0cb48574fc68
-    tag: v1.13.0
 - name: gcr.io/google_containers/kube-state-metrics
   tags:
   - sha: 953a3b6bf0046333c656fcfa2fc3a08f4055dc3fbd5b1dcdcdf865a2534db526
@@ -104,12 +98,8 @@
     tag: v1.13.1
 - name: k8s.gcr.io/hyperkube
   tags:
-  - sha: ed2ad9b3113387db4e6cd6eb3f98bda871cef9d896c07bc0d16c7ca76f0c2094
-    tag: v1.10.11
-  - sha: 8b613bba2376a5e80c8b247e265ae712cb3a88f4623f058168585f9744fc67b3
-    tag: v1.11.5
-  - sha: a36f9497dacfac277ca706ef245a04682ec9f5a7afa0ad27036d08e7c108d57b
-    tag: v1.12.3
+  - sha: 5eb8014352ae16b6b651141c66428b6bc9e220331d9f56f49a9338c4b4bc3c8f
+    tag: v1.13.1
 - name: nginx
   tags:
   - sha: 0fb320e2a1b1620b4905facb3447e3d84ad36da0b2c8aa8fe3a5a81d1187b884
@@ -163,11 +153,6 @@
   - sha: 0deee46507d8d9c354b9e924f969dfb370083539a7130531b575e05a09603a31
     tag: d432793577e07bfe6856d3739e6bca3d91db71e4
   comment: push docker-strongswan also to china registry
-- name: quay.io/giantswarm/hyperkube
-  comment: add custom builded image so retagger push it to china registry
-  tags:
-  - sha: d96ebeebdc60121ad42c6e48c21827d413cbeef2ac345eb2bf02f91b34257a53
-    tag: v1.11.1-cec4fb8023db783fbf26fb056bf6c76abfcd96cf-giantswarm
 - name: quay.io/giantswarm/k8s-migrator
   tags:
   - sha: 9259af85d5a7f395feab8162b4d47a79f6b53a897568bc3a9d9d4908a8ac0de2
