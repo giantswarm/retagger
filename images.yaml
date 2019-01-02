@@ -191,6 +191,8 @@
   tags:
   - sha: fc004c4a3d1096d5a0f144b1093daa9257a573ce1fde5a9b8511e59a7080a1bb
     tag: v0.15.1
+  - sha: c390c8fea4cd362a28ad5070aedd6515aacdfdffd21de6db42ead05e332be5a9
+    tag: v0.17.0
 - name: redis
   tags:
   - sha: 002a1870fa2ffd11dbd7438527a2c17f794f6962f5d3a4f048f848963ab954a8
