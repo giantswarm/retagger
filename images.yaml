@@ -98,6 +98,10 @@
     tag: v1.13.1
 - name: k8s.gcr.io/hyperkube
   tags:
+  - sha: 1839410f3ac91c589c95de0f11d762719e973f7c3100eae7c0905d08dd0d9138
+    tag: v1.10.12
+  - sha: 8cef95c71e77969e8278e5a12ffa79afdca913160e823e187ead93809b2f45f7
+    tag: v1.11.6
   - sha: 5eb8014352ae16b6b651141c66428b6bc9e220331d9f56f49a9338c4b4bc3c8f
     tag: v1.13.1
 - name: nginx
