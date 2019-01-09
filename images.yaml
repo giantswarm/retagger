@@ -113,7 +113,7 @@
   - sha: 7ce6d17ad3360ed5d5dddc57ebf13dc7d676900c40a22b3144a8a17af352c399
     tag: "0.4"
 - name: prom/prometheus
-  tags: 
+  tags:
   - sha: 1ffbf5d3c6476384905e8f57c98ac0611f328af68bedb909ec3f350d7e18b134
     tag: v2.6.0
 - name: quay.io/calico/cni
