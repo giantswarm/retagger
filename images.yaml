@@ -108,6 +108,10 @@
     tag: v1.11.6
   - sha: 5eb8014352ae16b6b651141c66428b6bc9e220331d9f56f49a9338c4b4bc3c8f
     tag: v1.13.1
+- name: koalaman/shellcheck-alpine
+  tags:
+  - sha: 7d4d712a2686da99d37580b4e2f45eb658b74e4b01caf67c1099adc294b96b52
+    tag: v0.6.0
 - name: nginx
   tags:
   - sha: 0fb320e2a1b1620b4905facb3447e3d84ad36da0b2c8aa8fe3a5a81d1187b884
