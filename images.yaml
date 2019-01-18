@@ -41,10 +41,6 @@
     tag: "1.0"
   - sha: a64c8ed5df00c9f238ecdeb28eb4ed226faace573695e290a99d92d503593e87
     tag: "1.2"
-- name: k8s.gcr.io/addon-resizer
-  tags:
-  - sha: 07353f7b26327f0d933515a22b1de587b040d3d85c464ea299c1b9f242529326
-    tag: "1.8.3"
 - name: gcr.io/google_containers/fluentd-elasticsearch
   comment: see https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/fluentd-elasticsearch/fluentd-es-ds.yaml
   tags:
@@ -96,6 +92,10 @@
   tags:
   - sha: 1d929c3de13d97fa351b2a76e48f306be6080d697cbbc4c1b6b6fb407f5d9a5e
     tag: 2.2.3
+- name: k8s.gcr.io/addon-resizer
+  tags:
+  - sha: 07353f7b26327f0d933515a22b1de587b040d3d85c464ea299c1b9f242529326
+    tag: "1.8.3"
 - name: k8s.gcr.io/cluster-autoscaler
   tags:
   - sha: 7ff5a60304b344f2f29c804c7253632bbc818794f6932236a56db107a6a8f5af
