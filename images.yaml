@@ -6,6 +6,10 @@
   tags:
   - sha: 58ac43b2cc92c687a32c8be6278e50a063579655fe3090125dcb2af0ff9e1a64
     tag: 1.28.3
+- name: cibuilds/github
+  tags:
+  - sha: 9029b2f52ecd28aacec2fd8a86a321dc9f77a46df251de5e3f157dd6e80baea0
+    tag: 0.12
 - name: coredns/coredns
   tags:
   - sha: e030773c7fee285435ed7fc7623532ee54c4c1c4911fb24d95cd0170a8a768bc
@@ -108,6 +112,10 @@
     tag: v1.11.6
   - sha: 5eb8014352ae16b6b651141c66428b6bc9e220331d9f56f49a9338c4b4bc3c8f
     tag: v1.13.1
+- name: koalaman/shellcheck-alpine
+  tags:
+  - sha: 7d4d712a2686da99d37580b4e2f45eb658b74e4b01caf67c1099adc294b96b52
+    tag: v0.6.0
 - name: nginx
   tags:
   - sha: 0fb320e2a1b1620b4905facb3447e3d84ad36da0b2c8aa8fe3a5a81d1187b884
