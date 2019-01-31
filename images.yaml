@@ -18,6 +18,10 @@
   tags:
   - sha: b2d533b27109f7c9ea1e270e23f212c47906346f9cffaa4da6da48ed9d8031da
     tag: 0.4.0
+- name: docker
+  tags:
+  - sha: e8e0f19612fef7fc1e190ec7ed6fb4c1f4e0c0f34424214dc44e9e94f8a1281d
+    tag: 18.09.1
 - name: docker.elastic.co/elasticsearch/elasticsearch-oss
   tags:
   - sha: 4f2bd6a008c41d83aeb8e5ac95412d47b667d21d4df7c67c41b9baec15a78164
