@@ -207,10 +207,8 @@
     tag: 0.21.0
 - name: quay.io/prometheus/alertmanager
   tags:
-  - sha: 2843872cb4cd20da5b75286a5a2ac25a17ec1ae81738ba5f75d5ee8794b82eaf
-    tag: v0.7.1
-  - sha: 0ed4a8f776c5570b9e8152a670d3087a73164b20476a6a94768468759fbb5ad8
-    tag: v0.15.0
+  - sha: e6a3f28f282092d9790aaae393650852a9b7c2a7614dc3aa797a74a6beaa0700
+    tag: v0.16.1
 - name: quay.io/prometheus/node-exporter
   tags:
   - sha: fc004c4a3d1096d5a0f144b1093daa9257a573ce1fde5a9b8511e59a7080a1bb
