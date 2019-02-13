@@ -155,7 +155,7 @@
 - name: quay.io/coreos/etcd
   tags:
   - sha: cb9cee3d9d49050e7682fde0a9b26d6948a0117b1b4367b8170fcaa3960a57b8
-    tag: v3.3.10
+    tag: v3.3.12
 - name: quay.io/coreos/etcd-operator
   tags:
   - sha: 2a1ff56062861e3eaf216899e6e73fdff311e5842d2446223924a9cc69f2cc69
