@@ -211,7 +211,7 @@
     tag: v0.16.1
 - name: quay.io/prometheus/haproxy-exporter
   tags:
-  - sha: acd57c9463aa5021d729dc82fce792dac8af71a049253fe93e6a4af9d17b7343
+  - sha: d8da0790760c279d961e63aa711fac3fd6a3db237eccea3c8a21239dca64805c
     tag: v0.9.0
 - name: quay.io/prometheus/node-exporter
   tags:
