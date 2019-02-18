@@ -88,6 +88,42 @@
   tags:
   - sha: 4bba1afcd3af85b550b42647e92b3fab36448c75e1af611a65644f77f4dde314
     tag: kubernetes-3-ca-certs
+- name: goharbor/chartmuseum-photon
+  tags:
+  - sha: e7115a56a8482930bab8f72bd3dac49954e2116e0ad9ab640a936278cb776f19
+    tag: v0.7.1-v1.6.0
+- name: goharbor/clair-photon
+  tags:
+  - sha: 91ca0032d89b4946848f44e1fce2d142b6a8587f3e4b9bc1f7a94ae84b1479ed
+    tag: v2.0.5-v1.6.0
+- name: goharbor/harbor-adminserver
+  tags:
+  - sha: c3ca012c2d69099ba4e3bbedc58ffe146fd10aa5129d44cc7d735edf6167959e
+    tag: v1.6.0
+- name: goharbor/harbor-db
+  tags:
+  - sha: ee65d512c93860bd4872be296de80c079842a64e2a4002360e720222a87ec346
+    tag: v1.6.0
+- name: goharbor/harbor-jobservice
+  tags:
+  - sha: 51d2bf14cd9d1bbf082793a0556ff949937655c67569a86424210a1455f60057
+    tag: v1.6.0
+- name: goharbor/harbor-ui
+  tags:
+  - sha: de332db437b8df6ce05203247cbf97ac9f4953672a8c22be8858aee47a0f435f
+    tag: v1.6.0
+- name: goharbor/notary-server-photon
+  tags:
+  - sha: 57ac34699c3119a9c7d5334a2f8fce8bca35591281917913955672347e601814
+    tag: v0.5.1-v1.6.0
+- name: goharbor/notary-signer-photon
+  tags:
+  - sha: d5c32fd75aff3d6e436ccf37e3172fc526900ef281324cc5904eab3fe4bb4b92
+    tag: v0.5.1-v1.6.0
+- name: goharbor/registry-photon
+  tags:
+  - sha: 070dcc29fb5b34cdcc982394ead57f598160fd61bd8daee4b2a5f39ea37bd7a0
+    tag: v2.6.2-v1.6.0
 - name: golang
   tags:
   - sha: 200819b56ab8a3d4fb83e8210738ba6ae628fd159efa2a7c84ef044e56214a3a
