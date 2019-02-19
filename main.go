@@ -8,6 +8,14 @@ import (
 )
 
 func main() {
+
+	creator := Creator{
+		AliyunAccessKey:    os.Getenv("ALIYUN_ACCESS_KEY"),
+		AliyunAccessSecret: os.Getenv("ALIYUN_ACCESS_SECRET"),
+		AliyunRegion:       os.Getenv("ALIYUN_REGION"),
+		QuayAccessToken:    os.Getenv("QUAY_ACCESS_TOKEN"),
+	}
+
 	c := &RegistryConfig{
 		Client: &http.Client{},
 
@@ -57,6 +65,17 @@ func main() {
 			retaggedNameWithTag, err := registry.Retag(imageName, shaName, tag.Tag)
 			if err != nil {
 				log.Fatalf("could not retag image: %v", err)
+			}
+
+			retaggedName := ImageName(c.Organisation, imageName)
+			err = creator.CreateAliyunRepository(retaggedName)
+			if err != nil {
+				log.Fatalf("could not create Aliyun repository %q: %v", retaggedName, err)
+			}
+
+			err = creator.CreateQuayRepository(retaggedName)
+			if err != nil {
+				log.Fatalf("could not create Quay repository %q: %v", retaggedName, err)
 			}
 
 			log.Printf("pushing image")
