@@ -261,6 +261,11 @@
     tag: 3.2.11-alpine
   - sha: 87275ecd3017cdacd3e93eaf07e26f4a91d7f4d7c311b2305fccb50ec3a1a8cd
     tag: 4.0.9
+- name: bitnami/redis
+  overrideRepoName: bitnami-redis
+  tags:
+  - sha: sha256:1b56b1c2c5d737bd8029f2e2e80852c0c1ef342e36ca0940dd313d4d8a786311
+    tag: 4.0.9
 - name: registry.opensource.zalan.do/teapot/external-dns
   tags:
   - sha: 0c6e7c59bd204db7dd13c98e8ec6b1af5b9b102f0badc091d50683458570c6c6
