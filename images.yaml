@@ -2,6 +2,11 @@
   tags:
   - sha: 7df6db5aa61ae9480f52f0b3a06a140ab98d427f86d8d5de0bedab9b8df6b1c0
     tag: "3.7"
+- name: bitnami/redis
+  overrideRepoName: bitnami-redis
+  tags:
+  - sha: sha256:1b56b1c2c5d737bd8029f2e2e80852c0c1ef342e36ca0940dd313d4d8a786311
+    tag: 4.0.9
 - name: busybox
   tags:
   - sha: 58ac43b2cc92c687a32c8be6278e50a063579655fe3090125dcb2af0ff9e1a64
@@ -260,11 +265,6 @@
   - sha: 002a1870fa2ffd11dbd7438527a2c17f794f6962f5d3a4f048f848963ab954a8
     tag: 3.2.11-alpine
   - sha: 87275ecd3017cdacd3e93eaf07e26f4a91d7f4d7c311b2305fccb50ec3a1a8cd
-    tag: 4.0.9
-- name: bitnami/redis
-  overrideRepoName: bitnami-redis
-  tags:
-  - sha: sha256:1b56b1c2c5d737bd8029f2e2e80852c0c1ef342e36ca0940dd313d4d8a786311
     tag: 4.0.9
 - name: registry.opensource.zalan.do/teapot/external-dns
   tags:
