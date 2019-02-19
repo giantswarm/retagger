@@ -30,9 +30,9 @@ func main() {
 	for _, image := range Images {
 		for _, tag := range image.Tags {
 			imageName := image.Name
-			if image.OverrideName != "" {
-				log.Printf("Override Name specified. Using %s as mirrored image name", image.OverrideName)
-				imageName = image.OverrideName
+			if image.OverrideRepoName != "" {
+				log.Printf("Override Name specified. Using %s as mirrored image name", image.OverrideRepoName)
+				imageName = image.OverrideRepoName
 			}
 			log.Printf("managing: %v, %v, %v", imageName, tag.Sha, tag.Tag)
 
