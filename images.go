@@ -11,9 +11,10 @@ import (
 
 // Image defines the data we process about a docker image.
 type Image struct {
-	Name    string `yaml:"name"`
-	Comment string `yaml:"comment,omitempty"`
-	Tags    []Tag  `yaml:"tags"`
+	Name         string `yaml:"name"`
+	Comment      string `yaml:"comment,omitempty"`
+	OverrideName string `yaml:"overrideName,omitempty"`
+	Tags         []Tag  `yaml:"tags"`
 }
 
 // Tag represents a specific version of a docker image, represented by a tag

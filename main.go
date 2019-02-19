@@ -29,14 +29,19 @@ func main() {
 
 	for _, image := range Images {
 		for _, tag := range image.Tags {
-			log.Printf("managing: %v, %v, %v", image.Name, tag.Sha, tag.Tag)
+			imageName := image.Name
+			if image.OverrideName != "" {
+				log.Printf("Override Name specified. Using %s as mirrored image name", image.OverrideName)
+				imageName = image.OverrideName
+			}
+			log.Printf("managing: %v, %v, %v", imageName, tag.Sha, tag.Tag)
 
-			ok, err := registry.CheckImageTagExists(image.Name, tag.Tag)
+			ok, err := registry.CheckImageTagExists(imageName, tag.Tag)
 			if ok {
 				log.Printf("retagged image already exists, skipping")
 				continue
 			} else if err != nil {
-				log.Fatalf("could not check image %q and tag %q: %v", image.Name, tag.Tag, err)
+				log.Fatalf("could not check image %q and tag %q: %v", imageName, tag.Tag, err)
 			} else {
 				log.Printf("retagged image does not exist")
 			}
@@ -49,7 +54,7 @@ func main() {
 				log.Fatalf("could not pull image: %v", err)
 			}
 
-			retaggedNameWithTag, err := registry.Retag(image.Name, shaName, tag.Tag)
+			retaggedNameWithTag, err := registry.Retag(imageName, shaName, tag.Tag)
 			if err != nil {
 				log.Fatalf("could not retag image: %v", err)
 			}
