@@ -2,6 +2,11 @@
   tags:
   - sha: 7df6db5aa61ae9480f52f0b3a06a140ab98d427f86d8d5de0bedab9b8df6b1c0
     tag: "3.7"
+- name: bitnami/redis
+  overrideRepoName: bitnami-redis
+  tags:
+  - sha: sha256:1b56b1c2c5d737bd8029f2e2e80852c0c1ef342e36ca0940dd313d4d8a786311
+    tag: 4.0.9
 - name: busybox
   tags:
   - sha: 58ac43b2cc92c687a32c8be6278e50a063579655fe3090125dcb2af0ff9e1a64
