@@ -259,6 +259,8 @@
   tags:
   - sha: 002a1870fa2ffd11dbd7438527a2c17f794f6962f5d3a4f048f848963ab954a8
     tag: 3.2.11-alpine
+  - sha: 87275ecd3017cdacd3e93eaf07e26f4a91d7f4d7c311b2305fccb50ec3a1a8cd
+    tag: 4.0.9
 - name: registry.opensource.zalan.do/teapot/external-dns
   tags:
   - sha: 0c6e7c59bd204db7dd13c98e8ec6b1af5b9b102f0badc091d50683458570c6c6
