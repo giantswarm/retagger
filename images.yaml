@@ -284,3 +284,5 @@
     tag: 0.10.1
   - sha: 366eddc65d233c7b43269ba80e27aeb1269837beadd011c8d7b3daa999cce70a
     tag: 0.10.3
+  - sha: a8c3818b7e86c53e46897216dee0c8fa6a313b60f095b1c835d9e12f124e36e9
+    tag: 1.0.3
