@@ -135,8 +135,8 @@
     tag: 1.11.3
 - name: grafana/grafana
   tags:
-  - sha: b9a31857e86e9cf43552605bd7f3c990c123f8792ab6bea8f499db1a1bdb7d53
-    tag: 5.4.2
+  - sha: b5098a06dc59d28b11120eab01d8d0147b526a175aa606f9978934b6b2224138
+    tag: 6.0.0
 - name: jgsqware/fluentd-loki-plugin
   tags:
   - sha: 7dbe2ccfbf2eb7b29367f6a3ee7c0976c3b45e4e21d6363cb43b156c17488259
