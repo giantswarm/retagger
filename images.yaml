@@ -213,6 +213,8 @@
   tags:
   - sha: 995bd3fee6899569d5d9ab77948f25d6bc2e9a95efa988de37c6b8c3095ac819
     tag: 8cabd75bacbcdad7ac5d85efc3ca90c2fabf023b
+  - sha: 93404a39c4b83568aef2971504fecc39efc6a9b949fd84cc9814742a76033ed3
+    tag: f5cae44c480bd797dc770dd5f62d40b74063c0d7
 - name: quay.io/giantswarm/docker-strongswan
   tags:
   - sha: 0deee46507d8d9c354b9e924f969dfb370083539a7130531b575e05a09603a31
