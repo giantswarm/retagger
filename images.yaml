@@ -131,8 +131,8 @@
     tag: v2.6.2-v1.6.0
 - name: golang
   tags:
-  - sha: 200819b56ab8a3d4fb83e8210738ba6ae628fd159efa2a7c84ef044e56214a3a
-    tag: 1.11.3
+  - sha: 908ea6b956394d7a7006453e6a16011a6f86fd47996f2ccc32711f1eeff6b9fc
+    tag: 1.11.6
 - name: grafana/grafana
   tags:
   - sha: b5098a06dc59d28b11120eab01d8d0147b526a175aa606f9978934b6b2224138
