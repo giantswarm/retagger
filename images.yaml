@@ -266,8 +266,8 @@
     tag: 4.0.9
 - name: registry.opensource.zalan.do/teapot/external-dns
   tags:
-  - sha: 0c6e7c59bd204db7dd13c98e8ec6b1af5b9b102f0badc091d50683458570c6c6
-    tag: v0.5.2-3-g6c05028
+  - sha: 8df16e7dd1c43dd57b5dda6af8dd19882bf6fb45e783fca091750485cd737811
+    tag: v0.5.11
 - name: shelmangroup/coreos-nvidia-driver-installer
   tags:
   - sha: 57be3ae881d61ea5f55ad6068bcc61708515ad17994884170b3e5df5b40856d3
