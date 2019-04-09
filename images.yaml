@@ -163,6 +163,8 @@
     tag: v1.12.6
   - sha: 7837c4d98642378841cb5abf43ea9c841f6adba3d9c8c13f0eecb4766ad0bfb0
     tag: v1.13.4
+  - sha: b1f8e7b784cec96304ca086ece96679de7473786d7c298b285cb3d7dcad2d582
+    tag: v1.14.1
 - name: koalaman/shellcheck-alpine
   tags:
   - sha: 7d4d712a2686da99d37580b4e2f45eb658b74e4b01caf67c1099adc294b96b52
