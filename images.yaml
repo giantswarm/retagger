@@ -17,8 +17,8 @@
     tag: 0.12
 - name: coredns/coredns
   tags:
-  - sha: 70a92e9f6fc604f9b629ca331b6135287244a86612f550941193ec7e12759417
-    tag: 1.4.0
+  - sha: e83beb5e43f8513fa735e77ffc5859640baea30a882a11cc75c4c3244a737d3c
+    tag: 1.5.0
 - name: dduportal/bats
   tags:
   - sha: b2d533b27109f7c9ea1e270e23f212c47906346f9cffaa4da6da48ed9d8031da
