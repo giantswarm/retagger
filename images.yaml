@@ -183,6 +183,8 @@
     tag: v2.6.1
   - sha: 4d187dd28d688de8dca4706bc3670eeec3567633e10649fbadf17388df6c9969
     tag: v2.9.0
+  - sha: e02bb3dec47631b4d31cede2d35ff901d892b57f33144406ee7994e8c94fb2d7
+    tag: v2.9.1
 - name: quay.io/calico/cni
   tags:
   - sha: 221e8056172f1acf5da4421eafa127a8947a4e8ecc9a216dda43057e66397598
