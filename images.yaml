@@ -153,6 +153,8 @@
   tags:
   - sha: 7ff5a60304b344f2f29c804c7253632bbc818794f6932236a56db107a6a8f5af
     tag: v1.13.1
+  - sha: a4e5a8e6d4dc011e6e7a104d6abdfda56274b90357ee9f6e42cc22b70482420b
+    tag: v1.14.0
 - name: k8s.gcr.io/hyperkube
   tags:
   - sha: 1839410f3ac91c589c95de0f11d762719e973f7c3100eae7c0905d08dd0d9138
