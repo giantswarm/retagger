@@ -3,13 +3,26 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"os/exec"
 	"strings"
 
 	"github.com/giantswarm/microerror"
 )
+
+const customDockerfileTmpl = `FROM {{ .BaseImage }}
+{{range $i, $option := .DockerfileOptions -}}
+{{ .option }}
+{{ end -}}
+`
+
+type Dockerfile struct {
+	BaseImage         string
+	DockerfileOptions []string
+}
 
 type RegistryConfig struct {
 	Client *http.Client
@@ -126,6 +139,35 @@ func (r *Registry) Retag(image, sha, tag string) (string, error) {
 		return "", microerror.Mask(err)
 	}
 	return retaggedNameWithTag, nil
+}
+
+func (r *Registry) Rebuild(image, tag string, dockerfileOptions []string) (string, error) {
+	RetaggedName := RetaggedName(r.host, r.organisation, image)
+	rebuildedImageTag := ImageWithTag(RetaggedName, fmt.Sprintf("%s-giantswarm", tag))
+
+	dockerfile := Dockerfile{
+		BaseImage:         image,
+		DockerfileOptions: dockerfileOptions,
+	}
+
+	f, err := os.Create("Dockerfile")
+	if err != nil {
+		return "", microerror.Mask(err)
+	}
+
+	// render Dockerfile with overrides
+	t := template.Must(template.New("").Parse(customDockerfileTmpl))
+	err = t.Execute(f, dockerfile)
+	if err != nil {
+		return "", microerror.Mask(invalidTemplateError)
+	}
+
+	rebuild := exec.Command("docker", "build", "-t", rebuildedImageTag, ".")
+	err = Run(rebuild)
+	if err != nil {
+		return "", microerror.Mask(err)
+	}
+	return rebuildedImageTag, nil
 }
 
 func (r *Registry) getToken(req *http.Request) (string, error) {

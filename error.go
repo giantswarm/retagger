@@ -24,3 +24,10 @@ var invalidAuthenticateChallengeError = microerror.New("invalid authenticate cha
 func IsInvalidAuthenticateChallenge(err error) bool {
 	return microerror.Cause(err) == invalidAuthenticateChallengeError
 }
+
+var invalidTemplateError = microerror.New("invalidTemplateError")
+
+// IsInvalidTemplate asserts invalidTemplateError.
+func IsInvalidTemplate(err error) bool {
+	return microerror.Cause(err) == invalidTemplateError
+}
