@@ -13,15 +13,16 @@ import (
 	"github.com/giantswarm/microerror"
 )
 
-const customDockerfileTmpl = `FROM {{ .BaseImage }}
-{{range $i, $option := .DockerfileOptions -}}
-{{ .option }}
+const customDockerfileTmpl = `FROM {{ .BaseImage }}:{{ .Tag }}
+{{range .DockerfileOptions -}}
+{{ . }}
 {{ end -}}
 `
 
 type Dockerfile struct {
 	BaseImage         string
 	DockerfileOptions []string
+	Tag               string
 }
 
 type RegistryConfig struct {
@@ -148,6 +149,7 @@ func (r *Registry) Rebuild(image, tag string, dockerfileOptions []string) (strin
 	dockerfile := Dockerfile{
 		BaseImage:         image,
 		DockerfileOptions: dockerfileOptions,
+		Tag:               tag,
 	}
 
 	f, err := os.Create("Dockerfile")
