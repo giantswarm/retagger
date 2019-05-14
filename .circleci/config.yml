@@ -11,7 +11,7 @@ jobs:
             docker run --rm -ti \
             -v $PWD:/workdir \
             giantswarm/yamllint \
-            -d '{extends: default, rules: {line-length: {max: 200}, document-start: disable}}' \
+            -d '{extends: default, rules: {line-length: {max: 200}, document-start: disable, indentation: {spaces: 2}}}' \
             images.yaml
 
     - run:
