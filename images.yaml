@@ -2,10 +2,11 @@
   tags:
   - sha: 769fddc7cc2f0a1c35abb2f91432e8beecf83916c421420e6a6da9f8975464b6
     tag: "3.9"
-    dockerfileOptions:
-    - RUN addgroup -g 1000 -S giantswarm
-    - RUN adduser -u 1000 -S giantswarm -G giantswarm
-    - USER giantswarm
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+      - USER giantswarm
   - sha: 7df6db5aa61ae9480f52f0b3a06a140ab98d427f86d8d5de0bedab9b8df6b1c0
     tag: "3.7"
 - name: bitnami/redis
@@ -25,8 +26,10 @@
   tags:
   - sha: e83beb5e43f8513fa735e77ffc5859640baea30a882a11cc75c4c3244a737d3c
     tag: 1.5.0
-    dockerfileOptions:
-    - EXPOSE 1053
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - EXPOSE 1053
 - name: dduportal/bats
   tags:
   - sha: b2d533b27109f7c9ea1e270e23f212c47906346f9cffaa4da6da48ed9d8031da
