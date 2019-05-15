@@ -49,7 +49,7 @@ Here is an example entry:
   tags:
   - sha: 6861ee5ea81fbbacf8802c622d9305930b341acc0800bbf30205b4d74ce2b486
     tag: "0.14.6"
-    customImageS:
+    customImages:
     - tagSuffix: giantswarm
       dockerfileOptions:
       - EXPOSE 1053
