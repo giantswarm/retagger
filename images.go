@@ -24,6 +24,15 @@ type Tag struct {
 	Sha string `yaml:"sha"`
 	// Tag is the tag we apply to the pulled image.
 	Tag string `yaml:"tag"`
+	// CustomImages is the list of custom images we build from original image base.
+	CustomImages []CustomImage `yaml:"customImages"`
+}
+
+type CustomImage struct {
+	// TagSuffix is a string suffix we add to the original image tag.
+	TagSuffix string `yaml:"tagSuffix"`
+	// DockerfileOptions - list of strings we add for Dockerfile to build custom image
+	DockerfileOptions []string `yaml:"dockerfileOptions"`
 }
 
 // Images is the datastructure that will hold all image definitions.

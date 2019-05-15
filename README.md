@@ -49,6 +49,10 @@ Here is an example entry:
   tags:
   - sha: 6861ee5ea81fbbacf8802c622d9305930b341acc0800bbf30205b4d74ce2b486
     tag: "0.14.6"
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - EXPOSE 1053
 ```
 
 What the attributes mean:
@@ -58,6 +62,9 @@ What the attributes mean:
 - `tags`: List of image versions
 - `tags[].sha`: The SHA describing the version to pull from the source registry
 - `tags[].tag`: The image tag to apply in the target registry
+- `tags[].customImages[]`: Custom images definition with original tag as base.
+- `tags[].customImages[].tagSuffix`: Tag suffix for custom image build.
+- `tags[].customImages[].dockerfileOptions[]`: The list of Dockerfile options, used to override base image
 
 ## Adding an image
 
