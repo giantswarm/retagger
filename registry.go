@@ -3,12 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 	"os"
 	"os/exec"
 	"strings"
+	"text/template"
 
 	"github.com/giantswarm/microerror"
 )
@@ -142,17 +142,17 @@ func (r *Registry) Retag(image, sha, tag string) (string, error) {
 	return retaggedNameWithTag, nil
 }
 
-func (r *Registry) Rebuild(image, tag string, dockerfileOptions []string) (string, error) {
+func (r *Registry) Rebuild(image, tag string, customImage CustomImage) (string, error) {
 	RetaggedName := RetaggedName(r.host, r.organisation, image)
-	rebuildedImageTag := ImageWithTag(RetaggedName, fmt.Sprintf("%s-giantswarm", tag))
+	rebuildedImageTag := ImageWithTag(RetaggedName, fmt.Sprintf("%s-%s", tag, customImage.TagSuffix))
 
 	dockerfile := Dockerfile{
 		BaseImage:         image,
-		DockerfileOptions: dockerfileOptions,
+		DockerfileOptions: customImage.DockerfileOptions,
 		Tag:               tag,
 	}
 
-	f, err := os.Create("Dockerfile")
+	f, err := os.Create(fmt.Sprintf("Dockerfile-%s", customImage.TagSuffix))
 	if err != nil {
 		return "", microerror.Mask(err)
 	}
@@ -164,7 +164,7 @@ func (r *Registry) Rebuild(image, tag string, dockerfileOptions []string) (strin
 		return "", microerror.Mask(invalidTemplateError)
 	}
 
-	rebuild := exec.Command("docker", "build", "-t", rebuildedImageTag, ".")
+	rebuild := exec.Command("docker", "build", "-t", rebuildedImageTag, "-f", fmt.Sprintf("Dockerfile-%s", customImage.TagSuffix), ".")
 	err = Run(rebuild)
 	if err != nil {
 		return "", microerror.Mask(err)
