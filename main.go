@@ -59,10 +59,23 @@ func main() {
 				log.Fatalf("could not retag image: %v", err)
 			}
 
-			log.Printf("pushing image")
+			log.Printf("pushing retagged image")
 			push := exec.Command("docker", "push", retaggedNameWithTag)
 			if err := Run(push); err != nil {
 				log.Fatalf("could not push image: %v", err)
+			}
+
+			for _, customImage := range tag.CustomImages {
+				rebuildedImageTag, err := registry.Rebuild(imageName, tag.Tag, customImage)
+				if err != nil {
+					log.Fatalf("could not rebuild image: %v", err)
+				}
+
+				log.Printf("pushing rebuilded custom image %s-%s", tag.Tag, customImage.TagSuffix)
+				push := exec.Command("docker", "push", rebuildedImageTag)
+				if err := Run(push); err != nil {
+					log.Fatalf("could not push image: %v", err)
+				}
 			}
 		}
 	}
