@@ -23,6 +23,11 @@ func main() {
 		log.Fatalf("could not create registry %v", err)
 	}
 
+	err = registry.Login()
+	if err != nil {
+		log.Fatalf("could not login to registry %v", err)
+	}
+
 	for _, image := range Images {
 		for _, tag := range image.Tags {
 			imageName := image.Name
