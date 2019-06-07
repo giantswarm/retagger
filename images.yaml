@@ -174,8 +174,8 @@
     tag: v1.12.6
   - sha: 7837c4d98642378841cb5abf43ea9c841f6adba3d9c8c13f0eecb4766ad0bfb0
     tag: v1.13.4
-  - sha: b1f8e7b784cec96304ca086ece96679de7473786d7c298b285cb3d7dcad2d582
-    tag: v1.14.1
+  - sha: 5d90bfe81ba56024a1e918789f89032a25b034676a3cdd2a7b41492e078a7984
+    tag: v1.14.3
 - name: kindest/node
   overrideRepoName: kind-node
   tags:
