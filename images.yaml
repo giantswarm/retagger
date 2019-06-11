@@ -211,24 +211,32 @@
     tag: v3.5.2
   - sha: 3c029d6fbfb823acdd64d2802c0ba96029bb631a25ed464095544ed3b7e1c3a4
     tag: v3.6.1
+  - sha: 22a1e55ee8429484f93f504acec3bd52b8c0cf0ffc628397ec986eb4e91c9a3c
+    tag: v3.7.2
 - name: quay.io/calico/kube-controllers
   tags:
   - sha: 36f7eb17009e524263c7842f83ad1ac2c903e4b809dfc23a595a4a9cec90cffd
     tag: v3.5.2
   - sha: 8945f0286e4c9fd16e131d8c8918532abee7c455df4525c216919ef384cfdab3
     tag: v3.6.1
+  - sha: 03cee3ce2e84dc7ae279e33e57f2a633784aea5995c767388f9dae768d4c0408
+    tag: v3.7.2
 - name: quay.io/calico/node
   tags:
   - sha: 153937ae38d6345478116c1e42e84ba1a88bfc210b02a6ec087cfb48dda13b12
     tag: v3.5.2
   - sha: 703c48d59854cb566c6227cd68c30d8e59b61f5ea4b98cbbe81bdaf39b4bdc4a
     tag: v3.6.1
+  - sha: 9234eb2c9dbf05c73885ecc532c6d7c9a9df20a695e95f624e76ea82f6b40bd9
+    tag: v3.7.2
 - name: quay.io/calico/typha
   tags:
   - sha: 1e0348cde23c2426454c40e11cea55d0c7d7de890ca2bb3ae105f35656d2e3c8
     tag: v3.5.2
   - sha: 5640c3b77ca6ff324ff41aba7c9deb12c1cd13402ef877015a5f22d6e82361cf
     tag: v3.6.1
+  - sha: c5cd2e91d4b3a350165590ca130b64c54fd8066f8df163a75e02014f22b74151
+    tag: v3.7.2
 - name: quay.io/coreos/etcd
   tags:
   - sha: f8c9d9476458414ccad25a92524e788738386da109b06029a3b0c1a0d434d489
