@@ -74,10 +74,10 @@
   tags:
   - sha: 953a3b6bf0046333c656fcfa2fc3a08f4055dc3fbd5b1dcdcdf865a2534db526
     tag: v1.2.0
-- name: gcr.io/google_containers/metrics-server-amd64
+- name: k8s.gcr.io/metrics-server-amd64
   tags:
-  - sha: f648abaae477c6121b7ced21ec195f42d34bc2b697cfd95948db6e7cea768690
-    tag: v0.3.2
+  - sha: 4ca116565ff6a46e582bada50ba3550f95b368db1d2415829241a565a6c38e2a
+    tag: v0.3.3
 - name: gcr.io/google_containers/nginx-ingress-controller
   tags:
   - sha: 03fd8fc46018d09b4050d4daaf50bff73c80936994b374319ed33cbb2c1684f4
