@@ -74,10 +74,6 @@
   tags:
   - sha: 953a3b6bf0046333c656fcfa2fc3a08f4055dc3fbd5b1dcdcdf865a2534db526
     tag: v1.2.0
-- name: gcr.io/google_containers/metrics-server-amd64
-  tags:
-  - sha: f648abaae477c6121b7ced21ec195f42d34bc2b697cfd95948db6e7cea768690
-    tag: v0.3.2
 - name: gcr.io/google_containers/nginx-ingress-controller
   tags:
   - sha: 03fd8fc46018d09b4050d4daaf50bff73c80936994b374319ed33cbb2c1684f4
@@ -176,6 +172,10 @@
     tag: v1.13.4
   - sha: 5d90bfe81ba56024a1e918789f89032a25b034676a3cdd2a7b41492e078a7984
     tag: v1.14.3
+- name: k8s.gcr.io/metrics-server-amd64
+  tags:
+  - sha: 4ca116565ff6a46e582bada50ba3550f95b368db1d2415829241a565a6c38e2a
+    tag: v0.3.3
 - name: kindest/node
   overrideRepoName: kind-node
   tags:
