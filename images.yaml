@@ -138,6 +138,8 @@
   tags:
   - sha: 908ea6b956394d7a7006453e6a16011a6f86fd47996f2ccc32711f1eeff6b9fc
     tag: 1.11.6
+  - sha: 35200a727dc44175d9221a6ece398eed7e4b8e17cb7f0d72b20bf2d5cf9dc00d
+    tag: 1.12.6
 - name: grafana/grafana
   tags:
   - sha: b5098a06dc59d28b11120eab01d8d0147b526a175aa606f9978934b6b2224138
