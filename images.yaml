@@ -74,10 +74,6 @@
   tags:
   - sha: 953a3b6bf0046333c656fcfa2fc3a08f4055dc3fbd5b1dcdcdf865a2534db526
     tag: v1.2.0
-- name: gcr.io/google_containers/metrics-server-amd64
-  tags:
-  - sha: f648abaae477c6121b7ced21ec195f42d34bc2b697cfd95948db6e7cea768690
-    tag: v0.3.2
 - name: gcr.io/google_containers/nginx-ingress-controller
   tags:
   - sha: 03fd8fc46018d09b4050d4daaf50bff73c80936994b374319ed33cbb2c1684f4
@@ -96,8 +92,8 @@
     tag: v0.10.0
 - name: gcr.io/kubernetes-helm/tiller
   tags:
-  - sha: 67b4962dd091bfca1398853f55b6414ac433042560c1a163520dd0811c0e2e28
-    tag: v2.12.0
+  - sha: f8002b91997fdc2c15a9c2aa994bea117b5b1683933f3144369862f0883c3c42
+    tag: v2.14.1
 - name: gfkse/oauth2_proxy
   tags:
   - sha: 4bba1afcd3af85b550b42647e92b3fab36448c75e1af611a65644f77f4dde314
@@ -142,6 +138,8 @@
   tags:
   - sha: 908ea6b956394d7a7006453e6a16011a6f86fd47996f2ccc32711f1eeff6b9fc
     tag: 1.11.6
+  - sha: 35200a727dc44175d9221a6ece398eed7e4b8e17cb7f0d72b20bf2d5cf9dc00d
+    tag: 1.12.6
 - name: grafana/grafana
   tags:
   - sha: b5098a06dc59d28b11120eab01d8d0147b526a175aa606f9978934b6b2224138
@@ -178,13 +176,23 @@
     tag: v1.13.4
   - sha: 5d90bfe81ba56024a1e918789f89032a25b034676a3cdd2a7b41492e078a7984
     tag: v1.14.3
+- name: k8s.gcr.io/metrics-server-amd64
+  tags:
+  - sha: 4ca116565ff6a46e582bada50ba3550f95b368db1d2415829241a565a6c38e2a
+    tag: v0.3.3
 - name: kindest/node
   overrideRepoName: kind-node
   tags:
   - sha: 9e07014fb48c746deb98ec8aafd58c3918622eca6063e643c6e6d86c86e170b4
     tag: v1.13.6
+  - sha: f3f1cfc2318d1eb88d91253a9c5fa45f6e9121b6b1e65aea6c7ef59f1549aaaf
+    tag: v1.13.7
   - sha: 33539d830a6cf20e3e0a75d0c46a4e94730d78c7375435e6b49833d81448c319
     tag: v1.14.2
+  - sha: 583166c121482848cd6509fbac525dd62d503c52a84ff45c338ee7e8b5cfe114
+    tag: v1.14.3
+  - sha: b4d092fd2b507843dd096fe6c85d06a27a0cbd740a0b32a880fe61aba24bb478
+    tag: v1.15.0
 - name: koalaman/shellcheck-alpine
   tags:
   - sha: 7d4d712a2686da99d37580b4e2f45eb658b74e4b01caf67c1099adc294b96b52
@@ -253,6 +261,10 @@
   tags:
   - sha: 00ac168a1775e7a972019135dc25f1fc30bd8b30eb6a35b2d4e1621089f2eedf
     tag: v1.6.0
+- name: quay.io/coreos/prometheus-operator
+  tags:
+  - sha: 97697df680ea4c7e70c4cb4af5bdc44f7a70b25be7afde70bd921a658e4c62ec
+    tag: v0.30.1
 - name: quay.io/giantswarm/docker-kubectl
   tags:
   - sha: 995bd3fee6899569d5d9ab77948f25d6bc2e9a95efa988de37c6b8c3095ac819
