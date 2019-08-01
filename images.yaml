@@ -290,6 +290,8 @@
     tag: v0.2.5
   - sha: 3ff035464d9349f5b1d23a2fef9c9b8419026671506a5be5cbae6e958ac46802
     tag: v0.4.0
+  - sha: 0f7e64825eddb1f7292a9f190a421b305a9237d21757ae27fb06d1d0f12281df
+    tag: v0.9.0
 - name: quay.io/jetstack/cert-manager-ingress-shim
   tags:
   - sha: 544b8602ee566d7ca22aa9e76a92dde4c2ca8dab642f75ea3a4b0a577193632a
