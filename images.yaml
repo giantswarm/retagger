@@ -24,8 +24,8 @@
     tag: 0.12
 - name: coredns/coredns
   tags:
-  - sha: 451817637035535ae1fc8639753b453fa4b781d0dea557d5da5cb3c131e62ef5
-    tag: 1.5.1
+  - sha: 9ae3b6fcac4ee821362277de6bd8fd2236fa7d3e19af2ef0406d80b595620a7a
+    tag: 1.6.1
     customImages:
     - tagSuffix: giantswarm
       dockerfileOptions:
