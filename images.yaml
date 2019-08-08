@@ -176,6 +176,8 @@
     tag: v1.13.4
   - sha: 5d90bfe81ba56024a1e918789f89032a25b034676a3cdd2a7b41492e078a7984
     tag: v1.14.3
+  - sha: 2a7e20295285f05b3e2cada6810892db260183855ccc73c13af21b205580075a
+    tag: v1.14.5
 - name: k8s.gcr.io/metrics-server-amd64
   tags:
   - sha: 4ca116565ff6a46e582bada50ba3550f95b368db1d2415829241a565a6c38e2a
