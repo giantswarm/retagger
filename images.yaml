@@ -300,8 +300,8 @@
     tag: v0.2.5
 - name: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
   tags:
-  - sha: 464db4880861bd9d1e74e67a4a9c975a6e74c1e9968776d8d4cc73492a56dfa5
-    tag: 0.25.0
+  - sha: 0c4941fa8c812dd44297b5f4900e3b26c3e6a8a42940e48fe9a1a585fe8f7e25
+    tag: 0.25.1
 - name: quay.io/prometheus/alertmanager
   tags:
   - sha: e6a3f28f282092d9790aaae393650852a9b7c2a7614dc3aa797a74a6beaa0700
