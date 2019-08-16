@@ -118,5 +118,3 @@ The standard way!
 go test
 go build
 ```
-
-change.
