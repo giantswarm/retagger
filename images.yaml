@@ -168,18 +168,14 @@
     tag: v1.14.3
 - name: k8s.gcr.io/hyperkube
   tags:
-  - sha: 1839410f3ac91c589c95de0f11d762719e973f7c3100eae7c0905d08dd0d9138
-    tag: v1.10.12
-  - sha: 8cef95c71e77969e8278e5a12ffa79afdca913160e823e187ead93809b2f45f7
-    tag: v1.11.6
-  - sha: c397e7d1bf22ce4f54c6b5a4553d3e62a0fbf7fa7da95f14b5ad8974ddb5de33
-    tag: v1.12.6
-  - sha: 7837c4d98642378841cb5abf43ea9c841f6adba3d9c8c13f0eecb4766ad0bfb0
-    tag: v1.13.4
   - sha: 5d90bfe81ba56024a1e918789f89032a25b034676a3cdd2a7b41492e078a7984
     tag: v1.14.3
   - sha: 2a7e20295285f05b3e2cada6810892db260183855ccc73c13af21b205580075a
     tag: v1.14.5
+  - sha: 94adb47a41838bee7deee7e09d07a7093bdba517d980c66115cc2eeb675090be
+    tag: v1.14.6
+  - sha: 931494f8920a3eb4e6fb9c558083e088bf089a66ade026ccfab986e42a7aa3d8
+    tag: v1.15.3
 - name: k8s.gcr.io/metrics-server-amd64
   tags:
   - sha: 4ca116565ff6a46e582bada50ba3550f95b368db1d2415829241a565a6c38e2a
