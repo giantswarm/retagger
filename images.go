@@ -18,7 +18,7 @@ type Image struct {
 }
 
 // Tag represents a specific version of a docker image, represented by a tag
-// and verfified through the SHA checksum.
+// and verified through the SHA checksum.
 type Tag struct {
 	// Sha is the image SHA to pull from the original source.
 	Sha string `yaml:"sha"`
@@ -35,7 +35,7 @@ type CustomImage struct {
 	DockerfileOptions []string `yaml:"dockerfileOptions"`
 }
 
-// Images is the datastructure that will hold all image definitions.
+// Images is the data structure that will hold all image definitions.
 var Images = []Image{}
 
 func init() {
