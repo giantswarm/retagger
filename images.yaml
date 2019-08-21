@@ -197,6 +197,14 @@
   tags:
   - sha: 7d4d712a2686da99d37580b4e2f45eb658b74e4b01caf67c1099adc294b96b52
     tag: v0.6.0
+- name: kong
+  tags:
+  - sha: df7bb41be97ec490d08e7fb5acb2de626042a1eedb16405bc8504814a67140c0
+    tag: 1.2.2
+- name: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
+  tags:
+  - sha: d0b53e95c9772d41a8031d7ade6b3958822fe3e8747a31ff6c2f686b1c3df2a9
+    tag: 0.5.0
 - name: nginx
   tags:
   - sha: 0fb320e2a1b1620b4905facb3447e3d84ad36da0b2c8aa8fe3a5a81d1187b884
