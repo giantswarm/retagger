@@ -16,8 +16,8 @@
     tag: 4.0.9
 - name: busybox
   tags:
-  - sha: 58ac43b2cc92c687a32c8be6278e50a063579655fe3090125dcb2af0ff9e1a64
-    tag: 1.28.3
+  - sha: 9f1003c480699be56815db0f8146ad2e22efea85129b5b5983d0e0fb52d9ab70
+    tag: 1.31.0
 - name: cibuilds/github
   tags:
   - sha: 9029b2f52ecd28aacec2fd8a86a321dc9f77a46df251de5e3f157dd6e80baea0
