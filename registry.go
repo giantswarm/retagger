@@ -144,7 +144,7 @@ func (r *Registry) Retag(image, sha, tag string) (string, error) {
 
 func (r *Registry) Rebuild(image, tag string, customImage CustomImage) (string, error) {
 	RetaggedName := RetaggedName(r.host, r.organisation, image)
-	rebuildedImageTag := ImageWithTag(RetaggedName, fmt.Sprintf("%s-%s", tag, customImage.TagSuffix))
+	rebuiltImageTag := ImageWithTag(RetaggedName, fmt.Sprintf("%s-%s", tag, customImage.TagSuffix))
 
 	dockerfile := Dockerfile{
 		BaseImage:         image,
@@ -164,12 +164,12 @@ func (r *Registry) Rebuild(image, tag string, customImage CustomImage) (string, 
 		return "", microerror.Mask(invalidTemplateError)
 	}
 
-	rebuild := exec.Command("docker", "build", "-t", rebuildedImageTag, "-f", fmt.Sprintf("Dockerfile-%s", customImage.TagSuffix), ".")
+	rebuild := exec.Command("docker", "build", "-t", rebuiltImageTag, "-f", fmt.Sprintf("Dockerfile-%s", customImage.TagSuffix), ".")
 	err = Run(rebuild)
 	if err != nil {
 		return "", microerror.Mask(err)
 	}
-	return rebuildedImageTag, nil
+	return rebuiltImageTag, nil
 }
 
 func (r *Registry) getToken(req *http.Request) (string, error) {

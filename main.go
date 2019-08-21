@@ -40,20 +40,20 @@ func main() {
 			for _, customImage := range tag.CustomImages {
 				ok, err := registry.CheckImageTagExists(imageName, tag.Tag)
 				if ok {
-					log.Printf("rebuilded image %q with tag %q already exists, skipping", imageName, fmt.Sprintf("%s-%s", tag.Tag, customImage.TagSuffix))
+					log.Printf("rebuilt image %q with tag %q already exists, skipping", imageName, fmt.Sprintf("%s-%s", tag.Tag, customImage.TagSuffix))
 					continue
 				} else if err != nil {
 					log.Fatalf("could not check image %q and tag %q: %v", imageName, tag.Tag, err)
 				} else {
-					log.Printf("rebuilded image %q with tag %q does not exists", imageName, fmt.Sprintf("%s-%s", tag.Tag, customImage.TagSuffix))
+					log.Printf("rebuilt image %q with tag %q does not exists", imageName, fmt.Sprintf("%s-%s", tag.Tag, customImage.TagSuffix))
 				}
-				rebuildedImageTag, err := registry.Rebuild(imageName, tag.Tag, customImage)
+				rebuiltImageTag, err := registry.Rebuild(imageName, tag.Tag, customImage)
 				if err != nil {
 					log.Fatalf("could not rebuild image: %v", err)
 				}
 
-				log.Printf("pushing rebuilded custom image %s-%s", tag.Tag, customImage.TagSuffix)
-				push := exec.Command("docker", "push", rebuildedImageTag)
+				log.Printf("pushing rebuilt custom image %s-%s", tag.Tag, customImage.TagSuffix)
+				push := exec.Command("docker", "push", rebuiltImageTag)
 				if err := Run(push); err != nil {
 					log.Fatalf("could not push image: %v", err)
 				}
