@@ -183,16 +183,12 @@
 - name: kindest/node
   overrideRepoName: kind-node
   tags:
-  - sha: 9e07014fb48c746deb98ec8aafd58c3918622eca6063e643c6e6d86c86e170b4
-    tag: v1.13.6
-  - sha: f3f1cfc2318d1eb88d91253a9c5fa45f6e9121b6b1e65aea6c7ef59f1549aaaf
-    tag: v1.13.7
-  - sha: 33539d830a6cf20e3e0a75d0c46a4e94730d78c7375435e6b49833d81448c319
-    tag: v1.14.2
-  - sha: 583166c121482848cd6509fbac525dd62d503c52a84ff45c338ee7e8b5cfe114
-    tag: v1.14.3
-  - sha: b4d092fd2b507843dd096fe6c85d06a27a0cbd740a0b32a880fe61aba24bb478
-    tag: v1.15.0
+  - sha: 2f5f882a6d0527a2284d29042f3a6a07402e1699d792d0d5a9b9a48ef155fa2a
+    tag: v1.13.10
+  - sha: 464a43f5cf6ad442f100b0ca881a3acae37af069d5f96849c1d06ced2870888d
+    tag: v1.14.6
+  - sha: 27e388752544890482a86b90d8ac50fcfa63a2e8656a96ec5337b902ec8e5157
+    tag: v1.15.3
 - name: koalaman/shellcheck-alpine
   tags:
   - sha: 7d4d712a2686da99d37580b4e2f45eb658b74e4b01caf67c1099adc294b96b52
