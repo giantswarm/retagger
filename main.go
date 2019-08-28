@@ -9,12 +9,16 @@ import (
 	"os/exec"
 )
 
-var imagesFile = flag.String("f", "images.yaml", "retagger config (images.yaml) file to use.")
+var configFile = flag.String("f", "images.yaml", "retagger config (images.yaml) file to use.")
 
 func main() {
 	flag.Parse()
 
-	err := InitImages(*imagesFile)
+	if *configFile == "" {
+		log.Fatalf("-f flag (config file) should not be empty")
+	}
+
+	err := InitImages(*configFile)
 	if err != nil {
 		log.Fatalf("could not read retagger config %v", err)
 	}
