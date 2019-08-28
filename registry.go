@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -136,8 +135,7 @@ func (r *Registry) ListImageTags(image string) ([]string, error) {
 
 		return tagResponse.Tags, nil
 	default:
-		log.Printf("could not check retag status: %v", res.StatusCode)
-		return nil, nil
+		return nil, microerror.Maskf(invalidStatusCodeError, "could not check retag status: %d", res.StatusCode)
 	}
 }
 
