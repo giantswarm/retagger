@@ -1,3 +1,4 @@
+
 # Gopkg.toml example
 #
 # Refer to https://github.com/golang/dep/blob/master/docs/Gopkg.toml.md
@@ -16,23 +17,18 @@
 #   source = "github.com/myfork/project2"
 #
 # [[override]]
-#   name = "github.com/x/y"
-#   version = "2.4.0"
-#
-# [prune]
-#   non-go = false
-#   go-tests = true
-#   unused-packages = true
+#  name = "github.com/x/y"
+#  version = "2.4.0"
 
 
 [[constraint]]
   branch = "master"
   name = "github.com/giantswarm/microerror"
 
-[prune]
-  go-tests = true
-  unused-packages = true
+[[constraint]]
+  name = "github.com/go-kit/kit"
+  version = "0.6.0"
 
 [[constraint]]
-  branch = "master"
-  name = "github.com/giantswarm/backoff"
+  name = "github.com/go-stack/stack"
+  version = "1.7.0"
