@@ -8,7 +8,9 @@ import (
 	"os/exec"
 	"strings"
 	"text/template"
+	"time"
 
+	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
 )
 
@@ -119,24 +121,35 @@ func (r *Registry) ListImageTags(image string) ([]string, error) {
 		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
 	}
 
-	res, err := r.client.Do(req)
+	var tags []string
+	o := func() error {
+		res, err := r.client.Do(req)
+		if err != nil {
+			return microerror.Mask(err)
+		}
+		defer res.Body.Close()
+
+		switch res.StatusCode {
+		case http.StatusOK:
+			tagResponse := &TagsListResponse{}
+			err = json.NewDecoder(res.Body).Decode(tagResponse)
+			if err != nil {
+				return microerror.Mask(err)
+			}
+
+			tags = tagResponse.Tags
+			return nil
+		default:
+			return microerror.Maskf(invalidStatusCodeError, "could not check retag status: %d", res.StatusCode)
+		}
+	}
+	b := backoff.NewExponential(10*time.Second, 1*time.Second)
+	err = backoff.Retry(o, b)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-	defer res.Body.Close()
 
-	switch res.StatusCode {
-	case http.StatusOK:
-		tagResponse := &TagsListResponse{}
-		err = json.NewDecoder(res.Body).Decode(tagResponse)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-
-		return tagResponse.Tags, nil
-	default:
-		return nil, microerror.Maskf(invalidStatusCodeError, "could not check retag status: %d", res.StatusCode)
-	}
+	return tags, nil
 }
 
 func (r *Registry) Retag(image, sha, tag string) (string, error) {
