@@ -30,6 +30,7 @@ type RegistryConfig struct {
 	Organisation string
 	Password     string
 	Username     string
+	LogFunc      func(format string, args ...interface{})
 }
 
 type Registry struct {
@@ -58,9 +59,23 @@ func NewRegistry(cfg *RegistryConfig) (*Registry, error) {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Password must not be empty", cfg)
 	}
 
-	registryClient, err := registry.New(fmt.Sprintf("https://%s", cfg.Host), cfg.Username, cfg.Password)
-	if err != nil {
-		return nil, microerror.Mask(err)
+	var err error
+
+	var registryClient *registry.Registry
+	{
+		o := registry.Options{
+			Username: cfg.Username,
+			Password: cfg.Password,
+		}
+
+		if cfg.LogFunc != nil {
+			o.Logf = cfg.LogFunc
+		}
+
+		registryClient, err = registry.NewCustom(fmt.Sprintf("https://%s", cfg.Host), o)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
 	}
 
 	qr := &Registry{

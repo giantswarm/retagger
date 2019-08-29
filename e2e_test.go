@@ -18,15 +18,14 @@ func TestE2e(t *testing.T) {
 		Organisation: os.Getenv("REGISTRY_ORGANISATION"),
 		Password:     os.Getenv("REGISTRY_PASSWORD"),
 		Username:     os.Getenv("REGISTRY_USERNAME"),
+		LogFunc: func(f string, args ...interface{}) {
+			t.Logf(f, args...)
+		},
 	}
 	r, err := NewRegistry(c)
 	if err != nil {
 		t.Fatal(err)
 	}
-	r.registryClient.Logf = func(f string, args ...interface{}) {
-		t.Logf(f, args...)
-	}
-
 	defer SetUpE2eTest(t, r)()
 
 	retagger := exec.Command("./retagger", "-f", "images-e2e.yaml")
