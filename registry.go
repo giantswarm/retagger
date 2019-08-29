@@ -1,12 +1,10 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
 	"os/exec"
-	"strings"
 	"text/template"
 
 	"github.com/giantswarm/microerror"
@@ -43,14 +41,6 @@ type Registry struct {
 	organisation string
 	password     string
 	username     string
-}
-
-type TagsListResponse struct {
-	Tags []string `json:"tags"`
-}
-
-type TokenRequestResponse struct {
-	Token string `json:"token"`
 }
 
 func NewRegistry(cfg *RegistryConfig) (*Registry, error) {
@@ -165,53 +155,6 @@ func (r *Registry) Rebuild(image, tag string, customImage CustomImage) (string, 
 	return rebuiltImageTag, nil
 }
 
-func (r *Registry) getToken(req *http.Request) (string, error) {
-	const authenticationHeaderKey = "www-authenticate"
-
-	res, err := r.client.Do(req)
-	if err != nil {
-		return "", microerror.Mask(err)
-	}
-	defer res.Body.Close()
-
-	var authenticationHeaderValue []string
-	// the authentication header can be found as www-authenticate, Www-Authenticate
-	// or WWW-Authenticate.
-	for k, v := range res.Header {
-		if strings.ToLower(k) == authenticationHeaderKey {
-			authenticationHeaderValue = v
-			break
-		}
-	}
-	if len(authenticationHeaderValue) == 0 {
-		// no need for authentication
-		return "", nil
-	}
-
-	authURL, err := getAuthURL(authenticationHeaderValue[0])
-	if err != nil {
-		return "", microerror.Mask(err)
-	}
-
-	reqToken, err := http.NewRequest(http.MethodGet, authURL, nil)
-	if err != nil {
-		return "", microerror.Mask(err)
-	}
-	resToken, err := r.client.Do(reqToken)
-	if err != nil {
-		return "", microerror.Mask(err)
-	}
-	defer resToken.Body.Close()
-
-	tokenResponse := &TokenRequestResponse{}
-	err = json.NewDecoder(resToken.Body).Decode(tokenResponse)
-	if err != nil {
-		return "", microerror.Mask(err)
-	}
-
-	return tokenResponse.Token, nil
-}
-
 func (r *Registry) GetDigest(image string, tag string) (digest.Digest, error) {
 	digest, err := r.registryClient.ManifestV2Digest(ImageName(r.organisation, image), tag)
 	if err != nil {
@@ -233,42 +176,4 @@ func (r *Registry) DeleteImage(image string, tag string) error {
 	}
 
 	return nil
-}
-
-func getAuthURL(authenticateChallenge string) (string, error) {
-	// www-authenticate headers have this form:
-	// Bearer realm="<realm>",service="<service>"[,scope="<scope>"]
-
-	authenticateChallenge = strings.Replace(authenticateChallenge, `"`, "", -1)
-
-	parts := strings.Fields(authenticateChallenge)
-	if len(parts) < 2 {
-		return "", microerror.Mask(invalidAuthenticateChallengeError)
-	}
-	items := strings.Split(parts[1], ",")
-	if len(items) < 2 {
-		return "", microerror.Mask(invalidAuthenticateChallengeError)
-	}
-	kv := strings.Split(items[0], "=")
-	if len(kv) < 2 {
-		return "", microerror.Mask(invalidAuthenticateChallengeError)
-	}
-	realm := kv[1]
-	kv = strings.Split(items[1], "=")
-	if len(kv) < 2 {
-		return "", microerror.Mask(invalidAuthenticateChallengeError)
-	}
-	service := kv[1]
-	var scope string
-	if len(items) == 3 {
-		kv = strings.Split(items[2], "=")
-		if len(kv) < 2 {
-			return "", microerror.Mask(invalidAuthenticateChallengeError)
-		}
-		scope = kv[1]
-	}
-
-	url := fmt.Sprintf("%s?service=%s&scope=%s", realm, service, scope)
-
-	return url, nil
 }
