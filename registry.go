@@ -8,10 +8,10 @@ import (
 	"os/exec"
 	"strings"
 	"text/template"
-	"time"
 
-	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
+	"github.com/nokia/docker-registry-client/registry"
+	"github.com/opencontainers/go-digest"
 )
 
 const customDockerfileTmpl = `FROM {{ .BaseImage }}:{{ .Tag }}
@@ -36,7 +36,8 @@ type RegistryConfig struct {
 }
 
 type Registry struct {
-	client *http.Client
+	client         *http.Client
+	registryClient *registry.Registry
 
 	host         string
 	organisation string
@@ -72,13 +73,19 @@ func NewRegistry(cfg *RegistryConfig) (*Registry, error) {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Password must not be empty", cfg)
 	}
 
+	registryClient, err := registry.New(fmt.Sprintf("https://%s", cfg.Host), cfg.Username, cfg.Password)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
 	qr := &Registry{
 		client: cfg.Client,
 
-		host:         cfg.Host,
-		organisation: cfg.Organisation,
-		password:     cfg.Password,
-		username:     cfg.Username,
+		host:           cfg.Host,
+		organisation:   cfg.Organisation,
+		password:       cfg.Password,
+		username:       cfg.Username,
+		registryClient: registryClient,
 	}
 
 	return qr, nil
@@ -108,43 +115,7 @@ func (r *Registry) CheckImageTagExists(image, tag string) (bool, error) {
 }
 
 func (r *Registry) ListImageTags(image string) ([]string, error) {
-	url := fmt.Sprintf("https://%s/v2/%s/tags/list", r.host, ImageName(r.organisation, image))
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-	token, err := r.getToken(req)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-	if token != "" {
-		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
-	}
-
-	var tags []string
-	o := func() error {
-		res, err := r.client.Do(req)
-		if err != nil {
-			return microerror.Mask(err)
-		}
-		defer res.Body.Close()
-
-		switch res.StatusCode {
-		case http.StatusOK:
-			tagResponse := &TagsListResponse{}
-			err = json.NewDecoder(res.Body).Decode(tagResponse)
-			if err != nil {
-				return microerror.Mask(err)
-			}
-
-			tags = tagResponse.Tags
-			return nil
-		default:
-			return microerror.Maskf(invalidStatusCodeError, "could not check retag status: %d", res.StatusCode)
-		}
-	}
-	b := backoff.NewExponential(10*time.Second, 1*time.Second)
-	err = backoff.Retry(o, b)
+	tags, err := r.registryClient.Tags(ImageName(r.organisation, image))
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -241,42 +212,8 @@ func (r *Registry) getToken(req *http.Request) (string, error) {
 	return tokenResponse.Token, nil
 }
 
-func (r *Registry) GetDigest(image string, tag string) (string, error) {
-	url := fmt.Sprintf("https://%s/v2/%s/manifests/%s", r.host, ImageName(r.organisation, image), tag)
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		return "", microerror.Mask(err)
-	}
-	token, err := r.getToken(req)
-	if err != nil {
-		return "", microerror.Mask(err)
-	}
-	if token != "" {
-		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
-	}
-	req.Header.Add("Accept", "application/vnd.docker.distribution.manifest.v2+json")
-
-	var digest string
-	o := func() error {
-		res, err := r.client.Do(req)
-		if err != nil {
-			return microerror.Mask(err)
-		}
-		defer res.Body.Close()
-
-		switch res.StatusCode {
-		case http.StatusOK:
-			digest = res.Header.Get("docker-content-digest")
-			if digest == "" {
-				return microerror.Maskf(invalidStatusCodeError, "remote didn't return docker-content-digest header")
-			}
-			return nil
-		default:
-			return microerror.Maskf(invalidStatusCodeError, "could not get manifest: %d", res.StatusCode)
-		}
-	}
-	b := backoff.NewExponential(10*time.Second, 1*time.Second)
-	err = backoff.Retry(o, b)
+func (r *Registry) GetDigest(image string, tag string) (digest.Digest, error) {
+	digest, err := r.registryClient.ManifestV2Digest(ImageName(r.organisation, image), tag)
 	if err != nil {
 		return "", microerror.Mask(err)
 	}
@@ -290,37 +227,7 @@ func (r *Registry) DeleteImage(image string, tag string) error {
 		return microerror.Mask(err)
 	}
 
-	// returns 202
-
-	url := fmt.Sprintf("https://%s/v2/%s/manifests/%s", r.host, ImageName(r.organisation, image), digest)
-	req, err := http.NewRequest(http.MethodDelete, url, nil)
-	if err != nil {
-		return microerror.Mask(err)
-	}
-	token, err := r.getToken(req)
-	if err != nil {
-		return microerror.Mask(err)
-	}
-	if token != "" {
-		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
-	}
-
-	o := func() error {
-		res, err := r.client.Do(req)
-		if err != nil {
-			return microerror.Mask(err)
-		}
-		defer res.Body.Close()
-
-		switch res.StatusCode {
-		case http.StatusAccepted:
-			return nil
-		default:
-			return microerror.Maskf(invalidStatusCodeError, "could not delete manifest: %d", res.StatusCode)
-		}
-	}
-	b := backoff.NewExponential(10*time.Second, 1*time.Second)
-	err = backoff.Retry(o, b)
+	err = r.registryClient.DeleteManifest(ImageName(r.organisation, image), digest)
 	if err != nil {
 		return microerror.Mask(err)
 	}
