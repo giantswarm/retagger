@@ -23,6 +23,9 @@ func TestE2e(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	r.registryClient.Logf = func(f string, args ...interface{}) {
+		t.Logf(f, args...)
+	}
 
 	defer SetUpE2eTest(t, r)()
 
@@ -45,8 +48,6 @@ func SetUpE2eTest(t *testing.T, r *Registry) func() {
 	if r == nil {
 		t.Fatal("registry must not be nil")
 	}
-
-	t.Log("setup")
 
 	return func() {
 		t.Log("teardown")
