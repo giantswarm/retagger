@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 	"os/exec"
 )
@@ -24,8 +23,6 @@ func main() {
 	}
 
 	c := &RegistryConfig{
-		Client: &http.Client{},
-
 		Host:         os.Getenv("REGISTRY"),
 		Organisation: os.Getenv("REGISTRY_ORGANISATION"),
 		Password:     os.Getenv("REGISTRY_PASSWORD"),

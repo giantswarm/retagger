@@ -36,3 +36,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/giantswarm/backoff"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/nokia/docker-registry-client"

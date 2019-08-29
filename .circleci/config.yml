@@ -3,33 +3,63 @@ jobs:
   build:
     machine: true
     steps:
-    - checkout
+      - checkout
 
-    - run:
-        name: Validate YAML
-        command: |
+      - run:
+          name: Validate YAML
+          command: |
             docker run --rm -ti \
             -v $PWD:/workdir \
             giantswarm/yamllint \
             -d '{extends: default, rules: {line-length: {max: 200}, document-start: disable, indentation: {spaces: 0}}}' \
             images.yaml
 
-    - run:
-        name: Install architect
-        command: |
+      - run:
+          name: Install architect
+          command: |
             wget -q $(curl -sS -H "Authorization: token $RELEASE_TOKEN" https://api.github.com/repos/giantswarm/architect/releases/latest | grep browser_download_url | head -n 1 | cut -d '"' -f 4)
             chmod +x ./architect
             ./architect version
 
-    - run:
-        name: architect build
-        command: ./architect build
+      - run:
+          name: architect build
+          command: ./architect build
 
-    - persist_to_workspace:
-        root: .
-        paths:
-        - ./retagger
-        - ./images.yaml
+      - run:
+          name: compile e2e test
+          command: |
+            docker run --rm -it \
+            -v $PWD:/go/src/github.com/giantswarm/retagger \
+            -w /go/src/github.com/giantswarm/retagger \
+            quay.io/giantswarm/golang:1.12.9 \
+            go test -c -tags e2e .
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./retagger
+            - ./retagger.test
+            - ./images-e2e.yaml
+            - ./images.yaml
+
+  e2eQuay:
+    environment:
+      REGISTRY: "quay.io"
+      REGISTRY_ORGANISATION: "giantswarm"
+    machine: true
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Set registry credentials
+          command: |
+            echo 'export REGISTRY_USERNAME=${QUAY_USERNAME}' >> $BASH_ENV
+            echo 'export REGISTRY_PASSWORD=${QUAY_PASSWORD}' >> $BASH_ENV
+            source $BASH_ENV
+      - run:
+          name: Run e2e test
+          command: |
+            ./retagger.test -test.run ".*E2e.*" -test.v
 
   retagQuay:
     environment:
@@ -37,19 +67,19 @@ jobs:
       REGISTRY_ORGANISATION: "giantswarm"
     machine: true
     steps:
-    - attach_workspace:
-        at: .
+      - attach_workspace:
+          at: .
 
-    - run:
-        name: Set registry credentials
-        command: |
+      - run:
+          name: Set registry credentials
+          command: |
             echo 'export REGISTRY_USERNAME=${QUAY_USERNAME}' >> $BASH_ENV
             echo 'export REGISTRY_PASSWORD=${QUAY_PASSWORD}' >> $BASH_ENV
             source $BASH_ENV
 
-    - run:
-        name: Execute retagger
-        command: ./retagger
+      - run:
+          name: Execute retagger
+          command: ./retagger
 
   retagAliyun:
     environment:
@@ -57,35 +87,41 @@ jobs:
       REGISTRY_ORGANISATION: "giantswarm"
     machine: true
     steps:
-    - attach_workspace:
-        at: .
+      - attach_workspace:
+          at: .
 
-    - run:
-        name: Set registry credentials
-        command: |
+      - run:
+          name: Set registry credentials
+          command: |
             echo 'export REGISTRY_USERNAME=${ALIYUN_USERNAME}' >> $BASH_ENV
             echo 'export REGISTRY_PASSWORD=${ALIYUN_PASSWORD}' >> $BASH_ENV
             source $BASH_ENV
 
-    - run:
-        name: Execute retagger
-        command: ./retagger
+      - run:
+          name: Execute retagger
+          command: ./retagger
 
 
 workflows:
   version: 2
   build_e2e:
     jobs:
-    - build
-    - retagQuay:
-        filters:
-          branches:
-            only: master
-        requires:
-        - build
-    - retagAliyun:
-        filters:
-          branches:
-            only: master
-        requires:
-        - build
+      - build
+      - e2eQuay:
+          filters:
+            branches:
+              ignore: master
+          requires:
+            - build
+      - retagQuay:
+          filters:
+            branches:
+              only: master
+          requires:
+            - build
+      - retagAliyun:
+          filters:
+            branches:
+              only: master
+          requires:
+            - build

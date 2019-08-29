@@ -1,17 +1,16 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"net/http"
 	"os"
 	"os/exec"
-	"strings"
 	"text/template"
 	"time"
 
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
+	"github.com/nokia/docker-registry-client/registry"
+	"github.com/opencontainers/go-digest"
 )
 
 const customDockerfileTmpl = `FROM {{ .BaseImage }}:{{ .Tag }}
@@ -27,16 +26,15 @@ type Dockerfile struct {
 }
 
 type RegistryConfig struct {
-	Client *http.Client
-
 	Host         string
 	Organisation string
 	Password     string
 	Username     string
+	LogFunc      func(format string, args ...interface{})
 }
 
 type Registry struct {
-	client *http.Client
+	registryClient *registry.Registry
 
 	host         string
 	organisation string
@@ -44,18 +42,7 @@ type Registry struct {
 	username     string
 }
 
-type TagsListResponse struct {
-	Tags []string `json:"tags"`
-}
-
-type TokenRequestResponse struct {
-	Token string `json:"token"`
-}
-
 func NewRegistry(cfg *RegistryConfig) (*Registry, error) {
-	if cfg.Client == nil {
-		return nil, microerror.Maskf(invalidConfigError, "%T.Client must not be empty", cfg)
-	}
 	if cfg.Host == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Host must not be empty", cfg)
 	}
@@ -72,13 +59,31 @@ func NewRegistry(cfg *RegistryConfig) (*Registry, error) {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Password must not be empty", cfg)
 	}
 
-	qr := &Registry{
-		client: cfg.Client,
+	var err error
 
-		host:         cfg.Host,
-		organisation: cfg.Organisation,
-		password:     cfg.Password,
-		username:     cfg.Username,
+	var registryClient *registry.Registry
+	{
+		o := registry.Options{
+			Username: cfg.Username,
+			Password: cfg.Password,
+		}
+
+		if cfg.LogFunc != nil {
+			o.Logf = cfg.LogFunc
+		}
+
+		registryClient, err = registry.NewCustom(fmt.Sprintf("https://%s", cfg.Host), o)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	qr := &Registry{
+		host:           cfg.Host,
+		organisation:   cfg.Organisation,
+		password:       cfg.Password,
+		username:       cfg.Username,
+		registryClient: registryClient,
 	}
 
 	return qr, nil
@@ -108,43 +113,18 @@ func (r *Registry) CheckImageTagExists(image, tag string) (bool, error) {
 }
 
 func (r *Registry) ListImageTags(image string) ([]string, error) {
-	url := fmt.Sprintf("https://%s/v2/%s/tags/list", r.host, ImageName(r.organisation, image))
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-	token, err := r.getToken(req)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-	if token != "" {
-		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
-	}
-
 	var tags []string
 	o := func() error {
-		res, err := r.client.Do(req)
+		imageTags, err := r.registryClient.Tags(ImageName(r.organisation, image))
 		if err != nil {
 			return microerror.Mask(err)
 		}
-		defer res.Body.Close()
 
-		switch res.StatusCode {
-		case http.StatusOK:
-			tagResponse := &TagsListResponse{}
-			err = json.NewDecoder(res.Body).Decode(tagResponse)
-			if err != nil {
-				return microerror.Mask(err)
-			}
-
-			tags = tagResponse.Tags
-			return nil
-		default:
-			return microerror.Maskf(invalidStatusCodeError, "could not check retag status: %d", res.StatusCode)
-		}
+		tags = imageTags
+		return nil
 	}
-	b := backoff.NewExponential(10*time.Second, 1*time.Second)
-	err = backoff.Retry(o, b)
+	b := backoff.NewExponential(500*time.Millisecond, 5*time.Second)
+	err := backoff.Retry(o, b)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -194,87 +174,25 @@ func (r *Registry) Rebuild(image, tag string, customImage CustomImage) (string, 
 	return rebuiltImageTag, nil
 }
 
-func (r *Registry) getToken(req *http.Request) (string, error) {
-	const authenticationHeaderKey = "www-authenticate"
-
-	res, err := r.client.Do(req)
-	if err != nil {
-		return "", microerror.Mask(err)
-	}
-	defer res.Body.Close()
-
-	var authenticationHeaderValue []string
-	// the authentication header can be found as www-authenticate, Www-Authenticate
-	// or WWW-Authenticate.
-	for k, v := range res.Header {
-		if strings.ToLower(k) == authenticationHeaderKey {
-			authenticationHeaderValue = v
-			break
-		}
-	}
-	if len(authenticationHeaderValue) == 0 {
-		// no need for authentication
-		return "", nil
-	}
-
-	authURL, err := getAuthURL(authenticationHeaderValue[0])
+func (r *Registry) GetDigest(image string, tag string) (digest.Digest, error) {
+	digest, err := r.registryClient.ManifestV2Digest(ImageName(r.organisation, image), tag)
 	if err != nil {
 		return "", microerror.Mask(err)
 	}
 
-	reqToken, err := http.NewRequest(http.MethodGet, authURL, nil)
-	if err != nil {
-		return "", microerror.Mask(err)
-	}
-	resToken, err := r.client.Do(reqToken)
-	if err != nil {
-		return "", microerror.Mask(err)
-	}
-	defer resToken.Body.Close()
-
-	tokenResponse := &TokenRequestResponse{}
-	err = json.NewDecoder(resToken.Body).Decode(tokenResponse)
-	if err != nil {
-		return "", microerror.Mask(err)
-	}
-
-	return tokenResponse.Token, nil
+	return digest, nil
 }
 
-func getAuthURL(authenticateChallenge string) (string, error) {
-	// www-authenticate headers have this form:
-	// Bearer realm="<realm>",service="<service>"[,scope="<scope>"]
-
-	authenticateChallenge = strings.Replace(authenticateChallenge, `"`, "", -1)
-
-	parts := strings.Fields(authenticateChallenge)
-	if len(parts) < 2 {
-		return "", microerror.Mask(invalidAuthenticateChallengeError)
-	}
-	items := strings.Split(parts[1], ",")
-	if len(items) < 2 {
-		return "", microerror.Mask(invalidAuthenticateChallengeError)
-	}
-	kv := strings.Split(items[0], "=")
-	if len(kv) < 2 {
-		return "", microerror.Mask(invalidAuthenticateChallengeError)
-	}
-	realm := kv[1]
-	kv = strings.Split(items[1], "=")
-	if len(kv) < 2 {
-		return "", microerror.Mask(invalidAuthenticateChallengeError)
-	}
-	service := kv[1]
-	var scope string
-	if len(items) == 3 {
-		kv = strings.Split(items[2], "=")
-		if len(kv) < 2 {
-			return "", microerror.Mask(invalidAuthenticateChallengeError)
-		}
-		scope = kv[1]
+func (r *Registry) DeleteImage(image string, tag string) error {
+	digest, err := r.GetDigest(image, tag)
+	if err != nil {
+		return microerror.Mask(err)
 	}
 
-	url := fmt.Sprintf("%s?service=%s&scope=%s", realm, service, scope)
+	err = r.registryClient.DeleteManifest(ImageName(r.organisation, image), digest)
+	if err != nil {
+		return microerror.Mask(err)
+	}
 
-	return url, nil
+	return nil
 }
