@@ -32,7 +32,7 @@ jobs:
             -v $PWD:/go/src/github.com/giantswarm/retagger \
             -w /go/src/github.com/giantswarm/retagger \
             quay.io/giantswarm/golang:1.12.9 \
-            go test -c .
+            go test -c -tags e2e .
 
       - persist_to_workspace:
           root: .

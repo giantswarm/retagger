@@ -1,7 +1,8 @@
+// +build e2e
+
 package main
 
 import (
-	"flag"
 	"os"
 	"os/exec"
 	"testing"
@@ -9,19 +10,9 @@ import (
 	"github.com/giantswarm/microerror"
 )
 
-var testE2e = flag.Bool("e2e", false, "if set run a e2e test")
-
 const e2eRepository = "retagger-e2e"
 
-func init() {
-	flag.Parse()
-}
-
 func TestE2e(t *testing.T) {
-	if !*testE2e {
-		t.Skip("Use -e2e flag to execute this test.")
-	}
-
 	c := &RegistryConfig{
 		Host:         os.Getenv("REGISTRY"),
 		Organisation: os.Getenv("REGISTRY_ORGANISATION"),
