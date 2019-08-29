@@ -59,7 +59,7 @@ jobs:
       - run:
           name: Run e2e test
           command: |
-            ./retagger.test -e2e -test.run ".*E2e.*" -test.v
+            ./retagger.test -test.run ".*E2e.*" -test.v
 
   retagQuay:
     environment:
