@@ -5,7 +5,9 @@ import (
 	"os"
 	"os/exec"
 	"text/template"
+	"time"
 
+	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
 	"github.com/nokia/docker-registry-client/registry"
 	"github.com/opencontainers/go-digest"
@@ -96,7 +98,18 @@ func (r *Registry) CheckImageTagExists(image, tag string) (bool, error) {
 }
 
 func (r *Registry) ListImageTags(image string) ([]string, error) {
-	tags, err := r.registryClient.Tags(ImageName(r.organisation, image))
+	var tags []string
+	o := func() error {
+		imageTags, err := r.registryClient.Tags(ImageName(r.organisation, image))
+		if err != nil {
+			return microerror.Mask(err)
+		}
+
+		tags = imageTags
+		return nil
+	}
+	b := backoff.NewExponential(500*time.Millisecond, 5*time.Second)
+	err := backoff.Retry(o, b)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
