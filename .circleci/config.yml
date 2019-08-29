@@ -25,21 +25,29 @@ jobs:
           name: architect build
           command: ./architect build
 
+      - run:
+          name: compile e2e test
+          command: |
+            docker run --rm -it \
+            -v $PWD:/go/src/github.com/giantswarm/retagger \
+            -w /go/src/github.com/giantswarm/retagger \
+            quay.io/giantswarm/golang:1.12.9 \
+            go test -c .
+
       - persist_to_workspace:
           root: .
           paths:
             - ./retagger
+            - ./retagger.test
+            - ./images-e2e.yaml
             - ./images.yaml
 
   e2eQuay:
     environment:
       REGISTRY: "quay.io"
       REGISTRY_ORGANISATION: "giantswarm"
-    docker:
-      - image: quay.io/giantswarm/golang:1.12.9
-    working_directory: /go/src/github.com/giantswarm/retagger
+    machine: true
     steps:
-      - checkout
       - attach_workspace:
           at: .
       - run:
@@ -51,7 +59,7 @@ jobs:
       - run:
           name: Run e2e test
           command: |
-            go test -v . --run ".*E2e.*" -e2e
+            ./retagger.test -v . --run ".*E2e.*" -e2e
 
   retagQuay:
     environment:
