@@ -254,6 +254,7 @@ func (r *Registry) GetDigest(image string, tag string) (string, error) {
 	if token != "" {
 		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
 	}
+	req.Header.Add("Accept", "application/vnd.docker.distribution.manifest.v2+json")
 
 	var digest string
 	o := func() error {
@@ -280,8 +281,6 @@ func (r *Registry) GetDigest(image string, tag string) (string, error) {
 		return "", microerror.Mask(err)
 	}
 
-	digest = strings.TrimPrefix(digest, "sha256:")
-
 	return digest, nil
 }
 
@@ -291,7 +290,6 @@ func (r *Registry) DeleteImage(image string, tag string) error {
 		return microerror.Mask(err)
 	}
 
-	const delete = "/v2/%s/manifests/%s"
 	// returns 202
 
 	url := fmt.Sprintf("https://%s/v2/%s/manifests/%s", r.host, ImageName(r.organisation, image), digest)
@@ -318,7 +316,7 @@ func (r *Registry) DeleteImage(image string, tag string) error {
 		case http.StatusAccepted:
 			return nil
 		default:
-			return microerror.Maskf(invalidStatusCodeError, "could not get manifest: %d", res.StatusCode)
+			return microerror.Maskf(invalidStatusCodeError, "could not delete manifest: %d", res.StatusCode)
 		}
 	}
 	b := backoff.NewExponential(10*time.Second, 1*time.Second)

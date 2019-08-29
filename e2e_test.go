@@ -51,13 +51,6 @@ func TestE2e(t *testing.T) {
 	if !ok {
 		t.Fatal("Image retagger-e2e:3.7 does not exist.")
 	}
-	ok, err = r.CheckImageTagExists("retagger-e2e", "3.9")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if !ok {
-		t.Fatal("Image retagger-e2e:3.9 does not exist.")
-	}
 }
 
 func SetUpE2eTest(t *testing.T, r *Registry) func() {

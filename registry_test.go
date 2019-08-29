@@ -44,6 +44,11 @@ func Test_GetAuthURL(t *testing.T) {
 			challenge:     `Bearer realm="https://dockerauth.aliyuncs.com/auth",service="registry.aliyuncs.com:cn-shanghai:26888",scope:"repository:giantswarm/build-test:pull"`,
 			expectedError: true,
 		},
+		{
+			description: "case 7: try to delete an image on quay.io",
+			challenge:   `Bearer realm="https://quay.io/v2/auth",service="quay.io",scope="repository:giantswarm/retagger-e2e:pull,push"`,
+			expectedURL: "https://quay.io/v2/auth?",
+		},
 	}
 
 	for _, tc := range tcs {
