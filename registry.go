@@ -241,6 +241,95 @@ func (r *Registry) getToken(req *http.Request) (string, error) {
 	return tokenResponse.Token, nil
 }
 
+func (r *Registry) GetDigest(image string, tag string) (string, error) {
+	url := fmt.Sprintf("https://%s/v2/%s/manifests/%s", r.host, ImageName(r.organisation, image), tag)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return "", microerror.Mask(err)
+	}
+	token, err := r.getToken(req)
+	if err != nil {
+		return "", microerror.Mask(err)
+	}
+	if token != "" {
+		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
+	}
+
+	var digest string
+	o := func() error {
+		res, err := r.client.Do(req)
+		if err != nil {
+			return microerror.Mask(err)
+		}
+		defer res.Body.Close()
+
+		switch res.StatusCode {
+		case http.StatusOK:
+			digest = res.Header.Get("docker-content-digest")
+			if digest == "" {
+				return microerror.Maskf(invalidStatusCodeError, "remote didn't return docker-content-digest header")
+			}
+			return nil
+		default:
+			return microerror.Maskf(invalidStatusCodeError, "could not get manifest: %d", res.StatusCode)
+		}
+	}
+	b := backoff.NewExponential(10*time.Second, 1*time.Second)
+	err = backoff.Retry(o, b)
+	if err != nil {
+		return "", microerror.Mask(err)
+	}
+
+	digest = strings.TrimPrefix(digest, "sha256:")
+
+	return digest, nil
+}
+
+func (r *Registry) DeleteImage(image string, tag string) error {
+	digest, err := r.GetDigest(image, tag)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	const delete = "/v2/%s/manifests/%s"
+	// returns 202
+
+	url := fmt.Sprintf("https://%s/v2/%s/manifests/%s", r.host, ImageName(r.organisation, image), digest)
+	req, err := http.NewRequest(http.MethodDelete, url, nil)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+	token, err := r.getToken(req)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+	if token != "" {
+		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
+	}
+
+	o := func() error {
+		res, err := r.client.Do(req)
+		if err != nil {
+			return microerror.Mask(err)
+		}
+		defer res.Body.Close()
+
+		switch res.StatusCode {
+		case http.StatusAccepted:
+			return nil
+		default:
+			return microerror.Maskf(invalidStatusCodeError, "could not get manifest: %d", res.StatusCode)
+		}
+	}
+	b := backoff.NewExponential(10*time.Second, 1*time.Second)
+	err = backoff.Retry(o, b)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	return nil
+}
+
 func getAuthURL(authenticateChallenge string) (string, error) {
 	// www-authenticate headers have this form:
 	// Bearer realm="<realm>",service="<service>"[,scope="<scope>"]
