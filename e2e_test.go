@@ -54,6 +54,7 @@ func SetUpE2eTest(t *testing.T, r *Registry) func() {
 		if err != nil {
 			t.Fatalf("ERROR: Could not clean-up registry: %v", err)
 		}
+		t.Log("teardown completed successfully")
 	}
 }
 
@@ -70,6 +71,5 @@ func cleanupRegistry(t *testing.T, r *Registry) error {
 		}
 	}
 
-	t.Log("cleaned up")
 	return nil
 }
