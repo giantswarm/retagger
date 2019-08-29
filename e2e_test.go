@@ -38,7 +38,7 @@ func TestE2e(t *testing.T) {
 
 	defer SetUpE2eTest(t, r)()
 
-	retagger := exec.Command("./retagger -f images-e2e.yaml")
+	retagger := exec.Command("./retagger", "-f", "images-e2e.yaml")
 	err = Run(retagger)
 	if err != nil {
 		t.Fatal(err)
