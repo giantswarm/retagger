@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -92,14 +91,29 @@ func (r *Registry) Login() error {
 }
 
 func (r *Registry) CheckImageTagExists(image, tag string) (bool, error) {
-	url := fmt.Sprintf("https://%s/v2/%s/tags/list", r.host, ImageName(r.organisation, image))
-	req, err := http.NewRequest(http.MethodGet, url, nil)
+	tags, err := r.ListImageTags(image)
 	if err != nil {
 		return false, microerror.Mask(err)
 	}
+
+	for _, imageTag := range tags {
+		if imageTag == tag {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func (r *Registry) ListImageTags(image string) ([]string, error) {
+	url := fmt.Sprintf("https://%s/v2/%s/tags/list", r.host, ImageName(r.organisation, image))
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
 	token, err := r.getToken(req)
 	if err != nil {
-		return false, microerror.Mask(err)
+		return nil, microerror.Mask(err)
 	}
 	if token != "" {
 		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
@@ -107,7 +121,7 @@ func (r *Registry) CheckImageTagExists(image, tag string) (bool, error) {
 
 	res, err := r.client.Do(req)
 	if err != nil {
-		return false, microerror.Mask(err)
+		return nil, microerror.Mask(err)
 	}
 	defer res.Body.Close()
 
@@ -116,17 +130,12 @@ func (r *Registry) CheckImageTagExists(image, tag string) (bool, error) {
 		tagResponse := &TagsListResponse{}
 		err = json.NewDecoder(res.Body).Decode(tagResponse)
 		if err != nil {
-			return false, microerror.Mask(err)
+			return nil, microerror.Mask(err)
 		}
-		for _, imageTag := range tagResponse.Tags {
-			if imageTag == tag {
-				return true, nil
-			}
-		}
-		return false, nil
+
+		return tagResponse.Tags, nil
 	default:
-		log.Printf("could not check retag status: %v", res.StatusCode)
-		return false, nil
+		return nil, microerror.Maskf(invalidStatusCodeError, "could not check retag status: %d", res.StatusCode)
 	}
 }
 

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -8,7 +9,20 @@ import (
 	"os/exec"
 )
 
+var configFile = flag.String("f", "images.yaml", "retagger config (images.yaml) file to use.")
+
 func main() {
+	flag.Parse()
+
+	if *configFile == "" {
+		log.Fatalf("-f flag (config file) should not be empty")
+	}
+
+	err := InitImages(*configFile)
+	if err != nil {
+		log.Fatalf("could not read retagger config %v", err)
+	}
+
 	c := &RegistryConfig{
 		Client: &http.Client{},
 
