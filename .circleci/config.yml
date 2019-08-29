@@ -36,9 +36,10 @@ jobs:
       REGISTRY: "quay.io"
       REGISTRY_ORGANISATION: "giantswarm"
     docker:
-      - image: golang:1
+      - image: quay.io/giantswarm/golang:1.12.9
     working_directory: /go/src/github.com/giantswarm/retagger
     steps:
+      - checkout
       - attach_workspace:
           at: .
       - run:
