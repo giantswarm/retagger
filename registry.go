@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 	"os/exec"
 	"text/template"
@@ -25,8 +24,6 @@ type Dockerfile struct {
 }
 
 type RegistryConfig struct {
-	Client *http.Client
-
 	Host         string
 	Organisation string
 	Password     string
@@ -34,7 +31,6 @@ type RegistryConfig struct {
 }
 
 type Registry struct {
-	client         *http.Client
 	registryClient *registry.Registry
 
 	host         string
@@ -44,9 +40,6 @@ type Registry struct {
 }
 
 func NewRegistry(cfg *RegistryConfig) (*Registry, error) {
-	if cfg.Client == nil {
-		return nil, microerror.Maskf(invalidConfigError, "%T.Client must not be empty", cfg)
-	}
 	if cfg.Host == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Host must not be empty", cfg)
 	}
@@ -69,8 +62,6 @@ func NewRegistry(cfg *RegistryConfig) (*Registry, error) {
 	}
 
 	qr := &Registry{
-		client: cfg.Client,
-
 		host:           cfg.Host,
 		organisation:   cfg.Organisation,
 		password:       cfg.Password,

@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"net/http"
 	"os"
 	"os/exec"
 	"testing"
@@ -24,8 +23,6 @@ func TestE2e(t *testing.T) {
 	}
 
 	c := &RegistryConfig{
-		Client: &http.Client{},
-
 		Host:         os.Getenv("REGISTRY"),
 		Organisation: os.Getenv("REGISTRY_ORGANISATION"),
 		Password:     os.Getenv("REGISTRY_PASSWORD"),
