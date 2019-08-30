@@ -1,10 +1,9 @@
-package main
+package registry
 
 import (
 	"fmt"
 	"os"
 	"os/exec"
-	"text/template"
 	"time"
 
 	"github.com/giantswarm/backoff"
@@ -13,19 +12,10 @@ import (
 	"github.com/opencontainers/go-digest"
 )
 
-const customDockerfileTmpl = `FROM {{ .BaseImage }}:{{ .Tag }}
-{{range .DockerfileOptions -}}
-{{ . }}
-{{ end -}}
-`
 
-type Dockerfile struct {
-	BaseImage         string
-	DockerfileOptions []string
-	Tag               string
-}
 
-type RegistryConfig struct {
+
+type Config struct {
 	Host         string
 	Organisation string
 	Password     string
@@ -42,7 +32,7 @@ type Registry struct {
 	username     string
 }
 
-func NewRegistry(cfg *RegistryConfig) (*Registry, error) {
+func New(cfg *Config) (*Registry, error) {
 	if cfg.Host == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Host must not be empty", cfg)
 	}
