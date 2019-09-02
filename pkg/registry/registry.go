@@ -4,16 +4,16 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"text/template"
 	"time"
 
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
 	"github.com/nokia/docker-registry-client/registry"
 	"github.com/opencontainers/go-digest"
+
+	"github.com/giantswarm/retagger/pkg/config"
 )
-
-
-
 
 type Config struct {
 	Host         string
@@ -32,7 +32,7 @@ type Registry struct {
 	username     string
 }
 
-func New(cfg *Config) (*Registry, error) {
+func New(cfg Config) (*Registry, error) {
 	if cfg.Host == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Host must not be empty", cfg)
 	}
@@ -105,7 +105,7 @@ func (r *Registry) CheckImageTagExists(image, tag string) (bool, error) {
 func (r *Registry) ListImageTags(image string) ([]string, error) {
 	var tags []string
 	o := func() error {
-		imageTags, err := r.registryClient.Tags(ImageName(r.organisation, image))
+		imageTags, err := r.registryClient.Tags(config.ImageName(r.organisation, image))
 		if err != nil {
 			return microerror.Mask(err)
 		}
@@ -123,8 +123,8 @@ func (r *Registry) ListImageTags(image string) ([]string, error) {
 }
 
 func (r *Registry) Retag(image, sha, tag string) (string, error) {
-	retaggedName := RetaggedName(r.host, r.organisation, image)
-	retaggedNameWithTag := ImageWithTag(retaggedName, tag)
+	retaggedName := config.RetaggedName(r.host, r.organisation, image)
+	retaggedNameWithTag := config.ImageWithTag(retaggedName, tag)
 
 	retag := exec.Command("docker", "tag", sha, retaggedNameWithTag)
 	err := Run(retag)
@@ -134,9 +134,9 @@ func (r *Registry) Retag(image, sha, tag string) (string, error) {
 	return retaggedNameWithTag, nil
 }
 
-func (r *Registry) Rebuild(image, tag string, customImage CustomImage) (string, error) {
-	RetaggedName := RetaggedName(r.host, r.organisation, image)
-	rebuiltImageTag := ImageWithTag(RetaggedName, fmt.Sprintf("%s-%s", tag, customImage.TagSuffix))
+func (r *Registry) Rebuild(image, tag string, customImage config.CustomImage) (string, error) {
+	RetaggedName := config.RetaggedName(r.host, r.organisation, image)
+	rebuiltImageTag := config.ImageWithTag(RetaggedName, fmt.Sprintf("%s-%s", tag, customImage.TagSuffix))
 
 	dockerfile := Dockerfile{
 		BaseImage:         image,
@@ -165,7 +165,7 @@ func (r *Registry) Rebuild(image, tag string, customImage CustomImage) (string, 
 }
 
 func (r *Registry) GetDigest(image string, tag string) (digest.Digest, error) {
-	digest, err := r.registryClient.ManifestV2Digest(ImageName(r.organisation, image), tag)
+	digest, err := r.registryClient.ManifestV2Digest(config.ImageName(r.organisation, image), tag)
 	if err != nil {
 		return "", microerror.Mask(err)
 	}
@@ -179,7 +179,7 @@ func (r *Registry) DeleteImage(image string, tag string) error {
 		return microerror.Mask(err)
 	}
 
-	err = r.registryClient.DeleteManifest(ImageName(r.organisation, image), digest)
+	err = r.registryClient.DeleteManifest(config.ImageName(r.organisation, image), digest)
 	if err != nil {
 		return microerror.Mask(err)
 	}

@@ -32,13 +32,13 @@ jobs:
             -v $PWD:/go/src/github.com/giantswarm/retagger \
             -w /go/src/github.com/giantswarm/retagger \
             quay.io/giantswarm/golang:1.12.9 \
-            go test -c -tags e2e .
+            go test -c -tags e2e ./e2e
 
       - persist_to_workspace:
           root: .
           paths:
             - ./retagger
-            - ./retagger.test
+            - ./e2e.test
             - ./images-e2e.yaml
             - ./images.yaml
 
@@ -59,7 +59,7 @@ jobs:
       - run:
           name: Run e2e test
           command: |
-            ./retagger.test -test.run ".*E2e.*" -test.v
+            ./e2e.test -test.run ".*E2e.*" -test.v
 
   retagQuay:
     environment:

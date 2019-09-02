@@ -2,11 +2,7 @@ package config
 
 import (
 	"fmt"
-	"io/ioutil"
 	"strings"
-
-	"github.com/giantswarm/microerror"
-	"gopkg.in/yaml.v2"
 )
 
 // Image defines the data we process about a docker image.
@@ -37,19 +33,6 @@ type CustomImage struct {
 
 // Images is the data structure that will hold all image definitions.
 var Images []Image
-
-func InitImages(filePath string) error {
-	yamlFile, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		return microerror.Maskf(err, "could not read file %s: #%v ", filePath)
-	}
-	err = yaml.Unmarshal(yamlFile, &Images)
-	if err != nil {
-		return microerror.Maskf(err, "could not parse YAML file %s: %v", filePath)
-	}
-
-	return nil
-}
 
 func ImageName(organisation string, image string) string {
 	parts := strings.Split(image, "/")
