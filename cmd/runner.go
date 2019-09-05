@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"os/exec"
 
@@ -74,60 +73,60 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 		for _, tag := range image.Tags {
 			imageName := image.Name
 			if image.OverrideRepoName != "" {
-				log.Printf("Override Name specified. Using %s as mirrored image name", image.OverrideRepoName)
+				r.logger.LogCtx(ctx, "message", "level", "debug", fmt.Sprintf("Override Name specified. Using %s as mirrored image name", image.OverrideRepoName))
 				imageName = image.OverrideRepoName
 			}
-			log.Printf("managing: %v, %v, %v", imageName, tag.Sha, tag.Tag)
+			r.logger.LogCtx(ctx, "message", "level", "debug", fmt.Sprintf("managing: %v, %v, %v", imageName, tag.Sha, tag.Tag))
 
 			for _, customImage := range tag.CustomImages {
 				ok, err := destRegistry.CheckImageTagExists(imageName, tag.Tag)
 				if ok {
-					log.Printf("rebuilt image %q with tag %q already exists, skipping", imageName, fmt.Sprintf("%s-%s", tag.Tag, customImage.TagSuffix))
+					r.logger.LogCtx(ctx, "message", "level", "debug", fmt.Sprintf("rebuilt image %q with tag %q already exists, skipping", imageName, fmt.Sprintf("%s-%s", tag.Tag, customImage.TagSuffix)))
 					continue
 				} else if err != nil {
-					log.Fatalf("could not check image %q and tag %q: %v", imageName, tag.Tag, err)
+					return microerror.Maskf(err, "could not check image %q and tag %q: %v", imageName, tag.Tag, err)
 				} else {
-					log.Printf("rebuilt image %q with tag %q does not exists", imageName, fmt.Sprintf("%s-%s", tag.Tag, customImage.TagSuffix))
+					r.logger.LogCtx(ctx, "message", "level", "debug", fmt.Sprintf("rebuilt image %q with tag %q does not exists", imageName, fmt.Sprintf("%s-%s", tag.Tag, customImage.TagSuffix)))
 				}
 				rebuiltImageTag, err := destRegistry.Rebuild(imageName, tag.Tag, customImage)
 				if err != nil {
-					log.Fatalf("could not rebuild image: %v", err)
+					return microerror.Maskf(err, "could not rebuild image")
 				}
 
-				log.Printf("pushing rebuilt custom image %s-%s", tag.Tag, customImage.TagSuffix)
+				r.logger.LogCtx(ctx, "message", "level", "debug", fmt.Sprintf("pushing rebuilt custom image %s-%s", tag.Tag, customImage.TagSuffix))
 				push := exec.Command("docker", "push", rebuiltImageTag)
 				if err := Run(push); err != nil {
-					log.Fatalf("could not push image: %v", err)
+					return microerror.Maskf(err, "could not push image")
 				}
 			}
 
 			ok, err := destRegistry.CheckImageTagExists(imageName, tag.Tag)
 			if ok {
-				log.Printf("retagged image %q with tag %q already exists, skipping", imageName, tag.Tag)
+				r.logger.LogCtx(ctx, "message", "level", "debug", fmt.Sprintf("retagged image %q with tag %q already exists, skipping", imageName, tag.Tag))
 				continue
 			} else if err != nil {
-				log.Fatalf("could not check image %q and tag %q: %v", imageName, tag.Tag, err)
+				return microerror.Maskf(err, "could not check image %q and tag %q: %v", imageName, tag.Tag, err)
 			} else {
-				log.Printf("retagged image %q with tag %q does not exist", imageName, tag.Tag)
+				r.logger.LogCtx(ctx, "message", "level", "debug", fmt.Sprintf("retagged image %q with tag %q does not exist", imageName, tag.Tag))
 			}
 
 			shaName := config.ShaName(image.Name, tag.Sha)
 
-			log.Printf("pulling original image")
+			r.logger.LogCtx(ctx, "message", "level", "debug", fmt.Sprintf("pulling original image"))
 			pullOriginal := exec.Command("docker", "pull", shaName)
 			if err := Run(pullOriginal); err != nil {
-				log.Fatalf("could not pull image: %v", err)
+				return microerror.Maskf(err, "could not pull image")
 			}
 
 			retaggedNameWithTag, err := destRegistry.Retag(imageName, shaName, tag.Tag)
 			if err != nil {
-				log.Fatalf("could not retag image: %v", err)
+				return microerror.Maskf(err, "could not retag image")
 			}
 
-			log.Printf("pushing retagged image")
+			r.logger.LogCtx(ctx, "message", "level", "debug", fmt.Sprintf("pushing retagged image"))
 			push := exec.Command("docker", "push", retaggedNameWithTag)
 			if err := Run(push); err != nil {
-				log.Fatalf("could not push image: %v", err)
+				return microerror.Maskf(err, "could not push image")
 			}
 		}
 	}
