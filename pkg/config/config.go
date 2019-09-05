@@ -12,15 +12,22 @@ type Config struct {
 }
 
 func FromFile(filePath string) (*Config, error) {
-	yamlFile, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		return nil, microerror.Maskf(err, "could not read file %s: #%v ", filePath)
+	var err error
+
+	var yamlFile []byte
+	{
+		yamlFile, err = ioutil.ReadFile(filePath)
+		if err != nil {
+			return nil, microerror.Maskf(err, "could not read file %s: #%v ", filePath)
+		}
 	}
 
 	var images []Image
-	err = yaml.Unmarshal(yamlFile, &images)
-	if err != nil {
-		return nil, microerror.Maskf(err, "could not parse YAML file %s: %v", filePath)
+	{
+		err = yaml.Unmarshal(yamlFile, &images)
+		if err != nil {
+			return nil, microerror.Maskf(err, "could not parse YAML file %s: %v", filePath)
+		}
 	}
 
 	c := &Config{
