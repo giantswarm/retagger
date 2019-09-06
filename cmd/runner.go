@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"os"
 	"os/exec"
@@ -13,6 +12,7 @@ import (
 
 	"github.com/giantswarm/retagger/pkg/config"
 	"github.com/giantswarm/retagger/pkg/registry"
+	"github.com/giantswarm/retagger/pkg/retagger"
 )
 
 type runner struct {
@@ -69,66 +69,21 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 		return microerror.Mask(err)
 	}
 
-	for _, image := range conf.Images {
-		for _, tag := range image.Tags {
-			imageName := image.Name
-			if image.OverrideRepoName != "" {
-				r.logger.LogCtx(ctx, "message", "level", "debug", fmt.Sprintf("Override Name specified. Using %s as mirrored image name", image.OverrideRepoName))
-				imageName = image.OverrideRepoName
-			}
-			r.logger.LogCtx(ctx, "message", "level", "debug", fmt.Sprintf("managing: %v, %v, %v", imageName, tag.Sha, tag.Tag))
-
-			for _, customImage := range tag.CustomImages {
-				ok, err := destRegistry.CheckImageTagExists(imageName, tag.Tag)
-				if ok {
-					r.logger.LogCtx(ctx, "message", "level", "debug", fmt.Sprintf("rebuilt image %q with tag %q already exists, skipping", imageName, fmt.Sprintf("%s-%s", tag.Tag, customImage.TagSuffix)))
-					continue
-				} else if err != nil {
-					return microerror.Maskf(err, "could not check image %q and tag %q: %v", imageName, tag.Tag, err)
-				} else {
-					r.logger.LogCtx(ctx, "message", "level", "debug", fmt.Sprintf("rebuilt image %q with tag %q does not exists", imageName, fmt.Sprintf("%s-%s", tag.Tag, customImage.TagSuffix)))
-				}
-				rebuiltImageTag, err := destRegistry.Rebuild(imageName, tag.Tag, customImage)
-				if err != nil {
-					return microerror.Maskf(err, "could not rebuild image")
-				}
-
-				r.logger.LogCtx(ctx, "message", "level", "debug", fmt.Sprintf("pushing rebuilt custom image %s-%s", tag.Tag, customImage.TagSuffix))
-				push := exec.Command("docker", "push", rebuiltImageTag)
-				if err := Run(push); err != nil {
-					return microerror.Maskf(err, "could not push image")
-				}
-			}
-
-			ok, err := destRegistry.CheckImageTagExists(imageName, tag.Tag)
-			if ok {
-				r.logger.LogCtx(ctx, "message", "level", "debug", fmt.Sprintf("retagged image %q with tag %q already exists, skipping", imageName, tag.Tag))
-				continue
-			} else if err != nil {
-				return microerror.Maskf(err, "could not check image %q and tag %q: %v", imageName, tag.Tag, err)
-			} else {
-				r.logger.LogCtx(ctx, "message", "level", "debug", fmt.Sprintf("retagged image %q with tag %q does not exist", imageName, tag.Tag))
-			}
-
-			shaName := config.ShaName(image.Name, tag.Sha)
-
-			r.logger.LogCtx(ctx, "message", "level", "debug", fmt.Sprintf("pulling original image"))
-			pullOriginal := exec.Command("docker", "pull", shaName)
-			if err := Run(pullOriginal); err != nil {
-				return microerror.Maskf(err, "could not pull image")
-			}
-
-			retaggedNameWithTag, err := destRegistry.Retag(imageName, shaName, tag.Tag)
-			if err != nil {
-				return microerror.Maskf(err, "could not retag image")
-			}
-
-			r.logger.LogCtx(ctx, "message", "level", "debug", fmt.Sprintf("pushing retagged image"))
-			push := exec.Command("docker", "push", retaggedNameWithTag)
-			if err := Run(push); err != nil {
-				return microerror.Maskf(err, "could not push image")
-			}
+	var newRetagger *retagger.Retagger
+	{
+		c := retagger.Config{
+			Logger:              r.logger,
+			DestinationRegistry: destRegistry,
 		}
+		newRetagger, err = retagger.New(c)
+		if err != nil {
+			return microerror.Mask(err)
+		}
+	}
+
+	err = newRetagger.RetagImages(conf.Images)
+	if err != nil {
+		return microerror.Mask(err)
 	}
 
 	return nil
