@@ -24,14 +24,9 @@
 #   go-tests = true
 #   unused-packages = true
 
-
 [[constraint]]
   branch = "master"
   name = "github.com/giantswarm/microerror"
-
-[prune]
-  go-tests = true
-  unused-packages = true
 
 [[constraint]]
   branch = "master"
@@ -40,3 +35,11 @@
 [[constraint]]
   branch = "master"
   name = "github.com/nokia/docker-registry-client"
+
+[[constraint]]
+  name = "github.com/spf13/cobra"
+  version = "0.0.5"
+
+[prune]
+  go-tests = true
+  unused-packages = true

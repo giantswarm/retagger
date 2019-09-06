@@ -1,6 +1,6 @@
 // +build e2e
 
-package main
+package e2e
 
 import (
 	"os"
@@ -8,12 +8,14 @@ import (
 	"testing"
 
 	"github.com/giantswarm/microerror"
+
+	"github.com/giantswarm/retagger/pkg/registry"
 )
 
 const e2eRepository = "retagger-e2e"
 
 func TestE2e(t *testing.T) {
-	c := &RegistryConfig{
+	c := registry.Config{
 		Host:         os.Getenv("REGISTRY"),
 		Organisation: os.Getenv("REGISTRY_ORGANISATION"),
 		Password:     os.Getenv("REGISTRY_PASSWORD"),
@@ -22,13 +24,19 @@ func TestE2e(t *testing.T) {
 			t.Logf(f, args...)
 		},
 	}
-	r, err := NewRegistry(c)
+	r, err := registry.New(c)
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer SetUpE2eTest(t, r)()
 
-	retagger := exec.Command("./retagger", "-f", "images-e2e.yaml")
+	retagger := exec.Command(
+		"./retagger",
+		"-f", "./images-e2e.yaml",
+		"-r", c.Host,
+		"-o", c.Organisation,
+		"-u", c.Username,
+		"-p", c.Password)
 	err = Run(retagger)
 	if err != nil {
 		t.Fatal(err)
@@ -43,7 +51,7 @@ func TestE2e(t *testing.T) {
 	}
 }
 
-func SetUpE2eTest(t *testing.T, r *Registry) func() {
+func SetUpE2eTest(t *testing.T, r *registry.Registry) func() {
 	if r == nil {
 		t.Fatal("registry must not be nil")
 	}
@@ -58,7 +66,7 @@ func SetUpE2eTest(t *testing.T, r *Registry) func() {
 	}
 }
 
-func cleanupRegistry(t *testing.T, r *Registry) error {
+func cleanupRegistry(t *testing.T, r *registry.Registry) error {
 	tags, err := r.ListImageTags(e2eRepository)
 	if err != nil {
 		return microerror.Mask(err)
@@ -72,4 +80,11 @@ func cleanupRegistry(t *testing.T, r *Registry) error {
 	}
 
 	return nil
+}
+
+func Run(c *exec.Cmd) error {
+	c.Stdout = os.Stdout
+	c.Stderr = os.Stderr
+
+	return c.Run()
 }
