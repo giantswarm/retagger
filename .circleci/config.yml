@@ -79,7 +79,7 @@ jobs:
 
       - run:
           name: Execute retagger
-          command: ./retagger
+          command: ./retagger -r ${REGISTRY} -o ${REGISTRY_ORGANISATION} -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD}
 
   retagAliyun:
     environment:
@@ -99,7 +99,7 @@ jobs:
 
       - run:
           name: Execute retagger
-          command: ./retagger
+          command: ./retagger -r ${REGISTRY} -o ${REGISTRY_ORGANISATION} -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD}
 
 
 workflows:
