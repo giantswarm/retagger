@@ -31,9 +31,6 @@ type CustomImage struct {
 	DockerfileOptions []string `yaml:"dockerfileOptions"`
 }
 
-// Images is the data structure that will hold all image definitions.
-var Images []Image
-
 func ImageName(organisation string, image string) string {
 	parts := strings.Split(image, "/")
 
