@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"os"
 
 	"github.com/giantswarm/microerror"
@@ -15,7 +14,7 @@ import (
 func main() {
 	err := mainE(context.Background())
 	if err != nil {
-		panic(fmt.Sprintf("%#v\n", err))
+		panic(microerror.Stack(err))
 	}
 }
 
