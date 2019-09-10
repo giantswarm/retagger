@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"os"
 	"os/exec"
@@ -41,9 +42,9 @@ func (r *runner) Run(cmd *cobra.Command, args []string) error {
 func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) error {
 	var err error
 
-	var conf *images.Config
+	var img images.Images
 	{
-		conf, err = images.FromFile(r.flag.ConfigFile)
+		img, err = images.FromFile(r.flag.ConfigFile)
 		if err != nil {
 			return microerror.Mask(err)
 		}
@@ -81,7 +82,13 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 		}
 	}
 
-	err = newRetagger.RetagImages(conf.Images)
+	n, err := newRetagger.LoadImages(img)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+	r.logger.Log("level", "debug", "message", fmt.Sprintf("loaded %d images from YAML", n))
+
+	err = newRetagger.RetagImages(img)
 	if err != nil {
 		return microerror.Mask(err)
 	}

@@ -123,13 +123,13 @@ func TestShaName(t *testing.T) {
 }
 
 func TestImagesOrderedAlphabetically(t *testing.T) {
-	conf, err := FromFile("../../images.yaml")
+	images, err := FromFile("../../images.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	var imageNames []string
-	for _, image := range conf.Images {
+	for _, image := range images {
 		imageNames = append(imageNames, image.Name)
 	}
 

@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+type Images []Image
+
 // Image defines the data we process about a docker image.
 type Image struct {
 	Name             string `yaml:"name"`

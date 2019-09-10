@@ -39,8 +39,8 @@ func New(config Config) (*Retagger, error) {
 	return r, nil
 }
 
-func (r *Retagger) LoadImages(config images.Config) (int, error) {
-	jobs, err := FromConfig(config)
+func (r *Retagger) LoadImages(images images.Images) (int, error) {
+	jobs, err := FromConfig(images)
 	if err != nil {
 		return 0, microerror.Mask(err)
 	}

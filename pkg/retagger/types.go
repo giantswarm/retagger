@@ -22,10 +22,10 @@ type JobOptions struct {
 	OverrideRepoName string
 }
 
-func FromConfig(conf images.Config) ([]Job, error) {
+func FromConfig(images images.Images) ([]Job, error) {
 	var jobs []Job
 
-	for _, i := range conf.Images {
+	for _, i := range images {
 		js, err := FromImage(i)
 		if err != nil {
 			return nil, microerror.Mask(err)

@@ -7,11 +7,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type Config struct {
-	Images []Image
-}
-
-func FromFile(filePath string) (*Config, error) {
+func FromFile(filePath string) (Images, error) {
 	var err error
 
 	var yamlFile []byte
@@ -30,8 +26,5 @@ func FromFile(filePath string) (*Config, error) {
 		}
 	}
 
-	c := &Config{
-		Images: images,
-	}
-	return c, nil
+	return images, nil
 }
