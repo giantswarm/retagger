@@ -19,6 +19,8 @@ type Config struct {
 type Retagger struct {
 	logger              micrologger.Logger
 	destinationRegistry *registry.Registry
+
+	jobs []Job
 }
 
 func New(config Config) (*Retagger, error) {
@@ -32,8 +34,20 @@ func New(config Config) (*Retagger, error) {
 	r := &Retagger{
 		logger:              config.Logger,
 		destinationRegistry: config.DestinationRegistry,
+		jobs:                []Job{},
 	}
 	return r, nil
+}
+
+func (r *Retagger) LoadImages(config config.Config) (int, error) {
+	jobs, err := FromConfig(config)
+	if err != nil {
+		return 0, microerror.Mask(err)
+	}
+
+	r.jobs = append(r.jobs, jobs...)
+
+	return len(jobs), nil
 }
 
 func (r *Retagger) RetagImages(images []config.Image) error {
