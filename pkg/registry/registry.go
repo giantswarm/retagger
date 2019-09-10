@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 	"text/template"
 	"time"
 
@@ -185,4 +186,10 @@ func (r *Registry) DeleteImage(image string, tag string) error {
 	}
 
 	return nil
+}
+
+func (r *Registry) RetaggedName(image string) string {
+	parts := strings.Split(image, "/")
+
+	return fmt.Sprintf("%v/%v/%v", r.host, r.organisation, parts[len(parts)-1])
 }
