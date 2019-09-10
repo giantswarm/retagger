@@ -83,7 +83,7 @@ func (r *Retagger) handleImageTag(image images.Image, tag images.Tag) error {
 	for _, customImage := range tag.CustomImages {
 		ok, err := r.destinationRegistry.CheckImageTagExists(imageName, tag.Tag)
 		if ok {
-			r.logger.Log("message", "level", "debug", fmt.Sprintf("rebuilt image %q with tag %q already exists, skipping", imageName, fmt.Sprintf("%s-%s", tag.Tag, customImage.TagSuffix)))
+			r.logger.Log("level", "debug", "message", fmt.Sprintf("rebuilt image %q with tag %q already exists, skipping", imageName, fmt.Sprintf("%s-%s", tag.Tag, customImage.TagSuffix)))
 			continue
 		} else if err != nil {
 			return microerror.Maskf(err, "could not check image %q and tag %q: %v", imageName, tag.Tag, err)
@@ -125,7 +125,7 @@ func (r *Retagger) handleImageTag(image images.Image, tag images.Tag) error {
 		return microerror.Maskf(err, "could not retag image")
 	}
 
-	r.logger.Log("message", "level", "debug", "message", fmt.Sprintf("pushing retagged image"))
+	r.logger.Log("level", "debug", "message", fmt.Sprintf("pushing retagged image"))
 	push := exec.Command("docker", "push", retaggedNameWithTag)
 	if err := Run(push); err != nil {
 		return microerror.Maskf(err, "could not push image")

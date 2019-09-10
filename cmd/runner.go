@@ -86,7 +86,7 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 	if err != nil {
 		return microerror.Mask(err)
 	}
-	r.logger.Log("level", "debug", "message", fmt.Sprintf("loaded %d images from YAML", n))
+	r.logger.Log("level", "debug", "message", fmt.Sprintf("loaded %d jobs from YAML", n))
 
 	err = newRetagger.RetagImages(img)
 	if err != nil {
