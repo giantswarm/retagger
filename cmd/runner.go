@@ -10,7 +10,7 @@ import (
 	"github.com/giantswarm/micrologger"
 	"github.com/spf13/cobra"
 
-	"github.com/giantswarm/retagger/pkg/config"
+	"github.com/giantswarm/retagger/pkg/images"
 	"github.com/giantswarm/retagger/pkg/registry"
 	"github.com/giantswarm/retagger/pkg/retagger"
 )
@@ -41,9 +41,9 @@ func (r *runner) Run(cmd *cobra.Command, args []string) error {
 func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) error {
 	var err error
 
-	var conf *config.Config
+	var conf *images.Config
 	{
-		conf, err = config.FromFile(r.flag.ConfigFile)
+		conf, err = images.FromFile(r.flag.ConfigFile)
 		if err != nil {
 			return microerror.Mask(err)
 		}

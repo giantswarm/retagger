@@ -2,7 +2,7 @@ package retagger
 
 import (
 	"github.com/giantswarm/microerror"
-	"github.com/giantswarm/retagger/pkg/config"
+	"github.com/giantswarm/retagger/pkg/images"
 )
 
 type Job struct {
@@ -22,7 +22,7 @@ type JobOptions struct {
 	OverrideRepoName string
 }
 
-func FromConfig(conf config.Config) ([]Job, error) {
+func FromConfig(conf images.Config) ([]Job, error) {
 	var jobs []Job
 
 	for _, i := range conf.Images {
@@ -36,7 +36,7 @@ func FromConfig(conf config.Config) ([]Job, error) {
 	return jobs, nil
 }
 
-func FromImage(image config.Image) ([]Job, error) {
+func FromImage(image images.Image) ([]Job, error) {
 	var jobs []Job
 
 	for _, t := range image.Tags {
@@ -50,7 +50,7 @@ func FromImage(image config.Image) ([]Job, error) {
 	return jobs, nil
 }
 
-func fromImageTagIncludeCustom(image config.Image, tag config.Tag) ([]Job, error) {
+func fromImageTagIncludeCustom(image images.Image, tag images.Tag) ([]Job, error) {
 	var jobs []Job
 
 	j, err := fromImageTag(image, tag)
@@ -60,7 +60,7 @@ func fromImageTagIncludeCustom(image config.Image, tag config.Tag) ([]Job, error
 	jobs = append(jobs, j)
 
 	for _, c := range tag.CustomImages {
-		j, err = fromImageTagCustomImage(image, tag, c)
+		j, err = fromImageTag(image, tag)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -79,7 +79,7 @@ func fromImageTagIncludeCustom(image config.Image, tag config.Tag) ([]Job, error
 	return jobs, nil
 }
 
-func fromImageTag(image config.Image, tag config.Tag) (Job, error) {
+func fromImageTag(image images.Image, tag images.Tag) (Job, error) {
 	j := Job{
 		SourceImage: image.Name,
 		SourceTag:   tag.Tag,

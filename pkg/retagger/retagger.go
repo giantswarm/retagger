@@ -7,7 +7,7 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 
-	"github.com/giantswarm/retagger/pkg/config"
+	"github.com/giantswarm/retagger/pkg/images"
 	"github.com/giantswarm/retagger/pkg/registry"
 )
 
@@ -39,7 +39,7 @@ func New(config Config) (*Retagger, error) {
 	return r, nil
 }
 
-func (r *Retagger) LoadImages(config config.Config) (int, error) {
+func (r *Retagger) LoadImages(config images.Config) (int, error) {
 	jobs, err := FromConfig(config)
 	if err != nil {
 		return 0, microerror.Mask(err)
@@ -50,7 +50,7 @@ func (r *Retagger) LoadImages(config config.Config) (int, error) {
 	return len(jobs), nil
 }
 
-func (r *Retagger) RetagImages(images []config.Image) error {
+func (r *Retagger) RetagImages(images []images.Image) error {
 	for _, image := range images {
 		err := r.RetagImage(image)
 		if err != nil {
@@ -61,7 +61,7 @@ func (r *Retagger) RetagImages(images []config.Image) error {
 	return nil
 }
 
-func (r *Retagger) RetagImage(image config.Image) error {
+func (r *Retagger) RetagImage(image images.Image) error {
 	for _, tag := range image.Tags {
 		err := r.handleImageTag(image, tag)
 		if err != nil {
@@ -72,7 +72,7 @@ func (r *Retagger) RetagImage(image config.Image) error {
 	return nil
 }
 
-func (r *Retagger) handleImageTag(image config.Image, tag config.Tag) error {
+func (r *Retagger) handleImageTag(image images.Image, tag images.Tag) error {
 	imageName := image.Name
 	if image.OverrideRepoName != "" {
 		r.logger.Log("level", "debug", "message", fmt.Sprintf("Override Name specified. Using %s as mirrored image name", image.OverrideRepoName))
@@ -112,7 +112,7 @@ func (r *Retagger) handleImageTag(image config.Image, tag config.Tag) error {
 		r.logger.Log("level", "debug", "message", fmt.Sprintf("retagged image %q with tag %q does not exist", imageName, tag.Tag))
 	}
 
-	shaName := config.ShaName(image.Name, tag.Sha)
+	shaName := images.ShaName(image.Name, tag.Sha)
 
 	r.logger.Log("level", "debug", "message", fmt.Sprintf("pulling original image"))
 	pullOriginal := exec.Command("docker", "pull", shaName)

@@ -12,7 +12,7 @@ import (
 	"github.com/nokia/docker-registry-client/registry"
 	"github.com/opencontainers/go-digest"
 
-	"github.com/giantswarm/retagger/pkg/config"
+	"github.com/giantswarm/retagger/pkg/images"
 )
 
 type Config struct {
@@ -105,7 +105,7 @@ func (r *Registry) CheckImageTagExists(image, tag string) (bool, error) {
 func (r *Registry) ListImageTags(image string) ([]string, error) {
 	var tags []string
 	o := func() error {
-		imageTags, err := r.registryClient.Tags(config.ImageName(r.organisation, image))
+		imageTags, err := r.registryClient.Tags(images.ImageName(r.organisation, image))
 		if err != nil {
 			return microerror.Mask(err)
 		}
@@ -123,8 +123,8 @@ func (r *Registry) ListImageTags(image string) ([]string, error) {
 }
 
 func (r *Registry) Retag(image, sha, tag string) (string, error) {
-	retaggedName := config.RetaggedName(r.host, r.organisation, image)
-	retaggedNameWithTag := config.ImageWithTag(retaggedName, tag)
+	retaggedName := images.RetaggedName(r.host, r.organisation, image)
+	retaggedNameWithTag := images.ImageWithTag(retaggedName, tag)
 
 	retag := exec.Command("docker", "tag", sha, retaggedNameWithTag)
 	err := Run(retag)
@@ -134,9 +134,9 @@ func (r *Registry) Retag(image, sha, tag string) (string, error) {
 	return retaggedNameWithTag, nil
 }
 
-func (r *Registry) Rebuild(image, tag string, customImage config.CustomImage) (string, error) {
-	RetaggedName := config.RetaggedName(r.host, r.organisation, image)
-	rebuiltImageTag := config.ImageWithTag(RetaggedName, fmt.Sprintf("%s-%s", tag, customImage.TagSuffix))
+func (r *Registry) Rebuild(image, tag string, customImage images.CustomImage) (string, error) {
+	RetaggedName := images.RetaggedName(r.host, r.organisation, image)
+	rebuiltImageTag := images.ImageWithTag(RetaggedName, fmt.Sprintf("%s-%s", tag, customImage.TagSuffix))
 
 	dockerfile := Dockerfile{
 		BaseImage:         image,
@@ -165,7 +165,7 @@ func (r *Registry) Rebuild(image, tag string, customImage config.CustomImage) (s
 }
 
 func (r *Registry) GetDigest(image string, tag string) (digest.Digest, error) {
-	digest, err := r.registryClient.ManifestV2Digest(config.ImageName(r.organisation, image), tag)
+	digest, err := r.registryClient.ManifestV2Digest(images.ImageName(r.organisation, image), tag)
 	if err != nil {
 		return "", microerror.Mask(err)
 	}
@@ -179,7 +179,7 @@ func (r *Registry) DeleteImage(image string, tag string) error {
 		return microerror.Mask(err)
 	}
 
-	err = r.registryClient.DeleteManifest(config.ImageName(r.organisation, image), digest)
+	err = r.registryClient.DeleteManifest(images.ImageName(r.organisation, image), digest)
 	if err != nil {
 		return microerror.Mask(err)
 	}
