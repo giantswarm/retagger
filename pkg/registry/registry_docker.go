@@ -1,7 +1,6 @@
 package registry
 
 import (
-	"fmt"
 	"os/exec"
 
 	"github.com/giantswarm/microerror"
