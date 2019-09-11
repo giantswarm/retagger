@@ -1,6 +1,7 @@
 package registry
 
 import (
+	"fmt"
 	"os/exec"
 
 	"github.com/giantswarm/microerror"
@@ -14,6 +15,7 @@ func (r *Registry) PullImage(image string, sha string) error {
 
 	shaName := images.ShaName(image, sha)
 
+	r.logger.Log("level", "debug", "message", fmt.Sprintf("executing: docker pull %s", shaName))
 	pullOriginal := exec.Command("docker", "pull", shaName)
 	if err := Run(pullOriginal); err != nil {
 		return microerror.Maskf(err, "could not pull image")

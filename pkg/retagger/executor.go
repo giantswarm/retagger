@@ -51,7 +51,7 @@ func (r *Retagger) executeJob(job Job) error {
 
 	r.logger.Log("level", "debug", "message", fmt.Sprintf("pulling original image"))
 
-	err = r.registry.PullImage(job.SourceImage, job.SourceTag)
+	err = r.registry.PullImage(job.SourceImage, job.SourceSha)
 	if err != nil {
 		return microerror.Mask(err)
 	}
