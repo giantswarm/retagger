@@ -73,8 +73,8 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 	var newRetagger *retagger.Retagger
 	{
 		c := retagger.Config{
-			Logger:              r.logger,
-			DestinationRegistry: destRegistry,
+			Logger:   r.logger,
+			Registry: destRegistry,
 		}
 		newRetagger, err = retagger.New(c)
 		if err != nil {

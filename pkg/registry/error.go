@@ -28,3 +28,12 @@ var invalidTemplateError = &microerror.Error{
 func IsInvalidTemplate(err error) bool {
 	return microerror.Cause(err) == invalidTemplateError
 }
+
+var invalidArgumentError = &microerror.Error{
+	Kind: "invalidArgumentError",
+}
+
+// IsInvalidArgument asserts invalidArgumentError.
+func IsInvalidArgument(err error) bool {
+	return microerror.Cause(err) == invalidArgumentError
+}

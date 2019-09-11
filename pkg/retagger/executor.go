@@ -23,9 +23,9 @@ func (r *Retagger) executeJob(job Job) error {
 	var destinationImage string
 	{
 		if job.Options.OverrideRepoName == "" {
-			destinationImage = r.destinationRegistry.RetaggedName(job.SourceImage)
+			destinationImage = r.registry.RetaggedName(job.SourceImage)
 		} else {
-			destinationImage = r.destinationRegistry.RetaggedName(job.Options.OverrideRepoName)
+			destinationImage = r.registry.RetaggedName(job.Options.OverrideRepoName)
 		}
 	}
 
@@ -38,14 +38,33 @@ func (r *Retagger) executeJob(job Job) error {
 		}
 	}
 
-	ok, err := r.destinationRegistry.CheckImageTagExists(destinationImage, destinationTag)
+	r.logger.Log("level", "debug", "message", fmt.Sprintf("executing: %v, %v with options %#v", job.SourceImage, job.SourceTag, job.Options))
+
+	exists, err := r.registry.CheckImageTagExists(destinationImage, destinationTag)
 	if err != nil {
 		return microerror.Mask(err)
 	}
-	if ok {
+	if exists {
 		r.logger.Log("level", "debug", "message", fmt.Sprintf("image %s:%s already exists, skipping it now", destinationImage, destinationTag))
 		return nil
 	}
+
+	r.logger.Log("level", "debug", "message", fmt.Sprintf("pulling original image"))
+
+	err = r.registry.PullImage(job.SourceImage, job.SourceTag)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	r.logger.Log("level", "debug", "message", fmt.Sprintf("pulled original image"))
+
+	// pull
+
+	// retag or rebuild
+
+	// push
+
+	// profit.
 
 	return nil
 }

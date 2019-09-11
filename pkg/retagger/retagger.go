@@ -12,13 +12,13 @@ import (
 )
 
 type Config struct {
-	Logger              micrologger.Logger
-	DestinationRegistry *registry.Registry
+	Logger   micrologger.Logger
+	Registry *registry.Registry
 }
 
 type Retagger struct {
-	logger              micrologger.Logger
-	destinationRegistry *registry.Registry
+	logger   micrologger.Logger
+	registry *registry.Registry
 
 	jobs []Job
 }
@@ -27,14 +27,14 @@ func New(config Config) (*Retagger, error) {
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
-	if config.DestinationRegistry == nil {
-		return nil, microerror.Maskf(invalidConfigError, "%T.DestinationRegistry must not be empty", config)
+	if config.Registry == nil {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Registry must not be empty", config)
 	}
 
 	r := &Retagger{
-		logger:              config.Logger,
-		destinationRegistry: config.DestinationRegistry,
-		jobs:                []Job{},
+		logger:   config.Logger,
+		registry: config.Registry,
+		jobs:     []Job{},
 	}
 	return r, nil
 }
@@ -81,7 +81,7 @@ func (r *Retagger) handleImageTag(image images.Image, tag images.Tag) error {
 	r.logger.Log("level", "debug", "message", fmt.Sprintf("managing: %v, %v, %v", imageName, tag.Sha, tag.Tag))
 
 	for _, customImage := range tag.CustomImages {
-		ok, err := r.destinationRegistry.CheckImageTagExists(imageName, tag.Tag)
+		ok, err := r.registry.CheckImageTagExists(imageName, tag.Tag)
 		if ok {
 			r.logger.Log("level", "debug", "message", fmt.Sprintf("rebuilt image %q with tag %q already exists, skipping", imageName, fmt.Sprintf("%s-%s", tag.Tag, customImage.TagSuffix)))
 			continue
@@ -90,7 +90,7 @@ func (r *Retagger) handleImageTag(image images.Image, tag images.Tag) error {
 		} else {
 			r.logger.Log("level", "debug", "message", fmt.Sprintf("rebuilt image %q with tag %q does not exists", imageName, fmt.Sprintf("%s-%s", tag.Tag, customImage.TagSuffix)))
 		}
-		rebuiltImageTag, err := r.destinationRegistry.Rebuild(imageName, tag.Tag, customImage)
+		rebuiltImageTag, err := r.registry.Rebuild(imageName, tag.Tag, customImage)
 		if err != nil {
 			return microerror.Maskf(err, "could not rebuild image")
 		}
@@ -102,7 +102,7 @@ func (r *Retagger) handleImageTag(image images.Image, tag images.Tag) error {
 		}
 	}
 
-	ok, err := r.destinationRegistry.CheckImageTagExists(imageName, tag.Tag)
+	ok, err := r.registry.CheckImageTagExists(imageName, tag.Tag)
 	if ok {
 		r.logger.Log("level", "debug", "message", fmt.Sprintf("retagged image %q with tag %q already exists, skipping", imageName, tag.Tag))
 		return nil
@@ -120,7 +120,7 @@ func (r *Retagger) handleImageTag(image images.Image, tag images.Tag) error {
 		return microerror.Maskf(err, "could not pull image")
 	}
 
-	retaggedNameWithTag, err := r.destinationRegistry.Retag(imageName, shaName, tag.Tag)
+	retaggedNameWithTag, err := r.registry.Retag(imageName, shaName, tag.Tag)
 	if err != nil {
 		return microerror.Maskf(err, "could not retag image")
 	}
