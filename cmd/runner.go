@@ -50,7 +50,7 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 		}
 	}
 
-	var destRegistry *registry.Registry
+	var newRegistry *registry.Registry
 	{
 		c := registry.Config{
 			Host:         r.flag.Host,
@@ -58,14 +58,15 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 			Password:     r.flag.Password,
 			Username:     r.flag.Username,
 			LogFunc:      nil,
+			Logger:       r.logger,
 		}
-		destRegistry, err = registry.New(c)
+		newRegistry, err = registry.New(c)
 		if err != nil {
 			return microerror.Mask(err)
 		}
 	}
 
-	err = destRegistry.Login()
+	err = newRegistry.Login()
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -74,7 +75,7 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 	{
 		c := retagger.Config{
 			Logger:   r.logger,
-			Registry: destRegistry,
+			Registry: newRegistry,
 		}
 		newRetagger, err = retagger.New(c)
 		if err != nil {
