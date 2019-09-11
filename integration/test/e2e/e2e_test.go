@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/giantswarm/microerror"
+	"github.com/giantswarm/micrologger/microloggertest"
 
 	"github.com/giantswarm/retagger/pkg/registry"
 )
@@ -23,6 +24,7 @@ func TestE2e(t *testing.T) {
 		LogFunc: func(f string, args ...interface{}) {
 			t.Logf(f, args...)
 		},
+		Logger: microloggertest.New(),
 	}
 	r, err := registry.New(c)
 	if err != nil {
