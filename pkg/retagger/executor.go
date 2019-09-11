@@ -61,7 +61,7 @@ func (r *Retagger) executeJob(job Job) error {
 	if job.Options.DockerfileOptions != nil && len(job.Options.DockerfileOptions) > 0 {
 		// rebuild image
 	} else {
-		_, err = r.registry.TagSha(job.SourceSha, destinationImage, destinationTag)
+		_, err = r.registry.TagSha(job.SourceImage, job.SourceSha, destinationImage, destinationTag)
 		if err != nil {
 			return microerror.Mask(err)
 		}

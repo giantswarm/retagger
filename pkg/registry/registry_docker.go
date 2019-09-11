@@ -24,11 +24,12 @@ func (r *Registry) PullImage(image string, sha string) error {
 	return nil
 }
 
-func (r *Registry) TagSha(sha, destinationImage, destinationTag string) (string, error) {
+func (r *Registry) TagSha(sourceImage, sha, destinationImage, destinationTag string) (string, error) {
+	imageSha := images.ShaName(sourceImage, sha)
 	retaggedNameWithTag := fmt.Sprintf("%s:%s", destinationImage, destinationTag)
 
 	r.logger.Log("level", "debug", "message", fmt.Sprintf("executing: docker tag %s %s", sha, retaggedNameWithTag))
-	retag := exec.Command("docker", "tag", sha, retaggedNameWithTag)
+	retag := exec.Command("docker", "tag", imageSha, retaggedNameWithTag)
 	err := Run(retag)
 	if err != nil {
 		return "", microerror.Mask(err)
