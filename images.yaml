@@ -144,6 +144,8 @@
     tag: 1.12.9
   - sha: 90d554b5ae59cb63d2bf42bdfcd60aa1feb4794d9e3a9cbb9d2deb477c088be0
     tag: 1.13.0
+  - sha: 84349ee862d8bafff35e0d2bfd539da565b536b4dfce654773fc21a1db2da6d7
+    tag: 1.13.0-alpine3.10
 - name: grafana/grafana
   tags:
   - sha: b5098a06dc59d28b11120eab01d8d0147b526a175aa606f9978934b6b2224138
