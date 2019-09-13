@@ -28,7 +28,7 @@ func (r *Registry) TagSha(sourceImage, sha, destinationImage, destinationTag str
 	imageSha := images.ShaName(sourceImage, sha)
 	retaggedNameWithTag := fmt.Sprintf("%s:%s", destinationImage, destinationTag)
 
-	r.logger.Log("level", "debug", "message", fmt.Sprintf("executing: docker tag %s %s", sha, retaggedNameWithTag))
+	r.logger.Log("level", "debug", "message", fmt.Sprintf("executing: docker tag %s %s", imageSha, retaggedNameWithTag))
 	retag := exec.Command("docker", "tag", imageSha, retaggedNameWithTag)
 	err := Run(retag)
 	if err != nil {
@@ -38,9 +38,22 @@ func (r *Registry) TagSha(sourceImage, sha, destinationImage, destinationTag str
 }
 
 func (r *Registry) PushImage(destinationImage, destinationTag string) error {
-	push := exec.Command("docker", "push", fmt.Sprintf("%s:%s", destinationImage, destinationTag))
+	imageTag := fmt.Sprintf("%s:%s", destinationImage, destinationTag)
+
+	r.logger.Log("level", "debug", "message", fmt.Sprintf("executing: docker push %s", imageTag))
+	push := exec.Command("docker", "push", imageTag)
 	if err := Run(push); err != nil {
 		return microerror.Maskf(err, "could not push image")
+	}
+
+	return nil
+}
+
+func (r *Registry) RebuildImage(sourceImage, sha, destinationImage, destinationTag string, dockerfileOptions []string) error {
+	dockerfile := Dockerfile{
+		BaseImage:         sourceImage,
+		DockerfileOptions: dockerfileOptions,
+		Tag:               destinationTag,
 	}
 
 	return nil
