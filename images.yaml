@@ -1,5 +1,7 @@
 - name: alpine
   tags:
+  - sha: 7df6db5aa61ae9480f52f0b3a06a140ab98d427f86d8d5de0bedab9b8df6b1c0
+    tag: "3.7"
   - sha: 769fddc7cc2f0a1c35abb2f91432e8beecf83916c421420e6a6da9f8975464b6
     tag: "3.9"
     customImages:
@@ -7,8 +9,13 @@
       dockerfileOptions:
       - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
       - USER giantswarm
-  - sha: 7df6db5aa61ae9480f52f0b3a06a140ab98d427f86d8d5de0bedab9b8df6b1c0
-    tag: "3.7"
+  - sha: 72c42ed48c3a2db31b7dafe17d275b634664a708d901ec9fd57b1529280f01fb
+    tag: "3.10"
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+      - USER giantswarm
 - name: bitnami/redis
   overrideRepoName: bitnami-redis
   tags:
@@ -142,6 +149,10 @@
     tag: 1.12.6
   - sha: fb310c8e01bcfd4e83b43f06e339de841489cb56b2da4411695c60f84f66fb99
     tag: 1.12.9
+  - sha: 90d554b5ae59cb63d2bf42bdfcd60aa1feb4794d9e3a9cbb9d2deb477c088be0
+    tag: 1.13.0
+  - sha: 84349ee862d8bafff35e0d2bfd539da565b536b4dfce654773fc21a1db2da6d7
+    tag: 1.13.0-alpine3.10
 - name: grafana/grafana
   tags:
   - sha: b5098a06dc59d28b11120eab01d8d0147b526a175aa606f9978934b6b2224138
