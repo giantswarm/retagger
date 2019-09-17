@@ -80,7 +80,7 @@ func (r *Registry) PushImage(destinationImage, destinationTag string) error {
 
 	opts := types.ImagePushOptions{
 		All:          true,
-		RegistryAuth: r.getAuthBase64(),
+		RegistryAuth: r.getRegistryAuthBase64(),
 	}
 	res, err := r.docker.ImagePush(context.Background(), imageTag, opts)
 	if err != nil {
@@ -145,7 +145,7 @@ func (r *Registry) logDocker(reader io.Reader) error {
 	return nil
 }
 
-func (r *Registry) getAuthBase64() string {
+func (r *Registry) getRegistryAuthBase64() string {
 	auth := fmt.Sprintf(`{"username": "%s", "password": "%s", "serveraddress": "https://%s"}`, r.username, r.password, r.host)
 
 	return base64.StdEncoding.EncodeToString([]byte(auth))
