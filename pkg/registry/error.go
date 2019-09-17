@@ -37,3 +37,12 @@ var invalidArgumentError = &microerror.Error{
 func IsInvalidArgument(err error) bool {
 	return microerror.Cause(err) == invalidArgumentError
 }
+
+var dockerError = &microerror.Error{
+	Kind: "dockerError",
+}
+
+// IsDocker asserts dockerError.
+func IsDocker(err error) bool {
+	return microerror.Cause(err) == dockerError
+}

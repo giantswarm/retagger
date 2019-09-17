@@ -1,6 +1,7 @@
 package registry
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"os/exec"
@@ -8,6 +9,7 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/docker/docker/api/types"
 	dockerclient "github.com/docker/docker/client"
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
@@ -36,6 +38,8 @@ type Registry struct {
 	organisation string
 	password     string
 	username     string
+
+	registryAuth string
 }
 
 func New(config Config) (*Registry, error) {
@@ -76,7 +80,10 @@ func New(config Config) (*Registry, error) {
 
 	var dockerClient *dockerclient.Client
 	{
-		dockerclient.NewClientWithOpts()
+		dockerClient, err = dockerclient.NewClientWithOpts(dockerclient.FromEnv, dockerclient.WithVersion("1.38"))
+		if err != nil {
+			return nil, microerror.Maskf(err, "dockerclient.New")
+		}
 	}
 
 	qr := &Registry{
@@ -87,16 +94,29 @@ func New(config Config) (*Registry, error) {
 		logger:       config.Logger,
 
 		registryClient: registryClient,
+		docker:         dockerClient,
 	}
 
 	return qr, nil
 }
 
 func (r *Registry) Login() error {
-	login := exec.Command("docker", "login", "-u", r.username, "-p", r.password, r.host)
-	if err := Run(login); err != nil {
-		return fmt.Errorf("could not login to registry: %v", err)
+	r.logger.Log("level", "debug", "message", fmt.Sprintf("logging in to %s registry", r.host))
+
+	authConfig := types.AuthConfig{
+		Username:      r.username,
+		Password:      r.password,
+		ServerAddress: r.host,
 	}
+	res, err := r.docker.RegistryLogin(context.Background(), authConfig)
+	if err != nil {
+		return microerror.Maskf(err, "could not login to registry")
+	} else if res.Status != "Login Succeeded" {
+		return microerror.Mask(dockerError)
+	}
+
+	r.registryAuth = res.IdentityToken
+
 	return nil
 }
 
