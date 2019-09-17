@@ -95,7 +95,7 @@ func (r *Registry) PushImage(destinationImage, destinationTag string) error {
 	return nil
 }
 
-func (r *Registry) Rebuild(sourceImage, sha, destinationImage, destinationTag string, dockerfileOptions []string) (string, error) {
+func (r *Registry) RebuildImage(sourceImage, sha, destinationImage, destinationTag string, dockerfileOptions []string) (string, error) {
 	retaggedNameWithTag := fmt.Sprintf("%s:%s", destinationImage, destinationTag)
 
 	dockerfile := Dockerfile{
@@ -135,7 +135,6 @@ func (r *Registry) logDocker(reader io.Reader) error {
 			return microerror.Maskf(dockerError, "docker task failed: %s", logMsg)
 		}
 
-		// TODO inline json.
 		r.logger.Log("level", "debug", "message", fmt.Sprintf("docker status"), "docker", string(s.Bytes()))
 	}
 	if err := s.Err(); err != nil {

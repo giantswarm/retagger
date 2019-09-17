@@ -156,5 +156,5 @@ func (r *Registry) DeleteImage(image string, tag string) error {
 func (r *Registry) RetaggedName(image string) string {
 	parts := strings.Split(image, "/")
 
-	return fmt.Sprintf("%v/%v/%v", r.host, r.organisation, parts[len(parts)-1])
+	return fmt.Sprintf("%s/%s/%s", r.host, r.organisation, parts[len(parts)-1])
 }
