@@ -59,6 +59,10 @@ func (r *Retagger) executeJob(job Job) error {
 	r.logger.Log("level", "debug", "message", fmt.Sprintf("pulled original image"))
 
 	if job.Options.DockerfileOptions != nil && len(job.Options.DockerfileOptions) > 0 {
+		_, err = r.registry.Rebuild(job.SourceImage, job.SourceSha, destinationImage, destinationTag, job.Options.DockerfileOptions)
+		if err != nil {
+			return microerror.Mask(err)
+		}
 		// rebuild image
 	} else {
 		_, err = r.registry.TagSha(job.SourceImage, job.SourceSha, destinationImage, destinationTag)

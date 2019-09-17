@@ -1,15 +1,10 @@
 package registry
 
 import (
-	"context"
 	"fmt"
-	"os"
-	"os/exec"
 	"strings"
-	"text/template"
 	"time"
 
-	"github.com/docker/docker/api/types"
 	dockerclient "github.com/docker/docker/client"
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
@@ -100,26 +95,6 @@ func New(config Config) (*Registry, error) {
 	return qr, nil
 }
 
-func (r *Registry) Login() error {
-	r.logger.Log("level", "debug", "message", fmt.Sprintf("logging in to %s registry", r.host))
-
-	authConfig := types.AuthConfig{
-		Username:      r.username,
-		Password:      r.password,
-		ServerAddress: r.host,
-	}
-	res, err := r.docker.RegistryLogin(context.Background(), authConfig)
-	if err != nil {
-		return microerror.Maskf(err, "could not login to registry")
-	} else if res.Status != "Login Succeeded" {
-		return microerror.Mask(dockerError)
-	}
-
-	r.registryAuth = res.IdentityToken
-
-	return nil
-}
-
 func (r *Registry) CheckImageTagExists(image, tag string) (bool, error) {
 	tags, err := r.ListImageTags(image)
 	if err != nil {
@@ -153,48 +128,6 @@ func (r *Registry) ListImageTags(image string) ([]string, error) {
 	}
 
 	return tags, nil
-}
-
-func (r *Registry) Retag(image, sha, tag string) (string, error) {
-	retaggedName := images.RetaggedName(r.host, r.organisation, image)
-	retaggedNameWithTag := images.ImageWithTag(retaggedName, tag)
-
-	retag := exec.Command("docker", "tag", sha, retaggedNameWithTag)
-	err := Run(retag)
-	if err != nil {
-		return "", microerror.Mask(err)
-	}
-	return retaggedNameWithTag, nil
-}
-
-func (r *Registry) Rebuild(image, tag string, customImage images.CustomImage) (string, error) {
-	RetaggedName := images.RetaggedName(r.host, r.organisation, image)
-	rebuiltImageTag := images.ImageWithTag(RetaggedName, fmt.Sprintf("%s-%s", tag, customImage.TagSuffix))
-
-	dockerfile := Dockerfile{
-		BaseImage:         image,
-		DockerfileOptions: customImage.DockerfileOptions,
-		Tag:               tag,
-	}
-
-	f, err := os.Create(fmt.Sprintf("Dockerfile-%s", customImage.TagSuffix))
-	if err != nil {
-		return "", microerror.Mask(err)
-	}
-
-	// render Dockerfile with overrides
-	t := template.Must(template.New("").Parse(customDockerfileTmpl))
-	err = t.Execute(f, dockerfile)
-	if err != nil {
-		return "", microerror.Mask(invalidTemplateError)
-	}
-
-	rebuild := exec.Command("docker", "build", "-t", rebuiltImageTag, "-f", fmt.Sprintf("Dockerfile-%s", customImage.TagSuffix), ".")
-	err = Run(rebuild)
-	if err != nil {
-		return "", microerror.Mask(err)
-	}
-	return rebuiltImageTag, nil
 }
 
 func (r *Registry) GetDigest(image string, tag string) (digest.Digest, error) {

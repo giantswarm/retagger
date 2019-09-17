@@ -6,13 +6,36 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"os"
+	"os/exec"
 	"strings"
+	"text/template"
 
 	"github.com/docker/docker/api/types"
 	"github.com/giantswarm/microerror"
 
 	"github.com/giantswarm/retagger/pkg/images"
 )
+
+func (r *Registry) Login() error {
+	r.logger.Log("level", "debug", "message", fmt.Sprintf("logging in to %s registry", r.host))
+
+	authConfig := types.AuthConfig{
+		Username:      r.username,
+		Password:      r.password,
+		ServerAddress: r.host,
+	}
+	res, err := r.docker.RegistryLogin(context.Background(), authConfig)
+	if err != nil {
+		return microerror.Maskf(err, "could not login to registry")
+	} else if res.Status != "Login Succeeded" {
+		return microerror.Mask(dockerError)
+	}
+
+	r.registryAuth = res.IdentityToken
+
+	return nil
+}
 
 func (r *Registry) PullImage(image string, sha string) error {
 	if sha == "" {
@@ -72,14 +95,34 @@ func (r *Registry) PushImage(destinationImage, destinationTag string) error {
 	return nil
 }
 
-func (r *Registry) RebuildImage(sourceImage, sha, destinationImage, destinationTag string, dockerfileOptions []string) error {
-	//dockerfile := Dockerfile{
-	//	BaseImage:         sourceImage,
-	//	DockerfileOptions: dockerfileOptions,
-	//	Tag:               destinationTag,
-	//}
+func (r *Registry) Rebuild(sourceImage, sha, destinationImage, destinationTag string, dockerfileOptions []string) (string, error) {
+	retaggedNameWithTag := fmt.Sprintf("%s:%s", destinationImage, destinationTag)
 
-	return nil
+	dockerfile := Dockerfile{
+		BaseImage:         sourceImage,
+		Sha:               sha,
+		DockerfileOptions: dockerfileOptions,
+		Tag:               destinationTag,
+	}
+
+	f, err := os.Create(fmt.Sprintf("Dockerfile-%s", destinationTag))
+	if err != nil {
+		return "", microerror.Mask(err)
+	}
+
+	// render Dockerfile with overrides
+	t := template.Must(template.New("").Parse(customDockerfileTmpl))
+	err = t.Execute(f, dockerfile)
+	if err != nil {
+		return "", microerror.Mask(invalidTemplateError)
+	}
+
+	rebuild := exec.Command("docker", "build", "-t", retaggedNameWithTag, "-f", fmt.Sprintf("Dockerfile-%s", destinationTag), ".")
+	err = Run(rebuild)
+	if err != nil {
+		return "", microerror.Mask(err)
+	}
+	return retaggedNameWithTag, nil
 }
 
 func (r *Registry) logDocker(reader io.Reader) error {
