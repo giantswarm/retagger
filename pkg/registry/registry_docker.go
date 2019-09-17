@@ -3,6 +3,7 @@ package registry
 import (
 	"bufio"
 	"context"
+	"encoding/base64"
 	"fmt"
 	"io"
 	"strings"
@@ -56,7 +57,7 @@ func (r *Registry) PushImage(destinationImage, destinationTag string) error {
 
 	opts := types.ImagePushOptions{
 		All:          true,
-		RegistryAuth: "",
+		RegistryAuth: r.getAuthBase64(),
 	}
 	res, err := r.docker.ImagePush(context.Background(), imageTag, opts)
 	if err != nil {
@@ -99,4 +100,10 @@ func (r *Registry) logDocker(reader io.Reader) error {
 	}
 
 	return nil
+}
+
+func (r *Registry) getAuthBase64() string {
+	auth := fmt.Sprintf(`{"username": "%s", "password": "%s", "serveraddress": "%s"}`, r.username, r.password, r.host)
+
+	return base64.StdEncoding.EncodeToString([]byte(auth))
 }
