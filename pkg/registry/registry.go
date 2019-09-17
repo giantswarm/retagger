@@ -8,6 +8,7 @@ import (
 	"text/template"
 	"time"
 
+	dockerclient "github.com/docker/docker/client"
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -29,6 +30,7 @@ type Config struct {
 type Registry struct {
 	registryClient *registry.Registry
 	logger         micrologger.Logger
+	docker         *dockerclient.Client
 
 	host         string
 	organisation string
@@ -70,6 +72,11 @@ func New(config Config) (*Registry, error) {
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
+	}
+
+	var dockerClient *dockerclient.Client
+	{
+		dockerclient.NewClientWithOpts()
 	}
 
 	qr := &Registry{

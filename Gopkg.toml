@@ -42,7 +42,7 @@
 
 [[constraint]]
   name = "github.com/docker/docker"
-  version = "1.13.1"
+  branch = "master"
 
 [prune]
   go-tests = true

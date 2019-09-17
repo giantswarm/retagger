@@ -50,11 +50,11 @@ func (r *Registry) PushImage(destinationImage, destinationTag string) error {
 }
 
 func (r *Registry) RebuildImage(sourceImage, sha, destinationImage, destinationTag string, dockerfileOptions []string) error {
-	dockerfile := Dockerfile{
-		BaseImage:         sourceImage,
-		DockerfileOptions: dockerfileOptions,
-		Tag:               destinationTag,
-	}
+	//dockerfile := Dockerfile{
+	//	BaseImage:         sourceImage,
+	//	DockerfileOptions: dockerfileOptions,
+	//	Tag:               destinationTag,
+	//}
 
 	return nil
 }
