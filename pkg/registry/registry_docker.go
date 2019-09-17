@@ -103,7 +103,7 @@ func (r *Registry) logDocker(reader io.Reader) error {
 }
 
 func (r *Registry) getAuthBase64() string {
-	auth := fmt.Sprintf(`{"username": "%s", "password": "%s", "serveraddress": "%s"}`, r.username, r.password, r.host)
+	auth := fmt.Sprintf(`{"username": "%s", "password": "%s", "serveraddress": "https://%s"}`, r.username, r.password, r.host)
 
 	return base64.StdEncoding.EncodeToString([]byte(auth))
 }
