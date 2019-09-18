@@ -2,6 +2,17 @@
 
 
 [[projects]]
+  digest = "1:d5e752c67b445baa5b6cb6f8aa706775c2aa8e41aca95a0c651520ff2c80361a"
+  name = "github.com/Microsoft/go-winio"
+  packages = [
+    ".",
+    "pkg/guid",
+  ]
+  pruneopts = "UT"
+  revision = "6c72808b55902eae4c5943626030429ff20f3b63"
+  version = "v0.4.14"
+
+[[projects]]
   digest = "1:166438587ed45ac211dab8a3ecebf4fa0c186d0db63430fb9127bbc2e5fcdc67"
   name = "github.com/cenkalti/backoff"
   packages = ["."]
@@ -10,7 +21,15 @@
   version = "v2.2.1"
 
 [[projects]]
-  digest = "1:4464a497bd532888757587c0f13fb7bc88dc4a7cbff3aa833300095456912966"
+  digest = "1:eb0414b9f841f10af66f6bec6074c5a26ebca71f374c12f187feca7554bad408"
+  name = "github.com/containerd/containerd"
+  packages = ["errdefs"]
+  pruneopts = "UT"
+  revision = "d50db0a42053864a270f648048f9a8b4f24eced3"
+  version = "v1.2.9"
+
+[[projects]]
+  digest = "1:a49ebe0d45abdd8cd731d8d85ce9e73125a892e382111a7699f0ed992abf93cd"
   name = "github.com/docker/distribution"
   packages = [
     ".",
@@ -20,10 +39,58 @@
     "manifest/schema1",
     "manifest/schema2",
     "reference",
+    "registry/api/errcode",
   ]
   pruneopts = "UT"
   revision = "2461543d988979529609e8cb6fca9ca190dc48da"
   version = "v2.7.1"
+
+[[projects]]
+  branch = "master"
+  digest = "1:dfdc1fa08dbd9d16237685f1b1ce5d9b982b53eb05cfd3d880fdf4c348a665d3"
+  name = "github.com/docker/docker"
+  packages = [
+    "api",
+    "api/types",
+    "api/types/blkiodev",
+    "api/types/container",
+    "api/types/events",
+    "api/types/filters",
+    "api/types/image",
+    "api/types/mount",
+    "api/types/network",
+    "api/types/registry",
+    "api/types/strslice",
+    "api/types/swarm",
+    "api/types/swarm/runtime",
+    "api/types/time",
+    "api/types/versions",
+    "api/types/volume",
+    "client",
+    "errdefs",
+  ]
+  pruneopts = "UT"
+  revision = "92cc603036ddadd608762a6f69e72b9b2bef651e"
+
+[[projects]]
+  digest = "1:811c86996b1ca46729bad2724d4499014c4b9effd05ef8c71b852aad90deb0ce"
+  name = "github.com/docker/go-connections"
+  packages = [
+    "nat",
+    "sockets",
+    "tlsconfig",
+  ]
+  pruneopts = "UT"
+  revision = "7395e3f8aa162843a74ed6d48e79627d9792ac55"
+  version = "v0.4.0"
+
+[[projects]]
+  digest = "1:e95ef557dc3120984bb66b385ae01b4bb8ff56bcde28e7b0d1beed0cccc4d69f"
+  name = "github.com/docker/go-units"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "519db1ee28dcc9fd2474ae59fca29a810482bfb1"
+  version = "v0.4.0"
 
 [[projects]]
   branch = "master"
@@ -35,11 +102,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:ab67fdefbc890c7880ffc2904048d7b9d14e29ebc716f8d637a17b16bb91d9e6"
+  digest = "1:0dc70d5c96ccd9ef24d12f7c222447425447f7a2ec72556f2479137fe72f5476"
   name = "github.com/giantswarm/backoff"
   packages = ["."]
   pruneopts = "UT"
-  revision = "4763148864dc4815b691a69b4f60b4f4a8f88dad"
+  revision = "4dd4911251929a0ac4c4f3d8c4bda482a9e09f30"
 
 [[projects]]
   branch = "master"
@@ -51,11 +118,12 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:c4f855224acc710b203150c63a0920cd47612d52ebe21516f03653c9cb824f84"
+  digest = "1:047e48867757c422d50bbd19c1ef1bf8ef6524c31c9a725445ab05ac6b1aa697"
   name = "github.com/giantswarm/micrologger"
   packages = [
     ".",
     "loggermeta",
+    "microloggertest",
   ]
   pruneopts = "UT"
   revision = "0926d9b7c5419173936b4556411a103bdf8d5966"
@@ -83,6 +151,28 @@
   pruneopts = "UT"
   revision = "2fee6af1a9795aafbe0253a0cfbdf668e1fb8a9a"
   version = "v1.8.0"
+
+[[projects]]
+  digest = "1:4882ca4e50712f367a52a467a277dcd8ef877b82acaa5973baea92fe7443f2eb"
+  name = "github.com/gogo/protobuf"
+  packages = ["proto"]
+  pruneopts = "UT"
+  revision = "0ca988a254f991240804bf9821f3450d87ccbb1b"
+  version = "v1.3.0"
+
+[[projects]]
+  digest = "1:f5ce1529abc1204444ec73779f44f94e2fa8fcdb7aca3c355b0c95947e4005c6"
+  name = "github.com/golang/protobuf"
+  packages = [
+    "proto",
+    "ptypes",
+    "ptypes/any",
+    "ptypes/duration",
+    "ptypes/timestamp",
+  ]
+  pruneopts = "UT"
+  revision = "6c65a5562fc06764971b7c5d05c76c75e84bdbf7"
+  version = "v1.3.2"
 
 [[projects]]
   digest = "1:870d441fe217b8e689d7949fef6e43efbc787e50f200cb1e70dbca9204a1d6be"
@@ -144,6 +234,14 @@
   version = "v1.0.1"
 
 [[projects]]
+  digest = "1:cf31692c14422fa27c83a05292eb5cbe0fb2775972e8f1f8446a71549bd8980b"
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "ba968bfe8b2f7e042a574c888954fccecfa385b4"
+  version = "v0.8.1"
+
+[[projects]]
   digest = "1:04457f9f6f3ffc5fea48e71d62f2ca256637dee0a04d710288e27e05c8b41976"
   name = "github.com/sirupsen/logrus"
   packages = ["."]
@@ -169,11 +267,47 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:767025ef5997eeba9a3b7fba288b8b9e71b44f0e3a2ec6dcd01f144d3dc8f173"
-  name = "golang.org/x/sys"
-  packages = ["unix"]
+  digest = "1:3587bbb18e3d5299dc0020733e2839138afb0a29456ffd4073a3962bb9966556"
+  name = "golang.org/x/net"
+  packages = [
+    "internal/socks",
+    "proxy",
+  ]
   pruneopts = "UT"
-  revision = "749cb33beabd9aa6d3178e3de05bcc914f70b2bf"
+  revision = "c8589233b77dde5edd2205ba8a4fb5c9c2472556"
+
+[[projects]]
+  branch = "master"
+  digest = "1:019ad1c6ebe331efc7b2770d226015dced1bedc0ec03f9d9d8216e654affe7ba"
+  name = "golang.org/x/sys"
+  packages = [
+    "unix",
+    "windows",
+  ]
+  pruneopts = "UT"
+  revision = "b4ddaad3f8a36719f2b8bc6486c14cc468ca2bb5"
+
+[[projects]]
+  branch = "master"
+  digest = "1:583a0c80f5e3a9343d33aea4aead1e1afcc0043db66fdf961ddd1fe8cd3a4faf"
+  name = "google.golang.org/genproto"
+  packages = ["googleapis/rpc/status"]
+  pruneopts = "UT"
+  revision = "f660b865573183437d2d868f703fe88bb8af0b55"
+
+[[projects]]
+  digest = "1:dd9e017df31acd9cf78ad0df2c8a1132fb3f724ec9287240ee7306364130bafc"
+  name = "google.golang.org/grpc"
+  packages = [
+    "codes",
+    "connectivity",
+    "grpclog",
+    "internal",
+    "status",
+  ]
+  pruneopts = "UT"
+  revision = "39e8a7b072a67ca2a75f57fa2e0d50995f5b22f6"
+  version = "v1.23.1"
 
 [[projects]]
   digest = "1:4d2e5a73dc1500038e504a8d78b986630e3626dc027bc030ba5c75da257cdb96"
@@ -187,9 +321,12 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/docker/docker/api/types",
+    "github.com/docker/docker/client",
     "github.com/giantswarm/backoff",
     "github.com/giantswarm/microerror",
     "github.com/giantswarm/micrologger",
+    "github.com/giantswarm/micrologger/microloggertest",
     "github.com/nokia/docker-registry-client/registry",
     "github.com/opencontainers/go-digest",
     "github.com/spf13/cobra",
