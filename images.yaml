@@ -280,6 +280,8 @@
   tags:
   - sha: f8c9d9476458414ccad25a92524e788738386da109b06029a3b0c1a0d434d489
     tag: v3.3.13
+  - sha: 3d544d83e97da5f20ae6c63c8beda516c9c8c478447ae6778ffdaf202946cf53
+    tag: v3.3.15
   - sha: 49d3d4a81e0d030d3f689e7167f23e120abf955f7d08dbedf3ea246485acee9f
     tag: v3.4.1
 - name: quay.io/coreos/etcd-operator
