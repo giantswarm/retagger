@@ -110,7 +110,7 @@ func (r *Registry) CheckImageTagExists(image, tag string) (bool, error) {
 func (r *Registry) ListImageTags(image string) ([]string, error) {
 	var tags []string
 	o := func() error {
-		imageTags, err := r.registryClient.Tags(images.ImageName(r.organisation, image))
+		imageTags, err := r.registryClient.Tags(images.Name(r.organisation, image))
 		if err != nil {
 			return microerror.Mask(err)
 		}
@@ -128,7 +128,7 @@ func (r *Registry) ListImageTags(image string) ([]string, error) {
 }
 
 func (r *Registry) GetDigest(image string, tag string) (digest.Digest, error) {
-	digest, err := r.registryClient.ManifestV2Digest(images.ImageName(r.organisation, image), tag)
+	digest, err := r.registryClient.ManifestV2Digest(images.Name(r.organisation, image), tag)
 	if err != nil {
 		return "", microerror.Mask(err)
 	}
@@ -142,7 +142,7 @@ func (r *Registry) DeleteImage(image string, tag string) error {
 		return microerror.Mask(err)
 	}
 
-	err = r.registryClient.DeleteManifest(images.ImageName(r.organisation, image), digest)
+	err = r.registryClient.DeleteManifest(images.Name(r.organisation, image), digest)
 	if err != nil {
 		return microerror.Mask(err)
 	}

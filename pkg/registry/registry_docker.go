@@ -75,7 +75,7 @@ func (r *Registry) TagSha(sourceImage, sha, destinationImage, destinationTag str
 	}
 
 	imageSha := images.ShaName(sourceImage, sha)
-	retaggedNameWithTag := images.ImageWithTag(destinationImage, destinationTag)
+	retaggedNameWithTag := images.NameWithTag(destinationImage, destinationTag)
 
 	r.logger.Log("level", "debug", "message", fmt.Sprintf("executing: docker tag %s %s", imageSha, retaggedNameWithTag))
 
@@ -95,7 +95,7 @@ func (r *Registry) PushImage(destinationImage, destinationTag string) error {
 		return microerror.Maskf(invalidArgumentError, "destinationTag should not be empty")
 	}
 
-	imageTag := images.ImageWithTag(destinationImage, destinationTag)
+	imageTag := images.NameWithTag(destinationImage, destinationTag)
 
 	r.logger.Log("level", "debug", "message", fmt.Sprintf("executing: docker push %s", imageTag))
 
@@ -130,7 +130,7 @@ func (r *Registry) RebuildImage(sourceImage, sha, destinationImage, destinationT
 		return "", microerror.Maskf(invalidArgumentError, "destinationTag should not be empty")
 	}
 
-	retaggedNameWithTag := images.ImageWithTag(destinationImage, destinationTag)
+	retaggedNameWithTag := images.NameWithTag(destinationImage, destinationTag)
 
 	dockerfile := Dockerfile{
 		BaseImage:         sourceImage,

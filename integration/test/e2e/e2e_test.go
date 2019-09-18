@@ -56,7 +56,7 @@ func CheckImageExistOrFail(t *testing.T, r *registry.Registry, image, tag string
 		t.Fatal(err)
 	}
 	if !ok {
-		t.Fatalf("Image %s does not exist.", images.ImageName(image, tag))
+		t.Fatalf("Image %s does not exist.", images.Name(image, tag))
 	}
 }
 

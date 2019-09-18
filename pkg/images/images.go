@@ -33,7 +33,7 @@ type CustomImage struct {
 	DockerfileOptions []string `yaml:"dockerfileOptions"`
 }
 
-func ImageName(organisation string, image string) string {
+func Name(organisation string, image string) string {
 	parts := strings.Split(image, "/")
 
 	return fmt.Sprintf("%s/%s", organisation, parts[len(parts)-1])
@@ -45,7 +45,7 @@ func RetaggedName(registry, organisation string, image string) string {
 	return fmt.Sprintf("%s/%s/%s", registry, organisation, parts[len(parts)-1])
 }
 
-func ImageWithTag(image, tag string) string {
+func NameWithTag(image, tag string) string {
 	return fmt.Sprintf("%s:%s", image, tag)
 }
 

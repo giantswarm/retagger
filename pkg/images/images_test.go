@@ -58,7 +58,7 @@ func TestImageName(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		returnedName := ImageName(organisation, test.image.Name)
+		returnedName := Name(organisation, test.image.Name)
 		if returnedName != test.expectedName {
 			t.Fatalf("'%v' != '%v'", returnedName, test.expectedName)
 		}
