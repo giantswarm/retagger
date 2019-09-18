@@ -177,6 +177,8 @@
     tag: v1.14.0
   - sha: 19f2bc51a1a3cd2753fddb9c2905c8c510aab6e24e23200841abca712ff7578d
     tag: v1.14.3
+  - sha: eea97bdf90e3f6074af2fdeb3df40969c44a721dc8f4d148844de85fe93508ff
+    tag: v1.15.1
 - name: k8s.gcr.io/hyperkube
   tags:
   - sha: 5d90bfe81ba56024a1e918789f89032a25b034676a3cdd2a7b41492e078a7984
