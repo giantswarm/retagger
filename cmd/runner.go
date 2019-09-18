@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"os"
 	"os/exec"
@@ -10,7 +11,7 @@ import (
 	"github.com/giantswarm/micrologger"
 	"github.com/spf13/cobra"
 
-	"github.com/giantswarm/retagger/pkg/config"
+	"github.com/giantswarm/retagger/pkg/images"
 	"github.com/giantswarm/retagger/pkg/registry"
 	"github.com/giantswarm/retagger/pkg/retagger"
 )
@@ -41,15 +42,15 @@ func (r *runner) Run(cmd *cobra.Command, args []string) error {
 func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) error {
 	var err error
 
-	var conf *config.Config
+	var img images.Images
 	{
-		conf, err = config.FromFile(r.flag.ConfigFile)
+		img, err = images.FromFile(r.flag.ConfigFile)
 		if err != nil {
 			return microerror.Mask(err)
 		}
 	}
 
-	var destRegistry *registry.Registry
+	var newRegistry *registry.Registry
 	{
 		c := registry.Config{
 			Host:         r.flag.Host,
@@ -57,14 +58,15 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 			Password:     r.flag.Password,
 			Username:     r.flag.Username,
 			LogFunc:      nil,
+			Logger:       r.logger,
 		}
-		destRegistry, err = registry.New(c)
+		newRegistry, err = registry.New(c)
 		if err != nil {
 			return microerror.Mask(err)
 		}
 	}
 
-	err = destRegistry.Login()
+	err = newRegistry.Login()
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -72,8 +74,8 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 	var newRetagger *retagger.Retagger
 	{
 		c := retagger.Config{
-			Logger:              r.logger,
-			DestinationRegistry: destRegistry,
+			Logger:   r.logger,
+			Registry: newRegistry,
 		}
 		newRetagger, err = retagger.New(c)
 		if err != nil {
@@ -81,7 +83,13 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 		}
 	}
 
-	err = newRetagger.RetagImages(conf.Images)
+	n, err := newRetagger.LoadImages(img)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+	r.logger.Log("level", "debug", "message", fmt.Sprintf("loaded %d jobs from YAML", n))
+
+	err = newRetagger.ExecuteJobs()
 	if err != nil {
 		return microerror.Mask(err)
 	}

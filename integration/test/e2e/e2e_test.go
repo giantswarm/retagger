@@ -8,7 +8,9 @@ import (
 	"testing"
 
 	"github.com/giantswarm/microerror"
+	"github.com/giantswarm/micrologger/microloggertest"
 
+	"github.com/giantswarm/retagger/pkg/images"
 	"github.com/giantswarm/retagger/pkg/registry"
 )
 
@@ -23,6 +25,7 @@ func TestE2e(t *testing.T) {
 		LogFunc: func(f string, args ...interface{}) {
 			t.Logf(f, args...)
 		},
+		Logger: microloggertest.New(),
 	}
 	r, err := registry.New(c)
 	if err != nil {
@@ -42,12 +45,18 @@ func TestE2e(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	ok, err := r.CheckImageTagExists("retagger-e2e", "3.7")
+	CheckImageExistOrFail(t, r, "retagger-e2e", "3.7")
+	CheckImageExistOrFail(t, r, "retagger-e2e", "3.9")
+	CheckImageExistOrFail(t, r, "retagger-e2e", "3.9-giantswarm")
+}
+
+func CheckImageExistOrFail(t *testing.T, r *registry.Registry, image, tag string) {
+	ok, err := r.CheckImageTagExists(image, tag)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if !ok {
-		t.Fatal("Image retagger-e2e:3.7 does not exist.")
+		t.Fatalf("Image %s does not exist.", images.Name(image, tag))
 	}
 }
 

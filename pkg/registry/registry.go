@@ -2,17 +2,16 @@ package registry
 
 import (
 	"fmt"
-	"os"
-	"os/exec"
-	"text/template"
 	"time"
 
+	dockerclient "github.com/docker/docker/client"
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
+	"github.com/giantswarm/micrologger"
 	"github.com/nokia/docker-registry-client/registry"
 	"github.com/opencontainers/go-digest"
 
-	"github.com/giantswarm/retagger/pkg/config"
+	"github.com/giantswarm/retagger/pkg/images"
 )
 
 type Config struct {
@@ -21,10 +20,13 @@ type Config struct {
 	Password     string
 	Username     string
 	LogFunc      func(format string, args ...interface{})
+	Logger       micrologger.Logger
 }
 
 type Registry struct {
 	registryClient *registry.Registry
+	logger         micrologger.Logger
+	docker         *dockerclient.Client
 
 	host         string
 	organisation string
@@ -32,21 +34,21 @@ type Registry struct {
 	username     string
 }
 
-func New(cfg Config) (*Registry, error) {
-	if cfg.Host == "" {
-		return nil, microerror.Maskf(invalidConfigError, "%T.Host must not be empty", cfg)
+func New(config Config) (*Registry, error) {
+	if config.Host == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Host must not be empty", config)
 	}
-
-	if cfg.Organisation == "" {
-		return nil, microerror.Maskf(invalidConfigError, "%T.Organisation must not be empty", cfg)
+	if config.Organisation == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Organisation must not be empty", config)
 	}
-
-	if cfg.Username == "" {
-		return nil, microerror.Maskf(invalidConfigError, "%T.Username must not be empty", cfg)
+	if config.Username == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Username must not be empty", config)
 	}
-
-	if cfg.Password == "" {
-		return nil, microerror.Maskf(invalidConfigError, "%T.Password must not be empty", cfg)
+	if config.Password == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Password must not be empty", config)
+	}
+	if config.Logger == nil {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be nil", config)
 	}
 
 	var err error
@@ -54,37 +56,40 @@ func New(cfg Config) (*Registry, error) {
 	var registryClient *registry.Registry
 	{
 		o := registry.Options{
-			Username: cfg.Username,
-			Password: cfg.Password,
+			Username: config.Username,
+			Password: config.Password,
 		}
 
-		if cfg.LogFunc != nil {
-			o.Logf = cfg.LogFunc
+		if config.LogFunc != nil {
+			o.Logf = config.LogFunc
 		}
 
-		registryClient, err = registry.NewCustom(fmt.Sprintf("https://%s", cfg.Host), o)
+		registryClient, err = registry.NewCustom(fmt.Sprintf("https://%s", config.Host), o)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
 	}
 
+	var dockerClient *dockerclient.Client
+	{
+		dockerClient, err = dockerclient.NewClientWithOpts(dockerclient.FromEnv, dockerclient.WithVersion("1.38"))
+		if err != nil {
+			return nil, microerror.Maskf(err, "dockerclient.New")
+		}
+	}
+
 	qr := &Registry{
-		host:           cfg.Host,
-		organisation:   cfg.Organisation,
-		password:       cfg.Password,
-		username:       cfg.Username,
+		host:         config.Host,
+		organisation: config.Organisation,
+		password:     config.Password,
+		username:     config.Username,
+		logger:       config.Logger,
+
 		registryClient: registryClient,
+		docker:         dockerClient,
 	}
 
 	return qr, nil
-}
-
-func (r *Registry) Login() error {
-	login := exec.Command("docker", "login", "-u", r.username, "-p", r.password, r.host)
-	if err := Run(login); err != nil {
-		return fmt.Errorf("could not login to registry: %v", err)
-	}
-	return nil
 }
 
 func (r *Registry) CheckImageTagExists(image, tag string) (bool, error) {
@@ -105,7 +110,7 @@ func (r *Registry) CheckImageTagExists(image, tag string) (bool, error) {
 func (r *Registry) ListImageTags(image string) ([]string, error) {
 	var tags []string
 	o := func() error {
-		imageTags, err := r.registryClient.Tags(config.ImageName(r.organisation, image))
+		imageTags, err := r.registryClient.Tags(images.Name(r.organisation, image))
 		if err != nil {
 			return microerror.Mask(err)
 		}
@@ -122,50 +127,8 @@ func (r *Registry) ListImageTags(image string) ([]string, error) {
 	return tags, nil
 }
 
-func (r *Registry) Retag(image, sha, tag string) (string, error) {
-	retaggedName := config.RetaggedName(r.host, r.organisation, image)
-	retaggedNameWithTag := config.ImageWithTag(retaggedName, tag)
-
-	retag := exec.Command("docker", "tag", sha, retaggedNameWithTag)
-	err := Run(retag)
-	if err != nil {
-		return "", microerror.Mask(err)
-	}
-	return retaggedNameWithTag, nil
-}
-
-func (r *Registry) Rebuild(image, tag string, customImage config.CustomImage) (string, error) {
-	RetaggedName := config.RetaggedName(r.host, r.organisation, image)
-	rebuiltImageTag := config.ImageWithTag(RetaggedName, fmt.Sprintf("%s-%s", tag, customImage.TagSuffix))
-
-	dockerfile := Dockerfile{
-		BaseImage:         image,
-		DockerfileOptions: customImage.DockerfileOptions,
-		Tag:               tag,
-	}
-
-	f, err := os.Create(fmt.Sprintf("Dockerfile-%s", customImage.TagSuffix))
-	if err != nil {
-		return "", microerror.Mask(err)
-	}
-
-	// render Dockerfile with overrides
-	t := template.Must(template.New("").Parse(customDockerfileTmpl))
-	err = t.Execute(f, dockerfile)
-	if err != nil {
-		return "", microerror.Mask(invalidTemplateError)
-	}
-
-	rebuild := exec.Command("docker", "build", "-t", rebuiltImageTag, "-f", fmt.Sprintf("Dockerfile-%s", customImage.TagSuffix), ".")
-	err = Run(rebuild)
-	if err != nil {
-		return "", microerror.Mask(err)
-	}
-	return rebuiltImageTag, nil
-}
-
 func (r *Registry) GetDigest(image string, tag string) (digest.Digest, error) {
-	digest, err := r.registryClient.ManifestV2Digest(config.ImageName(r.organisation, image), tag)
+	digest, err := r.registryClient.ManifestV2Digest(images.Name(r.organisation, image), tag)
 	if err != nil {
 		return "", microerror.Mask(err)
 	}
@@ -179,10 +142,14 @@ func (r *Registry) DeleteImage(image string, tag string) error {
 		return microerror.Mask(err)
 	}
 
-	err = r.registryClient.DeleteManifest(config.ImageName(r.organisation, image), digest)
+	err = r.registryClient.DeleteManifest(images.Name(r.organisation, image), digest)
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
 	return nil
+}
+
+func (r *Registry) RetaggedName(image string) string {
+	return images.RetaggedName(r.host, r.organisation, image)
 }
