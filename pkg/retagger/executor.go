@@ -16,6 +16,8 @@ func (r *Retagger) ExecuteJobs() error {
 		}
 	}
 
+	r.logger.Log("level", "debug", "message", fmt.Sprintf("successfully finished executing %d jobs", len(r.jobs)))
+
 	return nil
 }
 

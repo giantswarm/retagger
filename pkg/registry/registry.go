@@ -2,7 +2,6 @@ package registry
 
 import (
 	"fmt"
-	"strings"
 	"time"
 
 	dockerclient "github.com/docker/docker/client"
@@ -33,8 +32,6 @@ type Registry struct {
 	organisation string
 	password     string
 	username     string
-
-	registryAuth string
 }
 
 func New(config Config) (*Registry, error) {
@@ -154,7 +151,5 @@ func (r *Registry) DeleteImage(image string, tag string) error {
 }
 
 func (r *Registry) RetaggedName(image string) string {
-	parts := strings.Split(image, "/")
-
-	return fmt.Sprintf("%s/%s/%s", r.host, r.organisation, parts[len(parts)-1])
+	return images.RetaggedName(r.host, r.organisation, image)
 }

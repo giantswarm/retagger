@@ -36,19 +36,19 @@ type CustomImage struct {
 func ImageName(organisation string, image string) string {
 	parts := strings.Split(image, "/")
 
-	return fmt.Sprintf("%v/%v", organisation, parts[len(parts)-1])
+	return fmt.Sprintf("%s/%s", organisation, parts[len(parts)-1])
 }
 
 func RetaggedName(registry, organisation string, image string) string {
 	parts := strings.Split(image, "/")
 
-	return fmt.Sprintf("%v/%v/%v", registry, organisation, parts[len(parts)-1])
+	return fmt.Sprintf("%s/%s/%s", registry, organisation, parts[len(parts)-1])
 }
 
 func ImageWithTag(image, tag string) string {
-	return fmt.Sprintf("%v:%v", image, tag)
+	return fmt.Sprintf("%s:%s", image, tag)
 }
 
 func ShaName(imageName, sha string) string {
-	return fmt.Sprintf("%v@sha256:%v", imageName, sha)
+	return fmt.Sprintf("%s@sha256:%s", imageName, sha)
 }

@@ -25,19 +25,20 @@ func (r *Registry) Login() error {
 		Password:      r.password,
 		ServerAddress: r.host,
 	}
-	res, err := r.docker.RegistryLogin(context.Background(), authConfig)
-	if err != nil {
-		return microerror.Maskf(err, "could not login to registry")
-	} else if res.Status != "Login Succeeded" {
-		return microerror.Mask(dockerError)
-	}
 
-	r.registryAuth = res.IdentityToken
+	// We don't care for the AuthenticateOKBody.IdentityToken, as it's always nil.
+	err := IsDockerLoginFailed(r.docker.RegistryLogin(context.Background(), authConfig))
+	if err != nil {
+		return microerror.Mask(err)
+	}
 
 	return nil
 }
 
 func (r *Registry) PullImage(image string, sha string) error {
+	if image == "" {
+		return microerror.Maskf(invalidArgumentError, "image should not be empty")
+	}
 	if sha == "" {
 		return microerror.Maskf(invalidArgumentError, "%s SHA should not be empty", image)
 	}
@@ -60,8 +61,21 @@ func (r *Registry) PullImage(image string, sha string) error {
 }
 
 func (r *Registry) TagSha(sourceImage, sha, destinationImage, destinationTag string) (string, error) {
+	if sourceImage == "" {
+		return "", microerror.Maskf(invalidArgumentError, "sourceImage should not be empty")
+	}
+	if sha == "" {
+		return "", microerror.Maskf(invalidArgumentError, "%s SHA should not be empty", sourceImage)
+	}
+	if destinationImage == "" {
+		return "", microerror.Maskf(invalidArgumentError, "destinationImage should not be empty")
+	}
+	if destinationTag == "" {
+		return "", microerror.Maskf(invalidArgumentError, "destinationTag should not be empty")
+	}
+
 	imageSha := images.ShaName(sourceImage, sha)
-	retaggedNameWithTag := fmt.Sprintf("%s:%s", destinationImage, destinationTag)
+	retaggedNameWithTag := images.ImageWithTag(destinationImage, destinationTag)
 
 	r.logger.Log("level", "debug", "message", fmt.Sprintf("executing: docker tag %s %s", imageSha, retaggedNameWithTag))
 
@@ -74,7 +88,14 @@ func (r *Registry) TagSha(sourceImage, sha, destinationImage, destinationTag str
 }
 
 func (r *Registry) PushImage(destinationImage, destinationTag string) error {
-	imageTag := fmt.Sprintf("%s:%s", destinationImage, destinationTag)
+	if destinationImage == "" {
+		return microerror.Maskf(invalidArgumentError, "destinationImage should not be empty")
+	}
+	if destinationTag == "" {
+		return microerror.Maskf(invalidArgumentError, "destinationTag should not be empty")
+	}
+
+	imageTag := images.ImageWithTag(destinationImage, destinationTag)
 
 	r.logger.Log("level", "debug", "message", fmt.Sprintf("executing: docker push %s", imageTag))
 
@@ -96,7 +117,20 @@ func (r *Registry) PushImage(destinationImage, destinationTag string) error {
 }
 
 func (r *Registry) RebuildImage(sourceImage, sha, destinationImage, destinationTag string, dockerfileOptions []string) (string, error) {
-	retaggedNameWithTag := fmt.Sprintf("%s:%s", destinationImage, destinationTag)
+	if sourceImage == "" {
+		return "", microerror.Maskf(invalidArgumentError, "sourceImage should not be empty")
+	}
+	if sha == "" {
+		return "", microerror.Maskf(invalidArgumentError, "%s SHA should not be empty", sourceImage)
+	}
+	if destinationImage == "" {
+		return "", microerror.Maskf(invalidArgumentError, "destinationImage should not be empty")
+	}
+	if destinationTag == "" {
+		return "", microerror.Maskf(invalidArgumentError, "destinationTag should not be empty")
+	}
+
+	retaggedNameWithTag := images.ImageWithTag(destinationImage, destinationTag)
 
 	dockerfile := Dockerfile{
 		BaseImage:         sourceImage,
@@ -105,7 +139,7 @@ func (r *Registry) RebuildImage(sourceImage, sha, destinationImage, destinationT
 		Tag:               destinationTag,
 	}
 
-	f, err := os.Create(fmt.Sprintf("Dockerfile-%s", destinationTag))
+	f, err := os.Create(TempDockerfileName(destinationTag))
 	if err != nil {
 		return "", microerror.Mask(err)
 	}
@@ -117,7 +151,7 @@ func (r *Registry) RebuildImage(sourceImage, sha, destinationImage, destinationT
 		return "", microerror.Mask(invalidTemplateError)
 	}
 
-	rebuild := exec.Command("docker", "build", "-t", retaggedNameWithTag, "-f", fmt.Sprintf("Dockerfile-%s", destinationTag), ".")
+	rebuild := exec.Command("docker", "build", "-t", retaggedNameWithTag, "-f", TempDockerfileName(destinationTag), ".")
 	err = Run(rebuild)
 	if err != nil {
 		return "", microerror.Mask(err)
