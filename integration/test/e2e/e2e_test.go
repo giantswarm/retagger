@@ -10,6 +10,7 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger/microloggertest"
 
+	"github.com/giantswarm/retagger/pkg/images"
 	"github.com/giantswarm/retagger/pkg/registry"
 )
 
@@ -55,7 +56,7 @@ func CheckImageExistOrFail(t *testing.T, r *registry.Registry, image, tag string
 		t.Fatal(err)
 	}
 	if !ok {
-		t.Fatalf("Image %s:%s does not exist.", image, tag)
+		t.Fatalf("Image %s does not exist.", images.ImageName(image, tag))
 	}
 }
 
