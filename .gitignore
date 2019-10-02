@@ -1,2 +1,3 @@
-retagger
-
+/retagger
+/e2e.test
+Dockerfile*
