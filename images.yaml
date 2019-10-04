@@ -81,6 +81,8 @@
   tags:
   - sha: 953a3b6bf0046333c656fcfa2fc3a08f4055dc3fbd5b1dcdcdf865a2534db526
     tag: v1.2.0
+  - sha: f75c3e5c5c7f65846ddd6883d6187b38f77721a3938f241c9e5d0ebe7beb8e19
+    tag: v1.8.0
 - name: gcr.io/google_containers/nginx-ingress-controller
   tags:
   - sha: 03fd8fc46018d09b4050d4daaf50bff73c80936994b374319ed33cbb2c1684f4
@@ -157,6 +159,8 @@
   tags:
   - sha: b5098a06dc59d28b11120eab01d8d0147b526a175aa606f9978934b6b2224138
     tag: 6.0.0
+  - sha: 081d009bd3615f2ef2bfeaab22466026a689b2bb9bdfba01b055079e0a8c9b54
+    tag: 6.4.1
 - name: jgsqware/fluentd-loki-plugin
   tags:
   - sha: 7dbe2ccfbf2eb7b29367f6a3ee7c0976c3b45e4e21d6363cb43b156c17488259
@@ -226,6 +230,8 @@
     tag: v2.9.0
   - sha: e02bb3dec47631b4d31cede2d35ff901d892b57f33144406ee7994e8c94fb2d7
     tag: v2.9.1
+  - sha: cd93b8711bb92eb9c437d74217311519e0a93bc55779aa664325dc83cd13cb32
+    tag: v2.12.0
 - name: quay.io/calico/cni
   tags:
   - sha: 0f33d14b58f8c9394448df13e534ca6fa6493692d6c06f15a1273b0e44be8f24
@@ -301,6 +307,8 @@
   tags:
   - sha: e6a3f28f282092d9790aaae393650852a9b7c2a7614dc3aa797a74a6beaa0700
     tag: v0.16.1
+  - sha: 7dbf4949a317a056d11ed8f379826b04d0665fad5b9334e1d69b23e946056cd3
+    tag: v0.19.0
 - name: quay.io/prometheus/haproxy-exporter
   tags:
   - sha: d8da0790760c279d961e63aa711fac3fd6a3db237eccea3c8a21239dca64805c
@@ -313,6 +321,13 @@
     tag: v0.17.0
   - sha: b2dd31b0d23fda63588674e40fd8d05010d07c5d4ac37163fc596ba9065ce38d
     tag: v0.18.0
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+      - USER giantswarm
+  - sha: a2f29256e53cc3e0b64d7a472512600b2e9410347d53cdc85b49f659c17e02ee
+    tag: v0.18.1
     customImages:
     - tagSuffix: giantswarm
       dockerfileOptions:
