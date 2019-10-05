@@ -149,10 +149,10 @@
     tag: 1.12.6
   - sha: fb310c8e01bcfd4e83b43f06e339de841489cb56b2da4411695c60f84f66fb99
     tag: 1.12.9
-  - sha: 90d554b5ae59cb63d2bf42bdfcd60aa1feb4794d9e3a9cbb9d2deb477c088be0
-    tag: 1.13.0
-  - sha: 84349ee862d8bafff35e0d2bfd539da565b536b4dfce654773fc21a1db2da6d7
-    tag: 1.13.0-alpine3.10
+  - sha: 1b1246987ecb4939d9bd20f74eab25e8e2ad819aceea2d6b59869c82f85ef1de
+    tag: 1.13.1
+  - sha: 2293e952c79b8b3a987e1e09d48b6aa403d703cef9a8fa316d30ba2918d37367
+    tag: 1.13.1-alpine3.10
 - name: grafana/grafana
   tags:
   - sha: b5098a06dc59d28b11120eab01d8d0147b526a175aa606f9978934b6b2224138
