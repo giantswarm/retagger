@@ -179,6 +179,8 @@
     tag: v1.14.3
   - sha: eea97bdf90e3f6074af2fdeb3df40969c44a721dc8f4d148844de85fe93508ff
     tag: v1.15.1
+  - sha: 5a80893ea1a16a066889ab06934cfa3996d87a7232b10554de4ed8788b1fa212
+    tag: v1.15.2
 - name: k8s.gcr.io/hyperkube
   tags:
   - sha: 94adb47a41838bee7deee7e09d07a7093bdba517d980c66115cc2eeb675090be
@@ -258,6 +260,8 @@
   tags:
   - sha: 99a3e3297e281fec09fe850d6d4bccf4d9fd58ff62a5b37764d8a8bd1e79bd14
     tag: v1.7.2
+  - sha: e9ec63c8866fe8670f35abcc14f1388553b2c329ec8bb78b04ce795cd04cb4f5
+    tag: v1.8.0
 - name: quay.io/coreos/prometheus-operator
   tags:
   - sha: 97697df680ea4c7e70c4cb4af5bdc44f7a70b25be7afde70bd921a658e4c62ec
