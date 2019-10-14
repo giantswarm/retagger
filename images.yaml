@@ -37,6 +37,12 @@
     - tagSuffix: giantswarm
       dockerfileOptions:
       - EXPOSE 1053
+  - sha: 493ee88e1a92abebac67cbd4b5658b4730e0f33512461442d8d9214ea6734a9b
+    tag: 1.6.4
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - EXPOSE 1053
 - name: dduportal/bats
   tags:
   - sha: b2d533b27109f7c9ea1e270e23f212c47906346f9cffaa4da6da48ed9d8031da
