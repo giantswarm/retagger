@@ -197,10 +197,10 @@
   tags:
   - sha: 4ca116565ff6a46e582bada50ba3550f95b368db1d2415829241a565a6c38e2a
     tag: v0.3.3
-- name: uswitch/kiam
+- name: quay.io/uswitch/kiam
   tags:
-  - sha: d1205709249edf7e4fca4d45e8090a9c9626f7eefadd31de642255cac41d638d
-    tag: v1.2.1
+  - sha: b24ef28b4a06371d10b6b9fea8a2d0a3b342dbf4928e798c07a208995e3945e3
+    tag: v3.4
 - name: kindest/node
   overrideRepoName: kind-node
   tags:
