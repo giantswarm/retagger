@@ -348,6 +348,10 @@
       - USER root
       - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
       - USER giantswarm
+- name: quay.io/uswitch/kiam
+  tags:
+  - sha: b24ef28b4a06371d10b6b9fea8a2d0a3b342dbf4928e798c07a208995e3945e3
+    tag: v3.4
 - name: redis
   tags:
   - sha: 002a1870fa2ffd11dbd7438527a2c17f794f6962f5d3a4f048f848963ab954a8
