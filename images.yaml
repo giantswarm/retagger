@@ -37,6 +37,12 @@
     - tagSuffix: giantswarm
       dockerfileOptions:
       - EXPOSE 1053
+  - sha: 493ee88e1a92abebac67cbd4b5658b4730e0f33512461442d8d9214ea6734a9b
+    tag: 1.6.4
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - EXPOSE 1053
 - name: dduportal/bats
   tags:
   - sha: b2d533b27109f7c9ea1e270e23f212c47906346f9cffaa4da6da48ed9d8031da
@@ -149,16 +155,14 @@
     tag: 1.12.6
   - sha: fb310c8e01bcfd4e83b43f06e339de841489cb56b2da4411695c60f84f66fb99
     tag: 1.12.9
-  - sha: 90d554b5ae59cb63d2bf42bdfcd60aa1feb4794d9e3a9cbb9d2deb477c088be0
-    tag: 1.13.0
-  - sha: 84349ee862d8bafff35e0d2bfd539da565b536b4dfce654773fc21a1db2da6d7
-    tag: 1.13.0-alpine3.10
+  - sha: 1b1246987ecb4939d9bd20f74eab25e8e2ad819aceea2d6b59869c82f85ef1de
+    tag: 1.13.1
+  - sha: 2293e952c79b8b3a987e1e09d48b6aa403d703cef9a8fa316d30ba2918d37367
+    tag: 1.13.1-alpine3.10
 - name: grafana/grafana
   tags:
   - sha: b5098a06dc59d28b11120eab01d8d0147b526a175aa606f9978934b6b2224138
     tag: 6.0.0
-  - sha: 081d009bd3615f2ef2bfeaab22466026a689b2bb9bdfba01b055079e0a8c9b54
-    tag: 6.4.1
 - name: jgsqware/fluentd-loki-plugin
   tags:
   - sha: 7dbe2ccfbf2eb7b29367f6a3ee7c0976c3b45e4e21d6363cb43b156c17488259
@@ -181,12 +185,18 @@
     tag: v1.14.3
   - sha: eea97bdf90e3f6074af2fdeb3df40969c44a721dc8f4d148844de85fe93508ff
     tag: v1.15.1
+  - sha: 5a80893ea1a16a066889ab06934cfa3996d87a7232b10554de4ed8788b1fa212
+    tag: v1.15.2
 - name: k8s.gcr.io/hyperkube
   tags:
   - sha: 94adb47a41838bee7deee7e09d07a7093bdba517d980c66115cc2eeb675090be
     tag: v1.14.6
+  - sha: b04b2aebd3d76e042b017fb5c6a7417525241d7f6cbcd5ed045e02b52e733d11
+    tag: v1.14.8
   - sha: a58aec353b510226bd5afe3efcb611784e9abc7de38c6efb8b10bf08643af9af
     tag: v1.15.4
+  - sha: c0a2b93f543177574551262ba1cf9f005fa4d2a046c731070f1d39f829d50e5f
+    tag: v1.15.5
 - name: k8s.gcr.io/metrics-server-amd64
   tags:
   - sha: 4ca116565ff6a46e582bada50ba3550f95b368db1d2415829241a565a6c38e2a
@@ -206,12 +216,12 @@
     tag: v0.6.0
 - name: kong
   tags:
-  - sha: df7bb41be97ec490d08e7fb5acb2de626042a1eedb16405bc8504814a67140c0
-    tag: 1.2.2
+  - sha: 250045ba6aac1bcc0204a0acee2cc409d0b07129d0e90a5c6560433f68e4dbd8
+    tag: 1.3
 - name: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
   tags:
-  - sha: d0b53e95c9772d41a8031d7ade6b3958822fe3e8747a31ff6c2f686b1c3df2a9
-    tag: 0.5.0
+  - sha: 018a8cf2c6738d296abbea6bbfa25e2eb46ebd48fa2d6886fc15fcaf015b4dd3
+    tag: 0.6.0
 - name: nginx
   tags:
   - sha: 0fb320e2a1b1620b4905facb3447e3d84ad36da0b2c8aa8fe3a5a81d1187b884
@@ -228,8 +238,6 @@
     tag: v2.9.0
   - sha: e02bb3dec47631b4d31cede2d35ff901d892b57f33144406ee7994e8c94fb2d7
     tag: v2.9.1
-  - sha: cd93b8711bb92eb9c437d74217311519e0a93bc55779aa664325dc83cd13cb32
-    tag: v2.12.0
 - name: quay.io/calico/cni
   tags:
   - sha: 0f33d14b58f8c9394448df13e534ca6fa6493692d6c06f15a1273b0e44be8f24
@@ -241,6 +249,10 @@
 - name: quay.io/calico/node
   tags:
   - sha: 8cf1a90428305c2f4e7cb4ea357739ce61b16fbf09f8b53851f4eb2f5a3d2914
+    tag: v3.9.1
+- name: quay.io/calico/pod2daemon-flexvol
+  tags:
+  - sha: 4c7584b32b20707301c4b3015de5badc9a239ba0700328f4aab10f34e51e3aef
     tag: v3.9.1
 - name: quay.io/calico/typha
   tags:
@@ -262,7 +274,7 @@
   tags:
   - sha: 99a3e3297e281fec09fe850d6d4bccf4d9fd58ff62a5b37764d8a8bd1e79bd14
     tag: v1.7.2
-  - sha: f75c3e5c5c7f65846ddd6883d6187b38f77721a3938f241c9e5d0ebe7beb8e19
+  - sha: e9ec63c8866fe8670f35abcc14f1388553b2c329ec8bb78b04ce795cd04cb4f5
     tag: v1.8.0
 - name: quay.io/coreos/prometheus-operator
   tags:
@@ -301,14 +313,12 @@
     tag: v0.2.5
 - name: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
   tags:
-  - sha: 0c4941fa8c812dd44297b5f4900e3b26c3e6a8a42940e48fe9a1a585fe8f7e25
-    tag: 0.25.1
+  - sha: d0b22f715fcea5598ef7f869d308b55289a3daaa12922fa52a1abf17703c88e7
+    tag: 0.26.1
 - name: quay.io/prometheus/alertmanager
   tags:
   - sha: e6a3f28f282092d9790aaae393650852a9b7c2a7614dc3aa797a74a6beaa0700
     tag: v0.16.1
-  - sha: 7dbf4949a317a056d11ed8f379826b04d0665fad5b9334e1d69b23e946056cd3
-    tag: v0.19.0
 - name: quay.io/prometheus/haproxy-exporter
   tags:
   - sha: d8da0790760c279d961e63aa711fac3fd6a3db237eccea3c8a21239dca64805c
@@ -321,13 +331,6 @@
     tag: v0.17.0
   - sha: b2dd31b0d23fda63588674e40fd8d05010d07c5d4ac37163fc596ba9065ce38d
     tag: v0.18.0
-    customImages:
-    - tagSuffix: giantswarm
-      dockerfileOptions:
-      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
-      - USER giantswarm
-  - sha: a2f29256e53cc3e0b64d7a472512600b2e9410347d53cdc85b49f659c17e02ee
-    tag: v0.18.1
     customImages:
     - tagSuffix: giantswarm
       dockerfileOptions:
