@@ -238,6 +238,8 @@
     tag: v2.9.0
   - sha: e02bb3dec47631b4d31cede2d35ff901d892b57f33144406ee7994e8c94fb2d7
     tag: v2.9.1
+  - sha: 0a8caa2e9f19907608915db6e62a67383fe44b9876a467b297ee6f64e51dd58a
+    tag: v2.13.1
 - name: quay.io/calico/cni
   tags:
   - sha: 0f33d14b58f8c9394448df13e534ca6fa6493692d6c06f15a1273b0e44be8f24
@@ -319,6 +321,8 @@
   tags:
   - sha: e6a3f28f282092d9790aaae393650852a9b7c2a7614dc3aa797a74a6beaa0700
     tag: v0.16.1
+  - sha: 7dbf4949a317a056d11ed8f379826b04d0665fad5b9334e1d69b23e946056cd3
+    tag: v0.19.0
 - name: quay.io/prometheus/haproxy-exporter
   tags:
   - sha: d8da0790760c279d961e63aa711fac3fd6a3db237eccea3c8a21239dca64805c
@@ -334,6 +338,14 @@
     customImages:
     - tagSuffix: giantswarm
       dockerfileOptions:
+      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+      - USER giantswarm
+  - sha: a2f29256e53cc3e0b64d7a472512600b2e9410347d53cdc85b49f659c17e02ee
+    tag: v0.18.1
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - USER root
       - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
       - USER giantswarm
 - name: redis
