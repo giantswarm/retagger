@@ -62,11 +62,7 @@ func IsDockerLoginFailed(response registry.AuthenticateOKBody, err error) error 
 }
 
 func IsRepositoryNotFound(err error) bool {
-	/*if err != nil && strings.Contains(err.Error(), "access to the requested resource is not authorized") {
-		// for quay repository
-		return true
-	} else*/if err != nil && strings.Contains(err.Error(), "repository name not known to registry") {
-		// for aliyun registry
+	if err != nil && strings.Contains(err.Error(), "repository name not known to registry") {
 		return true
 	} else {
 		return false
