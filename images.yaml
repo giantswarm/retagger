@@ -64,6 +64,7 @@
   tags:
   - sha: 213d36d722005511b8ca3a754282d23567485cb0bfb5fa27da08f62d5bfbc1b8
     tag: "v30"
+  overrideRepoName: fedora2
 - name: fluent/fluent-bit
   tags:
   - sha: 6861ee5ea81fbbacf8802c622d9305930b341acc0800bbf30205b4d74ce2b486
