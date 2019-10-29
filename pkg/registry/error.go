@@ -3,6 +3,7 @@ package registry
 import (
 	"github.com/docker/docker/api/types/registry"
 	"github.com/giantswarm/microerror"
+	"strings"
 )
 
 var invalidConfigError = &microerror.Error{
@@ -58,4 +59,12 @@ func IsDockerLoginFailed(response registry.AuthenticateOKBody, err error) error 
 	}
 
 	return nil
+}
+
+func IsRepositoryNotFound(err error) bool {
+	if strings.Contains(err.Error(), "repository name not known to registry") {
+		return true
+	} else {
+		return false
+	}
 }

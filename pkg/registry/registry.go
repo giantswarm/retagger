@@ -111,7 +111,10 @@ func (r *Registry) ListImageTags(image string) ([]string, error) {
 	var tags []string
 	o := func() error {
 		imageTags, err := r.registryClient.Tags(images.Name(r.organisation, image))
-		if err != nil {
+		if IsRepositoryNotFound(err) {
+			r.logger.Log("level", "warning", "message", fmt.Sprintf("repository %s was not found in registry, retagger will try create the repository", image))
+			return nil
+		} else if err != nil {
 			return microerror.Mask(err)
 		}
 
