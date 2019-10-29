@@ -60,6 +60,10 @@
   tags:
   - sha: f9addd642b184a81daa77c4301a800009aa714296220549ad1c61a22ca9bb8d3
     tag: 6.1.4
+- name: fedora
+  tags:
+  - sha: 213d36d722005511b8ca3a754282d23567485cb0bfb5fa27da08f62d5bfbc1b8
+    tag: "v30"
 - name: fluent/fluent-bit
   tags:
   - sha: 6861ee5ea81fbbacf8802c622d9305930b341acc0800bbf30205b4d74ce2b486
