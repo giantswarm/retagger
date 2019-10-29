@@ -258,6 +258,12 @@
     tag: v3.9.2
   - sha: 2e8e9ae5cbddfd140b2498d9b96a56e099ab42bf125a97801dd5884de418b500
     tag: v3.10.0
+- name: quay.io/calico/pod2daemon-flexvol
+  tags:
+  - sha: 82ed23ddd22b33565108ee7fe50fba3c12c84787e96720b54e6a84288b186695
+    tag: v3.9.2
+  - sha: 0c2b07760d2d33c6cd3b47e4a5d21ec9116cf4753b077f46dd6ea473f41a1d6f
+    tag: v3.10.0
 - name: quay.io/calico/typha
   tags:
   - sha: 55d97462ea91c858361bf8a2f051e1414edbc0c98b6310276a80cc705e7256e4
