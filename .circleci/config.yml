@@ -114,14 +114,14 @@ workflows:
           requires:
             - build
       - retagQuay:
-#          filters:
-#            branches:
-#              only: master
+          filters:
+            branches:
+              only: master
           requires:
             - build
       - retagAliyun:
-#          filters:
-#            branches:
-#              only: master
+          filters:
+            branches:
+              only: master
           requires:
             - build

@@ -374,10 +374,6 @@
   tags:
   - sha: 3533054a0543e4a2eb4f4c61d68d5d3a39e5886a65d07f011d45044a5c470ccd
     tag: 0.11.1
-- name: ubuntu
-  tags:
-  - sha: a7b8b7b33e44b123d7f997bd4d3d0a59fafc63e203d17efedf09ff3f6f516152
-    tag: 0.11.1
 - name: vault
   tags:
   - sha: 8d2813d4fbc145d867218b60e13b29941edf60d1c0929964db42879a1aacc889
