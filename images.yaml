@@ -163,7 +163,7 @@
   tags:
   - sha: b5098a06dc59d28b11120eab01d8d0147b526a175aa606f9978934b6b2224138
     tag: 6.0.0
-  - sha: a532fe3b344a8d519e14f5f6e068600274dfe65b2e5ca630e53a521be576d90d
+  - sha: bd55ea2bad17f5016431734b42fdfc202ebdc7d08b6c4ad35ebb03d06efdff69
     tag: 6.4.3
 - name: jgsqware/fluentd-loki-plugin
   tags:
