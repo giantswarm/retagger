@@ -31,14 +31,8 @@
     tag: 0.12
 - name: coredns/coredns
   tags:
-  - sha: 12eb885b8685b1b13a04ecf5c23bc809c2e57917252fd7b0be9e9c00644e8ee5
-    tag: 1.6.2
-    customImages:
-    - tagSuffix: giantswarm
-      dockerfileOptions:
-      - EXPOSE 1053
-  - sha: 493ee88e1a92abebac67cbd4b5658b4730e0f33512461442d8d9214ea6734a9b
-    tag: 1.6.4
+  - sha: 7ec975f167d815311a7136c32e70735f0d00b73781365df1befd46ed35bd4fe7
+    tag: 1.6.5
     customImages:
     - tagSuffix: giantswarm
       dockerfileOptions:
@@ -189,6 +183,8 @@
     tag: v1.15.1
   - sha: 5a80893ea1a16a066889ab06934cfa3996d87a7232b10554de4ed8788b1fa212
     tag: v1.15.2
+  - sha: 8d8664ac086f5dcff5b95874ef8b1dfaab6eb87477bbaea9a2e19dfac063c521
+    tag: v1.16.2
 - name: k8s.gcr.io/hyperkube
   tags:
   - sha: 94adb47a41838bee7deee7e09d07a7093bdba517d980c66115cc2eeb675090be
