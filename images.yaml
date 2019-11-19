@@ -99,8 +99,8 @@
     tag: v0.10.0
 - name: gcr.io/kubernetes-helm/tiller
   tags:
-  - sha: c09393087c4be55023f86be979a9dfe486c728703eba996344adc9783f261baa
-    tag: v2.14.3
+  - sha: 3c70ee359d3ec305ca469395a2481b2375d569c6b4a928389ca07d829d12ec51
+    tag: v2.16.1
 - name: gfkse/oauth2_proxy
   tags:
   - sha: 4bba1afcd3af85b550b42647e92b3fab36448c75e1af611a65644f77f4dde314
