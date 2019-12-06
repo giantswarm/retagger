@@ -6,12 +6,21 @@ import (
 )
 
 type Job struct {
-	SourceImage string
-	SourceTag   string
-	SourceSha   string
+	SourceImage   string
+	SourceTag     string
+	SourceSha     string
+	SourcePattern string
 
 	Options JobOptions
 }
+
+// type PatternJob struct {
+// 	SourceImage   string
+// 	SourceTag     string
+// 	SourcePattern string
+
+// 	Options JobOptions
+// }
 
 type JobOptions struct {
 	// DockerfileOptions - list of strings we add for Dockerfile to build custom image.
@@ -41,6 +50,14 @@ func FromImage(image images.Image) ([]Job, error) {
 
 	for _, t := range image.Tags {
 		j, err := fromImageTagIncludeCustom(image, t)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+		jobs = append(jobs, j...)
+	}
+
+	for _, p := range image.Patterns {
+		j, err := fromImageTagPatternIncludeCustom(image, p)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -79,11 +96,54 @@ func fromImageTagIncludeCustom(image images.Image, tag images.Tag) ([]Job, error
 	return jobs, nil
 }
 
+func fromImageTagPatternIncludeCustom(image images.Image, pattern images.TagPattern) ([]Job, error) {
+	var jobs []Job
+
+	j, err := fromImageTagPattern(image, pattern)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	jobs = append(jobs, j)
+
+	for _, c := range pattern.CustomImages {
+		j, err = fromImageTagPattern(image, pattern)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+
+		if c.TagSuffix != "" {
+			j.Options.TagSuffix = c.TagSuffix
+		}
+
+		if c.DockerfileOptions != nil && len(c.DockerfileOptions) > 0 {
+			j.Options.DockerfileOptions = c.DockerfileOptions
+		}
+
+		jobs = append(jobs, j)
+	}
+
+	return jobs, nil
+}
+
 func fromImageTag(image images.Image, tag images.Tag) (Job, error) {
 	j := Job{
 		SourceImage: image.Name,
 		SourceTag:   tag.Tag,
 		SourceSha:   tag.Sha,
+	}
+
+	if image.OverrideRepoName != "" {
+		j.Options.OverrideRepoName = image.OverrideRepoName
+	}
+
+	return j, nil
+}
+
+func fromImageTagPattern(image images.Image, tagPattern images.TagPattern) (Job, error) {
+	j := Job{
+		SourceImage:   image.Name,
+		SourceTag:     tagPattern.Tag,
+		SourcePattern: tagPattern.Pattern,
 	}
 
 	if image.OverrideRepoName != "" {
