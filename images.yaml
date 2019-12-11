@@ -2,7 +2,405 @@
   tags:
   - sha: 7df6db5aa61ae9480f52f0b3a06a140ab98d427f86d8d5de0bedab9b8df6b1c0
     tag: "3.7"
-  patterns:
-    - pattern: 'abc'
-      tag: "3.8"
-      update_on_change: false
+  - sha: 769fddc7cc2f0a1c35abb2f91432e8beecf83916c421420e6a6da9f8975464b6
+    tag: "3.9"
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+      - USER giantswarm
+  - sha: 72c42ed48c3a2db31b7dafe17d275b634664a708d901ec9fd57b1529280f01fb
+    tag: "3.10"
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+      - USER giantswarm
+- name: bitnami/redis
+  overrideRepoName: bitnami-redis
+  tags:
+  - sha: 1b56b1c2c5d737bd8029f2e2e80852c0c1ef342e36ca0940dd313d4d8a786311
+    tag: 4.0.9
+- name: busybox
+  tags:
+  - sha: 9f1003c480699be56815db0f8146ad2e22efea85129b5b5983d0e0fb52d9ab70
+    tag: 1.31.0
+- name: cibuilds/github
+  tags:
+  - sha: 9029b2f52ecd28aacec2fd8a86a321dc9f77a46df251de5e3f157dd6e80baea0
+    tag: 0.12
+- name: coredns/coredns
+  tags:
+  - sha: 7ec975f167d815311a7136c32e70735f0d00b73781365df1befd46ed35bd4fe7
+    tag: 1.6.5
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - EXPOSE 1053
+- name: dduportal/bats
+  tags:
+  - sha: b2d533b27109f7c9ea1e270e23f212c47906346f9cffaa4da6da48ed9d8031da
+    tag: 0.4.0
+- name: docker
+  tags:
+  - sha: e8e0f19612fef7fc1e190ec7ed6fb4c1f4e0c0f34424214dc44e9e94f8a1281d
+    tag: 18.09.1
+- name: docker.elastic.co/elasticsearch/elasticsearch-oss
+  tags:
+  - sha: 4f2bd6a008c41d83aeb8e5ac95412d47b667d21d4df7c67c41b9baec15a78164
+    tag: 6.1.4
+- name: docker.elastic.co/kibana/kibana-oss
+  comment: via https://www.elastic.co/guide/en/kibana/6.1/_pulling_the_image.html
+  tags:
+  - sha: f9addd642b184a81daa77c4301a800009aa714296220549ad1c61a22ca9bb8d3
+    tag: 6.1.4
+- name: fluent/fluent-bit
+  tags:
+  - sha: 6861ee5ea81fbbacf8802c622d9305930b341acc0800bbf30205b4d74ce2b486
+    tag: 0.14.6
+- name: fluent/fluent-bit-0.13-dev
+  tags:
+  - sha: 0ae482ad3e8d951a66090b968389f2a11b0b16b8a208b5edb4ccb0ca5800b90d
+    tag: "0.18"
+- name: fluent/fluentd-kubernetes-daemonset
+  tags:
+  - sha: f9fa60dab5e7a6ae4adbe972a2fc22cf7eaa148df74cde4cd7f57e7019260451
+    tag: "v1.3-debian-cloudwatch"
+- name: gcr.io/google_containers/defaultbackend
+  tags:
+  - sha: ee3aa1187023d0197e3277833f19d9ef7df26cee805fef32663e06c7412239f9
+    tag: "1.0"
+  - sha: a64c8ed5df00c9f238ecdeb28eb4ed226faace573695e290a99d92d503593e87
+    tag: "1.2"
+- name: gcr.io/google_containers/fluentd-elasticsearch
+  comment: see https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/fluentd-elasticsearch/fluentd-es-ds.yaml
+  tags:
+  - sha: b8c94527b489fb61d3d81ce5ad7f3ddbb7be71e9620a3a36e2bede2f2e487d73
+    tag: v2.0.4
+- name: gcr.io/google_containers/kube-state-metrics
+  tags:
+  - sha: 953a3b6bf0046333c656fcfa2fc3a08f4055dc3fbd5b1dcdcdf865a2534db526
+    tag: v1.2.0
+- name: gcr.io/google_containers/nginx-ingress-controller
+  tags:
+  - sha: 03fd8fc46018d09b4050d4daaf50bff73c80936994b374319ed33cbb2c1684f4
+    tag: 0.9.0-beta.11
+- name: gcr.io/google_containers/pause-amd64
+  tags:
+  - sha: 59eec8837a4d942cc19a52b8c09ea75121acc38114a2c68b98983ce9356b8610
+    tag: "3.1"
+- name: gcr.io/heptio-images/kube-conformance
+  tags:
+  - sha: 4b63b91265ed0e4a986db9ce4bab22f590d773108713f806180990bd0e0c0806
+    tag: v1.11
+- name: gcr.io/heptio-images/sonobuoy
+  tags:
+  - sha: 9f2a352b44143c8c4dc72ea2df07d1b3c9d37e45a2ebcfa72c048cca17b9d6eb
+    tag: v0.10.0
+- name: gcr.io/kubernetes-helm/tiller
+  tags:
+  - sha: 3c70ee359d3ec305ca469395a2481b2375d569c6b4a928389ca07d829d12ec51
+    tag: v2.16.1
+- name: gfkse/oauth2_proxy
+  tags:
+  - sha: 4bba1afcd3af85b550b42647e92b3fab36448c75e1af611a65644f77f4dde314
+    tag: kubernetes-3-ca-certs
+- name: goharbor/chartmuseum-photon
+  tags:
+  - sha: e7115a56a8482930bab8f72bd3dac49954e2116e0ad9ab640a936278cb776f19
+    tag: v0.7.1-v1.6.0
+- name: goharbor/clair-photon
+  tags:
+  - sha: 91ca0032d89b4946848f44e1fce2d142b6a8587f3e4b9bc1f7a94ae84b1479ed
+    tag: v2.0.5-v1.6.0
+- name: goharbor/harbor-adminserver
+  tags:
+  - sha: c3ca012c2d69099ba4e3bbedc58ffe146fd10aa5129d44cc7d735edf6167959e
+    tag: v1.6.0
+- name: goharbor/harbor-db
+  tags:
+  - sha: ee65d512c93860bd4872be296de80c079842a64e2a4002360e720222a87ec346
+    tag: v1.6.0
+- name: goharbor/harbor-jobservice
+  tags:
+  - sha: 51d2bf14cd9d1bbf082793a0556ff949937655c67569a86424210a1455f60057
+    tag: v1.6.0
+- name: goharbor/harbor-ui
+  tags:
+  - sha: de332db437b8df6ce05203247cbf97ac9f4953672a8c22be8858aee47a0f435f
+    tag: v1.6.0
+- name: goharbor/notary-server-photon
+  tags:
+  - sha: 57ac34699c3119a9c7d5334a2f8fce8bca35591281917913955672347e601814
+    tag: v0.5.1-v1.6.0
+- name: goharbor/notary-signer-photon
+  tags:
+  - sha: d5c32fd75aff3d6e436ccf37e3172fc526900ef281324cc5904eab3fe4bb4b92
+    tag: v0.5.1-v1.6.0
+- name: goharbor/registry-photon
+  tags:
+  - sha: 070dcc29fb5b34cdcc982394ead57f598160fd61bd8daee4b2a5f39ea37bd7a0
+    tag: v2.6.2-v1.6.0
+- name: golang
+  tags:
+  - sha: 908ea6b956394d7a7006453e6a16011a6f86fd47996f2ccc32711f1eeff6b9fc
+    tag: 1.11.6
+  - sha: 35200a727dc44175d9221a6ece398eed7e4b8e17cb7f0d72b20bf2d5cf9dc00d
+    tag: 1.12.6
+  - sha: fb310c8e01bcfd4e83b43f06e339de841489cb56b2da4411695c60f84f66fb99
+    tag: 1.12.9
+  - sha: 1b1246987ecb4939d9bd20f74eab25e8e2ad819aceea2d6b59869c82f85ef1de
+    tag: 1.13.1
+  - sha: 2293e952c79b8b3a987e1e09d48b6aa403d703cef9a8fa316d30ba2918d37367
+    tag: 1.13.1-alpine3.10
+- name: grafana/grafana
+  tags:
+  - sha: b5098a06dc59d28b11120eab01d8d0147b526a175aa606f9978934b6b2224138
+    tag: 6.0.0
+  - sha: bd55ea2bad17f5016431734b42fdfc202ebdc7d08b6c4ad35ebb03d06efdff69
+    tag: 6.4.3
+- name: jgsqware/fluentd-loki-plugin
+  tags:
+  - sha: 7dbe2ccfbf2eb7b29367f6a3ee7c0976c3b45e4e21d6363cb43b156c17488259
+    tag: 9ee2ce8
+- name: jimschubert/swagger-codegen-cli
+  tags:
+  - sha: 1d929c3de13d97fa351b2a76e48f306be6080d697cbbc4c1b6b6fb407f5d9a5e
+    tag: 2.2.3
+- name: k8s.gcr.io/addon-resizer
+  tags:
+  - sha: a31822f30e947885d038812f4a5a5675e72f92c06cef17b1989c80426aa89012
+    tag: "1.8.4"
+- name: k8s.gcr.io/cluster-autoscaler
+  tags:
+  - sha: 7ff5a60304b344f2f29c804c7253632bbc818794f6932236a56db107a6a8f5af
+    tag: v1.13.1
+  - sha: a4e5a8e6d4dc011e6e7a104d6abdfda56274b90357ee9f6e42cc22b70482420b
+    tag: v1.14.0
+  - sha: 19f2bc51a1a3cd2753fddb9c2905c8c510aab6e24e23200841abca712ff7578d
+    tag: v1.14.3
+  - sha: eea97bdf90e3f6074af2fdeb3df40969c44a721dc8f4d148844de85fe93508ff
+    tag: v1.15.1
+  - sha: 5a80893ea1a16a066889ab06934cfa3996d87a7232b10554de4ed8788b1fa212
+    tag: v1.15.2
+  - sha: 8d8664ac086f5dcff5b95874ef8b1dfaab6eb87477bbaea9a2e19dfac063c521
+    tag: v1.16.2
+- name: k8s.gcr.io/hyperkube
+  tags:
+  - sha: 94adb47a41838bee7deee7e09d07a7093bdba517d980c66115cc2eeb675090be
+    tag: v1.14.6
+  - sha: b04b2aebd3d76e042b017fb5c6a7417525241d7f6cbcd5ed045e02b52e733d11
+    tag: v1.14.8
+  - sha: a58aec353b510226bd5afe3efcb611784e9abc7de38c6efb8b10bf08643af9af
+    tag: v1.15.4
+  - sha: c0a2b93f543177574551262ba1cf9f005fa4d2a046c731070f1d39f829d50e5f
+    tag: v1.15.5
+  - sha: 29590ae7991517b214a9239349ee1cc803a22f2a36279612a52caa2bc8673ff0
+    tag: v1.16.3
+- name: k8s.gcr.io/metrics-server-amd64
+  tags:
+  - sha: 4ca116565ff6a46e582bada50ba3550f95b368db1d2415829241a565a6c38e2a
+    tag: v0.3.3
+- name: kindest/node
+  overrideRepoName: kind-node
+  tags:
+  - sha: 2f5f882a6d0527a2284d29042f3a6a07402e1699d792d0d5a9b9a48ef155fa2a
+    tag: v1.13.10
+  - sha: 464a43f5cf6ad442f100b0ca881a3acae37af069d5f96849c1d06ced2870888d
+    tag: v1.14.6
+  - sha: 27e388752544890482a86b90d8ac50fcfa63a2e8656a96ec5337b902ec8e5157
+    tag: v1.15.3
+- name: koalaman/shellcheck-alpine
+  tags:
+  - sha: 7d4d712a2686da99d37580b4e2f45eb658b74e4b01caf67c1099adc294b96b52
+    tag: v0.6.0
+- name: kong
+  tags:
+  - sha: 250045ba6aac1bcc0204a0acee2cc409d0b07129d0e90a5c6560433f68e4dbd8
+    tag: 1.3
+- name: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
+  tags:
+  - sha: 018a8cf2c6738d296abbea6bbfa25e2eb46ebd48fa2d6886fc15fcaf015b4dd3
+    tag: 0.6.0
+- name: nginx
+  tags:
+  - sha: 0fb320e2a1b1620b4905facb3447e3d84ad36da0b2c8aa8fe3a5a81d1187b884
+    tag: 1.13.12
+- name: prom/cloudwatch-exporter
+  tags:
+  - sha: 7ce6d17ad3360ed5d5dddc57ebf13dc7d676900c40a22b3144a8a17af352c399
+    tag: "0.4"
+- name: prom/prometheus
+  tags:
+  - sha: acd95556f589764b00bf0eb46048ab1cdedc95b4fa380c29e911f61dab7ecc51
+    tag: v2.6.1
+  - sha: e02bb3dec47631b4d31cede2d35ff901d892b57f33144406ee7994e8c94fb2d7
+    tag: v2.9.1
+  - sha: 0a8caa2e9f19907608915db6e62a67383fe44b9876a467b297ee6f64e51dd58a
+    tag: v2.13.1
+- name: quay.io/calico/cni
+  tags:
+  - sha: 01635427ff425fe44ff8e9b498ffc52999bc36d704219ab1750a3f29bb5c6aca
+    tag: v3.9.3
+  - sha: 32c3e0e5db54f99b98ecba1634367ddb055ac44a7d0d93258d44c142e9a5dbf1
+    tag: v3.10.0
+  - sha: 4461abf2989c590dfac43ab20861033db86f5a538902f7a371ab3ff0e07a7c4c
+    tag: v3.10.1
+- name: quay.io/calico/kube-controllers
+  tags:
+  - sha: 2ca92f5be368f9c0e167e0f77e277367b63b6b6f29aa5089c067d0f70cb3be88
+    tag: v3.9.3
+  - sha: 37d8e80e48d100b86467a99a0621abfdbaa403f061f6e95110a8388896f2a2c7
+    tag: v3.10.0
+  - sha: 06f5d16df31bdd072ceac1fef59a9abab57917ec7116a990d5b3ef7cd5f7676d
+    tag: v3.10.1
+- name: quay.io/calico/node
+  tags:
+  - sha: 089c7e68551ef48390bcc90d2b84367bf9941c4d949cced700d587c9abdc7215
+    tag: v3.9.3
+  - sha: 2e8e9ae5cbddfd140b2498d9b96a56e099ab42bf125a97801dd5884de418b500
+    tag: v3.10.0
+  - sha: de472c4d9041fc82f8d062c7f05b2aadfb971546818ccdd71bd8d6d16cc238fc
+    tag: v3.10.1
+- name: quay.io/calico/pod2daemon-flexvol
+  tags:
+  - sha: aeeb1ba2cd118e136bcd1acbcdc2538651bb9f815a80ede2b3d42e17b3853992
+    tag: v3.9.3
+  - sha: 0c2b07760d2d33c6cd3b47e4a5d21ec9116cf4753b077f46dd6ea473f41a1d6f
+    tag: v3.10.0
+  - sha: 934dedbc3e722303ffaf081d8a13d0e2de3b1f30a873752e340b5de1881c71f9
+    tag: v3.10.1
+- name: quay.io/calico/typha
+  tags:
+  - sha: 55d97462ea91c858361bf8a2f051e1414edbc0c98b6310276a80cc705e7256e4
+    tag: v3.9.2
+  - sha: 5a06dcf0ca0eccbaab96f11e78a2aea0a43e20bc75c674b2bd37019de11928f7
+    tag: v3.10.0
+  - sha: e3b69abe48f0793ee3ea2e7cfeb808429c2d3bd2bcf5b159541ca7da67689634
+    tag: v3.10.1
+- name: quay.io/coreos/etcd
+  tags:
+  - sha: 937c5f0e051bd8540dcd914236d61b737b2ef90626a41c2a6ee80114fd73f2b5
+    tag: v3.3.17
+  - sha: 49d3d4a81e0d030d3f689e7167f23e120abf955f7d08dbedf3ea246485acee9f
+    tag: v3.4.1
+  - sha: 41ed47389c835eb68215e8215f6d4bfa5123923afd7550dbae049cded27c41b4
+    tag: v3.4.3
+- name: quay.io/coreos/etcd-operator
+  tags:
+  - sha: 2a1ff56062861e3eaf216899e6e73fdff311e5842d2446223924a9cc69f2cc69
+    tag: v0.3.2
+- name: quay.io/coreos/flannel
+  tags:
+  - sha: 7806805c93b20a168d0bbbd25c6a213f00ac58a511c47e8fa6409543528a204e
+    tag: v0.11.0-amd64
+- name: quay.io/coreos/kube-state-metrics
+  tags:
+  - sha: 99a3e3297e281fec09fe850d6d4bccf4d9fd58ff62a5b37764d8a8bd1e79bd14
+    tag: v1.7.2
+  - sha: e9ec63c8866fe8670f35abcc14f1388553b2c329ec8bb78b04ce795cd04cb4f5
+    tag: v1.8.0
+- name: quay.io/coreos/prometheus-operator
+  tags:
+  - sha: 97697df680ea4c7e70c4cb4af5bdc44f7a70b25be7afde70bd921a658e4c62ec
+    tag: v0.30.1
+- name: quay.io/giantswarm/docker-kubectl
+  tags:
+  - sha: 995bd3fee6899569d5d9ab77948f25d6bc2e9a95efa988de37c6b8c3095ac819
+    tag: 8cabd75bacbcdad7ac5d85efc3ca90c2fabf023b
+  - sha: 93404a39c4b83568aef2971504fecc39efc6a9b949fd84cc9814742a76033ed3
+    tag: f5cae44c480bd797dc770dd5f62d40b74063c0d7
+- name: quay.io/giantswarm/docker-strongswan
+  tags:
+  - sha: 0deee46507d8d9c354b9e924f969dfb370083539a7130531b575e05a09603a31
+    tag: d432793577e07bfe6856d3739e6bca3d91db71e4
+  comment: push docker-strongswan also to china registry
+- name: quay.io/giantswarm/k8s-migrator
+  tags:
+  - sha: 9259af85d5a7f395feab8162b4d47a79f6b53a897568bc3a9d9d4908a8ac0de2
+    tag: 4a4c553280d99b28cb0114797ba59aa380e808b1
+- name: quay.io/giantswarm/k8s-setup-network-environment
+  tags:
+  - sha: e337d03e569e53b246f4dea91359efbabe7b3ddc78878e1875d0c7aaf0e17fd5
+    tag: 1f4ffc52095ac368847ce3428ea99b257003d9b9
+- name: quay.io/jetstack/cert-manager-controller
+  tags:
+  - sha: 61546385c284af5620ac1e861943e73164a6ac37ec76520ef43be2ec2bd769fb
+    tag: v0.2.5
+  - sha: 3ff035464d9349f5b1d23a2fef9c9b8419026671506a5be5cbae6e958ac46802
+    tag: v0.4.0
+  - sha: 0f7e64825eddb1f7292a9f190a421b305a9237d21757ae27fb06d1d0f12281df
+    tag: v0.9.0
+- name: quay.io/jetstack/cert-manager-ingress-shim
+  tags:
+  - sha: 544b8602ee566d7ca22aa9e76a92dde4c2ca8dab642f75ea3a4b0a577193632a
+    tag: v0.2.5
+- name: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
+  tags:
+  - sha: d0b22f715fcea5598ef7f869d308b55289a3daaa12922fa52a1abf17703c88e7
+    tag: 0.26.1
+- name: quay.io/prometheus/alertmanager
+  tags:
+  - sha: e6a3f28f282092d9790aaae393650852a9b7c2a7614dc3aa797a74a6beaa0700
+    tag: v0.16.1
+  - sha: 7dbf4949a317a056d11ed8f379826b04d0665fad5b9334e1d69b23e946056cd3
+    tag: v0.19.0
+- name: quay.io/prometheus/haproxy-exporter
+  tags:
+  - sha: d8da0790760c279d961e63aa711fac3fd6a3db237eccea3c8a21239dca64805c
+    tag: v0.9.0
+- name: quay.io/prometheus/node-exporter
+  tags:
+  - sha: fc004c4a3d1096d5a0f144b1093daa9257a573ce1fde5a9b8511e59a7080a1bb
+    tag: v0.15.1
+  - sha: 1b129a3801a0440f9c5b2afb20082dfdb31bf6092b561f5f249531130000cb83
+    tag: v0.17.0
+  - sha: b2dd31b0d23fda63588674e40fd8d05010d07c5d4ac37163fc596ba9065ce38d
+    tag: v0.18.0
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+      - USER giantswarm
+  - sha: a2f29256e53cc3e0b64d7a472512600b2e9410347d53cdc85b49f659c17e02ee
+    tag: v0.18.1
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - USER root
+      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+      - USER giantswarm
+- name: quay.io/uswitch/kiam
+  tags:
+  - sha: b24ef28b4a06371d10b6b9fea8a2d0a3b342dbf4928e798c07a208995e3945e3
+    tag: v3.4
+- name: redis
+  tags:
+  - sha: 002a1870fa2ffd11dbd7438527a2c17f794f6962f5d3a4f048f848963ab954a8
+    tag: 3.2.11-alpine
+  - sha: 87275ecd3017cdacd3e93eaf07e26f4a91d7f4d7c311b2305fccb50ec3a1a8cd
+    tag: 4.0.9
+- name: registry.opensource.zalan.do/teapot/external-dns
+  tags:
+  - sha: 8df16e7dd1c43dd57b5dda6af8dd19882bf6fb45e783fca091750485cd737811
+    tag: v0.5.11
+- name: shelmangroup/coreos-nvidia-driver-installer
+  tags:
+  - sha: 57be3ae881d61ea5f55ad6068bcc61708515ad17994884170b3e5df5b40856d3
+    tag: 1.0.0
+- name: sysdig/falco
+  tags:
+  - sha: 3533054a0543e4a2eb4f4c61d68d5d3a39e5886a65d07f011d45044a5c470ccd
+    tag: 0.11.1
+- name: vault
+  tags:
+  - sha: 8d2813d4fbc145d867218b60e13b29941edf60d1c0929964db42879a1aacc889
+    tag: 0.10.1
+  - sha: 366eddc65d233c7b43269ba80e27aeb1269837beadd011c8d7b3daa999cce70a
+    tag: 0.10.3
+  - sha: a8c3818b7e86c53e46897216dee0c8fa6a313b60f095b1c835d9e12f124e36e9
+    tag: 1.0.3
+  - sha: ae4853d4a14231889716ffb49d49b40d7e64f459810594ad7c679757ca66e0b9
+    tag: 1.1.3
+  - sha: 3c0b9742014e36c4e4f07f6da6ac34b348f8da6b897446d77ee70c1a2b6c2539
+    tag: 1.2.0

@@ -138,7 +138,6 @@ func fromImageTag(image images.Image, tag images.Tag) (Job, error) {
 func fromImageTagPattern(image images.Image, tagPattern images.TagPattern) (Job, error) {
 	j := Job{
 		SourceImage:   image.Name,
-		SourceTag:     tagPattern.Tag,
 		SourcePattern: tagPattern.Pattern,
 	}
 

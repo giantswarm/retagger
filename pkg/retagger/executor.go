@@ -56,17 +56,10 @@ func (r *Retagger) executePatternJob(job Job) error {
 	return nil
 }
 
+// compilePatternJobs gets tag lists from the upstream repo, finds tags matching the pattern specified in the job,
+// and creates new jobs to retag new images and images which have changed since their last collection.
 func (r *Retagger) compilePatternJobs(job Job) ([]Job, error) {
 	r.logger.Log("level", "debug", "message", fmt.Sprintf("compiling jobs for image %v using pattern %v, with options %#v", job.SourceImage, job.SourcePattern, job.Options))
-
-	// Populate tags to check
-	//  - get tag list from source repo
-	//  - run list against pattern
-	//  - take matches from ^ and extract those not in quay as A, those which are as B
-	// Check for SHAs
-	//  - Get upstream SHAs for items in B IF their update option is set
-	//  - Add items with new SHAs to A
-	// Run single jobs for each SHA in A
 
 	// Make sure our pattern is valid
 	pattern, err := regexp.Compile(job.SourcePattern)
