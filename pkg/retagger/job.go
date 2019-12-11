@@ -14,14 +14,6 @@ type Job struct {
 	Options JobOptions
 }
 
-// type PatternJob struct {
-// 	SourceImage   string
-// 	SourceTag     string
-// 	SourcePattern string
-
-// 	Options JobOptions
-// }
-
 type JobOptions struct {
 	// DockerfileOptions - list of strings we add for Dockerfile to build custom image.
 	DockerfileOptions []string
@@ -29,6 +21,9 @@ type JobOptions struct {
 	TagSuffix string
 
 	OverrideRepoName string
+
+	// UpdateOnChange sets whether a pattern Job should update the destination image if a source image changes for a given tag
+	UpdateOnChange bool
 }
 
 func FromImages(images images.Images) ([]Job, error) {
@@ -56,6 +51,7 @@ func FromImage(image images.Image) ([]Job, error) {
 		jobs = append(jobs, j...)
 	}
 
+	// TODO: Combine patterns into single job -- pull/check tag list only once
 	for _, p := range image.Patterns {
 		j, err := fromImageTagPatternIncludeCustom(image, p)
 		if err != nil {
@@ -148,6 +144,10 @@ func fromImageTagPattern(image images.Image, tagPattern images.TagPattern) (Job,
 
 	if image.OverrideRepoName != "" {
 		j.Options.OverrideRepoName = image.OverrideRepoName
+	}
+
+	if tagPattern.UpdateOnChange {
+		j.Options.UpdateOnChange = true
 	}
 
 	return j, nil

@@ -19,17 +19,11 @@ type Image struct {
 // TagPattern represents a group of tags defined by a regular expression,
 // and stores some configuration for how to handle this group.
 type TagPattern struct {
-	// Can this be refactored to re-use the common fields?
-	// *Tag
 	Tag            string        `yaml:"tag"`
 	Pattern        string        `yaml:"pattern"`
-	UpdateOnChange bool          `yaml:"retag_on_change"`
+	UpdateOnChange bool          `yaml:"update_on_change"`
 	CustomImages   []CustomImage `yaml:"customImages"`
 }
-
-// func (*TagPattern) Sha() string {
-// 	return ""
-// }
 
 // Tag represents a specific version of a docker image, represented by a tag
 // and verified through the SHA checksum.

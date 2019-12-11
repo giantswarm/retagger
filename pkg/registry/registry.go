@@ -2,7 +2,10 @@ package registry
 
 import (
 	"fmt"
+	"strings"
 	"time"
+
+	nurl "net/url"
 
 	dockerclient "github.com/docker/docker/client"
 	"github.com/giantswarm/backoff"
@@ -155,4 +158,48 @@ func (r *Registry) DeleteImage(image string, tag string) error {
 
 func (r *Registry) RetaggedName(image string) string {
 	return images.RetaggedName(r.host, r.organisation, image)
+}
+
+// GuessRegistryPath examines the given image string,
+// determines whether it describes a full image path,
+// is hosted on Docker hub, or belongs to the Docker standard library, and returns a URL representing the full path.
+func (r *Registry) GuessRegistryPath(image string) (*nurl.URL, error) {
+
+	url, err := nurl.Parse(image)
+	if err != nil {
+		return url, microerror.Mask(err)
+	}
+
+	// Image string already has FQDN
+	if url.Hostname() != "" {
+		return nurl.Parse(image)
+	}
+
+	pathParts := strings.Split(strings.Trim(url.Path, "/"), "/")
+	if len(pathParts) == 2 {
+		// Image string is in the form organization/image, so we assume it is on docker hub
+		return nurl.Parse(fmt.Sprintf("https://registry.hub.docker.com/%s", image))
+	}
+
+	if len(pathParts) == 1 {
+		// Image is a single token, so must be part of the official Docker library
+		return nurl.Parse(fmt.Sprintf("https://registry.hub.docker.com/%s/%s", "library", image))
+	}
+
+	// The image doesn't seem to match a pattern we know
+	return nil, microerror.New(fmt.Sprintf("Unable to determine a registry path for image %s", image))
+}
+
+// GetRepositoryFromPathString guesses the full path of an image and returns the organization/image for the image.
+func (r *Registry) GetRepositoryFromPathString(path string) (string, error) {
+	url, err := r.GuessRegistryPath(path)
+	if err != nil {
+		return "", microerror.Mask(err)
+	}
+	return r.GetRepositoryFromPath(url)
+}
+
+// GetRepositoryFromPath extracts the organization/image segment of a full image path.
+func (r *Registry) GetRepositoryFromPath(path *nurl.URL) (string, error) {
+	return strings.Trim(path.Path, "/"), nil // Remove leading slash
 }

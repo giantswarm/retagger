@@ -1,7 +1,6 @@
 package images
 
 import (
-	"fmt"
 	"io/ioutil"
 
 	"github.com/giantswarm/microerror"
@@ -26,6 +25,5 @@ func FromFile(filePath string) (Images, error) {
 			return nil, microerror.Maskf(err, "could not parse YAML file %s: %v", filePath)
 		}
 	}
-	fmt.Printf("~~ Image: %s", images[0])
 	return images, nil
 }
