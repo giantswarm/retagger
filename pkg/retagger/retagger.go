@@ -11,13 +11,13 @@ import (
 type Config struct {
 	Logger   micrologger.Logger
 	Registry *registry.Registry
-	WhatIf   bool
+	DryRun   bool
 }
 
 type Retagger struct {
 	logger   micrologger.Logger
 	registry *registry.Registry
-	whatif   bool
+	dryrun   bool
 
 	jobs []Job
 }
@@ -33,7 +33,7 @@ func New(config Config) (*Retagger, error) {
 	r := &Retagger{
 		logger:   config.Logger,
 		registry: config.Registry,
-		whatif:   config.WhatIf,
+		dryrun:   config.DryRun,
 		jobs:     []Job{},
 	}
 	return r, nil

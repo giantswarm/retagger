@@ -76,7 +76,7 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 		c := retagger.Config{
 			Logger:   r.logger,
 			Registry: newRegistry,
-			WhatIf:   r.flag.WhatIf,
+			DryRun:   r.flag.DryRun,
 		}
 		newRetagger, err = retagger.New(c)
 		if err != nil {

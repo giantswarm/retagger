@@ -12,15 +12,15 @@ type Image struct {
 	Name             string       `yaml:"name"`
 	Comment          string       `yaml:"comment,omitempty"`
 	OverrideRepoName string       `yaml:"overrideRepoName,omitempty"`
-	Tags             []Tag        `yaml:"tags"`
 	Patterns         []TagPattern `yaml:"patterns"`
+	Tags             []Tag        `yaml:"tags"`
 }
 
 // TagPattern represents a group of tags defined by a regular expression,
 // and stores some configuration for how to handle this group.
 type TagPattern struct {
-	Tag            string        `yaml:"tag"`
 	Pattern        string        `yaml:"pattern"`
+	Tag            string        `yaml:"tag"`
 	UpdateOnChange bool          `yaml:"update_on_change"`
 	CustomImages   []CustomImage `yaml:"customImages"`
 }

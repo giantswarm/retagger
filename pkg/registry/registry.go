@@ -160,9 +160,9 @@ func (r *Registry) RetaggedName(image string) string {
 	return images.RetaggedName(r.host, r.organisation, image)
 }
 
-// GuessRegistryPath examines the given image string,
-// determines whether it describes a full image path,
-// is hosted on Docker hub, or belongs to the Docker standard library, and returns a URL representing the full path.
+// GuessRegistryPath examines the given image string, determines whether it describes a full
+// image path, is hosted on Docker hub, or belongs to the Docker standard library, and returns
+//  a URL representing the full path.
 func (r *Registry) GuessRegistryPath(image string) (*nurl.URL, error) {
 
 	url, err := nurl.Parse(image)
@@ -187,7 +187,7 @@ func (r *Registry) GuessRegistryPath(image string) (*nurl.URL, error) {
 	}
 
 	// The image doesn't seem to match a pattern we know
-	return nil, microerror.New(fmt.Sprintf("Unable to determine a registry path for image %s", image))
+	return nil, microerror.Maskf(invalidConfigError, fmt.Sprintf("unable to determine a registry path for image %s", image))
 }
 
 // GetRepositoryFromPathString guesses the full path of an image and returns the organization/image for the image.
@@ -196,10 +196,10 @@ func (r *Registry) GetRepositoryFromPathString(path string) (string, error) {
 	if err != nil {
 		return "", microerror.Mask(err)
 	}
-	return r.GetRepositoryFromPath(url)
+	return r.GetRepositoryFromPath(url), nil
 }
 
 // GetRepositoryFromPath extracts the organization/image segment of a full image path.
-func (r *Registry) GetRepositoryFromPath(path *nurl.URL) (string, error) {
-	return strings.Trim(path.Path, "/"), nil // Remove leading slash
+func (r *Registry) GetRepositoryFromPath(path *nurl.URL) string {
+	return strings.Trim(path.Path, "/") // Remove leading slash
 }

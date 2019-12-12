@@ -13,8 +13,8 @@ import (
 func (r *Retagger) ExecuteJobs() error {
 	r.logger.Log("level", "debug", "message", fmt.Sprintf("start executing %d jobs", len(r.jobs)))
 
-	if r.whatif {
-		r.logger.Log("level", "info", "message", "Retagger is in --whatif mode. Listing jobs, but not running.")
+	if r.dryrun {
+		r.logger.Log("level", "info", "message", "Retagger is in --dry-run mode. Listing jobs, but not running.")
 	}
 
 	for _, j := range r.jobs {
@@ -89,10 +89,7 @@ func (r *Retagger) compilePatternJobs(job Job) ([]Job, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	fullImageName, err := r.registry.GetRepositoryFromPath(registryPath)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
+	fullImageName := r.registry.GetRepositoryFromPath(registryPath)
 
 	// Get the tags for this image from the external registry
 	externalRegistryTags, err := externalRegistry.Tags(fullImageName)
@@ -206,8 +203,8 @@ func (r *Retagger) executeSingleJob(job Job, skipExisting bool) error {
 		}
 	}
 
-	if r.whatif {
-		r.logger.Log("level", "info", "message", fmt.Sprintf("WHATIF: %s:%s will be tagged as %s:%s with digest %s",
+	if r.dryrun {
+		r.logger.Log("level", "info", "message", fmt.Sprintf("Dry-Run: %s:%s will be tagged as %s:%s with digest %s",
 			job.SourceImage, job.SourceTag, destinationImage, destinationTag, job.SourceSha))
 	} else {
 		r.logger.Log("level", "debug", "message", fmt.Sprintf("pulling original image"))
