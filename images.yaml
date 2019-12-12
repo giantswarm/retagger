@@ -416,3 +416,11 @@
     tag: 1.1.3
   - sha: 3c0b9742014e36c4e4f07f6da6ac34b348f8da6b897446d77ee70c1a2b6c2539
     tag: 1.2.0
+- name: grafana/loki
+  tags:
+  - sha: 7c166fdca7fef06ade50581f2036c3f12a4c16505daf69494c8f8747da03451c
+    tag: v1.2.0
+- name: grafana/promtail
+  tags:
+  - sha: 904320a9e2f152d11baa0d5bccebaaf72778e7c30c2f2609bfde3763a63b7e54
+    tag: v1.2.0
