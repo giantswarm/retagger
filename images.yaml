@@ -161,11 +161,11 @@
     tag: 6.4.3
 - name: grafana/loki
   tags:
-  - sha: 7c166fdca7fef06ade50581f2036c3f12a4c16505daf69494c8f8747da03451c
+  - sha: a325a61abc11c138cc54d4aa0304a2b1052f5a92d1ae8be07e43db62aaf2abc2
     tag: v1.2.0
 - name: grafana/promtail
   tags:
-  - sha: 904320a9e2f152d11baa0d5bccebaaf72778e7c30c2f2609bfde3763a63b7e54
+  - sha: 2f998ec18be2a2dd6d7dfbcae47a62f4ed51ea9bc7101ad4532c4d185d484426
     tag: v1.2.0
 - name: jgsqware/fluentd-loki-plugin
   tags:
