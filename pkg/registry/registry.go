@@ -175,10 +175,6 @@ func (r *Registry) GuessRegistryPath(image string) (*nurl.URL, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	r.logger.Log("level", "debug", "message", fmt.Sprintf("docker ref parse %s", dockerName))
-	r.logger.Log("level", "debug", "message", fmt.Sprintf("docker ref NAME %s", dockerName.Name()))
-	r.logger.Log("level", "debug", "message", fmt.Sprintf("docker ref FAM %s", dockerRef.FamiliarString(dockerName)))
-
 	url, err := nurl.Parse(fmt.Sprintf("https://%s", dockerName.String()))
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -201,12 +197,6 @@ func (r *Registry) GetRepositoryFromPathString(path string) (string, error) {
 		return "", err
 	}
 	return dockerRef.FamiliarString(name), nil
-
-	// url, err := r.GuessRegistryPath(path)
-	// if err != nil {
-	// 	return "", microerror.Mask(err)
-	// }
-	// return r.GetRepositoryFromPath(url), nil
 }
 
 // GetRepositoryFromPath extracts the organization/image segment of a full image path.

@@ -85,14 +85,14 @@ func (r *Retagger) compilePatternJobs(job Job) ([]Job, error) {
 		// Logf:          dockerRegistry.Log,
 		DoInitialPing: false,
 	}
-	r.logger.Log("level", "debug", "message", fmt.Sprintf("registryPath: %s", registryPath))
+
 	externalRegistry, err := dockerRegistry.NewCustom(fmt.Sprintf("https://%s", registryPath.Hostname()), o)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-	r.logger.Log("level", "debug", "message", fmt.Sprintf("externalRegistry: %s", externalRegistry.URL))
+
 	fullImageName := r.registry.GetRepositoryFromPath(registryPath)
-	r.logger.Log("level", "debug", "message", fmt.Sprintf("fullImageName: %s", fullImageName))
+
 	// Get the tags for this image from the external registry
 	externalRegistryTags, err := externalRegistry.Tags(fullImageName)
 	if err != nil {
