@@ -7,6 +7,7 @@ import (
 
 	nurl "net/url"
 
+	dockerRef "github.com/docker/distribution/reference"
 	dockerclient "github.com/docker/docker/client"
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
@@ -160,43 +161,52 @@ func (r *Registry) RetaggedName(image string) string {
 	return images.RetaggedName(r.host, r.organisation, image)
 }
 
+func (r *Registry) getDockerName(image string) (dockerRef.Named, error) {
+	return dockerRef.ParseNormalizedNamed(image)
+}
+
 // GuessRegistryPath examines the given image string, determines whether it describes a full
 // image path, is hosted on Docker hub, or belongs to the Docker standard library, and returns
 //  a URL representing the full path.
 func (r *Registry) GuessRegistryPath(image string) (*nurl.URL, error) {
 
-	url, err := nurl.Parse(image)
+	dockerName, err := dockerRef.ParseNormalizedNamed(image)
 	if err != nil {
-		return url, microerror.Mask(err)
+		return nil, microerror.Mask(err)
 	}
 
-	// Image string already has FQDN
-	if url.Hostname() != "" {
-		return nurl.Parse(image)
+	r.logger.Log("level", "debug", "message", fmt.Sprintf("docker ref parse %s", dockerName))
+	r.logger.Log("level", "debug", "message", fmt.Sprintf("docker ref NAME %s", dockerName.Name()))
+	r.logger.Log("level", "debug", "message", fmt.Sprintf("docker ref FAM %s", dockerRef.FamiliarString(dockerName)))
+
+	url, err := nurl.Parse(fmt.Sprintf("https://%s", dockerName.String()))
+	if err != nil {
+		return nil, microerror.Mask(err)
 	}
 
-	pathParts := strings.Split(strings.Trim(url.Path, "/"), "/")
-	if len(pathParts) == 2 {
-		// Image string is in the form organization/image, so we assume it is on docker hub
-		return nurl.Parse(fmt.Sprintf("https://registry.hub.docker.com/%s", image))
+	// The normalized docker reference uses docker.io as the default domain, but this does not redirect API paths,
+	// so we override this host here to point to the API endpoint instead of the default docker backend
+	// https://docker.io -- > registry.hub.docker.com
+	if url.Hostname() == "docker.io" {
+		url.Host = "registry.hub.docker.com"
 	}
 
-	if len(pathParts) == 1 {
-		// Image is a single token, so must be part of the official Docker library
-		return nurl.Parse(fmt.Sprintf("https://registry.hub.docker.com/%s/%s", "library", image))
-	}
-
-	// The image doesn't seem to match a pattern we know
-	return nil, microerror.Maskf(invalidConfigError, fmt.Sprintf("unable to determine a registry path for image %s", image))
+	return url, nil
 }
 
 // GetRepositoryFromPathString guesses the full path of an image and returns the organization/image for the image.
 func (r *Registry) GetRepositoryFromPathString(path string) (string, error) {
-	url, err := r.GuessRegistryPath(path)
+	name, err := r.getDockerName(path)
 	if err != nil {
-		return "", microerror.Mask(err)
+		return "", err
 	}
-	return r.GetRepositoryFromPath(url), nil
+	return dockerRef.FamiliarString(name), nil
+
+	// url, err := r.GuessRegistryPath(path)
+	// if err != nil {
+	// 	return "", microerror.Mask(err)
+	// }
+	// return r.GetRepositoryFromPath(url), nil
 }
 
 // GetRepositoryFromPath extracts the organization/image segment of a full image path.
