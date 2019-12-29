@@ -324,7 +324,7 @@
     tag: v1.7.2
   - sha: e9ec63c8866fe8670f35abcc14f1388553b2c329ec8bb78b04ce795cd04cb4f5
     tag: v1.8.0
-  - sha: e9ec63c8866fe8670f35abcc14f1388553b2c329ec8bb78b04ce795cd04cb4f5
+  - sha: 56e2ea990a95359a37b4510e3bb3907224a9ec86efd7759c4ce3372d4f58f7cf
     tag: v1.9.0
 - name: quay.io/coreos/prometheus-operator
   tags:
