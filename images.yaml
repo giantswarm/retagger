@@ -343,6 +343,10 @@
   - sha: 0deee46507d8d9c354b9e924f969dfb370083539a7130531b575e05a09603a31
     tag: d432793577e07bfe6856d3739e6bca3d91db71e4
   comment: push docker-strongswan also to china registry
+- name: quay.io/giantswarm/k8s-api-healthz
+  tags:
+  - sha: 9a4f991725c0bfbc8a3b8b5a0d7fb4ea76136c65b5924d5f2c37a12f66a9b2d1
+    tag: 1c0cdf1ed5ee18fdf59063ecdd84bf3787f80fac
 - name: quay.io/giantswarm/k8s-migrator
   tags:
   - sha: 9259af85d5a7f395feab8162b4d47a79f6b53a897568bc3a9d9d4908a8ac0de2
