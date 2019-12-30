@@ -330,6 +330,14 @@
   tags:
   - sha: 97697df680ea4c7e70c4cb4af5bdc44f7a70b25be7afde70bd921a658e4c62ec
     tag: v0.30.1
+- name: quay.io/giantswarm/aws-operator
+  tags:
+  - sha: b30864821b324c9675506d176eacecfea5bd887a4a62ff95271d3525a23db9da
+    tag: "5.5.0"
+  - sha: cc7ae05237e03007df03d3956f8f09dede9311208e866c46388a5288599ecdaf
+    tag: "7-0-0"
+  - sha: ad0893d29afe000911b31928b971331abc33ded3884314e39121ce90fe7717c8
+    tag: "8.0.2"
 - name: quay.io/giantswarm/docker-kubectl
   tags:
   - sha: 995bd3fee6899569d5d9ab77948f25d6bc2e9a95efa988de37c6b8c3095ac819
