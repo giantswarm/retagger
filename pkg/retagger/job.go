@@ -35,36 +35,14 @@ type SingleJob struct {
 func (job *SingleJob) Execute(r *Retagger) error {
 	// r.logger.Log("level", "debug", "message", fmt.Sprintf("Executing %v#", job))
 	return r.executeSingleJob(*job)
-
-	// if job.Options.UpdateOnChange {
-	// 	r.logger.Log("level", "debug", "message", fmt.Sprintf("Image will be retagged"))
-	// } else {
-	// 	r.logger.Log("level", "debug", "message", fmt.Sprintf("Image will NOT be retagged"))
-	// }
-
-	// return nil
 }
 
 // ShouldRetag examines the state of the job and the given Retagger's registry and returns whether the job should be run.
 func (job *SingleJob) ShouldRetag(r *Retagger) (bool, error) {
-	// Retag if this job
-	//   tag does not exist yet
-	//   tag DOES exist, Option to Update is set, and image digest changed
 
 	tagExists, err := r.registry.CheckImageTagExists(job.Destination.Image, job.Destination.Tag)
 	if err != nil {
 		return false, microerror.Mask(err)
-	}
-
-	if tagExists && job.Options.UpdateOnChange {
-		// This block could check that the quay digest matches the intended upstream one,
-		// but for now the existence of this job is taken to mean that this has been checked.
-		// digestExists, err := r.registry.CheckImageTagDigestExists(friendlyImageName, job.Destination.Tag, job.SourceSha)
-		// if err != nil {
-		// 	return false, microerror.Mask(err)
-		// }
-
-		// return !digestExists, nil
 	}
 
 	return (!tagExists || job.Options.UpdateOnChange), nil
@@ -263,10 +241,7 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 
 				Options: job.Options,
 			}
-			// r.logger.Log("level", "debug", "message", fmt.Sprintf("Job: %v#", j))
 			j.Destination = GetDestinationForJob(&j, r)
-			// r.logger.Log("level", "debug", "message", fmt.Sprintf("  Dest: %v#", j.Destination))
-			// r.logger.Log("level", "debug", "message", fmt.Sprintf("  JobDest: %v#", j))
 			jobs = append(jobs, j)
 		}
 	}
@@ -421,26 +396,3 @@ func fromImageTagPattern(image images.Image, tagPattern images.TagPattern) (JobR
 
 	return j, nil
 }
-
-// type CompiledJob struct {
-// 	SourceImage string
-// 	SourceTag   string
-// 	SourceSha   string
-
-// 	Options JobOptions
-// }
-
-// type JobInterface interface {
-// 	Compile()
-// }
-// r.logger.Log("level", "debug", "message", fmt.Sprintf("%v#", job.Destination))
-// dRef, err := r.registry.GetDockerReference(job.Destination.Image)
-// if err != nil {
-// 	return false, microerror.Mask(err)
-// }
-// r.logger.Log("level", "debug", "message", fmt.Sprintf("%v#", dRef))
-// friendlyImageName, err := r.registry.GetRepositoryFromPathString(job.SourceImage)
-// friendlyImageName, err = r.registry.GetDockerPath(job.SourceImage)
-// if err != nil {
-// 	return false, microerror.Mask(err)
-// }
