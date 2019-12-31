@@ -9,19 +9,23 @@ import (
 	dockerRegistry "github.com/nokia/docker-registry-client/registry"
 )
 
+// CompilableJob represents any Job which can be Compiled.
 type CompilableJob interface {
 	Compile(*Retagger) ([]SingleJob, error)
 }
 
+// ExecutableJob represents any Job which can be Executed.
 type ExecutableJob interface {
 	Execute(r *Retagger) error
 }
 
+// Destination contains information about the target repository and tag of a job.
 type Destination struct {
 	Image string
 	Tag   string
 }
 
+// SingleJob is a concrete job which can be executed.
 type SingleJob struct {
 	SourceImage string
 	SourceTag   string
@@ -32,6 +36,13 @@ type SingleJob struct {
 	Options JobOptions
 }
 
+// Describe returns a string containing basic information about the job.
+func (job *SingleJob) Describe() string {
+	return fmt.Sprintf("%s:%s will be tagged as %s:%s with digest %s",
+		job.SourceImage, job.SourceTag, job.Destination.Image, job.Destination.Tag, job.SourceSha)
+}
+
+// Execute runs the job using the given Retagger instance
 func (job *SingleJob) Execute(r *Retagger) error {
 	// r.logger.Log("level", "debug", "message", fmt.Sprintf("Executing %v#", job))
 	return r.executeSingleJob(*job)
@@ -48,6 +59,7 @@ func (job *SingleJob) ShouldRetag(r *Retagger) (bool, error) {
 	return (!tagExists || job.Options.UpdateOnChange), nil
 }
 
+// SingleJobFromJobRequest converts a JobRequest into a SingleJob
 func SingleJobFromJobRequest(j *JobRequest, r *Retagger) *SingleJob {
 	job := &SingleJob{
 		SourceImage: j.SourceImage,
@@ -60,6 +72,7 @@ func SingleJobFromJobRequest(j *JobRequest, r *Retagger) *SingleJob {
 	return job
 }
 
+// GetDestinationForJob populates a job's Destination information based on the job's Options.
 func GetDestinationForJob(j *SingleJob, r *Retagger) Destination {
 	var destinationImage string
 	{
@@ -84,6 +97,7 @@ func GetDestinationForJob(j *SingleJob, r *Retagger) Destination {
 	}
 }
 
+// JobRequest represents a single or pattern job which has been read from the input file but is yet to be compiled.
 type JobRequest struct { // Definition?
 	SourceImage   string
 	SourceTag     string
@@ -93,6 +107,7 @@ type JobRequest struct { // Definition?
 	Options JobOptions
 }
 
+// Compile expands a JobRequest into one or multiple concrete jobs.
 func (jr *JobRequest) Compile(r *Retagger) ([]SingleJob, error) {
 	// The job can either be a SingleJob or a PatternJob
 	if jr.SourceSha != "" {
@@ -100,6 +115,7 @@ func (jr *JobRequest) Compile(r *Retagger) ([]SingleJob, error) {
 			// Configuration specified a SHA and a pattern -- use SHA to be safe, but warn about misconfiguration
 			r.logger.Log("level", "warn", "message", fmt.Sprintf("invalid configuration: Job %v specifies both a SHA (%v) and a Pattern (%v). Using SHA", jr.SourceImage, jr.SourceSha, jr.SourcePattern))
 		}
+
 		// This is a single job -- return it on its own
 		job := *SingleJobFromJobRequest(jr, r)
 		job.Destination = GetDestinationForJob(&job, r)
@@ -117,6 +133,7 @@ func (jr *JobRequest) Compile(r *Retagger) ([]SingleJob, error) {
 	return nestedJobs, nil
 }
 
+// PatternJob contains a definition for generating multiple single jobs based on a pattern.
 type PatternJob struct {
 	SourceImage   string
 	SourcePattern string
@@ -126,6 +143,7 @@ type PatternJob struct {
 	Options JobOptions
 }
 
+// PatternJobFromJobRequest converts a JobRequest into a PatternJob
 func PatternJobFromJobRequest(j *JobRequest, r *Retagger) *PatternJob {
 	job := &PatternJob{
 		SourceImage:   j.SourceImage,
@@ -136,28 +154,29 @@ func PatternJobFromJobRequest(j *JobRequest, r *Retagger) *PatternJob {
 	return job
 }
 
+// Compile expands a PatternJob into one or multiple SingleJobs using the given Retagger instance.
 func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 	r.logger.Log("level", "debug", "message", fmt.Sprintf("compiling jobs for image %v using pattern %v, with options %#v", job.SourceImage, job.SourcePattern, job.Options))
 
-	// Make sure our pattern is valid
+	// Make sure our pattern is valid.
 	pattern, err := regexp.Compile(job.SourcePattern)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	// Get SHA/Tag pairs from our quay registry
+	// Get SHA/Tag pairs from our quay registry.
 	quayTagMap, err := r.registry.GetQuayTagMap(job.SourceImage)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	// Handle remote, Docker Hub, and Docker library image path formats
+	// Handle remote, Docker Hub, and Docker library image path formats.
 	registryPath, err := r.registry.GuessRegistryPath(job.SourceImage)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	// Create a reference to the external registry
+	// Create a reference to the external registry.
 	o := dockerRegistry.Options{
 		Logf: dockerRegistry.Quiet,
 		// Logf:          dockerRegistry.Log,
@@ -171,13 +190,13 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 
 	fullImageName := r.registry.GetRepositoryFromPath(registryPath)
 
-	// Get the tags for this image from the external registry
+	// Get the tags for this image from the external registry.
 	externalRegistryTags, err := externalRegistry.Tags(fullImageName)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	// Find tags matching our configured pattern
+	// Find tags matching our configured pattern.
 	matches := []string{}
 	for _, t := range externalRegistryTags {
 		if pattern.MatchString(t) {
@@ -192,14 +211,14 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 	}
 
 	jobs := []SingleJob{}
-	// Find tags which need to be re-checked and updated
+	// Find tags which need to be re-checked and updated.
 	for _, match := range matches {
 		sourceSHA := ""
 
 		_, exists := quayTagMap[match]
 
 		if !exists {
-			// Tag is new - get SHA and tag it
+			// Tag is new - get SHA and tag it.
 			newDigest, err := externalRegistry.ManifestDigest(fullImageName, match)
 			if err != nil {
 				return nil, microerror.Mask(err)
@@ -209,7 +228,7 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 		} else {
 			tag := quayTagMap[match]
 			if job.Options.UpdateOnChange {
-				// Tag exists, but we should update the image
+				// Tag exists, but we should update the image.
 
 				newDigest, err := externalRegistry.ManifestDigest(fullImageName, tag.Name)
 				if err != nil {
@@ -217,7 +236,7 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 				}
 
 				if newDigest.String() != tag.ManifestDigest {
-					// Retag this image with this tag
+					// Retag this image with this tag.
 					r.logger.Log("level", "debug", "message",
 						fmt.Sprintf("Image %s:%s will be retagged to %s from %s",
 							job.SourceImage, tag.Name, newDigest, tag.ManifestDigest))
@@ -233,7 +252,7 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 		}
 
 		if sourceSHA != "" {
-			// Create job with new SHA
+			// Create job with new SHA.
 			j := SingleJob{
 				SourceTag:   match,
 				SourceImage: job.SourceImage,
@@ -251,14 +270,17 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 	return jobs, nil
 }
 
+// JobCompiler contains a Job which can be Compiled.
 type JobCompiler struct {
 	Job CompilableJob
 }
 
+// Compile takes a CompilableJob and a Retagger and Compiles the job.
 func (jc *JobCompiler) Compile(job CompilableJob, r *Retagger) ([]SingleJob, error) {
 	return job.Compile(r)
 }
 
+// JobOptions specifies optional features for modifying the behavior of the job during tagging.
 type JobOptions struct {
 	// DockerfileOptions - list of strings we add for Dockerfile to build custom image.
 	DockerfileOptions []string
@@ -271,6 +293,7 @@ type JobOptions struct {
 	UpdateOnChange bool
 }
 
+// FromImages receives a list of Images and converts them into JobRequests.
 func FromImages(images images.Images) ([]JobRequest, error) {
 	var jobs []JobRequest
 
@@ -285,6 +308,7 @@ func FromImages(images images.Images) ([]JobRequest, error) {
 	return jobs, nil
 }
 
+// FromImage takes an Image and converts it into a JobRequest.
 func FromImage(image images.Image) ([]JobRequest, error) {
 	var jobs []JobRequest
 
