@@ -16,6 +16,10 @@
       dockerfileOptions:
       - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
       - USER giantswarm
+- name: aquasec/kube-bench
+  tags:
+  - sha: dbd60b7c43846daa4285c037fbb8894f87f8f9113c27dbdd684eb7a6e0b0a0f2
+    tag: 0.2.2
 - name: bitnami/redis
   overrideRepoName: bitnami-redis
   tags:
