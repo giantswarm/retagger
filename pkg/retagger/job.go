@@ -10,7 +10,16 @@ type CompilableJob interface {
 	Compile(*Retagger) ([]SingleJob, error)
 }
 
-// Destination contains information about the target repository and tag of a job.
+// Source contains information about the source (upstream) of a job.
+type Source struct {
+	Image         string
+	Tag           string
+	SHA           string
+	RepoPath      string
+	FullImageName string
+}
+
+// Destination contains information about the target repository of a job.
 type Destination struct {
 	Image string
 	Tag   string
@@ -156,18 +165,3 @@ func fromImageTagPattern(image images.Image, tagPattern images.TagPattern) (JobD
 
 	return j, nil
 }
-
-// ExecutableJob represents any Job which can be Executed.
-// type ExecutableJob interface {
-// 	Execute(r *Retagger) error
-// }
-
-// JobCompiler contains a Job which can be Compiled.
-// type JobCompiler struct {
-// 	Job CompilableJob
-// }
-
-// Compile takes a CompilableJob and a Retagger and Compiles the job.
-// func (jc *JobCompiler) Compile(job CompilableJob, r *Retagger) ([]SingleJob, error) {
-// 	return job.Compile(r)
-// }

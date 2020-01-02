@@ -3,7 +3,6 @@ package registry
 import (
 	"fmt"
 	nurl "net/url"
-	"strings"
 	"time"
 
 	dockerRef "github.com/docker/distribution/reference"
@@ -196,9 +195,4 @@ func (r *Registry) GetRepositoryFromPathString(path string) (string, error) {
 		return "", err
 	}
 	return dockerRef.FamiliarString(name), nil
-}
-
-// GetRepositoryFromPath extracts the organization/image segment of a full image path.
-func (r *Registry) GetRepositoryFromPath(path *nurl.URL) string {
-	return strings.Trim(path.Path, "/") // Remove leading slash
 }

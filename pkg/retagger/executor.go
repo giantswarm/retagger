@@ -62,7 +62,7 @@ func (r *Retagger) executeSingleJob(job SingleJob) error {
 	if shouldTag {
 		r.logger.Log("level", "debug", "message", fmt.Sprintf("pulling original image"))
 
-		err = r.registry.PullImage(job.SourceImage, job.SourceSha)
+		err = r.registry.PullImage(job.Source.Image, job.Source.SHA)
 		if err != nil {
 			return microerror.Mask(err)
 		}
@@ -70,12 +70,12 @@ func (r *Retagger) executeSingleJob(job SingleJob) error {
 		r.logger.Log("level", "debug", "message", fmt.Sprintf("pulled original image"))
 
 		if job.Options.DockerfileOptions != nil && len(job.Options.DockerfileOptions) > 0 {
-			_, err = r.registry.RebuildImage(job.SourceImage, job.SourceSha, job.Destination.Image, job.Destination.Tag, job.Options.DockerfileOptions)
+			_, err = r.registry.RebuildImage(job.Source.Image, job.Source.SHA, job.Destination.Image, job.Destination.Tag, job.Options.DockerfileOptions)
 			if err != nil {
 				return microerror.Mask(err)
 			}
 		} else {
-			_, err = r.registry.TagSha(job.SourceImage, job.SourceSha, job.Destination.Image, job.Destination.Tag)
+			_, err = r.registry.TagSha(job.Source.Image, job.Source.SHA, job.Destination.Image, job.Destination.Tag)
 			if err != nil {
 				return microerror.Mask(err)
 			}
