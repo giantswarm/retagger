@@ -2,19 +2,18 @@ package registry
 
 import (
 	"fmt"
+	nurl "net/url"
 	"strings"
 	"time"
 
-	nurl "net/url"
-
 	dockerRef "github.com/docker/distribution/reference"
 	dockerclient "github.com/docker/docker/client"
-	"github.com/giantswarm/backoff"
-	"github.com/giantswarm/microerror"
-	"github.com/giantswarm/micrologger"
 	"github.com/nokia/docker-registry-client/registry"
 	"github.com/opencontainers/go-digest"
 
+	"github.com/giantswarm/backoff"
+	"github.com/giantswarm/microerror"
+	"github.com/giantswarm/micrologger"
 	"github.com/giantswarm/retagger/pkg/images"
 )
 

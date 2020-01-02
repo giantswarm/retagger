@@ -62,14 +62,6 @@ func IsDockerLoginFailed(response registry.AuthenticateOKBody, err error) error 
 	return nil
 }
 
-func IsRepositoryNotFound(err error) bool {
-	if err != nil && strings.Contains(err.Error(), "repository name not known to registry") {
-		return true
-	} else {
-		return false
-	}
-}
-
 var noMorePagesError = &microerror.Error{
 	Kind: "noMorePagesError",
 }
@@ -77,4 +69,12 @@ var noMorePagesError = &microerror.Error{
 // IsNoMorePages asserts noMorePagesError.
 func IsNoMorePages(err error) bool {
 	return microerror.Cause(err) == noMorePagesError
+}
+
+func IsRepositoryNotFound(err error) bool {
+	if err != nil && strings.Contains(err.Error(), "repository name not known to registry") {
+		return true
+	} else {
+		return false
+	}
 }
