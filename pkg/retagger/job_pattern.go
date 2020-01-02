@@ -66,40 +66,43 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 	jobs := []SingleJob{}
 
 	for _, match := range matches {
-		sourceSHA := ""
+		// sourceSHA := ""
 
 		tag, exists := quayTagMap[match]
 
-		if !exists {
-			// Tag is new - get SHA and tag it.
-			newDigest, err := externalRegistry.ManifestDigest(job.Source.FullImageName, match)
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
-			sourceSHA = newDigest.String()
-
-		} else {
-			if job.Options.UpdateOnChange {
-				// Tag exists, but we should update the image.
-
-				newDigest, err := externalRegistry.ManifestDigest(job.Source.FullImageName, tag.Name)
+		var sourceSHA string
+		{
+			if !exists {
+				// Tag is new - get SHA and tag it.
+				newDigest, err := externalRegistry.ManifestDigest(job.Source.FullImageName, match)
 				if err != nil {
 					return nil, microerror.Mask(err)
 				}
-
-				if newDigest.String() != tag.ManifestDigest {
-					// Retag this image with this tag.
-					r.logger.Log("level", "debug", "message",
-						fmt.Sprintf("image %s:%s will be retagged to %s from %s",
-							job.Source.Image, tag.Name, newDigest, tag.ManifestDigest))
-
-					sourceSHA = newDigest.String()
-				}
+				sourceSHA = newDigest.String()
 
 			} else {
-				r.logger.Log("level", "debug", "message",
-					fmt.Sprintf("ignored: image %s:%s has changed but will not be retagged",
-						job.Source.Image, tag.Name))
+				if job.Options.UpdateOnChange {
+					// Tag exists, but we should update the image.
+
+					newDigest, err := externalRegistry.ManifestDigest(job.Source.FullImageName, tag.Name)
+					if err != nil {
+						return nil, microerror.Mask(err)
+					}
+
+					if newDigest.String() != tag.ManifestDigest {
+						// Retag this image with this tag.
+						r.logger.Log("level", "debug", "message",
+							fmt.Sprintf("image %s:%s will be retagged to %s from %s",
+								job.Source.Image, tag.Name, newDigest, tag.ManifestDigest))
+
+						sourceSHA = newDigest.String()
+					}
+
+				} else {
+					r.logger.Log("level", "debug", "message",
+						fmt.Sprintf("ignored: image %s:%s has changed but will not be retagged",
+							job.Source.Image, tag.Name))
+				}
 			}
 		}
 
