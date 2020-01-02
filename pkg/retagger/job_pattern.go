@@ -113,7 +113,7 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 				if newDigest.String() != tag.ManifestDigest {
 					// Retag this image with this tag.
 					r.logger.Log("level", "debug", "message",
-						fmt.Sprintf("Image %s:%s will be retagged to %s from %s",
+						fmt.Sprintf("image %s:%s will be retagged to %s from %s",
 							job.SourceImage, tag.Name, newDigest, tag.ManifestDigest))
 
 					sourceSHA = newDigest.String()
@@ -121,7 +121,7 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 
 			} else {
 				r.logger.Log("level", "debug", "message",
-					fmt.Sprintf("Ignored: image %s:%s has changed but will not be retagged",
+					fmt.Sprintf("ignored: image %s:%s has changed but will not be retagged",
 						job.SourceImage, tag.Name))
 			}
 		}
