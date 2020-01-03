@@ -40,7 +40,7 @@ func (job *SingleJob) ShouldRetag(r *Retagger) (bool, error) {
 		return false, microerror.Mask(err)
 	}
 
-	return (!tagExists || job.Options.UpdateOnChange), nil
+	return !tagExists, nil
 }
 
 // SingleJobFromJobDefinition converts a JobDefinition into a SingleJob.

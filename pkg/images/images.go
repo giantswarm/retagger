@@ -19,10 +19,9 @@ type Image struct {
 // TagPattern represents a group of tags defined by a regular expression,
 // and stores some configuration for how to handle this group.
 type TagPattern struct {
-	Pattern        string        `yaml:"pattern"`
-	Tag            string        `yaml:"tag"`
-	UpdateOnChange bool          `yaml:"update_on_change"`
-	CustomImages   []CustomImage `yaml:"customImages"`
+	Pattern      string        `yaml:"pattern"`
+	Tag          string        `yaml:"tag"`
+	CustomImages []CustomImage `yaml:"customImages"`
 }
 
 // Tag represents a specific version of a docker image, represented by a tag

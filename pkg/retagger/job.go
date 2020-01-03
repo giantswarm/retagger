@@ -28,7 +28,4 @@ type JobOptions struct {
 	TagSuffix string
 
 	OverrideRepoName string
-
-	// UpdateOnChange sets whether a pattern Job should update the destination image if a source image changes for a given tag.
-	UpdateOnChange bool
 }

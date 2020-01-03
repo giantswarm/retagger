@@ -163,9 +163,5 @@ func fromImageTagPattern(image images.Image, tagPattern images.TagPattern) (JobD
 		j.Options.OverrideRepoName = image.OverrideRepoName
 	}
 
-	if tagPattern.UpdateOnChange {
-		j.Options.UpdateOnChange = true
-	}
-
 	return j, nil
 }

@@ -48,7 +48,6 @@ func (r *Registry) GetQuayTagsWithDetails(image string) (tags []QuayTag, err err
 
 	var response TagsResponse
 	for {
-
 		r.logger.Log("level", "debug", "message", fmt.Sprintf("requesting registry tags from %s", url))
 
 		url, err = r.getPaginatedJSON(url, &response)
