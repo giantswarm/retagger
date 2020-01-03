@@ -16,7 +16,7 @@ type SingleJob struct {
 	Options JobOptions
 }
 
-// Compile wraps this job in an array to keep consistency with the CompilableJob interface
+// Compile wraps this job in an array to keep consistency with the CompilableJob interface.
 func (job *SingleJob) Compile(r *Retagger) ([]SingleJob, error) {
 	return []SingleJob{*job}, nil
 }
@@ -27,7 +27,7 @@ func (job *SingleJob) Describe() string {
 		job.Source.Image, job.Source.Tag, job.Destination.Image, job.Destination.Tag, job.Source.SHA)
 }
 
-// Execute runs the job using the given Retagger instance
+// Execute runs the job using the given Retagger instance.
 func (job *SingleJob) Execute(r *Retagger) error {
 	return r.executeSingleJob(*job)
 }
@@ -43,7 +43,7 @@ func (job *SingleJob) ShouldRetag(r *Retagger) (bool, error) {
 	return (!tagExists || job.Options.UpdateOnChange), nil
 }
 
-// SingleJobFromJobDefinition converts a JobDefinition into a SingleJob
+// SingleJobFromJobDefinition converts a JobDefinition into a SingleJob.
 func SingleJobFromJobDefinition(jobDef *JobDefinition, r *Retagger) *SingleJob {
 	job := &SingleJob{
 		Source: GetSourceForJob(jobDef, r),
@@ -58,7 +58,7 @@ func getRepoHostForJob(j *JobDefinition, r *Retagger) string {
 	// Handle remote, Docker Hub, and Docker library image path formats.
 	registryPath, err := r.registry.GuessRegistryPath(j.SourceImage)
 	if err != nil {
-		return j.SourceImage // Fall back to trying to use given image name
+		return j.SourceImage // Fall back to trying to use given image name.
 	}
 	return registryPath.Hostname()
 }
@@ -66,9 +66,9 @@ func getRepoHostForJob(j *JobDefinition, r *Retagger) string {
 func getFullImageNameForJob(j *JobDefinition, r *Retagger) string {
 	registryPath, err := r.registry.GuessRegistryPath(j.SourceImage)
 	if err != nil {
-		return j.SourceImage // Fall back to trying to use given image name
+		return j.SourceImage // Fall back to trying to use given image name.
 	}
-	return strings.Trim(registryPath.Path, "/") // Remove leading slash
+	return strings.Trim(registryPath.Path, "/") // Remove leading slash.
 }
 
 // GetSourceForJob populates a Source object based on the given JobDefinition.

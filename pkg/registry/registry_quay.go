@@ -13,12 +13,12 @@ import (
 
 // This code is largely lifted from nokia/docker-registry-client. It provides Quay-specific API behavior needed by retagger.
 
-// TagsResponse wraps a response from the Quay tags endpoint
+// TagsResponse wraps a response from the Quay tags endpoint.
 type TagsResponse struct {
 	Tags []QuayTag `json:"tags"`
 }
 
-// QuayTag describes a tag object returned by the Quay API
+// QuayTag describes a tag object returned by the Quay API.
 type QuayTag struct {
 	Name           string `json:"name"`
 	ImageID        string `json:"image_id"`
@@ -113,7 +113,7 @@ func (r *Registry) getPaginatedJSON(url string, response interface{}) (string, e
 	return base.ResolveReference(u).String(), nil
 }
 
-// Parses an HTTP response header looking for the "next" link in a paginated response
+// Parses an HTTP response header looking for the "next" link in a paginated response.
 func getNextLink(resp *http.Response) (string, error) {
 	for _, link := range resp.Header[http.CanonicalHeaderKey("Link")] {
 		parts := nextLinkRE.FindStringSubmatch(link)

@@ -34,7 +34,7 @@ type JobOptions struct {
 
 	OverrideRepoName string
 
-	// UpdateOnChange sets whether a pattern Job should update the destination image if a source image changes for a given tag
+	// UpdateOnChange sets whether a pattern Job should update the destination image if a source image changes for a given tag.
 	UpdateOnChange bool
 }
 
@@ -65,7 +65,6 @@ func FromImage(image images.Image) ([]JobDefinition, error) {
 		jobs = append(jobs, j...)
 	}
 
-	// TODO: Combine patterns into single job -- pull/check tag list only once
 	for _, p := range image.Patterns {
 		j, err := fromImageTagPatternIncludeCustom(image, p)
 		if err != nil {

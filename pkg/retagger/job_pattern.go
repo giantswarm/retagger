@@ -18,7 +18,7 @@ type PatternJob struct {
 	Options JobOptions
 }
 
-// PatternJobFromJobDefinition converts a JobDefinition into a PatternJob
+// PatternJobFromJobDefinition converts a JobDefinition into a PatternJob.
 func PatternJobFromJobDefinition(jobDef *JobDefinition, r *Retagger) *PatternJob {
 	job := &PatternJob{
 		SourcePattern: jobDef.SourcePattern,
@@ -45,7 +45,7 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	// Find tags which match the pattern
+	// Find tags which match the pattern.
 	matches, err := getExternalTagMatches(externalRegistry, job.Source.FullImageName, job.SourcePattern)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -90,17 +90,15 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 
 					if newDigest.String() != tag.ManifestDigest {
 						// Retag this image with this tag.
-						r.logger.Log("level", "debug", "message",
-							fmt.Sprintf("image %s:%s will be retagged to %s from %s",
-								job.Source.Image, tag.Name, newDigest, tag.ManifestDigest))
+						msg := fmt.Sprintf("image %s:%s will be retagged to %s from %s", job.Source.Image, tag.Name, newDigest, tag.ManifestDigest)
+						r.logger.Log("level", "debug", "message", msg)
 
 						sourceSHA = newDigest.String()
 					}
 
 				} else {
-					r.logger.Log("level", "debug", "message",
-						fmt.Sprintf("ignored: image %s:%s has changed but will not be retagged",
-							job.Source.Image, tag.Name))
+					msg := fmt.Sprintf("ignored: image %s:%s has changed but will not be retagged", job.Source.Image, tag.Name)
+					r.logger.Log("level", "debug", "message", msg)
 				}
 			}
 		}
@@ -113,7 +111,7 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 
 				Options: job.Options,
 			}
-			// Override Source options from our pattern
+			// Override Source options from our pattern.
 			j.Source.Tag = match
 			j.Source.SHA = sourceSHA
 			j.Destination = GetDestinationForJob(&j, r)
@@ -126,7 +124,7 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 	return jobs, nil
 }
 
-// getExternalTagMatches searches the given docker registry for tags matching the given pattern
+// getExternalTagMatches searches the given docker registry for tags matching the given pattern.
 func getExternalTagMatches(r *dockerRegistry.Registry, image string, pattern string) ([]string, error) {
 	// Make sure our pattern is valid.
 	regex, err := regexp.Compile(pattern)

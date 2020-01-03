@@ -27,7 +27,7 @@ func (r *Retagger) CompileJobs() error {
 	return nil
 }
 
-// ExecuteJobs runs the jobs associated with this Retagger
+// ExecuteJobs runs the jobs associated with this Retagger.
 func (r *Retagger) ExecuteJobs() error {
 	r.logger.Log("level", "debug", "message", fmt.Sprintf("start executing %d jobs", len(r.compiledJobs)))
 
@@ -51,7 +51,7 @@ func (r *Retagger) ExecuteJobs() error {
 	return nil
 }
 
-// executeSingleJob runs one job definition, optionally skipping jobs with tags which already exist
+// executeSingleJob runs one job definition.
 func (r *Retagger) executeSingleJob(job SingleJob) error {
 
 	shouldTag, err := job.ShouldRetag(r)

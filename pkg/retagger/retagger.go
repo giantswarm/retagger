@@ -8,7 +8,7 @@ import (
 	"github.com/giantswarm/retagger/pkg/registry"
 )
 
-// Config contains configuration values for Retagger itself
+// Config contains configuration values for Retagger itself.
 type Config struct {
 	Logger   micrologger.Logger
 	Registry *registry.Registry
@@ -27,7 +27,7 @@ type Retagger struct {
 	CurrentTags map[string]map[string]registry.QuayTag
 }
 
-// New creates a new instance of Retagger based on the given Config
+// New creates a new instance of Retagger based on the given Config.
 func New(config Config) (*Retagger, error) {
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
@@ -52,7 +52,7 @@ func (r *Retagger) GetTagDetails(image string) (map[string]registry.QuayTag, err
 		return tagMap, nil
 	}
 
-	// Get and store the QuayTags for this image
+	// Get and store the QuayTags for this image.
 	tagMap, err := r.registry.GetQuayTagMap(image)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -61,7 +61,7 @@ func (r *Retagger) GetTagDetails(image string) (map[string]registry.QuayTag, err
 	return tagMap, nil
 }
 
-// LoadImages populates Retagger's job list with jobs defined in the given image list
+// LoadImages populates Retagger's job list with jobs defined in the given image list.
 func (r *Retagger) LoadImages(images images.Images) (int, error) {
 	jobs, err := FromImages(images)
 	if err != nil {
