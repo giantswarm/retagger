@@ -66,7 +66,6 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 	jobs := []SingleJob{}
 
 	for _, match := range matches {
-		// sourceSHA := ""
 
 		tag, exists := quayTagMap[match]
 
