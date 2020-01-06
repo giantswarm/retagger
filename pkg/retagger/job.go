@@ -5,15 +5,6 @@ type CompilableJob interface {
 	Compile(*Retagger) ([]SingleJob, error)
 }
 
-// Source contains information about the source (upstream) of a job.
-type Source struct {
-	Image         string
-	Tag           string
-	SHA           string
-	RepoPath      string
-	FullImageName string
-}
-
 // Destination contains information about the target repository of a job.
 type Destination struct {
 	Image string
@@ -28,4 +19,13 @@ type JobOptions struct {
 	TagSuffix string
 
 	OverrideRepoName string
+}
+
+// Source contains information about the source (upstream) of a job.
+type Source struct {
+	Image         string
+	Tag           string
+	SHA           string
+	RepoPath      string
+	FullImageName string
 }

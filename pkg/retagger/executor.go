@@ -10,7 +10,6 @@ import (
 func (r *Retagger) CompileJobs() error {
 	r.logger.Log("level", "debug", "message", fmt.Sprintf("compiling %d job definitions", len(r.jobs)))
 
-	// TODO: Gate for not performing API calls during compile?
 	compiledJobs := []SingleJob{}
 	for _, j := range r.jobs {
 		compiled, err := j.Compile(r)

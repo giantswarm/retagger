@@ -43,45 +43,6 @@ func (job *SingleJob) ShouldRetag(r *Retagger) (bool, error) {
 	return !tagExists, nil
 }
 
-// SingleJobFromJobDefinition converts a JobDefinition into a SingleJob.
-func SingleJobFromJobDefinition(jobDef *JobDefinition, r *Retagger) *SingleJob {
-	job := &SingleJob{
-		Source: GetSourceForJob(jobDef, r),
-
-		Options: jobDef.Options,
-	}
-	job.Destination = GetDestinationForJob(job, r)
-	return job
-}
-
-func getRepoHostForJob(j *JobDefinition, r *Retagger) string {
-	// Handle remote, Docker Hub, and Docker library image path formats.
-	registryPath, err := r.registry.GuessRegistryPath(j.SourceImage)
-	if err != nil {
-		return j.SourceImage // Fall back to trying to use given image name.
-	}
-	return registryPath.Hostname()
-}
-
-func getFullImageNameForJob(j *JobDefinition, r *Retagger) string {
-	registryPath, err := r.registry.GuessRegistryPath(j.SourceImage)
-	if err != nil {
-		return j.SourceImage // Fall back to trying to use given image name.
-	}
-	return strings.Trim(registryPath.Path, "/") // Remove leading slash.
-}
-
-// GetSourceForJob populates a Source object based on the given JobDefinition.
-func GetSourceForJob(jobDef *JobDefinition, r *Retagger) Source {
-	return Source{
-		Image:         jobDef.SourceImage,
-		SHA:           jobDef.SourceSha,
-		Tag:           jobDef.SourceTag,
-		RepoPath:      getRepoHostForJob(jobDef, r),
-		FullImageName: getFullImageNameForJob(jobDef, r),
-	}
-}
-
 // GetDestinationForJob populates a job's Destination information based on the job's Options.
 func GetDestinationForJob(j *SingleJob, r *Retagger) Destination {
 	var destinationImage string
@@ -105,4 +66,43 @@ func GetDestinationForJob(j *SingleJob, r *Retagger) Destination {
 		Image: destinationImage,
 		Tag:   destinationTag,
 	}
+}
+
+// GetSourceForJob populates a Source object based on the given JobDefinition.
+func GetSourceForJob(jobDef *JobDefinition, r *Retagger) Source {
+	return Source{
+		Image:         jobDef.SourceImage,
+		SHA:           jobDef.SourceSha,
+		Tag:           jobDef.SourceTag,
+		RepoPath:      getRepoHostForJob(jobDef, r),
+		FullImageName: getFullImageNameForJob(jobDef, r),
+	}
+}
+
+// SingleJobFromJobDefinition converts a JobDefinition into a SingleJob.
+func SingleJobFromJobDefinition(jobDef *JobDefinition, r *Retagger) *SingleJob {
+	job := &SingleJob{
+		Source: GetSourceForJob(jobDef, r),
+
+		Options: jobDef.Options,
+	}
+	job.Destination = GetDestinationForJob(job, r)
+	return job
+}
+
+func getFullImageNameForJob(j *JobDefinition, r *Retagger) string {
+	registryPath, err := r.registry.GuessRegistryPath(j.SourceImage)
+	if err != nil {
+		return j.SourceImage // Fall back to trying to use given image name.
+	}
+	return strings.Trim(registryPath.Path, "/") // Remove leading slash.
+}
+
+func getRepoHostForJob(j *JobDefinition, r *Retagger) string {
+	// Handle remote, Docker Hub, and Docker library image path formats.
+	registryPath, err := r.registry.GuessRegistryPath(j.SourceImage)
+	if err != nil {
+		return j.SourceImage // Fall back to trying to use given image name.
+	}
+	return registryPath.Hostname()
 }

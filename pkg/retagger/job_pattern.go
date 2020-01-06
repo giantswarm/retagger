@@ -18,26 +18,13 @@ type PatternJob struct {
 	Options JobOptions
 }
 
-// PatternJobFromJobDefinition converts a JobDefinition into a PatternJob.
-func PatternJobFromJobDefinition(jobDef *JobDefinition, r *Retagger) *PatternJob {
-	job := &PatternJob{
-		SourcePattern: jobDef.SourcePattern,
-		Source:        GetSourceForJob(jobDef, r),
-
-		Options: jobDef.Options,
-	}
-
-	return job
-}
-
 // Compile expands a PatternJob into one or multiple SingleJobs using the given Retagger instance.
 func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 	r.logger.Log("level", "debug", "message", fmt.Sprintf("compiling jobs for image %v using pattern %v, with options %#v", job.Source.Image, job.SourcePattern, job.Options))
 
 	// Create a reference to the external registry.
 	o := dockerRegistry.Options{
-		Logf: dockerRegistry.Quiet,
-		// Logf:          dockerRegistry.Log,
+		Logf:          dockerRegistry.Quiet,
 		DoInitialPing: false,
 	}
 	externalRegistry, err := dockerRegistry.NewCustom(fmt.Sprintf("https://%s", job.Source.RepoPath), o)
@@ -94,6 +81,18 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 	r.logger.Log("level", "debug", "message", fmt.Sprintf("Compiled %d jobs to process", len(jobs)))
 
 	return jobs, nil
+}
+
+// PatternJobFromJobDefinition converts a JobDefinition into a PatternJob.
+func PatternJobFromJobDefinition(jobDef *JobDefinition, r *Retagger) *PatternJob {
+	job := &PatternJob{
+		SourcePattern: jobDef.SourcePattern,
+		Source:        GetSourceForJob(jobDef, r),
+
+		Options: jobDef.Options,
+	}
+
+	return job
 }
 
 // getExternalTagMatches searches the given docker registry for tags matching the given pattern.

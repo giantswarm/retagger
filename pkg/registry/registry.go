@@ -109,38 +109,6 @@ func (r *Registry) CheckImageTagExists(image, tag string) (bool, error) {
 	return false, nil
 }
 
-func (r *Registry) ListImageTags(image string) ([]string, error) {
-	var tags []string
-	o := func() error {
-		imageTags, err := r.registryClient.Tags(images.Name(r.organisation, image))
-		if IsRepositoryNotFound(err) {
-			r.logger.Log("level", "warning", "message", fmt.Sprintf("repository %s was not found in registry, retagger will try create the repository", image))
-			return nil
-		} else if err != nil {
-			return microerror.Mask(err)
-		}
-
-		tags = imageTags
-		return nil
-	}
-	b := backoff.NewExponential(500*time.Millisecond, 5*time.Second)
-	err := backoff.Retry(o, b)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	return tags, nil
-}
-
-func (r *Registry) GetDigest(image string, tag string) (digest.Digest, error) {
-	digest, err := r.registryClient.ManifestV2Digest(images.Name(r.organisation, image), tag)
-	if err != nil {
-		return "", microerror.Mask(err)
-	}
-
-	return digest, nil
-}
-
 func (r *Registry) DeleteImage(image string, tag string) error {
 	digest, err := r.GetDigest(image, tag)
 	if err != nil {
@@ -155,12 +123,13 @@ func (r *Registry) DeleteImage(image string, tag string) error {
 	return nil
 }
 
-func (r *Registry) RetaggedName(image string) string {
-	return images.RetaggedName(r.host, r.organisation, image)
-}
+func (r *Registry) GetDigest(image string, tag string) (digest.Digest, error) {
+	digest, err := r.registryClient.ManifestV2Digest(images.Name(r.organisation, image), tag)
+	if err != nil {
+		return "", microerror.Mask(err)
+	}
 
-func (r *Registry) getDockerName(image string) (dockerRef.Named, error) {
-	return dockerRef.ParseNormalizedNamed(image)
+	return digest, nil
 }
 
 // GuessRegistryPath examines the given image string, determines whether it describes a full
@@ -195,4 +164,35 @@ func (r *Registry) GetRepositoryFromPathString(path string) (string, error) {
 		return "", err
 	}
 	return dockerRef.FamiliarString(name), nil
+}
+
+func (r *Registry) ListImageTags(image string) ([]string, error) {
+	var tags []string
+	o := func() error {
+		imageTags, err := r.registryClient.Tags(images.Name(r.organisation, image))
+		if IsRepositoryNotFound(err) {
+			r.logger.Log("level", "warning", "message", fmt.Sprintf("repository %s was not found in registry, retagger will try create the repository", image))
+			return nil
+		} else if err != nil {
+			return microerror.Mask(err)
+		}
+
+		tags = imageTags
+		return nil
+	}
+	b := backoff.NewExponential(500*time.Millisecond, 5*time.Second)
+	err := backoff.Retry(o, b)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	return tags, nil
+}
+
+func (r *Registry) RetaggedName(image string) string {
+	return images.RetaggedName(r.host, r.organisation, image)
+}
+
+func (r *Registry) getDockerName(image string) (dockerRef.Named, error) {
+	return dockerRef.ParseNormalizedNamed(image)
 }
