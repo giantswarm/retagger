@@ -45,6 +45,7 @@ func TestE2e(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	CheckImageExistOrFail(t, r, "retagger-e2e", "2.6")
 	CheckImageExistOrFail(t, r, "retagger-e2e", "3.7")
 	CheckImageExistOrFail(t, r, "retagger-e2e", "3.9")
 	CheckImageExistOrFail(t, r, "retagger-e2e", "3.9-giantswarm")
