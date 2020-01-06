@@ -21,6 +21,14 @@ func (job *SingleJob) Compile(r *Retagger) ([]SingleJob, error) {
 	return []SingleJob{*job}, nil
 }
 
+func (job *SingleJob) GetOptions() JobOptions {
+	return job.Options
+}
+
+func (job *SingleJob) GetSource() Source {
+	return job.Source
+}
+
 // Describe returns a string containing basic information about the job.
 func (job *SingleJob) Describe() string {
 	return fmt.Sprintf("%s:%s will be tagged as %s:%s with digest %s",
@@ -44,22 +52,22 @@ func (job *SingleJob) ShouldRetag(r *Retagger) (bool, error) {
 }
 
 // GetDestinationForJob populates a job's Destination information based on the job's Options.
-func GetDestinationForJob(j *SingleJob, r *Retagger) Destination {
+func GetDestinationForJob(j CompilableJob, r *Retagger) Destination {
 	var destinationImage string
 	{
-		if j.Options.OverrideRepoName == "" {
-			destinationImage = r.registry.RetaggedName(j.Source.Image)
+		if j.GetOptions().OverrideRepoName == "" {
+			destinationImage = r.registry.RetaggedName(j.GetSource().Image)
 		} else {
-			destinationImage = r.registry.RetaggedName(j.Options.OverrideRepoName)
+			destinationImage = r.registry.RetaggedName(j.GetOptions().OverrideRepoName)
 		}
 	}
 
 	var destinationTag string
 	{
-		if j.Options.TagSuffix == "" {
-			destinationTag = j.Source.Tag
+		if j.GetOptions().TagSuffix == "" {
+			destinationTag = j.GetSource().Tag
 		} else {
-			destinationTag = fmt.Sprintf("%s-%s", j.Source.Tag, j.Options.TagSuffix)
+			destinationTag = fmt.Sprintf("%s-%s", j.GetSource().Tag, j.GetOptions().TagSuffix)
 		}
 	}
 	return Destination{

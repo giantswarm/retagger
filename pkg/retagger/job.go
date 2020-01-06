@@ -3,6 +3,8 @@ package retagger
 // CompilableJob represents any Job which can be Compiled.
 type CompilableJob interface {
 	Compile(*Retagger) ([]SingleJob, error)
+	GetOptions() JobOptions
+	GetSource() Source
 }
 
 // Destination contains information about the target repository of a job.

@@ -46,7 +46,7 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 	}
 
 	// Get SHA/Tag pairs from our quay registry.
-	quayTagMap, err := r.GetTagDetails(job.Source.Image)
+	quayTagMap, err := r.GetTagDetails(job.Destination.Image)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -84,6 +84,14 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 	return jobs, nil
 }
 
+func (job *PatternJob) GetOptions() JobOptions {
+	return job.Options
+}
+
+func (job *PatternJob) GetSource() Source {
+	return job.Source
+}
+
 // PatternJobFromJobDefinition converts a JobDefinition into a PatternJob.
 func PatternJobFromJobDefinition(jobDef *JobDefinition, r *Retagger) *PatternJob {
 	job := &PatternJob{
@@ -92,7 +100,7 @@ func PatternJobFromJobDefinition(jobDef *JobDefinition, r *Retagger) *PatternJob
 
 		Options: jobDef.Options,
 	}
-
+	job.Destination = GetDestinationForJob(job, r)
 	return job
 }
 
