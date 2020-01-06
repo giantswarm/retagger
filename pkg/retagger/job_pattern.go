@@ -3,6 +3,7 @@ package retagger
 import (
 	"fmt"
 	"regexp"
+	"strings"
 
 	"github.com/giantswarm/microerror"
 	dockerRegistry "github.com/nokia/docker-registry-client/registry"
@@ -62,7 +63,7 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 			if err != nil {
 				return nil, microerror.Mask(err)
 			}
-			sourceSHA := newDigest.String()
+			sourceSHA := strings.TrimPrefix(newDigest.String(), "sha256:")
 			// Create job with new SHA.
 			j := SingleJob{
 
