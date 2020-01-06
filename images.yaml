@@ -100,6 +100,7 @@
     customImages:
     - tagSuffix: giantswarm
       dockerfileOptions:
+      - USER root
       - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
       - USER giantswarm
 - name: gcr.io/heptio-images/kube-conformance
