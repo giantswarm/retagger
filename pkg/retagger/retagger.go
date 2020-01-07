@@ -24,7 +24,7 @@ type Retagger struct {
 	jobs         []JobDefinition
 	compiledJobs []SingleJob
 
-	CurrentTags map[string]map[string]registry.QuayTag
+	currentTags map[string]map[string]registry.QuayTag
 }
 
 // New creates a new instance of Retagger based on the given Config.
@@ -40,14 +40,14 @@ func New(config Config) (*Retagger, error) {
 		logger:      config.Logger,
 		registry:    config.Registry,
 		dryrun:      config.DryRun,
-		CurrentTags: map[string]map[string]registry.QuayTag{},
+		currentTags: map[string]map[string]registry.QuayTag{},
 	}
 	return r, nil
 }
 
 // GetTagDetails retrieves and caches the map of tag name: tag details for the given image.
-func (r *Retagger) GetTagDetails(image string) (map[string]registry.QuayTag, error) {
-	tagMap, exists := r.CurrentTags[image]
+func (r *Retagger) getTagDetails(image string) (map[string]registry.QuayTag, error) {
+	tagMap, exists := r.currentTags[image]
 	if exists {
 		return tagMap, nil
 	}
@@ -57,7 +57,7 @@ func (r *Retagger) GetTagDetails(image string) (map[string]registry.QuayTag, err
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-	r.CurrentTags[image] = tagMap
+	r.currentTags[image] = tagMap
 	return tagMap, nil
 }
 

@@ -46,17 +46,15 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 	}
 
 	// Get SHA/Tag pairs from our quay registry.
-	quayTagMap, err := r.GetTagDetails(job.Destination.Image)
+	quayTagMap, err := r.getTagDetails(job.Destination.Image)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	jobs := []SingleJob{}
+	var jobs []SingleJob
 
 	for _, match := range matches {
-
 		_, exists := quayTagMap[match]
-
 		if !exists {
 			// Tag is new - get SHA and tag it.
 			newDigest, err := externalRegistry.ManifestDigest(job.Source.FullImageName, match)
@@ -119,7 +117,7 @@ func getExternalTagMatches(r *dockerRegistry.Registry, image string, pattern str
 	}
 
 	// Find tags matching our configured pattern.
-	matches := []string{}
+	var matches []string
 	for _, t := range externalRegistryTags {
 		if regex.MatchString(t) {
 			matches = append(matches, t)

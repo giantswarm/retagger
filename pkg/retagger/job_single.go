@@ -9,11 +9,9 @@ import (
 
 // SingleJob is a concrete job which can be executed.
 type SingleJob struct {
-	Source Source
-
+	Source      Source
 	Destination Destination
-
-	Options JobOptions
+	Options     JobOptions
 }
 
 // Compile wraps this job in an array to keep consistency with the CompilableJob interface.
@@ -42,7 +40,6 @@ func (job *SingleJob) Execute(r *Retagger) error {
 
 // ShouldRetag examines the state of the job and the given Retagger's registry and returns whether the job should be run.
 func (job *SingleJob) ShouldRetag(r *Retagger) (bool, error) {
-
 	tagExists, err := r.registry.CheckImageTagExists(job.Destination.Image, job.Destination.Tag)
 	if err != nil {
 		return false, microerror.Mask(err)

@@ -10,7 +10,7 @@ import (
 func (r *Retagger) CompileJobs() error {
 	r.logger.Log("level", "debug", "message", fmt.Sprintf("compiling %d job definitions", len(r.jobs)))
 
-	compiledJobs := []SingleJob{}
+	var compiledJobs []SingleJob
 	for _, j := range r.jobs {
 		compiled, err := j.Compile(r)
 		if err != nil {

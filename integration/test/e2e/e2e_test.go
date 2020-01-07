@@ -45,10 +45,31 @@ func TestE2e(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	CheckImageExistOrFail(t, r, "retagger-e2e", "2.6")
-	CheckImageExistOrFail(t, r, "retagger-e2e", "3.7")
-	CheckImageExistOrFail(t, r, "retagger-e2e", "3.9")
-	CheckImageExistOrFail(t, r, "retagger-e2e", "3.9-giantswarm")
+	CheckImageDoesNotExistOrFail(t, r, "retagger-e2e", "2.5")
+
+	shouldExist := map[string]struct {
+		image string
+		tag   string
+	}{
+		"2.6 exists":               {image: "retagger-e2e", tag: "2.6"},
+		"3.7 exists":               {image: "retagger-e2e", tag: "3.7"},
+		"3.9 exists":               {image: "retagger-e2e", tag: "3.9"},
+		"3.9 exists tag overriden": {image: "retagger-e2e", tag: "3.9-giantswarm"},
+	}
+
+	for _, test := range shouldExist {
+		CheckImageExistOrFail(t, r, test.image, test.tag)
+	}
+}
+
+func CheckImageDoesNotExistOrFail(t *testing.T, r *registry.Registry, image, tag string) {
+	ok, err := r.CheckImageTagExists(image, tag)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if ok {
+		t.Fatalf("Image %s exists, but should not.", images.Name(image, tag))
+	}
 }
 
 func CheckImageExistOrFail(t *testing.T, r *registry.Registry, image, tag string) {
