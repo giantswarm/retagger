@@ -41,6 +41,10 @@
     - tagSuffix: giantswarm
       dockerfileOptions:
       - EXPOSE 1053
+- name: curlimages/curl
+  tags:
+  - sha: 533cc13b5e395fd9203d68496603ed94fd01af959605523c770446986f38c874
+    tag: 7.67.0
 - name: dduportal/bats
   tags:
   - sha: b2d533b27109f7c9ea1e270e23f212c47906346f9cffaa4da6da48ed9d8031da
