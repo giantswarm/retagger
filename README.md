@@ -29,8 +29,13 @@ will become
     quay.io/giantswarm/bar:first-version
     registry-intl.cn-shanghai.aliyuncs.com/giantswarm/bar:first-version
 
-By relying on SHAs for pulling we make sure to get exactly the image version we
-expect.
+Images can be defined using their SHA or using a tag pattern.
+
+If using a SHA, the exact image version is pulled from the source repository, pushed to Quay, and tagged with the given tag.
+
+If using a pattern, all tags in the original repository are compared against the pattern.
+If a matching tag is found, the image at that tag is pulled and retagged in Quay with the same tag
+(e.g. `alpine:9.99` matches pattern `9.[0-9]*` --> retagged as `quay.io/giantswarm/alpine:9.99`).
 
 Besides avoiding manual work, we do this for accountability and reproducability.
 Changes in the image configuration are tracked in the repo. `retagger` execution
@@ -53,20 +58,38 @@ Here is an example entry:
     - tagSuffix: giantswarm
       dockerfileOptions:
       - EXPOSE 1053
+- name: k8s.gcr.io/hyperkube
+  tags:
+  - sha: 29590ae7991517b214a9239349ee1cc803a22f2a36279612a52caa2bc8673ff0
+    tag: v1.16.3
+  patterns:
+    - pattern: '\A(v1.17.[0-9]+)(-rc.[0-9.]+)*\z'  # Match any v1.17.x or v1.17.x-rc.x
+    - pattern: '\A(v[0-9.]+)\z'                    # Match any vx.x.x version tag, excluding alphas, rcs, etc.
 ```
 
 What the attributes mean:
 
-- `name`: The image name to be used with `docker pull`, without a tag
-- `comment` (optional): Allows to add helpful information to the entry
-- `tags`: List of image versions
-- `tags[].sha`: The SHA describing the version to pull from the source registry
-- `tags[].tag`: The image tag to apply in the target registry
+- `name`: The image name to be used with `docker pull`, without a tag.
+- `comment` (optional): Allows adding helpful information to the entry.
+- `overrideRepoName` (optional): If set, use this repository name on Quay instead of the original repo name.
+- `tags`: List of image versions.
+- `tags[].sha`: The SHA describing the version to pull from the source registry.
+- `tags[].tag`: The image tag to apply in the target registry.
 - `tags[].customImages[]`: Custom images definition with original tag as base.
 - `tags[].customImages[].tagSuffix`: Tag suffix for custom image build.
 - `tags[].customImages[].dockerfileOptions[]`: The list of Dockerfile options, used to override base image
+- `patterns[]`: List of patterns. New tags matching one of these patterns will be automatically retagged.
+- `patterns[].pattern`: Valid Go regular expression to match tags.
+- `patterns[].customImages[]`: Custom images as explained above.
+
+An image may define both `tags` and `patterns`. 
+A `pattern` may also include all optional features of a `tag`, such as a `tagSuffix` or `dockerfileOptions`.
 
 ## Adding an image
+
+Images can be added by SHA or by pattern. It is preferable to use a SHA whenever possible as this avoids tagging unnecessary images and guarantees a certain known image. Patterns should be used when automation is in place to handle new images, and not simply used as a convenience.
+
+### By SHA
 
 To add an image to the configuration file `images.yaml`, find out the SHA of the
 image like this (where `image:tag` has to be replaced with the real image name
@@ -82,6 +105,29 @@ In cases where the original image has been updated but the tag stayed the same,
 add a version counter to the tag. For example, if the tag `v1.5.2` was updated,
 the target tag should be `v1.5.2-2`, `v1.5.2-3`, and so on.
 
+### By Pattern
+
+**Warning:** Run `retagger` locally with `--dry-run` _before_ pushing your pattern to the repository to make sure it does what you want.
+
+It is also possible to watch and automatically retag new tagged releases in the upstream repository.
+To do this, specify a pattern for the image in the `images.yaml` configuration file.
+Each pattern must be a valid Go regular expression (you can try it out [here](https://regex-golang.appspot.com/assets/html/index.html)),
+and should match as little as possible to avoid retagging huge numbers of useless images.
+
+It is recommended that every pattern starts with `\A` (start of string) and ends with `\z` (end of string), and uses as few wildcards as necessary to match the desired range of tags. Use patterns carefully, since broad regular expressions can match many tags.
+
+For example, at the time of this writing:
+
+```yaml
+- name: k8s.gcr.io/hyperkube
+  patterns:
+    - pattern: '\A(v1.17.[0-9]+)(-rc.[0-9.]+)*\z'       # Match any v1.17.x or v1.17.x-rc.x              -- matches 3 tags
+    - pattern: '\A(v[0-9.]+)\z'                         # Match any vx.x.x tag, excluding alphas, etc.   -- matches 193 tags
+    - pattern: '\A(v[0-9.]+)(-(alpha|beta)[0-9.]+)*\z'  # Match any version, including alphas and betas  -- matches 485 tags
+```
+
+### Execution
+
 Please provide a PR with the change. Once merged into master, CI will execute
 `retagger` to push any new images.
 
@@ -89,26 +135,49 @@ Please provide a PR with the change. Once merged into master, CI will execute
 
 ## Background and details
 
-- `retagger` checks if an image and tag is already available in the target
+- `retagger` checks if an image and tag are already available in the target
 registry, to avoid unnecessary pushing.
 
 - `retagger` currently only supports public images as a source.
 
 - In Quay, a repository must exist for the image before retagger can push an image.
 
-The `retagger` works inside a CI build. On merges to master, the binary is executed. The workflow is to add a new image / sha tag pair in a PR, review it, and then merge. The `retagger` will take care that the image is handled. Users will still need to create repositories in the registry.
+The `retagger` works inside a CI build. On merges to master, the binary is executed. The workflow is to add a new image / sha tag pair or pattern in a PR, review it, and then merge. The `retagger` will take care that the image is handled. Users will still need to create repositories in the registry.
 
-### Running
+### Usage
 
-The environment variables `REGISTRY`, `REGISTRY_ORGANISATION`, `REGISTRY_USERNAME`, and `REGISTRY_PASSWORD` need to be set.
+The environment variables `REGISTRY`, `REGISTRY_ORGANISATION`, `REGISTRY_USERNAME`, and `REGISTRY_PASSWORD` need to be set (or passed as arguments).
 
 Executing
 
-```
+```console
 ./retagger
 ```
 
 will iterate through the defined images, pull them from a public registry, and push them to the specified private registry.
+
+#### Options
+
+```console
+Usage:
+  retagger [flags]
+  retagger [command]
+
+Available Commands:
+  help        Help about any command
+  version     Prints version information.
+
+Flags:
+      --dry-run               if set, will list jobs but not run them
+  -f, --file string           retagger config file to use (default "images.yaml")
+  -h, --help                  help for retagger
+  -r, --host string           Registry hostname (e.g. quay.io)
+  -o, --organization string   organization to tag images for (default "giantswarm")
+  -p, --password string       password to authenticate against registry
+  -u, --username string       username to authenticate against registry
+
+Use "retagger [command] --help" for more information about a command.
+```
 
 ### How to build/test
 

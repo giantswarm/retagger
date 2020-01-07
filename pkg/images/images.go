@@ -9,10 +9,19 @@ type Images []Image
 
 // Image defines the data we process about a docker image.
 type Image struct {
-	Name             string `yaml:"name"`
-	Comment          string `yaml:"comment,omitempty"`
-	OverrideRepoName string `yaml:"overrideRepoName,omitempty"`
-	Tags             []Tag  `yaml:"tags"`
+	Name             string       `yaml:"name"`
+	Comment          string       `yaml:"comment,omitempty"`
+	OverrideRepoName string       `yaml:"overrideRepoName,omitempty"`
+	Patterns         []TagPattern `yaml:"patterns"`
+	Tags             []Tag        `yaml:"tags"`
+}
+
+// TagPattern represents a group of tags defined by a regular expression,
+// and stores some configuration for how to handle this group.
+type TagPattern struct {
+	Pattern      string        `yaml:"pattern"`
+	Tag          string        `yaml:"tag"`
+	CustomImages []CustomImage `yaml:"customImages"`
 }
 
 // Tag represents a specific version of a docker image, represented by a tag

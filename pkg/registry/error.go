@@ -1,9 +1,10 @@
 package registry
 
 import (
+	"strings"
+
 	"github.com/docker/docker/api/types/registry"
 	"github.com/giantswarm/microerror"
-	"strings"
 )
 
 var invalidConfigError = &microerror.Error{
@@ -59,6 +60,15 @@ func IsDockerLoginFailed(response registry.AuthenticateOKBody, err error) error 
 	}
 
 	return nil
+}
+
+var noMorePagesError = &microerror.Error{
+	Kind: "noMorePagesError",
+}
+
+// IsNoMorePages asserts noMorePagesError.
+func IsNoMorePages(err error) bool {
+	return microerror.Cause(err) == noMorePagesError
 }
 
 func IsRepositoryNotFound(err error) bool {

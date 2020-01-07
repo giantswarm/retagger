@@ -2,8 +2,10 @@ package registry
 
 import (
 	"fmt"
+	nurl "net/url"
 	"time"
 
+	dockerRef "github.com/docker/distribution/reference"
 	dockerclient "github.com/docker/docker/client"
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
@@ -107,6 +109,63 @@ func (r *Registry) CheckImageTagExists(image, tag string) (bool, error) {
 	return false, nil
 }
 
+func (r *Registry) DeleteImage(image string, tag string) error {
+	digest, err := r.GetDigest(image, tag)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	err = r.registryClient.DeleteManifest(images.Name(r.organisation, image), digest)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	return nil
+}
+
+func (r *Registry) GetDigest(image string, tag string) (digest.Digest, error) {
+	digest, err := r.registryClient.ManifestV2Digest(images.Name(r.organisation, image), tag)
+	if err != nil {
+		return "", microerror.Mask(err)
+	}
+
+	return digest, nil
+}
+
+// GuessRegistryPath examines the given image string, determines whether it describes a full
+// image path, is hosted on Docker hub, or belongs to the Docker standard library, and returns
+//  a URL representing the full path.
+func (r *Registry) GuessRegistryPath(image string) (*nurl.URL, error) {
+
+	dockerName, err := dockerRef.ParseNormalizedNamed(image)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	url, err := nurl.Parse(fmt.Sprintf("https://%s", dockerName.String()))
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	// The normalized docker reference uses docker.io as the default domain, but this does not redirect API paths,
+	// so we override this host here to point to the API endpoint instead of the default docker backend
+	// https://docker.io -- > registry.hub.docker.com
+	if url.Hostname() == "docker.io" {
+		url.Host = "registry.hub.docker.com"
+	}
+
+	return url, nil
+}
+
+// GetRepositoryFromPathString guesses the full path of an image and returns the organization/image for the image.
+func (r *Registry) GetRepositoryFromPathString(path string) (string, error) {
+	name, err := r.getDockerName(path)
+	if err != nil {
+		return "", err
+	}
+	return dockerRef.FamiliarString(name), nil
+}
+
 func (r *Registry) ListImageTags(image string) ([]string, error) {
 	var tags []string
 	o := func() error {
@@ -130,29 +189,10 @@ func (r *Registry) ListImageTags(image string) ([]string, error) {
 	return tags, nil
 }
 
-func (r *Registry) GetDigest(image string, tag string) (digest.Digest, error) {
-	digest, err := r.registryClient.ManifestV2Digest(images.Name(r.organisation, image), tag)
-	if err != nil {
-		return "", microerror.Mask(err)
-	}
-
-	return digest, nil
-}
-
-func (r *Registry) DeleteImage(image string, tag string) error {
-	digest, err := r.GetDigest(image, tag)
-	if err != nil {
-		return microerror.Mask(err)
-	}
-
-	err = r.registryClient.DeleteManifest(images.Name(r.organisation, image), digest)
-	if err != nil {
-		return microerror.Mask(err)
-	}
-
-	return nil
-}
-
 func (r *Registry) RetaggedName(image string) string {
 	return images.RetaggedName(r.host, r.organisation, image)
+}
+
+func (r *Registry) getDockerName(image string) (dockerRef.Named, error) {
+	return dockerRef.ParseNormalizedNamed(image)
 }

@@ -25,6 +25,5 @@ func FromFile(filePath string) (Images, error) {
 			return nil, microerror.Maskf(err, "could not parse YAML file %s: %v", filePath)
 		}
 	}
-
 	return images, nil
 }

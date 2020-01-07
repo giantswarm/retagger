@@ -76,6 +76,7 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 		c := retagger.Config{
 			Logger:   r.logger,
 			Registry: newRegistry,
+			DryRun:   r.flag.DryRun,
 		}
 		newRetagger, err = retagger.New(c)
 		if err != nil {
@@ -88,6 +89,11 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 		return microerror.Mask(err)
 	}
 	r.logger.Log("level", "debug", "message", fmt.Sprintf("loaded %d jobs from YAML", n))
+
+	err = newRetagger.CompileJobs()
+	if err != nil {
+		return microerror.Mask(err)
+	}
 
 	err = newRetagger.ExecuteJobs()
 	if err != nil {
