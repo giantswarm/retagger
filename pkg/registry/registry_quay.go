@@ -13,6 +13,12 @@ import (
 
 // This code is largely lifted from nokia/docker-registry-client. It provides Quay-specific API behavior needed by retagger.
 
+// RequestOptions wraps the url and optional query parameters for the HTTP request.
+type RequestOptions struct {
+	URL   string
+	Query nurl.Values
+}
+
 // TagsResponse wraps a response from the Quay tags endpoint.
 type TagsResponse struct {
 	Tags []QuayTag `json:"tags"`
@@ -46,11 +52,20 @@ var nextLinkRE = regexp.MustCompile(`^ *<?([^;>]+)>? *(?:;[^;]*)*; *rel="?next"?
 func (r *Registry) GetQuayTagsWithDetails(image string) (tags []QuayTag, err error) {
 	url := fmt.Sprintf("https://%s/api/v1/repository/%s/tag/", r.host, images.Name(r.organisation, image))
 
+	// The Quay API includes deleted tags by default. Limit our request to active tags.
+	q := nurl.Values{}
+	q.Set("onlyActiveTags", "true")
+
+	req := RequestOptions{
+		URL:   url,
+		Query: q,
+	}
+
 	var response TagsResponse
 	for {
 		r.logger.Log("level", "debug", "message", fmt.Sprintf("requesting registry tags from %s", url))
 
-		url, err = r.getPaginatedJSON(url, &response)
+		url, err = r.getPaginatedJSON(req, &response)
 		if err != nil {
 			if IsNoMorePages(err) {
 				tags = append(tags, response.Tags...)
@@ -81,8 +96,24 @@ func (r *Registry) GetQuayTagMap(image string) (map[string]QuayTag, error) {
 // getPaginatedJSON accepts a string and a pointer, and returns the
 // next page URL while updating pointed-to variable with a parsed JSON
 // value. When there are no more pages it returns `ErrNoMorePages`.
-func (r *Registry) getPaginatedJSON(url string, response interface{}) (string, error) {
-	resp, err := r.registryClient.Client.Get(url)
+func (r *Registry) getPaginatedJSON(request RequestOptions, response interface{}) (string, error) {
+	req, err := http.NewRequest("GET", request.URL, nil)
+	if err != nil {
+		return "", err
+	}
+
+	// If caller supplied additional query parameters, add them to the request
+	if request.Query != nil {
+		q := req.URL.Query()
+		for key, vals := range request.Query {
+			for _, v := range vals {
+				q.Add(key, v)
+			}
+		}
+		req.URL.RawQuery = q.Encode()
+	}
+
+	resp, err := r.registryClient.Client.Do(req)
 	if err != nil {
 		return "", err
 	}
