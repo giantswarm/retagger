@@ -193,6 +193,10 @@
   tags:
   - sha: 1d929c3de13d97fa351b2a76e48f306be6080d697cbbc4c1b6b6fb407f5d9a5e
     tag: 2.2.3
+- name: jollinshead/journald-cloudwatch-logs
+  tags:
+  - sha: eea825329e678c5e259ffde8e07ffc1223e851f0018fbbb50b607f3fb5beefdb
+    tag: 0.1
 - name: k8s.gcr.io/addon-resizer
   tags:
   - sha: a31822f30e947885d038812f4a5a5675e72f92c06cef17b1989c80426aa89012
