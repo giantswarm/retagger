@@ -219,7 +219,8 @@
     tag: v1.16.3
 - name: k8s.gcr.io/hyperkube
   patterns:
-  - pattern: '\A(v1.17.[0-9]+)(-rc.[0-9.]+)*\z'  # Match any v1.17.x or v1.17.x-rc.x
+  - pattern: '\A(v1.17.[0-9]+)\z'                # Match any v1.17.x
+  - pattern: '\A(v1.18.[0-9]+)(-rc.[0-9.]+)*\z'  # Match any v1.18.x or v1.18.x-rc.x
   tags:
   - sha: 94adb47a41838bee7deee7e09d07a7093bdba517d980c66115cc2eeb675090be
     tag: v1.14.6
