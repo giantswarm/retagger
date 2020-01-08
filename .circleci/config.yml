@@ -101,27 +101,27 @@ jobs:
           name: Execute retagger
           command: ./retagger -r ${REGISTRY} -o ${REGISTRY_ORGANISATION} -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD}
 
-build_and_retag:  &build_e2e:
-    jobs:
-      - build
-      - e2eQuay:
-          filters:
-            branches:
-              ignore: master
-          requires:
-            - build
-      - retagQuay:
-          filters:
-            branches:
-              only: master
-          requires:
-            - build
-      - retagAliyun:
-          filters:
-            branches:
-              only: master
-          requires:
-            - build
+build_and_retag:  &build_and_retag
+  jobs:
+    - build
+    - e2eQuay:
+        filters:
+          branches:
+            ignore: master
+        requires:
+          - build
+    - retagQuay:
+        filters:
+          branches:
+            only: master
+        requires:
+          - build
+    - retagAliyun:
+        filters:
+          branches:
+            only: master
+        requires:
+          - build
 
 workflows:
   version: 2
