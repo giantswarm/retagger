@@ -37,6 +37,22 @@ type QuayTag struct {
 	StartTS        int64  `json:"start_ts"`
 }
 
+func (t *QuayTag) GetName() string {
+	return t.Name
+}
+
+func (t *QuayTag) GetImageID() string {
+	return t.ImageID
+}
+
+func (t *QuayTag) GetDigest() string {
+	return t.ManifestDigest
+}
+
+func (t *QuayTag) GetSize() int64 {
+	return t.Size
+}
+
 // Matches an RFC 5988 (https://tools.ietf.org/html/rfc5988#section-5)
 // Link header. For example,
 //
@@ -50,6 +66,11 @@ var nextLinkRE = regexp.MustCompile(`^ *<?([^;>]+)>? *(?:;[^;]*)*; *rel="?next"?
 // GetQuayTagsWithDetails fetches tags for the given image including extra information defined in a QuayTag
 // This uses the Quay API, so assumes a Quay host. Other hosts are likely to fail.
 func (r *Registry) GetQuayTagsWithDetails(image string) (tags []QuayTag, err error) {
+	if r.host == "registry-intl.cn-shanghai.aliyuncs.com" {
+		// Get Aliyun tags instead
+		return r.GetAliyunTagsWithDetails(image)
+	}
+
 	url := fmt.Sprintf("https://%s/api/v1/repository/%s/tag/", r.host, images.Name(r.organisation, image))
 
 	// The Quay API includes deleted tags by default. Limit our request to active tags.

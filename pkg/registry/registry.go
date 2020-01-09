@@ -16,7 +16,16 @@ import (
 	"github.com/giantswarm/retagger/pkg/images"
 )
 
+type Tag interface {
+	GetName() string
+	GetImageID() string
+	GetDigest() string
+	GetSize() int64
+}
+
 type Config struct {
+	AccessKey    string
+	AccessSecret string
 	Host         string
 	Organisation string
 	Password     string
@@ -34,6 +43,8 @@ type Registry struct {
 	organisation string
 	password     string
 	username     string
+	accessKey    string
+	accessSecret string
 }
 
 func New(config Config) (*Registry, error) {
@@ -81,6 +92,8 @@ func New(config Config) (*Registry, error) {
 	}
 
 	qr := &Registry{
+		accessKey:    config.AccessKey,
+		accessSecret: config.AccessSecret,
 		host:         config.Host,
 		organisation: config.Organisation,
 		password:     config.Password,

@@ -46,7 +46,7 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 	}
 
 	// Get SHA/Tag pairs from our quay registry.
-	quayTagMap, err := r.getTagDetails(job.Destination.Image)
+	existingTagMap, err := r.getTagDetails(job.Destination.Image)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -54,7 +54,7 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 	var jobs []SingleJob
 
 	for _, match := range matches {
-		_, exists := quayTagMap[match]
+		_, exists := existingTagMap[match]
 		if !exists {
 			// Tag is new - get SHA and tag it.
 			newDigest, err := externalRegistry.ManifestDigest(job.Source.FullImageName, match)

@@ -6,6 +6,8 @@ import (
 )
 
 type flag struct {
+	AccessKey    string
+	AccessSecret string
 	ConfigFile   string
 	Host         string
 	Organization string
@@ -20,6 +22,8 @@ func (f *flag) Init(cmd *cobra.Command) {
 	cmd.Flags().StringVarP(&f.Organization, "organization", "o", "giantswarm", "organization to tag images for")
 	cmd.Flags().StringVarP(&f.Username, "username", "u", "", "username to authenticate against registry")
 	cmd.Flags().StringVarP(&f.Password, "password", "p", "", "password to authenticate against registry")
+	cmd.Flags().StringVarP(&f.AccessKey, "access-key", "", "", "access key for registry api")
+	cmd.Flags().StringVarP(&f.AccessSecret, "access-secret", "", "", "access secret for registry api")
 	cmd.Flags().BoolVar(&f.DryRun, "dry-run", false, "if set, will list jobs but not run them")
 }
 

@@ -53,6 +53,8 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 	var newRegistry *registry.Registry
 	{
 		c := registry.Config{
+			AccessKey:    r.flag.AccessKey,
+			AccessSecret: r.flag.AccessSecret,
 			Host:         r.flag.Host,
 			Organisation: r.flag.Organization,
 			Password:     r.flag.Password,
