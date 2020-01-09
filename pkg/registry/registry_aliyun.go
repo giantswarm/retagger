@@ -3,6 +3,7 @@ package registry
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"strings"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
@@ -48,7 +49,7 @@ func (t *AliyunTag) GetSize() int64 {
 }
 
 func (r *Registry) GetAliyunTagsWithDetails(image string) (tags []QuayTag, err error) {
-	crClient, err := cr.NewClientWithAccessKey("cn-shanghai", r.accessKey, r.accessSecret)
+	crClient, err := cr.NewClientWithAccessKey(r.aliyunRegion, r.accessKey, r.accessSecret)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -64,7 +65,7 @@ func (r *Registry) GetAliyunTagsWithDetails(image string) (tags []QuayTag, err e
 	}
 
 	tagRequest := cr.CreateGetRepoTagsRequest()
-	tagRequest.Domain = "cr.cn-shanghai.aliyuncs.com"
+	tagRequest.Domain = fmt.Sprintf("cr.%s.aliyuncs.com", r.aliyunRegion)
 	tagRequest.RepoNamespace = "giantswarm"
 	tagRequest.RepoName = shortName
 
