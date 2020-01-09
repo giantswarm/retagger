@@ -1,0 +1,6 @@
+{
+	"baz": "zap",
+	"caller": "github.com/giantswarm/micrologger/logger_test.go:116",
+	"foo": "bar",
+	"time": "2019-10-08T20:04:13.490819+00:00"
+}

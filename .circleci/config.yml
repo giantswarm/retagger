@@ -99,7 +99,7 @@ jobs:
 
       - run:
           name: Execute retagger
-          command: ./retagger -r ${REGISTRY} -o ${REGISTRY_ORGANISATION} -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD}
+          command: ./retagger -r ${REGISTRY} -o ${REGISTRY_ORGANISATION} -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD} --access-key ${ALIYUN_ACCESS_KEY} --access-secret ${ALIYUN_ACCESS_SECRET}
 
 build_and_retag:  &build_and_retag
   jobs:
