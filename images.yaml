@@ -271,6 +271,14 @@
     tag: 0.6.0
   - sha: 8791f0584158a582c19c922b0f3101eb76f1e2cd8a6a2d09a8eff1172c7911bc
     tag: 0.6.2
+- name: mysql
+  tags:
+  - sha: c8f03238ca1783d25af320877f063a36dbfce0daa56a7b4955e6c6e05ab5c70b
+    tag: 5.7.14
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - USER mysql
 - name: nginx
   tags:
   - sha: 0fb320e2a1b1620b4905facb3447e3d84ad36da0b2c8aa8fe3a5a81d1187b884
