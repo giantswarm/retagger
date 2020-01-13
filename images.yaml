@@ -18,7 +18,7 @@
       - USER giantswarm
 - name: aquasec/kube-bench
   patterns:
-  - pattern: '\A(v0.2.[0-9])\z'  # Match any v0.2.x
+  - pattern: '\A(0.2.[0-9])\z'  # Match any 0.2.x
   tags:
   - sha: dbd60b7c43846daa4285c037fbb8894f87f8f9113c27dbdd684eb7a6e0b0a0f2
     tag: 0.2.2
