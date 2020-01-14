@@ -57,7 +57,7 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 		_, exists := existingTagMap[match]
 		if !exists {
 			// Tag is new - get SHA and tag it.
-			newDigest, err := externalRegistry.ManifestDigest(job.Source.FullImageName, match)
+			newDigest, err := externalRegistry.ManifestV2Digest(job.Source.FullImageName, match)
 			if err != nil {
 				return nil, microerror.Mask(err)
 			}
