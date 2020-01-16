@@ -20,6 +20,7 @@ jobs:
       - architect/go-build:
           name: go-build-retagger
           binary: retagger
+          os: linux
           filters:
             # Trigger job also on git tag.
             tags:
