@@ -18,14 +18,8 @@ jobs:
             images.yaml
 
       - architect/go-build:
-          name: go-build-retagger
           binary: retagger
           os: linux
-          filters:
-            # Trigger job also on git tag.
-            tags:
-              only: /^v.*/
-
 
       - run:
           name: compile e2e test
