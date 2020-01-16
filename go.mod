@@ -1,0 +1,43 @@
+module github.com/giantswarm/retagger
+
+go 1.13
+
+require (
+	github.com/Microsoft/go-winio v0.4.14
+	github.com/aliyun/alibaba-cloud-sdk-go v1.60.324
+	github.com/cenkalti/backoff v2.2.1+incompatible
+	github.com/containerd/containerd v1.3.2
+	github.com/docker/distribution v2.7.1+incompatible
+	github.com/docker/docker v1.4.2-0.20200103225628-a9507c6f7662
+	github.com/docker/go-connections v0.4.0
+	github.com/docker/go-units v0.4.0
+	github.com/docker/libtrust v0.0.0-20160708172513-aabc10ec26b7
+	github.com/giantswarm/backoff v0.0.0-20190913091243-4dd491125192
+	github.com/giantswarm/microerror v0.0.0-20191011121515-e0ebc4ecf5a5
+	github.com/giantswarm/micrologger v0.0.0-20191014091141-d866337f7393
+	github.com/go-kit/kit v0.6.0
+	github.com/go-logfmt/logfmt v0.5.0
+	github.com/go-stack/stack v1.8.0
+	github.com/gogo/protobuf v1.3.1
+	github.com/golang/protobuf v1.3.2
+	github.com/inconshreveable/mousetrap v1.0.0
+	github.com/jmespath/go-jmespath v0.0.0-20151117175822-3433f3ea46d9
+	github.com/json-iterator/go v1.1.9
+	github.com/juju/errgo v0.0.0-20140925100237-08cceb5d0b53
+	github.com/konsorten/go-windows-terminal-sequences v1.0.2
+	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
+	github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742
+	github.com/nokia/docker-registry-client v0.0.0-20190305095957-e91f10057c5b
+	github.com/opencontainers/go-digest v1.0.0-rc1
+	github.com/opencontainers/image-spec v1.0.1
+	github.com/pkg/errors v0.8.1
+	github.com/sirupsen/logrus v1.4.2
+	github.com/spf13/cobra v0.0.5
+	github.com/spf13/pflag v1.0.5
+	golang.org/x/net v0.0.0-20191209160850-c0dbc17a3553
+	golang.org/x/sys v0.0.0-20200107162124-548cf772de50
+	google.golang.org/genproto v0.0.0-20200108215221-bd8f9a0ef82f
+	google.golang.org/grpc v1.26.0
+	gopkg.in/ini.v1 v1.51.1
+	gopkg.in/yaml.v2 v2.2.7
+)
