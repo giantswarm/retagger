@@ -1,4 +1,7 @@
-version: 2
+version: 2.1
+orbs:
+  architect: giantswarm/architect@0.4.5
+
 jobs:
   build:
     machine: true
@@ -14,16 +17,14 @@ jobs:
             -d '{extends: default, rules: {line-length: {max: 200}, document-start: disable, indentation: {spaces: 0}}}' \
             images.yaml
 
-      - run:
-          name: Install architect
-          command: |
-            wget -q $(curl -sS -H "Authorization: token $RELEASE_TOKEN" https://api.github.com/repos/giantswarm/architect/releases/latest | grep browser_download_url | head -n 1 | cut -d '"' -f 4)
-            chmod +x ./architect
-            ./architect version
+      - architect/go-build:
+          name: go-build-retagger
+          binary: retagger
+          filters:
+            # Trigger job also on git tag.
+            tags:
+              only: /^v.*/
 
-      - run:
-          name: architect build
-          command: ./architect build
 
       - run:
           name: compile e2e test
