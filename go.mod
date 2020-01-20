@@ -5,7 +5,7 @@ go 1.13
 require (
 	github.com/Azure/go-ansiterm v0.0.0-20170929234023-d6e3b3328b78 // indirect
 	github.com/Microsoft/go-winio v0.4.14 // indirect
-	github.com/aliyun/alibaba-cloud-sdk-go v1.60.324
+	github.com/aliyun/alibaba-cloud-sdk-go v1.60.345
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/containerd/containerd v1.3.2 // indirect
 	github.com/docker/distribution v2.7.1+incompatible
