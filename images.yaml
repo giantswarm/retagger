@@ -209,20 +209,8 @@
     tag: "1.8.7"
 - name: k8s.gcr.io/cluster-autoscaler
   tags:
-  - sha: 7ff5a60304b344f2f29c804c7253632bbc818794f6932236a56db107a6a8f5af
-    tag: v1.13.1
-  - sha: a4e5a8e6d4dc011e6e7a104d6abdfda56274b90357ee9f6e42cc22b70482420b
-    tag: v1.14.0
-  - sha: 19f2bc51a1a3cd2753fddb9c2905c8c510aab6e24e23200841abca712ff7578d
-    tag: v1.14.3
-  - sha: eea97bdf90e3f6074af2fdeb3df40969c44a721dc8f4d148844de85fe93508ff
-    tag: v1.15.1
-  - sha: 5a80893ea1a16a066889ab06934cfa3996d87a7232b10554de4ed8788b1fa212
-    tag: v1.15.2
-  - sha: 8d8664ac086f5dcff5b95874ef8b1dfaab6eb87477bbaea9a2e19dfac063c521
-    tag: v1.16.2
-  - sha: 6b887823b1fd2789aa926f7bd3d5efa5c3bec5a194f72da121c292d95204a3b7
-    tag: v1.16.3
+  - sha: 69413a60c3764eb153098fb53ae1e5f0a9652cd6ccb1b3450d37cb9390d89ab3
+    tag: v1.17.0
 - name: k8s.gcr.io/hyperkube
   patterns:
   - pattern: '\A(v1.15.[1-9][0-9]*)\z'                # Match any v1.15.x
