@@ -209,6 +209,8 @@
     tag: "1.8.7"
 - name: k8s.gcr.io/cluster-autoscaler
   tags:
+  - sha: 06e09e19618609e2b90b9fbdf28786e26772c63bd76c2a156f52dfaafb9487dd
+    tag: v1.15.4
   - sha: 69413a60c3764eb153098fb53ae1e5f0a9652cd6ccb1b3450d37cb9390d89ab3
     tag: v1.17.0
 - name: k8s.gcr.io/hyperkube
