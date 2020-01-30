@@ -51,10 +51,22 @@ func TestE2e(t *testing.T) {
 		image string
 		tag   string
 	}{
-		"2.6 exists":               {image: "retagger-e2e", tag: "2.6"},
-		"3.7 exists":               {image: "retagger-e2e", tag: "3.7"},
-		"3.9 exists":               {image: "retagger-e2e", tag: "3.9"},
-		"3.9 exists tag overriden": {image: "retagger-e2e", tag: "3.9-giantswarm"},
+		"2.6 exists": {
+			image: "retagger-e2e",
+			tag:   "2.6",
+		},
+		"3.7 exists": {
+			image: "retagger-e2e",
+			tag:   "3.7",
+		},
+		"3.9 exists": {
+			image: "retagger-e2e",
+			tag:   "3.9",
+		},
+		"3.9 exists tag overriden": {
+			image: "retagger-e2e",
+			tag:   "3.9-giantswarm",
+		},
 	}
 
 	for _, test := range shouldExist {

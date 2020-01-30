@@ -2,9 +2,9 @@ package retagger
 
 import (
 	"fmt"
-	"regexp"
 	"strings"
 
+	"github.com/Masterminds/semver/v3"
 	"github.com/giantswarm/microerror"
 	dockerRegistry "github.com/nokia/docker-registry-client/registry"
 )
@@ -104,8 +104,8 @@ func PatternJobFromJobDefinition(jobDef *JobDefinition, r *Retagger) *PatternJob
 
 // getExternalTagMatches searches the given docker registry for tags matching the given pattern.
 func getExternalTagMatches(r *dockerRegistry.Registry, image string, pattern string) ([]string, error) {
-	// Make sure our pattern is valid.
-	regex, err := regexp.Compile(pattern)
+	// Make sure our constraint is valid.
+	c, err := semver.NewConstraint(pattern)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -119,7 +119,12 @@ func getExternalTagMatches(r *dockerRegistry.Registry, image string, pattern str
 	// Find tags matching our configured pattern.
 	var matches []string
 	for _, t := range externalRegistryTags {
-		if regex.MatchString(t) {
+		v, err := semver.NewVersion(t)
+		if err != nil {
+			continue
+		}
+		m, _ := c.Validate(v) // We do not care why the validation might fail.
+		if m {
 			matches = append(matches, t)
 		}
 	}
