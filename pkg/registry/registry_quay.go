@@ -6,6 +6,7 @@ import (
 	"net/http"
 	nurl "net/url"
 	"regexp"
+	"time"
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/retagger/pkg/images"
@@ -84,6 +85,8 @@ func (r *Registry) GetQuayTagsWithDetails(image string) (tags []QuayTag, err err
 
 	var response TagsResponse
 	for {
+		time.Sleep(5 * time.Second) // Dummy sleep for now if request spam originates here.
+
 		r.logger.Log("level", "debug", "message", fmt.Sprintf("requesting registry tags from %s", url))
 
 		url, err = r.getPaginatedJSON(req, &response)
