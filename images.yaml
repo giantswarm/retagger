@@ -22,10 +22,7 @@
     tag: 1.3.0
 - name: aquasec/kube-bench
   patterns:
-  - pattern: '>= 0.2'  # Match any 0.2.x
-  tags:
-  - sha: dbd60b7c43846daa4285c037fbb8894f87f8f9113c27dbdd684eb7a6e0b0a0f2
-    tag: 0.2.2
+  - pattern: '>= 0.2'
 - name: bitnami/redis
   overrideRepoName: bitnami-redis
   tags:
@@ -166,31 +163,17 @@
   - sha: 070dcc29fb5b34cdcc982394ead57f598160fd61bd8daee4b2a5f39ea37bd7a0
     tag: v2.6.2-v1.6.0
 - name: golang
-  tags:
-  - sha: 908ea6b956394d7a7006453e6a16011a6f86fd47996f2ccc32711f1eeff6b9fc
-    tag: 1.11.6
-  - sha: 35200a727dc44175d9221a6ece398eed7e4b8e17cb7f0d72b20bf2d5cf9dc00d
-    tag: 1.12.6
-  - sha: fb310c8e01bcfd4e83b43f06e339de841489cb56b2da4411695c60f84f66fb99
-    tag: 1.12.9
-  - sha: 1b1246987ecb4939d9bd20f74eab25e8e2ad819aceea2d6b59869c82f85ef1de
-    tag: 1.13.1
-  - sha: 2293e952c79b8b3a987e1e09d48b6aa403d703cef9a8fa316d30ba2918d37367
-    tag: 1.13.1-alpine3.10
+  patterns:
+  - pattern: '>= 1.13.1'
 - name: grafana/grafana
-  tags:
-  - sha: b5098a06dc59d28b11120eab01d8d0147b526a175aa606f9978934b6b2224138
-    tag: 6.0.0
-  - sha: bd55ea2bad17f5016431734b42fdfc202ebdc7d08b6c4ad35ebb03d06efdff69
-    tag: 6.4.3
+  patterns:
+  - pattern: '>= 6.0.0'
 - name: grafana/loki
-  tags:
-  - sha: a325a61abc11c138cc54d4aa0304a2b1052f5a92d1ae8be07e43db62aaf2abc2
-    tag: v1.2.0
+  patterns:
+  - pattern: '>= v1.2.0'
 - name: grafana/promtail
-  tags:
-  - sha: 2f998ec18be2a2dd6d7dfbcae47a62f4ed51ea9bc7101ad4532c4d185d484426
-    tag: v1.2.0
+  patterns:
+  - pattern: '>= v1.2.0'
 - name: jgsqware/fluentd-loki-plugin
   tags:
   - sha: 7dbe2ccfbf2eb7b29367f6a3ee7c0976c3b45e4e21d6363cb43b156c17488259
@@ -204,75 +187,32 @@
   - sha: eea825329e678c5e259ffde8e07ffc1223e851f0018fbbb50b607f3fb5beefdb
     tag: 0.1
 - name: k8s.gcr.io/addon-resizer
-  tags:
-  - sha: 30b3b12e471c534949e12d2da958fdf33848d153f2a0a88565bdef7ca999b5ad
-    tag: "1.8.7"
+  patterns:
+  - pattern: '>= 1.8.7'
 - name: k8s.gcr.io/cluster-autoscaler
-  tags:
-  - sha: 06e09e19618609e2b90b9fbdf28786e26772c63bd76c2a156f52dfaafb9487dd
-    tag: v1.15.4
-  - sha: 69413a60c3764eb153098fb53ae1e5f0a9652cd6ccb1b3450d37cb9390d89ab3
-    tag: v1.17.0
+  patterns:
+  - pattern: '>= v1.15.4'
 - name: k8s.gcr.io/hyperkube
   patterns:
-  - pattern: '>= v1.15 < v1.16'                # Match any v1.15.x
-  - pattern: '>= v1.16 < v1.17'                # Match any v1.16.x
-  - pattern: '>= v1.17 < v1.18'                # Match any v1.17.x
-  - pattern: '>= v1.18 < v1.19'                # Match any v1.18.x
-  tags:
-  - sha: 94adb47a41838bee7deee7e09d07a7093bdba517d980c66115cc2eeb675090be
-    tag: v1.14.6
-  - sha: b04b2aebd3d76e042b017fb5c6a7417525241d7f6cbcd5ed045e02b52e733d11
-    tag: v1.14.8
-  - sha: ab41e58ad0d48301fc5f486ef92e78ac4d0a14f704b8f1744ce2d6c7c7613538
-    tag: v1.14.9
-  - sha: 0facaa61e8cd3368bd29782b5d5c88b0707e930d38bd528a933614001b0b2754
-    tag: v1.14.10
-  - sha: a58aec353b510226bd5afe3efcb611784e9abc7de38c6efb8b10bf08643af9af
-    tag: v1.15.4
-  - sha: c0a2b93f543177574551262ba1cf9f005fa4d2a046c731070f1d39f829d50e5f
-    tag: v1.15.5
-  - sha: 87cf32fc98ae6d85ff5006c37e3e3373651fcc2258bd1f4f15449e2da90c3288
-    tag: v1.15.6
-  - sha: 29590ae7991517b214a9239349ee1cc803a22f2a36279612a52caa2bc8673ff0
-    tag: v1.16.3
-  - sha: eb89f6e11b2ce03f2bf135d4a447b313972985ef2c8b92a2117a352efb9820dc
-    tag: v1.17.0-rc.2
+  - pattern: '>= v1.15'
 - name: k8s.gcr.io/metrics-server-amd64
   tags:
   - sha: 4ca116565ff6a46e582bada50ba3550f95b368db1d2415829241a565a6c38e2a
     tag: v0.3.3
 - name: kindest/node
   overrideRepoName: kind-node
-  tags:
-  - sha: 2f5f882a6d0527a2284d29042f3a6a07402e1699d792d0d5a9b9a48ef155fa2a
-    tag: v1.13.10
-  - sha: 464a43f5cf6ad442f100b0ca881a3acae37af069d5f96849c1d06ced2870888d
-    tag: v1.14.6
-  - sha: 27e388752544890482a86b90d8ac50fcfa63a2e8656a96ec5337b902ec8e5157
-    tag: v1.15.3
-  - sha: 70ce6ce09bee5c34ab14aec2b84d6edb260473a60638b1b095470a3a0f95ebec
-    tag: v1.16.3
+  patterns:
+  - pattern: '>= v1.16'
 - name: koalaman/shellcheck-alpine
   tags:
   - sha: 7d4d712a2686da99d37580b4e2f45eb658b74e4b01caf67c1099adc294b96b52
     tag: v0.6.0
 - name: kong
-  tags:
-  - sha: 250045ba6aac1bcc0204a0acee2cc409d0b07129d0e90a5c6560433f68e4dbd8
-    tag: 1.3
-  - sha: 027f0a48dd57f5d8ac06d6d5768807caaa03a2e674c8f5d2abb6e41faaea05ae
-    tag: 1.4.2
-  - sha: a88c35cb8e7807966b6aaf1b41da3809b4b2c86ae50f7d036f90cb2aa747133a
-    tag: 1.4.3
+  patterns:
+  - pattern: '>= 1.4.3'
 - name: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
-  tags:
-  - sha: 018a8cf2c6738d296abbea6bbfa25e2eb46ebd48fa2d6886fc15fcaf015b4dd3
-    tag: 0.6.0
-  - sha: 8791f0584158a582c19c922b0f3101eb76f1e2cd8a6a2d09a8eff1172c7911bc
-    tag: 0.6.2
-  - sha: 346a1d71f23650f416037c14326e323608029f312f4fedea1e5e0490f4729514
-    tag: 0.7.0
+  patterns:
+  - pattern: '>= 0.7.0'
 - name: mysql
   tags:
   - sha: c8f03238ca1783d25af320877f063a36dbfce0daa56a7b4955e6c6e05ab5c70b
@@ -304,53 +244,23 @@
   - sha: 22ae874390e34b7cbbaf9a1b204298e009d15dccb96f0aed8d93d797f9ba4b53
     tag: v0.9.1
 - name: quay.io/calico/cni
-  tags:
-  - sha: 01635427ff425fe44ff8e9b498ffc52999bc36d704219ab1750a3f29bb5c6aca
-    tag: v3.9.3
-  - sha: 32c3e0e5db54f99b98ecba1634367ddb055ac44a7d0d93258d44c142e9a5dbf1
-    tag: v3.10.0
-  - sha: 4461abf2989c590dfac43ab20861033db86f5a538902f7a371ab3ff0e07a7c4c
-    tag: v3.10.1
+  patterns:
+  - pattern: '>= v3.10.1'
 - name: quay.io/calico/kube-controllers
-  tags:
-  - sha: 2ca92f5be368f9c0e167e0f77e277367b63b6b6f29aa5089c067d0f70cb3be88
-    tag: v3.9.3
-  - sha: 37d8e80e48d100b86467a99a0621abfdbaa403f061f6e95110a8388896f2a2c7
-    tag: v3.10.0
-  - sha: 06f5d16df31bdd072ceac1fef59a9abab57917ec7116a990d5b3ef7cd5f7676d
-    tag: v3.10.1
+  patterns:
+  - pattern: '>= v3.10.1'
 - name: quay.io/calico/node
-  tags:
-  - sha: 089c7e68551ef48390bcc90d2b84367bf9941c4d949cced700d587c9abdc7215
-    tag: v3.9.3
-  - sha: 2e8e9ae5cbddfd140b2498d9b96a56e099ab42bf125a97801dd5884de418b500
-    tag: v3.10.0
-  - sha: de472c4d9041fc82f8d062c7f05b2aadfb971546818ccdd71bd8d6d16cc238fc
-    tag: v3.10.1
+  patterns:
+  - pattern: '>= v3.10.1'
 - name: quay.io/calico/pod2daemon-flexvol
-  tags:
-  - sha: aeeb1ba2cd118e136bcd1acbcdc2538651bb9f815a80ede2b3d42e17b3853992
-    tag: v3.9.3
-  - sha: 0c2b07760d2d33c6cd3b47e4a5d21ec9116cf4753b077f46dd6ea473f41a1d6f
-    tag: v3.10.0
-  - sha: 934dedbc3e722303ffaf081d8a13d0e2de3b1f30a873752e340b5de1881c71f9
-    tag: v3.10.1
+  patterns:
+  - pattern: '>= v3.10.1'
 - name: quay.io/calico/typha
-  tags:
-  - sha: 55d97462ea91c858361bf8a2f051e1414edbc0c98b6310276a80cc705e7256e4
-    tag: v3.9.2
-  - sha: 5a06dcf0ca0eccbaab96f11e78a2aea0a43e20bc75c674b2bd37019de11928f7
-    tag: v3.10.0
-  - sha: e3b69abe48f0793ee3ea2e7cfeb808429c2d3bd2bcf5b159541ca7da67689634
-    tag: v3.10.1
+  patterns:
+  - pattern: '>= v3.10.1'
 - name: quay.io/coreos/etcd
-  tags:
-  - sha: 937c5f0e051bd8540dcd914236d61b737b2ef90626a41c2a6ee80114fd73f2b5
-    tag: v3.3.17
-  - sha: 49d3d4a81e0d030d3f689e7167f23e120abf955f7d08dbedf3ea246485acee9f
-    tag: v3.4.1
-  - sha: 41ed47389c835eb68215e8215f6d4bfa5123923afd7550dbae049cded27c41b4
-    tag: v3.4.3
+  patterns:
+  - pattern: '>= v3.3'
 - name: quay.io/coreos/etcd-operator
   tags:
   - sha: 2a1ff56062861e3eaf216899e6e73fdff311e5842d2446223924a9cc69f2cc69
@@ -403,15 +313,11 @@
   - sha: 544b8602ee566d7ca22aa9e76a92dde4c2ca8dab642f75ea3a4b0a577193632a
     tag: v0.2.5
 - name: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
-  tags:
-  - sha: ca2eee26afd16dc052c7950f13df6c906be279de64d990e88383c9f123556e06
-    tag: 0.28.0
+  patterns:
+  - pattern: '>= v0.28.0'
 - name: quay.io/prometheus/alertmanager
-  tags:
-  - sha: e6a3f28f282092d9790aaae393650852a9b7c2a7614dc3aa797a74a6beaa0700
-    tag: v0.16.1
-  - sha: 7dbf4949a317a056d11ed8f379826b04d0665fad5b9334e1d69b23e946056cd3
-    tag: v0.19.0
+  patterns:
+  - pattern: '>= v0.19.0'
 - name: quay.io/prometheus/haproxy-exporter
   tags:
   - sha: d8da0790760c279d961e63aa711fac3fd6a3db237eccea3c8a21239dca64805c
@@ -460,14 +366,5 @@
   - sha: 3533054a0543e4a2eb4f4c61d68d5d3a39e5886a65d07f011d45044a5c470ccd
     tag: 0.11.1
 - name: vault
-  tags:
-  - sha: 8d2813d4fbc145d867218b60e13b29941edf60d1c0929964db42879a1aacc889
-    tag: 0.10.1
-  - sha: 366eddc65d233c7b43269ba80e27aeb1269837beadd011c8d7b3daa999cce70a
-    tag: 0.10.3
-  - sha: a8c3818b7e86c53e46897216dee0c8fa6a313b60f095b1c835d9e12f124e36e9
-    tag: 1.0.3
-  - sha: ae4853d4a14231889716ffb49d49b40d7e64f459810594ad7c679757ca66e0b9
-    tag: 1.1.3
-  - sha: 3c0b9742014e36c4e4f07f6da6ac34b348f8da6b897446d77ee70c1a2b6c2539
-    tag: 1.2.0
+  patterns:
+  - pattern: '>= v1.2.0'

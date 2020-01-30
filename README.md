@@ -82,7 +82,7 @@ What the attributes mean:
 - `patterns[].pattern`: Valid Go regular expression to match tags.
 - `patterns[].customImages[]`: Custom images as explained above.
 
-An image may define both `tags` and `patterns`. 
+An image may define both `tags` and `patterns`.
 A `pattern` may also include all optional features of a `tag`, such as a `tagSuffix` or `dockerfileOptions`.
 
 ## Adding an image
@@ -111,19 +111,15 @@ the target tag should be `v1.5.2-2`, `v1.5.2-3`, and so on.
 
 It is also possible to watch and automatically retag new tagged releases in the upstream repository.
 To do this, specify a pattern for the image in the `images.yaml` configuration file.
-Each pattern must be a valid Go regular expression (you can try it out [here](https://regex-golang.appspot.com/assets/html/index.html)),
+Each pattern must be a valid semver expression (you can read about it [here](https://github.com/Masterminds/semver)),
 and should match as little as possible to avoid retagging huge numbers of useless images.
-
-It is recommended that every pattern starts with `\A` (start of string) and ends with `\z` (end of string), and uses as few wildcards as necessary to match the desired range of tags. Use patterns carefully, since broad regular expressions can match many tags.
 
 For example, at the time of this writing:
 
 ```yaml
 - name: k8s.gcr.io/hyperkube
   patterns:
-    - pattern: '\A(v1.17.[0-9]+)(-rc.[0-9.]+)*\z'       # Match any v1.17.x or v1.17.x-rc.x              -- matches 3 tags
-    - pattern: '\A(v[0-9.]+)\z'                         # Match any vx.x.x tag, excluding alphas, etc.   -- matches 193 tags
-    - pattern: '\A(v[0-9.]+)(-(alpha|beta)[0-9.]+)*\z'  # Match any version, including alphas and betas  -- matches 485 tags
+    - pattern: 'v1.17.x'       # Match any v1.17.x
 ```
 
 ### Execution
