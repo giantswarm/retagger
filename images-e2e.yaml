@@ -11,4 +11,4 @@
             - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
             - USER giantswarm
   patterns:
-    - pattern: '\A(2.[56]+)\z'  # Match 2.5 or 2.6 - only 2.6 exists
+    - pattern: '>= 2.5 <= 2.6'  # Match 2.5 or 2.6 - only 2.6 exists
