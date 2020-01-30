@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/retagger/pkg/images"
 )
@@ -84,22 +85,30 @@ func (r *Registry) GetQuayTagsWithDetails(image string) (tags []QuayTag, err err
 	}
 
 	var response TagsResponse
-	for {
-		time.Sleep(5 * time.Second) // Dummy sleep for now if request spam originates here.
+	o := func() error {
+		for {
+			r.logger.Log("level", "debug", "message", fmt.Sprintf("requesting registry tags from %s", url))
 
-		r.logger.Log("level", "debug", "message", fmt.Sprintf("requesting registry tags from %s", url))
+			url, err = r.getPaginatedJSON(req, &response)
+			if err != nil {
+				if IsNoMorePages(err) {
+					tags = append(tags, response.Tags...)
+					return nil
+				}
 
-		url, err = r.getPaginatedJSON(req, &response)
-		if err != nil {
-			if IsNoMorePages(err) {
-				tags = append(tags, response.Tags...)
-				return tags, nil
+				return err
 			}
-
-			return nil, err
+			req.URL = url
+			tags = append(tags, response.Tags...)
 		}
-		tags = append(tags, response.Tags...)
 	}
+	b := backoff.NewExponential(500*time.Millisecond, 5*time.Second)
+	err = backoff.Retry(o, b)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	return tags, nil
 }
 
 // GetQuayTagMap fetches the tag details for the given image, and returns a map containing
