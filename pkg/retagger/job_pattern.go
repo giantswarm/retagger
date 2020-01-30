@@ -115,7 +115,7 @@ func (job *PatternJob) getExternalTagMatches(r *dockerRegistry.Registry, image s
 			continue
 		}
 
-		m, errs := c.Validate(v) // We do not care why the validation might fail.
+		m, errs := c.Validate(v)
 		for _, e := range errs {
 			job.logger.Log("level", "debug", "message", fmt.Sprintf("Image %s does not fulfill constraint %s because %s", image, pattern, e.Error()))
 		}
