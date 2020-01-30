@@ -6,11 +6,14 @@ import (
 
 	"github.com/Masterminds/semver/v3"
 	"github.com/giantswarm/microerror"
+	"github.com/giantswarm/micrologger"
 	dockerRegistry "github.com/nokia/docker-registry-client/registry"
 )
 
 // PatternJob contains a definition for generating multiple single jobs based on a pattern.
 type PatternJob struct {
+	logger micrologger.Logger
+
 	SourcePattern string
 	Source        Source
 
@@ -34,7 +37,7 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 	}
 
 	// Find tags which match the pattern.
-	matches, err := getExternalTagMatches(externalRegistry, job.Source.FullImageName, job.SourcePattern)
+	matches, err := job.getExternalTagMatches(externalRegistry, job.Source.FullImageName, job.SourcePattern)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -90,20 +93,8 @@ func (job *PatternJob) GetSource() Source {
 	return job.Source
 }
 
-// PatternJobFromJobDefinition converts a JobDefinition into a PatternJob.
-func PatternJobFromJobDefinition(jobDef *JobDefinition, r *Retagger) *PatternJob {
-	job := &PatternJob{
-		SourcePattern: jobDef.SourcePattern,
-		Source:        GetSourceForJob(jobDef, r),
-
-		Options: jobDef.Options,
-	}
-	job.Destination = GetDestinationForJob(job, r)
-	return job
-}
-
 // getExternalTagMatches searches the given docker registry for tags matching the given pattern.
-func getExternalTagMatches(r *dockerRegistry.Registry, image string, pattern string) ([]string, error) {
+func (job *PatternJob) getExternalTagMatches(r *dockerRegistry.Registry, image string, pattern string) ([]string, error) {
 	// Make sure our constraint is valid.
 	c, err := semver.NewConstraint(pattern)
 	if err != nil {
@@ -123,11 +114,30 @@ func getExternalTagMatches(r *dockerRegistry.Registry, image string, pattern str
 		if err != nil { // We do not care if the version is not semver.
 			continue
 		}
-		m, _ := c.Validate(v) // We do not care why the validation might fail.
+
+		m, errs := c.Validate(v) // We do not care why the validation might fail.
+		for _, e := range errs {
+			job.logger.Log("level", "debug", "message", fmt.Sprintf("Image %s does not fulfill constraint %s because %s", image, pattern, e.Error()))
+		}
+
 		if m {
 			matches = append(matches, t)
 		}
 	}
 
 	return matches, nil
+}
+
+// PatternJobFromJobDefinition converts a JobDefinition into a PatternJob.
+func PatternJobFromJobDefinition(jobDef *JobDefinition, r *Retagger) *PatternJob {
+	job := &PatternJob{
+		logger: r.logger,
+
+		SourcePattern: jobDef.SourcePattern,
+		Source:        GetSourceForJob(jobDef, r),
+
+		Options: jobDef.Options,
+	}
+	job.Destination = GetDestinationForJob(job, r)
+	return job
 }

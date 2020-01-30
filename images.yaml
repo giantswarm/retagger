@@ -215,10 +215,10 @@
     tag: v1.17.0
 - name: k8s.gcr.io/hyperkube
   patterns:
-  - pattern: '\A(v1.15.[1-9][0-9]*)\z'                # Match any v1.15.x
-  - pattern: '\A(v1.16.[1-9][0-9]*)\z'                # Match any v1.16.x
-  - pattern: '\A(v1.17.[1-9][0-9]*)\z'                # Match any v1.17.x
-  - pattern: '\A(v1.18.[1-9][0-9]*)(-rc.[0-9.]+)*\z'  # Match any v1.18.x or v1.18.x-rc.x
+  - pattern: '>= v1.15, < v1.16'                # Match any v1.15.x
+  - pattern: '>= v1.16, < v1.17'                # Match any v1.16.x
+  - pattern: '>= v1.17, < v1.18'               # Match any v1.17.x
+  - pattern: '>= v1.18, < v1.19'               # Match any v1.18.x
   tags:
   - sha: 94adb47a41838bee7deee7e09d07a7093bdba517d980c66115cc2eeb675090be
     tag: v1.14.6
