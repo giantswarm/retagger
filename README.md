@@ -79,7 +79,7 @@ What the attributes mean:
 - `tags[].customImages[].tagSuffix`: Tag suffix for custom image build.
 - `tags[].customImages[].dockerfileOptions[]`: The list of Dockerfile options, used to override base image
 - `patterns[]`: List of patterns. New tags matching one of these patterns will be automatically retagged.
-- `patterns[].pattern`: Valid Go regular expression to match tags.
+- `patterns[].pattern`: Valid semver condition to match tags.
 - `patterns[].customImages[]`: Custom images as explained above.
 
 An image may define both `tags` and `patterns`.
@@ -111,15 +111,17 @@ the target tag should be `v1.5.2-2`, `v1.5.2-3`, and so on.
 
 It is also possible to watch and automatically retag new tagged releases in the upstream repository.
 To do this, specify a pattern for the image in the `images.yaml` configuration file.
-Each pattern must be a valid semver expression (you can read about it [here](https://github.com/Masterminds/semver)),
+Each pattern must be a valid semver constraint (you can read about it [here](https://github.com/Masterminds/semver)),
 and should match as little as possible to avoid retagging huge numbers of useless images.
+
+_Hint:_ The `v` infront of a version is optional - so `v1.0.0` and `1.0.0` behave the same.
 
 For example, at the time of this writing:
 
 ```yaml
 - name: k8s.gcr.io/hyperkube
   patterns:
-    - pattern: 'v1.17.x'       # Match any v1.17.x
+    - pattern: '>= v1.17.0'       # Match any v1.17.x
 ```
 
 ### Execution
