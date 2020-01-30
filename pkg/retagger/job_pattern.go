@@ -120,7 +120,7 @@ func getExternalTagMatches(r *dockerRegistry.Registry, image string, pattern str
 	var matches []string
 	for _, t := range externalRegistryTags {
 		v, err := semver.NewVersion(t)
-		if err != nil {
+		if err != nil { // We do not care if the version is not semver.
 			continue
 		}
 		m, _ := c.Validate(v) // We do not care why the validation might fail.
