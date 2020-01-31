@@ -1,7 +1,9 @@
 package registry
 
 import (
+	"context"
 	"fmt"
+	"net/http"
 	nurl "net/url"
 	"time"
 
@@ -11,7 +13,7 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/nokia/docker-registry-client/registry"
-	"github.com/opencontainers/go-digest"
+	godigest "github.com/opencontainers/go-digest"
 
 	"github.com/giantswarm/retagger/pkg/images"
 )
@@ -49,6 +51,32 @@ type Registry struct {
 	aliyunRegion string
 }
 
+type BackoffTransport struct {
+	Transport http.RoundTripper
+	Logger micrologger.Logger
+}
+
+func (t *BackoffTransport) RoundTrip(request *http.Request) (*http.Response, error) {
+	var resp *http.Response
+	o := func () error {
+		var respErr error
+		resp, respErr = t.Transport.RoundTrip(request)
+		if respErr != nil {
+			return respErr
+		}
+		return nil
+	}
+	b := backoff.NewExponential(30*time.Second, 5*time.Second)
+	n := backoff.NewNotifier(t.Logger, context.Background())
+
+	err := backoff.RetryNotify(o, b, n)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	return resp, nil
+}
+
 func New(config Config) (*Registry, error) {
 	if config.Host == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Host must not be empty", config)
@@ -70,18 +98,30 @@ func New(config Config) (*Registry, error) {
 
 	var registryClient *registry.Registry
 	{
-		o := registry.Options{
-			Username: config.Username,
-			Password: config.Password,
-		}
-
+		url := fmt.Sprintf("https://%s", config.Host)
+		logf := registry.Log
 		if config.LogFunc != nil {
-			o.Logf = config.LogFunc
+			logf = config.LogFunc
 		}
-
-		registryClient, err = registry.NewCustom(fmt.Sprintf("https://%s", config.Host), o)
-		if err != nil {
-			return nil, microerror.Mask(err)
+		registryClient = &registry.Registry{
+			URL: url,
+			Client: &http.Client{
+				Transport: &registry.ErrorTransport{
+					Transport: &BackoffTransport{
+						Transport: &registry.BasicTransport{
+							Transport: &registry.TokenTransport{
+								Transport: http.DefaultTransport,
+								Username:  config.Username,
+								Password:  config.Password,
+							},
+							URL:      url,
+							Username: config.Username,
+							Password: config.Password,
+						},
+					},
+				},
+			},
+			Logf: logf,
 		}
 	}
 
@@ -139,7 +179,7 @@ func (r *Registry) DeleteImage(image string, tag string) error {
 	return nil
 }
 
-func (r *Registry) GetDigest(image string, tag string) (digest.Digest, error) {
+func (r *Registry) GetDigest(image string, tag string) (godigest.Digest, error) {
 	digest, err := r.registryClient.ManifestV2Digest(images.Name(r.organisation, image), tag)
 	if err != nil {
 		return "", microerror.Mask(err)
@@ -187,7 +227,7 @@ func (r *Registry) ListImageTags(image string) ([]string, error) {
 	o := func() error {
 		imageTags, err := r.registryClient.Tags(images.Name(r.organisation, image))
 		if IsRepositoryNotFound(err) {
-			r.logger.Log("level", "warning", "message", fmt.Sprintf("repository %s was not found in registry, retagger will try create the repository", image))
+			_ = r.logger.Log("level", "warning", "message", fmt.Sprintf("repository %s was not found in registry, retagger will try create the repository", image))
 			return nil
 		} else if err != nil {
 			return microerror.Mask(err)
