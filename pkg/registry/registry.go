@@ -51,27 +51,42 @@ type Registry struct {
 	aliyunRegion string
 }
 
-type BackoffTransport struct {
+type backoffTransport struct {
 	Transport http.RoundTripper
-	Logger micrologger.Logger
+	logger micrologger.Logger
 }
 
-func (t *BackoffTransport) RoundTrip(request *http.Request) (*http.Response, error) {
+func (t *backoffTransport) RoundTrip(request *http.Request) (*http.Response, error) {
+	var err error
 	var resp *http.Response
-	o := func () error {
-		var respErr error
-		resp, respErr = t.Transport.RoundTrip(request)
-		if respErr != nil {
-			return respErr
-		}
-		return nil
-	}
-	b := backoff.NewExponential(30*time.Second, 5*time.Second)
-	n := backoff.NewNotifier(t.Logger, context.Background())
 
-	err := backoff.RetryNotify(o, b, n)
-	if err != nil {
-		return nil, microerror.Mask(err)
+	{
+		o := func () error {
+			var respErr error
+			resp, respErr = t.Transport.RoundTrip(request)
+			// Internal error, return nil to prevent retry
+			if respErr != nil {
+				err = respErr
+				return nil
+			}
+			// Rate limited
+			if resp.StatusCode == 429 {
+				return microerror.New("rate limited")
+			}
+			// Not rate limited, return nil to prevent retry
+			return nil
+		}
+		b := backoff.NewExponential(time.Minute, 10*time.Second)
+		n := backoff.NewNotifier(t.logger, context.Background())
+		backoffErr := backoff.RetryNotify(o, b, n)
+		// Report errors unrelated to rate limiting first
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+		// Rate limited and backoff wasn't sufficient
+		if backoffErr != nil {
+			return nil, microerror.Mask(backoffErr)
+		}
 	}
 
 	return resp, nil
@@ -107,7 +122,7 @@ func New(config Config) (*Registry, error) {
 			URL: url,
 			Client: &http.Client{
 				Transport: &registry.ErrorTransport{
-					Transport: &BackoffTransport{
+					Transport: &backoffTransport{
 						Transport: &registry.BasicTransport{
 							Transport: &registry.TokenTransport{
 								Transport: http.DefaultTransport,
@@ -118,6 +133,7 @@ func New(config Config) (*Registry, error) {
 							Username: config.Username,
 							Password: config.Password,
 						},
+						logger: config.Logger,
 					},
 				},
 			},
