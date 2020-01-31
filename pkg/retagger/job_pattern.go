@@ -77,7 +77,7 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 			Transport: &dockerRegistry.ErrorTransport{
 				Transport: &backoffTransport{
 					Transport: http.DefaultTransport,
-					logger: r.logger,
+					logger:    r.logger,
 				},
 			},
 		},
