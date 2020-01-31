@@ -1,10 +1,14 @@
 package retagger
 
 import (
+	"context"
 	"fmt"
+	"net/http"
 	"strings"
+	"time"
 
 	"github.com/Masterminds/semver/v3"
+	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	dockerRegistry "github.com/nokia/docker-registry-client/registry"
@@ -22,18 +26,61 @@ type PatternJob struct {
 	Options JobOptions
 }
 
+type backoffTransport struct {
+	Transport http.RoundTripper
+	logger    micrologger.Logger
+}
+
+func (t *backoffTransport) RoundTrip(request *http.Request) (*http.Response, error) {
+	var err error
+	var resp *http.Response
+
+	{
+		o := func() error {
+			var respErr error
+			resp, respErr = t.Transport.RoundTrip(request)
+			// Internal error, return nil to prevent retry
+			if respErr != nil {
+				err = respErr
+				return nil
+			}
+			// Rate limited
+			if resp.StatusCode == 429 {
+				return microerror.New("rate limited")
+			}
+			// Not rate limited, return nil to prevent retry
+			return nil
+		}
+		b := backoff.NewExponential(time.Minute, 10*time.Second)
+		n := backoff.NewNotifier(t.logger, context.Background())
+		backoffErr := backoff.RetryNotify(o, b, n)
+		// Report errors unrelated to rate limiting first
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+		// Rate limited and backoff wasn't sufficient
+		if backoffErr != nil {
+			return nil, microerror.Mask(backoffErr)
+		}
+	}
+
+	return resp, nil
+}
+
 // Compile expands a PatternJob into one or multiple SingleJobs using the given Retagger instance.
 func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
-	r.logger.Log("level", "debug", "message", fmt.Sprintf("compiling jobs for image %v using pattern %v, with options %#v", job.Source.Image, job.SourcePattern, job.Options))
+	_ = r.logger.Log("level", "debug", "message", fmt.Sprintf("compiling jobs for image %v using pattern %v, with options %#v", job.Source.Image, job.SourcePattern, job.Options))
 
 	// Create a reference to the external registry.
-	o := dockerRegistry.Options{
-		Logf:          dockerRegistry.Quiet,
-		DoInitialPing: false,
-	}
-	externalRegistry, err := dockerRegistry.NewCustom(fmt.Sprintf("https://%s", job.Source.RepoPath), o)
-	if err != nil {
-		return nil, microerror.Mask(err)
+	externalRegistry := &dockerRegistry.Registry{
+		Client: &http.Client{
+			Transport: &dockerRegistry.ErrorTransport{
+				Transport: &backoffTransport{
+					Transport: http.DefaultTransport,
+					logger: r.logger,
+				},
+			},
+		},
 	}
 
 	// Find tags which match the pattern.
@@ -80,7 +127,7 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 		}
 	}
 
-	r.logger.Log("level", "debug", "message", fmt.Sprintf("Compiled %d jobs to process", len(jobs)))
+	_ = r.logger.Log("level", "debug", "message", fmt.Sprintf("Compiled %d jobs to process", len(jobs)))
 
 	return jobs, nil
 }
@@ -117,7 +164,7 @@ func (job *PatternJob) getExternalTagMatches(r *dockerRegistry.Registry, image s
 
 		m, errs := c.Validate(v)
 		for _, e := range errs {
-			job.logger.Log("level", "debug", "message", fmt.Sprintf("Image %s does not fulfill constraint %s because %s", image, pattern, e.Error()))
+			_ = job.logger.Log("level", "debug", "message", fmt.Sprintf("Image %s does not fulfill constraint %s because %s", image, pattern, e.Error()))
 		}
 
 		if m {
