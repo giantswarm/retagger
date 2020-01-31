@@ -53,7 +53,7 @@ type Registry struct {
 
 type backoffTransport struct {
 	Transport http.RoundTripper
-	logger micrologger.Logger
+	logger    micrologger.Logger
 }
 
 func (t *backoffTransport) RoundTrip(request *http.Request) (*http.Response, error) {
@@ -61,7 +61,7 @@ func (t *backoffTransport) RoundTrip(request *http.Request) (*http.Response, err
 	var resp *http.Response
 
 	{
-		o := func () error {
+		o := func() error {
 			var respErr error
 			resp, respErr = t.Transport.RoundTrip(request)
 			// Internal error, return nil to prevent retry
