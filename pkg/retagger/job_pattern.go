@@ -84,7 +84,7 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 				logger: r.logger,
 			},
 		},
-		Logf: dockerRegistry.Quiet,
+		Logf: dockerRegistry.Log,
 		URL:  fmt.Sprintf("https://%s", job.Source.RepoPath),
 	}
 
