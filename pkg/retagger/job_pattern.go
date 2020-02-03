@@ -33,7 +33,7 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 	externalRegistry := &dockerRegistry.Registry{
 		Client: &http.Client{Transport: transport},
 		URL:    url,
-		Logf:   dockerRegistry.Quiet,
+		Logf:   dockerRegistry.Quiet, // Ignore logs
 	}
 
 	// Find tags which match the pattern.
