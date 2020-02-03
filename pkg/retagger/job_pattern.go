@@ -2,6 +2,7 @@ package retagger
 
 import (
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/Masterminds/semver/v3"
@@ -24,16 +25,15 @@ type PatternJob struct {
 
 // Compile expands a PatternJob into one or multiple SingleJobs using the given Retagger instance.
 func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
-	r.logger.Log("level", "debug", "message", fmt.Sprintf("compiling jobs for image %v using pattern %v, with options %#v", job.Source.Image, job.SourcePattern, job.Options))
+	r.logger.Log("level", "debug", "message", fmt.Sprintf("compiling jobs for image %v / %v using pattern %v, with options %#v", job.Source.RepoPath, job.Source.Image, job.SourcePattern, job.Options))
 
 	// Create a reference to the external registry.
-	o := dockerRegistry.Options{
-		Logf:          dockerRegistry.Quiet,
-		DoInitialPing: false,
-	}
-	externalRegistry, err := dockerRegistry.NewCustom(fmt.Sprintf("https://%s", job.Source.RepoPath), o)
-	if err != nil {
-		return nil, microerror.Mask(err)
+	url := fmt.Sprintf("https://%s", job.Source.RepoPath)
+	transport := wrapTransport(http.DefaultTransport, url, job.logger)
+	externalRegistry := &dockerRegistry.Registry{
+		Client: &http.Client{Transport: transport},
+		URL:    url,
+		Logf:   dockerRegistry.Quiet, // Ignore logs
 	}
 
 	// Find tags which match the pattern.
@@ -110,6 +110,7 @@ func (job *PatternJob) getExternalTagMatches(r *dockerRegistry.Registry, image s
 	// Find tags matching our configured pattern.
 	var matches []string
 	for _, t := range externalRegistryTags {
+		job.logger.Log("level", "debug", "message", fmt.Sprintf("External Tag %s ", t))
 		v, err := semver.NewVersion(t)
 		if err != nil { // We do not care if the version is not semver.
 			continue

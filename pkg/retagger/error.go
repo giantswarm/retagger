@@ -10,3 +10,12 @@ var invalidConfigError = &microerror.Error{
 func IsInvalidConfig(err error) bool {
 	return microerror.Cause(err) == invalidConfigError
 }
+
+var rateLimitedError = &microerror.Error{
+	Kind: "rateLimitedError",
+}
+
+// IsRateLimited asserts rateLimitedError.
+func IsRateLimited(err error) bool {
+	return microerror.Cause(err) == rateLimitedError
+}
