@@ -1,14 +1,11 @@
 package retagger
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/Masterminds/semver/v3"
-	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	dockerRegistry "github.com/nokia/docker-registry-client/registry"
@@ -26,61 +23,17 @@ type PatternJob struct {
 	Options JobOptions
 }
 
-type backoffTransport struct {
-	Transport http.RoundTripper
-	logger    micrologger.Logger
-}
-
-func (t *backoffTransport) RoundTrip(request *http.Request) (*http.Response, error) {
-	var err error
-	var resp *http.Response
-
-	{
-		o := func() error {
-			var respErr error
-			resp, respErr = t.Transport.RoundTrip(request)
-			// Internal error, return nil to prevent retry
-			if respErr != nil {
-				err = respErr
-				return nil
-			}
-			// Rate limited
-			if resp.StatusCode == 429 {
-				return microerror.New("rate limited")
-			}
-			// Not rate limited, return nil to prevent retry
-			return nil
-		}
-		b := backoff.NewExponential(time.Minute, 10*time.Second)
-		n := backoff.NewNotifier(t.logger, context.Background())
-		backoffErr := backoff.RetryNotify(o, b, n)
-		// Report errors unrelated to rate limiting first
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-		// Rate limited and backoff wasn't sufficient
-		if backoffErr != nil {
-			return nil, microerror.Mask(backoffErr)
-		}
-	}
-
-	return resp, nil
-}
-
 // Compile expands a PatternJob into one or multiple SingleJobs using the given Retagger instance.
 func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 	r.logger.Log("level", "debug", "message", fmt.Sprintf("compiling jobs for image % v / %v using pattern %v, with options %#v", job.Source.RepoPath, job.Source.Image, job.SourcePattern, job.Options))
 
 	// Create a reference to the external registry.
+	url := fmt.Sprintf("https://%s", job.Source.RepoPath)
+	transport := wrapTransport(http.DefaultTransport, url, job.logger)
 	externalRegistry := &dockerRegistry.Registry{
-		Client: &http.Client{
-			Transport: &backoffTransport{
-				Transport: http.DefaultTransport,
-				logger:    r.logger,
-			},
-		},
-		Logf: dockerRegistry.Log,
-		URL:  fmt.Sprintf("https://%s", job.Source.RepoPath),
+		Client: &http.Client{ Transport: transport },
+		URL: url,
+		Logf: dockerRegistry.Quiet,
 	}
 
 	// Find tags which match the pattern.
