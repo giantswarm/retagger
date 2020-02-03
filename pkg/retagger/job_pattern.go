@@ -25,7 +25,7 @@ type PatternJob struct {
 
 // Compile expands a PatternJob into one or multiple SingleJobs using the given Retagger instance.
 func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
-	r.logger.Log("level", "debug", "message", fmt.Sprintf("compiling jobs for image % v / %v using pattern %v, with options %#v", job.Source.RepoPath, job.Source.Image, job.SourcePattern, job.Options))
+	r.logger.Log("level", "debug", "message", fmt.Sprintf("compiling jobs for image %v / %v using pattern %v, with options %#v", job.Source.RepoPath, job.Source.Image, job.SourcePattern, job.Options))
 
 	// Create a reference to the external registry.
 	url := fmt.Sprintf("https://%s", job.Source.RepoPath)
