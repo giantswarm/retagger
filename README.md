@@ -63,8 +63,7 @@ Here is an example entry:
   - sha: 29590ae7991517b214a9239349ee1cc803a22f2a36279612a52caa2bc8673ff0
     tag: v1.16.3
   patterns:
-    - pattern: '\A(v1.17.[0-9]+)(-rc.[0-9.]+)*\z'  # Match any v1.17.x or v1.17.x-rc.x
-    - pattern: '\A(v[0-9.]+)\z'                    # Match any vx.x.x version tag, excluding alphas, rcs, etc.
+    - pattern: '>= v1.17.0'       # Match any v1.17.x
 ```
 
 What the attributes mean:
