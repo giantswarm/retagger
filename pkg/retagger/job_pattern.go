@@ -2,7 +2,6 @@ package retagger
 
 import (
 	"context"
-	"crypto/tls"
 	"fmt"
 	"net/http"
 	"strings"
@@ -76,12 +75,8 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 	externalRegistry := &dockerRegistry.Registry{
 		Client: &http.Client{
 			Transport: &backoffTransport{
-				Transport: &http.Transport{
-					TLSClientConfig: &tls.Config{
-						InsecureSkipVerify: true,
-					},
-				},
-				logger: r.logger,
+				Transport: http.DefaultTransport,
+				logger:    r.logger,
 			},
 		},
 		Logf: dockerRegistry.Log,
