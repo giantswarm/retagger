@@ -81,6 +81,8 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 				},
 			},
 		},
+		Logf: dockerRegistry.Quiet,
+		URL:  fmt.Sprintf("https://%s", job.Source.RepoPath),
 	}
 
 	// Find tags which match the pattern.
