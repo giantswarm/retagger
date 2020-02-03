@@ -69,4 +69,3 @@ func wrapTransport(transport http.RoundTripper, url string, logger micrologger.L
 	}
 	return transport
 }
-

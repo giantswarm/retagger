@@ -31,9 +31,9 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 	url := fmt.Sprintf("https://%s", job.Source.RepoPath)
 	transport := wrapTransport(http.DefaultTransport, url, job.logger)
 	externalRegistry := &dockerRegistry.Registry{
-		Client: &http.Client{ Transport: transport },
-		URL: url,
-		Logf: dockerRegistry.Quiet,
+		Client: &http.Client{Transport: transport},
+		URL:    url,
+		Logf:   dockerRegistry.Quiet,
 	}
 
 	// Find tags which match the pattern.
