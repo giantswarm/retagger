@@ -70,7 +70,7 @@ func (t *backoffTransport) RoundTrip(request *http.Request) (*http.Response, err
 
 // Compile expands a PatternJob into one or multiple SingleJobs using the given Retagger instance.
 func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
-	r.logger.Log("level", "debug", "message", fmt.Sprintf("compiling jobs for image %v using pattern %v / %v, with options %#v", job.Source.RepoPath, job.Source.Image, job.SourcePattern, job.Options))
+	r.logger.Log("level", "debug", "message", fmt.Sprintf("compiling jobs for image % v / %v using pattern %v, with options %#v", job.Source.RepoPath, job.Source.Image, job.SourcePattern, job.Options))
 
 	// Create a reference to the external registry.
 	externalRegistry := &dockerRegistry.Registry{
@@ -162,6 +162,7 @@ func (job *PatternJob) getExternalTagMatches(r *dockerRegistry.Registry, image s
 	// Find tags matching our configured pattern.
 	var matches []string
 	for _, t := range externalRegistryTags {
+		job.logger.Log("level", "debug", "message", fmt.Sprintf("External Tag %s ", t))
 		v, err := semver.NewVersion(t)
 		if err != nil { // We do not care if the version is not semver.
 			continue
