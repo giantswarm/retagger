@@ -2,6 +2,7 @@ package retagger
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"net/http"
 	"strings"
@@ -69,16 +70,18 @@ func (t *backoffTransport) RoundTrip(request *http.Request) (*http.Response, err
 
 // Compile expands a PatternJob into one or multiple SingleJobs using the given Retagger instance.
 func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
-	_ = r.logger.Log("level", "debug", "message", fmt.Sprintf("compiling jobs for image %v using pattern %v, with options %#v", job.Source.Image, job.SourcePattern, job.Options))
+	r.logger.Log("level", "debug", "message", fmt.Sprintf("compiling jobs for image %v using pattern %v, with options %#v", job.Source.Image, job.SourcePattern, job.Options))
 
 	// Create a reference to the external registry.
 	externalRegistry := &dockerRegistry.Registry{
 		Client: &http.Client{
-			Transport: &dockerRegistry.ErrorTransport{
-				Transport: &backoffTransport{
-					Transport: http.DefaultTransport,
-					logger:    r.logger,
+			Transport: &backoffTransport{
+				Transport: &http.Transport{
+					TLSClientConfig: &tls.Config{
+						InsecureSkipVerify: true,
+					},
 				},
+				logger: r.logger,
 			},
 		},
 		Logf: dockerRegistry.Quiet,
@@ -129,7 +132,7 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 		}
 	}
 
-	_ = r.logger.Log("level", "debug", "message", fmt.Sprintf("Compiled %d jobs to process", len(jobs)))
+	r.logger.Log("level", "debug", "message", fmt.Sprintf("Compiled %d jobs to process", len(jobs)))
 
 	return jobs, nil
 }
@@ -166,7 +169,7 @@ func (job *PatternJob) getExternalTagMatches(r *dockerRegistry.Registry, image s
 
 		m, errs := c.Validate(v)
 		for _, e := range errs {
-			_ = job.logger.Log("level", "debug", "message", fmt.Sprintf("Image %s does not fulfill constraint %s because %s", image, pattern, e.Error()))
+			job.logger.Log("level", "debug", "message", fmt.Sprintf("Image %s does not fulfill constraint %s because %s", image, pattern, e.Error()))
 		}
 
 		if m {
