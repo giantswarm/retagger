@@ -308,6 +308,8 @@
     tag: v0.4.0
   - sha: 0f7e64825eddb1f7292a9f190a421b305a9237d21757ae27fb06d1d0f12281df
     tag: v0.9.0
+  - sha: d76757df294f9ecd097e1dbda67e2aeac01cd3ae2b71d37cf4b70d6b7336c0ad
+    tag: v0.13.0
 - name: quay.io/jetstack/cert-manager-ingress-shim
   tags:
   - sha: 544b8602ee566d7ca22aa9e76a92dde4c2ca8dab642f75ea3a4b0a577193632a
@@ -347,6 +349,8 @@
   tags:
   - sha: b24ef28b4a06371d10b6b9fea8a2d0a3b342dbf4928e798c07a208995e3945e3
     tag: v3.4
+  - sha: 923020c93162636af89a54f4e96e062341c6ef87b85a6567d1cf0edb7fbff33c
+    tag: v3.5
 - name: redis
   tags:
   - sha: 002a1870fa2ffd11dbd7438527a2c17f794f6962f5d3a4f048f848963ab954a8
@@ -357,6 +361,8 @@
   tags:
   - sha: 8df16e7dd1c43dd57b5dda6af8dd19882bf6fb45e783fca091750485cd737811
     tag: v0.5.11
+  - sha: 403b9b0a8a7428c0d3fe57fe0aebf7ac8a69467d2660c2384a7463c574f3dbb2
+    tag: v0.5.18
 - name: shelmangroup/coreos-nvidia-driver-installer
   tags:
   - sha: 57be3ae881d61ea5f55ad6068bcc61708515ad17994884170b3e5df5b40856d3
