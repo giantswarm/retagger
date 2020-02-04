@@ -16,10 +16,12 @@
       dockerfileOptions:
       - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
       - USER giantswarm
+- name: amazon/opendistro-for-elasticsearch
+  patterns:
+  - pattern: '>= 1.3.0'
 - name: amazon/opendistro-for-elasticsearch-kibana
-  tags:
-  - sha: 42360957d7f92b39216711e9e4f2d959f503d1a256a7dc4bf440d92477266f5b
-    tag: 1.3.0
+  patterns:
+  - pattern: '>= 1.3.0'
 - name: aquasec/kube-bench
   patterns:
   - pattern: '>= 0.2'
