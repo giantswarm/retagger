@@ -359,6 +359,8 @@
   tags:
   - sha: 8df16e7dd1c43dd57b5dda6af8dd19882bf6fb45e783fca091750485cd737811
     tag: v0.5.11
+  - sha: 403b9b0a8a7428c0d3fe57fe0aebf7ac8a69467d2660c2384a7463c574f3dbb2
+    tag: v0.5.18
 - name: shelmangroup/coreos-nvidia-driver-installer
   tags:
   - sha: 57be3ae881d61ea5f55ad6068bcc61708515ad17994884170b3e5df5b40856d3
