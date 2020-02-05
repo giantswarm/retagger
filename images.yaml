@@ -219,6 +219,10 @@
 - name: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
   patterns:
   - pattern: '>= 0.7.0'
+- name: mintel/dex-k8s-authenticator
+  tags:
+  - sha: a3789f95d73411708f441361e8a41d2c2c5bfae4480cdeacff3be7ea8d3cdccc 
+    tag: 1.2.0
 - name: mysql
   tags:
   - sha: c8f03238ca1783d25af320877f063a36dbfce0daa56a7b4955e6c6e05ab5c70b
