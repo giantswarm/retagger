@@ -112,6 +112,10 @@
       - USER root
       - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
       - USER giantswarm
+- name: gcr.io/heptio-images/gangway
+  tags:
+  - sha: dd6030630fa2c826e9d2ff1a8e447554d12c1d59e15ae24dd2370115e1121369
+    tag: v3.1.0
 - name: gcr.io/heptio-images/kube-conformance
   tags:
   - sha: 4b63b91265ed0e4a986db9ce4bab22f590d773108713f806180990bd0e0c0806
@@ -279,6 +283,10 @@
   tags:
   - sha: 97697df680ea4c7e70c4cb4af5bdc44f7a70b25be7afde70bd921a658e4c62ec
     tag: v0.30.1
+- name: quay.io/dexidp/dex
+  tags:
+  - sha: c14ea9dbf341de51c8c0858a65bfe905a0a2cc154311c959a0bfe609bfe177b5
+    tag: v2.21.0
 - name: quay.io/giantswarm/docker-kubectl
   tags:
   - sha: 995bd3fee6899569d5d9ab77948f25d6bc2e9a95efa988de37c6b8c3095ac819
