@@ -52,11 +52,11 @@
     tag: 7.67.0
 - name: quay.io/dexidp/dex
   tags:
-  - sha: c14ea9dbf341de51c8c0858a65bfe905a0a2cc154311c959a0bfe609bfe177b5 
+  - sha: c14ea9dbf341de51c8c0858a65bfe905a0a2cc154311c959a0bfe609bfe177b5
     tag: v2.21.0
 - name: gcr.io/heptio-images/gangway
   tags:
-  - sha: dd6030630fa2c826e9d2ff1a8e447554d12c1d59e15ae24dd2370115e1121369 
+  - sha: dd6030630fa2c826e9d2ff1a8e447554d12c1d59e15ae24dd2370115e1121369
     tag: v3.1.0
 - name: dduportal/bats
   tags:
