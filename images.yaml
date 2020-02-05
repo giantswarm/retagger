@@ -221,7 +221,7 @@
   - pattern: '>= 0.7.0'
 - name: mintel/dex-k8s-authenticator
   tags:
-  - sha: a3789f95d73411708f441361e8a41d2c2c5bfae4480cdeacff3be7ea8d3cdccc 
+  - sha: a3789f95d73411708f441361e8a41d2c2c5bfae4480cdeacff3be7ea8d3cdccc
     tag: 1.2.0
 - name: mysql
   tags:
