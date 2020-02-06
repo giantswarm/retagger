@@ -337,7 +337,7 @@
   - pattern: '>= v0.28.0'
 - name: quay.io/open-policy-agent/gatekeeper
   patterns:
-    - pattern: '>= v3.1.0-beta.5'
+  - pattern: '>= v3.1.0-beta.5'
 - name: quay.io/prometheus/alertmanager
   patterns:
   - pattern: '>= v0.19.0'
