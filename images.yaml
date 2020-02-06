@@ -83,6 +83,9 @@
   tags:
   - sha: f9fa60dab5e7a6ae4adbe972a2fc22cf7eaa148df74cde4cd7f57e7019260451
     tag: "v1.3-debian-cloudwatch"
+- name: quay.io/open-policy-agent/gatekeeper
+  patterns:
+  - pattern: '>= v3.1.0-beta.5'
 - name: gcr.io/google_containers/defaultbackend
   tags:
   - sha: ee3aa1187023d0197e3277833f19d9ef7df26cee805fef32663e06c7412239f9
