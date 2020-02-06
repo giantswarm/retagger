@@ -83,7 +83,8 @@ func (r *Registry) GetAliyunTagsWithDetails(image string) (tags []QuayTag, err e
 				r.logger.Log("level", "warn", "message", "Aliyun repository does not exist. Retagger will try to create it")
 				return aliTags, nil
 			}
-		} else if err != nil {
+		}
+		if err != nil {
 			return nil, microerror.Mask(err)
 		}
 
