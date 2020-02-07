@@ -29,11 +29,26 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 
 	// Create a reference to the external registry.
 	url := fmt.Sprintf("https://%s", job.Source.RepoPath)
-	transport := wrapTransport(http.DefaultTransport, url, job.logger)
-	externalRegistry := &dockerRegistry.Registry{
-		Client: &http.Client{Transport: transport},
-		URL:    url,
-		Logf:   dockerRegistry.Quiet, // Ignore logs
+	var externalRegistry *dockerRegistry.Registry
+	var err error
+	old := false
+	if old {
+		o := dockerRegistry.Options{
+			Logf:          dockerRegistry.Quiet,
+			DoInitialPing: false,
+		}
+		externalRegistry, err = dockerRegistry.NewCustom(url, o)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	} else {
+		transport := wrapTransport(http.DefaultTransport, url, job.logger)
+		externalRegistry = &dockerRegistry.Registry{
+			Client: &http.Client{Transport: transport},
+			URL:    url,
+			//Logf:   dockerRegistry.Quiet, // Ignore logs
+			Logf: dockerRegistry.Log,
+		}
 	}
 
 	// Find tags which match the pattern.
