@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/errors"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/cr"
 	"github.com/giantswarm/microerror"
@@ -76,6 +77,13 @@ func (r *Registry) GetAliyunTagsWithDetails(image string) (tags []QuayTag, err e
 		tagRequest.Page = requests.NewInteger(page)
 
 		crResp, err := crClient.GetRepoTags(tagRequest)
+		serverError, isAliyunError := err.(*errors.ServerError)
+		if isAliyunError {
+			if strings.Contains(serverError.Message(), "REPO_NOT_EXIST") {
+				r.logger.Log("level", "warn", "message", "Aliyun repository does not exist. Retagger will try to create it")
+				return aliTags, nil
+			}
+		}
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
