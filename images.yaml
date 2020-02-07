@@ -25,10 +25,6 @@
 - name: aquasec/kube-bench
   patterns:
   - pattern: '>= 0.2'
-- name: bitnami/kubectl
-  tags:
-  - sha: afc9e8e0e5219aeb3630c7029a0c0b7c94ab848ea1fe20b20457072705e62fb9
-    tag: 1.16
 - name: bitnami/redis
   overrideRepoName: bitnami-redis
   tags:
