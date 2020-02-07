@@ -6,6 +6,7 @@ import (
 	"net/http"
 	nurl "net/url"
 	"regexp"
+	"strings"
 	"time"
 
 	"github.com/giantswarm/backoff"
@@ -93,6 +94,11 @@ func (r *Registry) GetQuayTagsWithDetails(image string) (tags []QuayTag, err err
 			if err != nil {
 				if IsNoMorePages(err) {
 					tags = append(tags, response.Tags...)
+					return nil
+				}
+				if strings.Contains(err.Error(), "Requires authentication") {
+					msg := fmt.Sprintf("unable to list tags for %s: HTTP 401 - Requires authentication. If the repository does not exist, retagger will try to create it. If the repository exists, check that the user has access to it", image)
+					r.logger.Log("level", "warn", "message", msg)
 					return nil
 				}
 
