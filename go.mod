@@ -15,7 +15,7 @@ require (
 	github.com/docker/go-units v0.4.0 // indirect
 	github.com/docker/libtrust v0.0.0-20160708172513-aabc10ec26b7 // indirect
 	github.com/giantswarm/backoff v0.0.0-20190913091243-4dd491125192
-	github.com/giantswarm/microerror v0.0.0-20191011121515-e0ebc4ecf5a5
+	github.com/giantswarm/microerror v0.1.0
 	github.com/giantswarm/micrologger v0.0.0-20191014091141-d866337f7393
 	github.com/go-kit/kit v0.6.0 // indirect
 	github.com/go-logfmt/logfmt v0.5.0 // indirect

@@ -39,6 +39,8 @@ github.com/giantswarm/backoff v0.0.0-20190913091243-4dd491125192 h1:jguq2nu1gbvP
 github.com/giantswarm/backoff v0.0.0-20190913091243-4dd491125192/go.mod h1:kjItv/iHgl/xsprYgbnCOme1pVTiiiaZeR2ybsN4ab0=
 github.com/giantswarm/microerror v0.0.0-20191011121515-e0ebc4ecf5a5 h1:ZjMQRWyxNkGlFP8yOf+G86XH7DugnigsBpzie1R/nxM=
 github.com/giantswarm/microerror v0.0.0-20191011121515-e0ebc4ecf5a5/go.mod h1://Lo9dKJ8P2TBciuky5fDHEItccyvZOWE+B/0JiJT8A=
+github.com/giantswarm/microerror v0.1.0 h1:kQ38fLkFk3tz08Hltu6G52bTKW4vxCvp4sW5iQ7K4oI=
+github.com/giantswarm/microerror v0.1.0/go.mod h1://Lo9dKJ8P2TBciuky5fDHEItccyvZOWE+B/0JiJT8A=
 github.com/giantswarm/micrologger v0.0.0-20191014091141-d866337f7393 h1:iwdDYJLDPkWo71fPO57Q40qNsjpXlH/KNznqgByo0xA=
 github.com/giantswarm/micrologger v0.0.0-20191014091141-d866337f7393/go.mod h1:2O9GG1AfKI8px8oseWx+TTD6A6aEdUo16ZjAKv2wOVk=
 github.com/go-kit/kit v0.6.0 h1:wTifptAGIyIuir4bRyN4h7+kAa2a4eepLYVmRe5qqQ8=
