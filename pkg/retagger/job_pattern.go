@@ -1,11 +1,14 @@
 package retagger
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/Masterminds/semver/v3"
+	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	dockerRegistry "github.com/nokia/docker-registry-client/registry"
@@ -29,7 +32,8 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 
 	// Create a reference to the external registry.
 	url := fmt.Sprintf("https://%s", job.Source.RepoPath)
-	transport := wrapTransport(http.DefaultTransport, url, job.logger)
+	var transport http.RoundTripper = http.DefaultTransport
+	transport = wrapTransport(transport, url, job.logger)
 	externalRegistry := &dockerRegistry.Registry{
 		Client: &http.Client{Transport: transport},
 		URL:    url,
@@ -102,9 +106,23 @@ func (job *PatternJob) getExternalTagMatches(r *dockerRegistry.Registry, image s
 	}
 
 	// Get the tags for this image from the external registry.
-	externalRegistryTags, err := r.Tags(image)
-	if err != nil {
-		return nil, microerror.Mask(err)
+	var externalRegistryTags []string
+	{
+		o := func() error {
+			externalRegistryTags, err = r.Tags(image)
+			if err != nil && IsTrailerEOF(err) {
+				return microerror.Mask(err)
+			} else if err != nil {
+				return backoff.Permanent(err)
+			}
+			return nil
+		}
+		b := backoff.NewExponential(time.Minute, 10*time.Second)
+		n := backoff.NewNotifier(job.logger, context.Background())
+		err := backoff.RetryNotify(o, b, n)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
 	}
 
 	// Find tags matching our configured pattern.

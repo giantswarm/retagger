@@ -22,35 +22,23 @@ type backoffTransport struct {
 // retrying on 429 error using exponential backoff and passing through on success
 // or any other error or if the backoff retry time limit is reached.
 func (t *backoffTransport) RoundTrip(request *http.Request) (*http.Response, error) {
-	var innerErr error
 	var resp *http.Response
 
 	o := func() error {
-		var respErr error
-		resp, respErr = t.Transport.RoundTrip(request)
-		// Internal error, return nil to prevent retry
-		if respErr != nil {
-			innerErr = respErr
-			return nil
+		var err error
+		resp, err = t.Transport.RoundTrip(request)
+		if err != nil {
+			return backoff.Permanent(err)
+		} else if resp.StatusCode == 429 {
+			return microerror.Mask(rateLimitedError)
 		}
-		// Rate limited
-		if resp.StatusCode == 429 {
-			return rateLimitedError
-		}
-		// Not rate limited, return nil to prevent retry
 		return nil
 	}
 	b := backoff.NewExponential(time.Minute, 10*time.Second)
 	n := backoff.NewNotifier(t.logger, context.Background())
-	backoffErr := backoff.RetryNotify(o, b, n)
-
-	// Report errors unrelated to rate limiting first
-	if innerErr != nil {
-		return nil, microerror.Mask(innerErr)
-	}
-	// Rate limited and backoff time limit was reached
-	if backoffErr != nil {
-		return nil, microerror.Mask(backoffErr)
+	err := backoff.RetryNotify(o, b, n)
+	if err != nil {
+		return nil, microerror.Mask(err)
 	}
 
 	return resp, nil
