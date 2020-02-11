@@ -71,9 +71,8 @@ func (r *Registry) GetAliyunTagsWithDetails(image string) (tags []QuayTag, err e
 	tagRequest.RepoName = shortName
 
 	var aliTags []QuayTag // TODO: Make AliyunTag
-	done := false
 	page := 1
-	for !done {
+	for {
 		tagRequest.Page = requests.NewInteger(page)
 
 		crResp, err := crClient.GetRepoTags(tagRequest)
@@ -100,15 +99,9 @@ func (r *Registry) GetAliyunTagsWithDetails(image string) (tags []QuayTag, err e
 			aliTags = append(aliTags, quayTagFromTag(&tag))
 		}
 
-		// We're done when we have consumed the last page
-		if apiResponse.Data.TotalRecords%apiResponse.Data.PageSize == 0 {
-			// Results fit perfectly into page size, so the last page is total / size
-			if int64(page) == (apiResponse.Data.TotalRecords / apiResponse.Data.PageSize) {
-				done = true
-			}
-		} else if int64(page) > (apiResponse.Data.TotalRecords / apiResponse.Data.PageSize) {
-			// Results don't fit evenly into pagination, so last page is (total / size) + 1
-			done = true
+		remaining := int(apiResponse.Data.TotalRecords) - len(aliTags)
+		if remaining == 0 {
+			break
 		}
 
 		page++
