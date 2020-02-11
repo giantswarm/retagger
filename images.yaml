@@ -314,6 +314,11 @@
   tags:
   - sha: e337d03e569e53b246f4dea91359efbabe7b3ddc78878e1875d0c7aaf0e17fd5
     tag: 1f4ffc52095ac368847ce3428ea99b257003d9b9
+- name: quay.io/helmpack/chart-testing
+  overrideRepoName: helm-chart-testing
+  tags:
+  - sha: 7b99d26b07eb41c19186ef5f7ac334b93736b767d971fb46976c36908440ef82
+    tag: v2.4.0
 - name: quay.io/jetstack/cert-manager-controller
   tags:
   - sha: 61546385c284af5620ac1e861943e73164a6ac37ec76520ef43be2ec2bd769fb
