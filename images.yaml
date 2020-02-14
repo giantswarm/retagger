@@ -396,3 +396,7 @@
 - name: vault
   patterns:
   - pattern: '>= v1.2.0'
+- name: zricethezav/gitleaks
+  tags:
+  - sha: 548f474c56f6cbf94959f48e66ee99f9b63d949c9c657b105d1e4a3c0a66c985
+    tag: v3.3.0
