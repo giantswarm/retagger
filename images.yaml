@@ -31,6 +31,7 @@
   - sha: 1b56b1c2c5d737bd8029f2e2e80852c0c1ef342e36ca0940dd313d4d8a786311
     tag: 4.0.9
 - name: bobrik/curator
+  overrideRepoName: bobrik-curator
   patterns:
   - pattern: '>= 5.8.1'
 - name: busybox
