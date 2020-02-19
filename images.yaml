@@ -304,7 +304,7 @@
 - name: quay.io/giantswarm/aws-operator
   tags:
   - sha: cc7ae05237e03007df03d3956f8f09dede9311208e866c46388a5288599ecdaf
-    tag: 7.0.0 
+    tag: 7.0.0
   - sha: 2b121d7866c5808f7abfb39a8c16e1f6bd34c410c26d4ccbaa2af0e139454842
     tag: 5.6.0
 - name: quay.io/giantswarm/docker-kubectl
