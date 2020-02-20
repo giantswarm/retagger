@@ -14,6 +14,8 @@ github.com/aliyun/alibaba-cloud-sdk-go v1.60.379 h1:vzgV5tCEU+rTT1P1JirKam1KgPMe
 github.com/aliyun/alibaba-cloud-sdk-go v1.60.379/go.mod h1:v8ESoHo4SyHmuB4b1tJqDHxfTGEciD+yhvOU/5s1Rfk=
 github.com/aliyun/alibaba-cloud-sdk-go v1.60.381 h1:JhQzfLn0OBXtWvtnbhloWqvrzk/U/VeT6p7/ZtfYxD8=
 github.com/aliyun/alibaba-cloud-sdk-go v1.60.381/go.mod h1:v8ESoHo4SyHmuB4b1tJqDHxfTGEciD+yhvOU/5s1Rfk=
+github.com/aliyun/alibaba-cloud-sdk-go v1.60.382 h1:60z5uBA2aSNgoXKu6g3ajPXNhBcC19kif90ZG8DX4Qg=
+github.com/aliyun/alibaba-cloud-sdk-go v1.60.382/go.mod h1:v8ESoHo4SyHmuB4b1tJqDHxfTGEciD+yhvOU/5s1Rfk=
 github.com/armon/consul-api v0.0.0-20180202201655-eb2c6b5be1b6/go.mod h1:grANhF5doyWs3UAsr3K4I6qtAmlQcZDesFNEHPZAzj8=
 github.com/cenkalti/backoff v2.2.1+incompatible h1:tNowT99t7UNflLxfYYSlKYsBpXdEet03Pg2g16Swow4=
 github.com/cenkalti/backoff v2.2.1+incompatible/go.mod h1:90ReRw6GdpyfrHakVjL/QHaoyV4aDUVVkXQJJJ3NXXM=
