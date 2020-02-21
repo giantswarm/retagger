@@ -25,11 +25,19 @@
 - name: aquasec/kube-bench
   patterns:
   - pattern: '>= 0.2'
+- name: banst/awscli
+  tags:
+  - sha: b9f87fcde5609a752144e7f9cd08761568f3c0c3c8b3bd165bb536701034b275
+    tag: 1.18.3
 - name: bitnami/redis
   overrideRepoName: bitnami-redis
   tags:
   - sha: 1b56b1c2c5d737bd8029f2e2e80852c0c1ef342e36ca0940dd313d4d8a786311
     tag: 4.0.9
+- name: bobrik/curator
+  overrideRepoName: bobrik-curator
+  patterns:
+  - pattern: '>= 5.8.1'
 - name: busybox
   tags:
   - sha: 9f1003c480699be56815db0f8146ad2e22efea85129b5b5983d0e0fb52d9ab70
@@ -171,6 +179,10 @@
 - name: golang
   patterns:
   - pattern: '>= 1.13.1'
+- name: golangci/golangci-lint
+  tags:
+  - sha: 757ee77f748bb5d93d584a9ab5710f4149adcdacf2f3584c14b42015f7811b64
+    tag: v1.23.6
 - name: grafana/grafana
   patterns:
   - pattern: '>= 6.0.0'
@@ -192,6 +204,9 @@
   tags:
   - sha: eea825329e678c5e259ffde8e07ffc1223e851f0018fbbb50b607f3fb5beefdb
     tag: 0.1
+- name: justwatch/elasticsearch_exporter
+  patterns:
+  - pattern: '>= v1.1.0'
 - name: k8s.gcr.io/addon-resizer
   patterns:
   - pattern: '>= 1.8.7'
@@ -291,12 +306,9 @@
   tags:
   - sha: c14ea9dbf341de51c8c0858a65bfe905a0a2cc154311c959a0bfe609bfe177b5
     tag: v2.21.0
-- name: quay.io/giantswarm/docker-kubectl
-  tags:
-  - sha: 995bd3fee6899569d5d9ab77948f25d6bc2e9a95efa988de37c6b8c3095ac819
-    tag: 8cabd75bacbcdad7ac5d85efc3ca90c2fabf023b
-  - sha: 93404a39c4b83568aef2971504fecc39efc6a9b949fd84cc9814742a76033ed3
-    tag: f5cae44c480bd797dc770dd5f62d40b74063c0d7
+- name: quay.io/fluentd_elasticsearch/fluentd
+  patterns:
+  - pattern: '>= v2.9.0'
 - name: quay.io/giantswarm/docker-strongswan
   tags:
   - sha: 0deee46507d8d9c354b9e924f969dfb370083539a7130531b575e05a09603a31
