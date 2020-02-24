@@ -405,6 +405,10 @@
   tags:
   - sha: 3533054a0543e4a2eb4f4c61d68d5d3a39e5886a65d07f011d45044a5c470ccd
     tag: 0.11.1
+- name: toniblyx/prowler
+  tags:
+  - sha: 017a8fdecbb0aecd6af3446b1357ed36ef92533dd8a19c2283ad29f41b264bc3
+    tag: 2.2.0
 - name: vault
   patterns:
   - pattern: '>= v1.2.0'
