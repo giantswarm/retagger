@@ -270,16 +270,16 @@
     tag: v0.9.1
 - name: quay.io/calico/cni
   patterns:
-  - pattern: '>= v3.10.1'
+  - pattern: '>= v3.9.5'
 - name: quay.io/calico/kube-controllers
   patterns:
-  - pattern: '>= v3.10.1'
+  - pattern: '>= v3.9.5'
 - name: quay.io/calico/node
   patterns:
-  - pattern: '>= v3.10.1'
+  - pattern: '>= v3.9.5'
 - name: quay.io/calico/pod2daemon-flexvol
   patterns:
-  - pattern: '>= v3.10.1'
+  - pattern: '>= v3.9.5'
 - name: quay.io/calico/typha
   patterns:
   - pattern: '>= v3.10.1'
