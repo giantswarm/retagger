@@ -178,7 +178,7 @@
     tag: v2.6.2-v1.6.0
 - name: golang
   patterns:
-  - pattern: '>= 1.13.1'
+  - pattern: '>= 1.13.1-alpine3.10'
 - name: golangci/golangci-lint
   tags:
   - sha: 757ee77f748bb5d93d584a9ab5710f4149adcdacf2f3584c14b42015f7811b64
