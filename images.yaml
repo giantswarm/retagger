@@ -181,8 +181,8 @@
   - pattern: '>= 1.13.1'
 - name: golangci/golangci-lint
   tags:
-  - sha: 757ee77f748bb5d93d584a9ab5710f4149adcdacf2f3584c14b42015f7811b64
-    tag: v1.23.6
+  - sha: 05764fbd373c2b2c44186b0a98774b37499cbe71d41854def5487ead8b9861b5
+    tag: v1.23.8
 - name: grafana/grafana
   patterns:
   - pattern: '>= 6.0.0'
