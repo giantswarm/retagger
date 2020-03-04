@@ -17,9 +17,7 @@ require (
 	github.com/giantswarm/backoff v0.0.0-20190913091243-4dd491125192
 	github.com/giantswarm/microerror v0.1.0
 	github.com/giantswarm/micrologger v0.0.0-20191014091141-d866337f7393
-	github.com/go-kit/kit v0.6.0 // indirect
 	github.com/go-logfmt/logfmt v0.5.0 // indirect
-	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/gorilla/mux v1.7.3 // indirect
 	github.com/json-iterator/go v1.1.9 // indirect
