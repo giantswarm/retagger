@@ -1,16 +1,6 @@
 - name: alpine
-  tags:
-  - sha: 7df6db5aa61ae9480f52f0b3a06a140ab98d427f86d8d5de0bedab9b8df6b1c0
-    tag: "3.7"
-  - sha: 769fddc7cc2f0a1c35abb2f91432e8beecf83916c421420e6a6da9f8975464b6
-    tag: "3.9"
-    customImages:
-    - tagSuffix: giantswarm
-      dockerfileOptions:
-      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
-      - USER giantswarm
-  - sha: 72c42ed48c3a2db31b7dafe17d275b634664a708d901ec9fd57b1529280f01fb
-    tag: "3.10"
+  patterns:
+  - pattern: '>= 3.9'
     customImages:
     - tagSuffix: giantswarm
       dockerfileOptions:
