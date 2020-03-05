@@ -128,7 +128,7 @@ func (job *PatternJob) getExternalTagMatches(r *dockerRegistry.Registry, image s
 	// Find tags matching our configured pattern.
 	var matches []string
 	for _, t := range externalRegistryTags {
-		job.logger.Log("level", "debug", "message", fmt.Sprintf("External Tag %s ", t))
+		job.logger.Log("level", "debug", "message", fmt.Sprintf("Checking external tag: %s ", t))
 		v, err := semver.NewVersion(t)
 		if err != nil { // We do not care if the version is not semver.
 			continue
@@ -136,7 +136,7 @@ func (job *PatternJob) getExternalTagMatches(r *dockerRegistry.Registry, image s
 
 		m, errs := c.Validate(v)
 		for _, e := range errs {
-			job.logger.Log("level", "debug", "message", fmt.Sprintf("Image %s does not fulfill constraint %s because %s", image, pattern, e.Error()))
+			job.logger.Log("level", "debug", "message", fmt.Sprintf("Image %s:%s does not fulfill constraint %s because %s", image, t, pattern, e.Error()))
 		}
 
 		if m {
