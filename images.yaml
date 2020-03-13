@@ -302,6 +302,9 @@
 - name: quay.io/fluentd_elasticsearch/fluentd
   patterns:
   - pattern: '>= v2.9.0'
+- name: quay.io/giantswarm/amazon-k8s-cni
+  patterns:
+  - pattern: '>= v1.6.0'
 - name: quay.io/giantswarm/docker-strongswan
   tags:
   - sha: 0deee46507d8d9c354b9e924f969dfb370083539a7130531b575e05a09603a31
