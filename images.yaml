@@ -288,9 +288,8 @@
   - sha: 7806805c93b20a168d0bbbd25c6a213f00ac58a511c47e8fa6409543528a204e
     tag: v0.11.0-amd64
 - name: quay.io/coreos/kube-state-metrics
-  tags:
-  - sha: 99e18bb3ca7344cb8ece2b5ced2599d561d2de2306531366e8198364d17b0f22
-    tag: v1.9.2
+  patterns:
+  - pattern: '>= v1.9.2'
 - name: quay.io/coreos/prometheus-operator
   tags:
   - sha: 97697df680ea4c7e70c4cb4af5bdc44f7a70b25be7afde70bd921a658e4c62ec
