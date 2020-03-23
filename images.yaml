@@ -67,12 +67,6 @@
   tags:
   - sha: 72d816c99cc86b117baf04385020121f71015d7f5f9eba2a59e72532d645d38f
     tag: 7.6.1
-    customImages:
-    - tagSuffix: giantswarm
-      dockerfileOptions:
-      - USER root
-      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
-      - USER giantswarm
 - name: fluent/fluent-bit
   tags:
   - sha: 6861ee5ea81fbbacf8802c622d9305930b341acc0800bbf30205b4d74ce2b486
