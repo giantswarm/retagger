@@ -187,6 +187,10 @@
 - name: grafana/promtail
   patterns:
   - pattern: '>= v1.2.0'
+- name: instrumenta/conftest
+  tags:
+  - sha: 5edb74aecebc29967ecc694c89c87ad9fda33e6e72c1459dee697e2a55ac2bba
+    tag: v0.18.1
 - name: jgsqware/fluentd-loki-plugin
   tags:
   - sha: 7dbe2ccfbf2eb7b29367f6a3ee7c0976c3b45e4e21d6363cb43b156c17488259
