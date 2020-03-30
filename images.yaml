@@ -328,6 +328,10 @@
   tags:
   - sha: 7b99d26b07eb41c19186ef5f7ac334b93736b767d971fb46976c36908440ef82
     tag: v2.4.0
+- name: quay.io/jetstack/cert-manager-cainjector
+  tags:
+  - sha: b87bb02d46717a38ea32925930495062feeb7d67fcb113bd13cd2dfdd73686be
+    tag: v0.14.1
 - name: quay.io/jetstack/cert-manager-controller
   tags:
   - sha: 61546385c284af5620ac1e861943e73164a6ac37ec76520ef43be2ec2bd769fb
@@ -342,10 +346,16 @@
     tag: v0.13.1
   - sha: cbecba48fdbf223bb2d88b0876821134c0dd3b5fb23e32626618de705d2f1d05
     tag: v0.14.0
+  - sha: 03b97ae964166d0d5df0331e118667fda5fd0d0a313688a3502c54afd188645f
+    tag: v0.14.1
 - name: quay.io/jetstack/cert-manager-ingress-shim
   tags:
   - sha: 544b8602ee566d7ca22aa9e76a92dde4c2ca8dab642f75ea3a4b0a577193632a
     tag: v0.2.5
+- name: quay.io/jetstack/cert-manager-webhook
+  tags:
+  - sha: bd5325e5f18e93978eb69ff2cb798a46fff874beaedfed47ec9d682c97600c9e
+    tag: v0.14.1
 - name: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
   patterns:
   - pattern: '>= v0.28.0'
