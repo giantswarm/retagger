@@ -172,8 +172,8 @@
   patterns:
   - pattern: '>= 1.13.1'
   tags:
-  - sha: 6578dc0c1bde86ccef90e23da3cdaa77fe9208d23c1bb31d942c8b663a519fa5
-    tag: 1.14.0-alpine3.11
+  - sha: 244a736db4a1d2611d257e7403c729663ce2eb08d4628868f9d9ef2735496659
+    tag: 1.14.1-alpine3.11
 - name: golangci/golangci-lint
   tags:
   - sha: 05764fbd373c2b2c44186b0a98774b37499cbe71d41854def5487ead8b9861b5
