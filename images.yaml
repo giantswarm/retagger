@@ -249,6 +249,9 @@
   tags:
   - sha: 0fb320e2a1b1620b4905facb3447e3d84ad36da0b2c8aa8fe3a5a81d1187b884
     tag: 1.13.12
+- name: omnition/opencensus-collector
+  patterns:
+  - pattern: '>= 0.1.11'
 - name: prom/cloudwatch-exporter
   tags:
   - sha: 7ce6d17ad3360ed5d5dddc57ebf13dc7d676900c40a22b3144a8a17af352c399
