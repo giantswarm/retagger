@@ -68,17 +68,15 @@
   - sha: 72d816c99cc86b117baf04385020121f71015d7f5f9eba2a59e72532d645d38f
     tag: 7.6.1
 - name: fluent/fluent-bit
-  tags:
-  - sha: 6861ee5ea81fbbacf8802c622d9305930b341acc0800bbf30205b4d74ce2b486
-    tag: 0.14.6
+  patterns:
+  - pattern: '>= 1.[0-9]+.[0-9]+'
 - name: fluent/fluent-bit-0.13-dev
   tags:
   - sha: 0ae482ad3e8d951a66090b968389f2a11b0b16b8a208b5edb4ccb0ca5800b90d
     tag: "0.18"
 - name: fluent/fluentd-kubernetes-daemonset
-  tags:
-  - sha: f9fa60dab5e7a6ae4adbe972a2fc22cf7eaa148df74cde4cd7f57e7019260451
-    tag: "v1.3-debian-cloudwatch"
+  patterns:
+  - pattern: '>= 1.[0-9]+.[0-9]+-debian-cloudwatch-1.0'
 - name: gcr.io/google_containers/defaultbackend
   tags:
   - sha: ee3aa1187023d0197e3277833f19d9ef7df26cee805fef32663e06c7412239f9
