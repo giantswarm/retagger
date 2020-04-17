@@ -4,7 +4,11 @@
     customImages:
     - tagSuffix: giantswarm
       dockerfileOptions:
-      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm && apk add --no-cache sudo && addgroup giantswarm wheel && echo "%wheel ALL=(ALL)  NOPASSWD: ALL" >> /etc/sudoers
+      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+      - USER giantswarm
+    - tagSuffix: giantswarm-sysctl
+      dockerfileOptions:
+      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm && apk add --no-cache sudo && echo "giantswarm  ALL = NOPASSWD: /sbin/sysctl" >> /etc/sudoers
       - USER giantswarm
 - name: amazon/opendistro-for-elasticsearch
   patterns:
