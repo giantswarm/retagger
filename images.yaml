@@ -25,6 +25,10 @@
   tags:
   - sha: 2d55b56b04c06a4992729ad5430d2fae1a6833bd9c4a87a00173ff4563bbee40
     tag: 1.17-alpine
+- name: quay.io/pusher/oauth2_proxy
+  tags:
+  - sha: 1fad3f247a8edeceead03230d833fcb4c3935a3a57b83787690f15f7daa6b59b
+    tag: v5.1.0
 - name: aquasec/kube-bench
   patterns:
   - pattern: '>= 0.2'
