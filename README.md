@@ -88,6 +88,8 @@ A `pattern` may also include all optional features of a `tag`, such as a `tagSuf
 
 Images can be added by SHA or by pattern. It is preferable to use a SHA whenever possible as this avoids tagging unnecessary images and guarantees a certain known image. Patterns should be used when automation is in place to handle new images, and not simply used as a convenience.
 
+**Note:** Images in the `images.yaml` file need to be sorted alphabetically, otherwise CI will stay red!
+
 ### By SHA
 
 To add an image to the configuration file `images.yaml`, find out the SHA of the
