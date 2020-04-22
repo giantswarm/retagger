@@ -17,18 +17,6 @@
 - name: amazon/opendistro-for-elasticsearch-kibana
   patterns:
   - pattern: '>= 1.3.0'
-- name: peaceiris/hugo
-  tags:
-  - sha: 6cbae1884fd4c097c85d452d4ff9cde3bb8b198ced56ba2db8088dec5abf64db
-    tag: v0.68.3
-- name: nginxinc/nginx-unprivileged
-  tags:
-  - sha: 2d55b56b04c06a4992729ad5430d2fae1a6833bd9c4a87a00173ff4563bbee40
-    tag: 1.17-alpine
-- name: quay.io/pusher/oauth2_proxy
-  tags:
-  - sha: 1fad3f247a8edeceead03230d833fcb4c3935a3a57b83787690f15f7daa6b59b
-    tag: v5.1.0
 - name: aquasec/kube-bench
   patterns:
   - pattern: '>= 0.2'
@@ -267,9 +255,17 @@
   tags:
   - sha: 0fb320e2a1b1620b4905facb3447e3d84ad36da0b2c8aa8fe3a5a81d1187b884
     tag: 1.13.12
+- name: nginxinc/nginx-unprivileged
+  tags:
+  - sha: 2d55b56b04c06a4992729ad5430d2fae1a6833bd9c4a87a00173ff4563bbee40
+    tag: 1.17-alpine
 - name: omnition/opencensus-collector
   patterns:
   - pattern: '>= 0.1.11'
+- name: peaceiris/hugo
+  tags:
+  - sha: 6cbae1884fd4c097c85d452d4ff9cde3bb8b198ced56ba2db8088dec5abf64db
+    tag: v0.68.3
 - name: prom/cloudwatch-exporter
   tags:
   - sha: 7ce6d17ad3360ed5d5dddc57ebf13dc7d676900c40a22b3144a8a17af352c399
@@ -400,6 +396,10 @@
       - USER root
       - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
       - USER giantswarm
+- name: quay.io/pusher/oauth2_proxy
+  tags:
+  - sha: 1fad3f247a8edeceead03230d833fcb4c3935a3a57b83787690f15f7daa6b59b
+    tag: v5.1.0
 - name: quay.io/uswitch/kiam
   tags:
   - sha: b24ef28b4a06371d10b6b9fea8a2d0a3b342dbf4928e798c07a208995e3945e3
