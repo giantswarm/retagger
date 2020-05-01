@@ -225,6 +225,18 @@
 - name: k8s.gcr.io/cluster-autoscaler
   patterns:
   - pattern: '>= v1.15.4'
+- name: k8s.gcr.io/kube-apiserver
+  patterns:
+  - pattern: '>= v1.16'
+- name: k8s.gcr.io/kube-controller-manager
+  patterns:
+  - pattern: '>= v1.16'
+- name: k8s.gcr.io/kube-proxy
+  patterns:
+  - pattern: '>= v1.16'
+- name: k8s.gcr.io/kube-scheduler
+  patterns:
+  - pattern: '>= v1.16'
 - name: k8s.gcr.io/hyperkube
   patterns:
   - pattern: '>= v1.15'
