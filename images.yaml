@@ -1,20 +1,15 @@
 - name: alpine
-  tags:
-  - sha: 7df6db5aa61ae9480f52f0b3a06a140ab98d427f86d8d5de0bedab9b8df6b1c0
-    tag: "3.7"
-  - sha: 769fddc7cc2f0a1c35abb2f91432e8beecf83916c421420e6a6da9f8975464b6
-    tag: "3.9"
+  patterns:
+  - pattern: '>= 3.9'
     customImages:
     - tagSuffix: giantswarm
       dockerfileOptions:
       - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
       - USER giantswarm
-  - sha: 72c42ed48c3a2db31b7dafe17d275b634664a708d901ec9fd57b1529280f01fb
-    tag: "3.10"
-    customImages:
-    - tagSuffix: giantswarm
+    - tagSuffix: giantswarm-sysctl
       dockerfileOptions:
       - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+      - 'RUN apk add --no-cache sudo && echo "giantswarm  ALL = NOPASSWD: /sbin/sysctl" >> /etc/sudoers'
       - USER giantswarm
 - name: amazon/opendistro-for-elasticsearch
   patterns:
@@ -42,6 +37,10 @@
   tags:
   - sha: 9f1003c480699be56815db0f8146ad2e22efea85129b5b5983d0e0fb52d9ab70
     tag: 1.31.0
+- name: centos
+  tags:
+  - sha: fe8d824220415eed5477b63addf40fb06c3b049404242b31982106ac204f6700
+    tag: 8.1.1911
 - name: cibuilds/github
   tags:
   - sha: 9029b2f52ecd28aacec2fd8a86a321dc9f77a46df251de5e3f157dd6e80baea0
@@ -71,14 +70,15 @@
   - sha: 4f2bd6a008c41d83aeb8e5ac95412d47b667d21d4df7c67c41b9baec15a78164
     tag: 6.1.4
 - name: docker.elastic.co/kibana/kibana-oss
-  comment: via https://www.elastic.co/guide/en/kibana/6.1/_pulling_the_image.html
+  comment: via https://www.elastic.co/guide/en/kibana/7.6/docker.html#pull-image
+  patterns:
+  - pattern: '>= 7.6.1'
   tags:
-  - sha: f9addd642b184a81daa77c4301a800009aa714296220549ad1c61a22ca9bb8d3
-    tag: 6.1.4
+  - sha: 72d816c99cc86b117baf04385020121f71015d7f5f9eba2a59e72532d645d38f
+    tag: 7.6.1
 - name: fluent/fluent-bit
-  tags:
-  - sha: 6861ee5ea81fbbacf8802c622d9305930b341acc0800bbf30205b4d74ce2b486
-    tag: 0.14.6
+  patterns:
+  - pattern: '>= 1.x.x'
 - name: fluent/fluent-bit-0.13-dev
   tags:
   - sha: 0ae482ad3e8d951a66090b968389f2a11b0b16b8a208b5edb4ccb0ca5800b90d
@@ -87,6 +87,8 @@
   tags:
   - sha: f9fa60dab5e7a6ae4adbe972a2fc22cf7eaa148df74cde4cd7f57e7019260451
     tag: "v1.3-debian-cloudwatch"
+  - sha: da2c32a98e87809ecc6c2aea3be0d0b0f5cab31c4d75b6fb46b86d76d5554f23
+    tag: "v1.9.3-debian-cloudwatch-1.0"
 - name: gcr.io/google_containers/defaultbackend
   tags:
   - sha: ee3aa1187023d0197e3277833f19d9ef7df26cee805fef32663e06c7412239f9
@@ -179,10 +181,13 @@
 - name: golang
   patterns:
   - pattern: '>= 1.13.1'
+  tags:
+  - sha: 244a736db4a1d2611d257e7403c729663ce2eb08d4628868f9d9ef2735496659
+    tag: 1.14.1-alpine3.11
 - name: golangci/golangci-lint
   tags:
-  - sha: 757ee77f748bb5d93d584a9ab5710f4149adcdacf2f3584c14b42015f7811b64
-    tag: v1.23.6
+  - sha: 05764fbd373c2b2c44186b0a98774b37499cbe71d41854def5487ead8b9861b5
+    tag: v1.23.8
 - name: grafana/grafana
   patterns:
   - pattern: '>= 6.0.0'
@@ -192,6 +197,17 @@
 - name: grafana/promtail
   patterns:
   - pattern: '>= v1.2.0'
+- name: instrumenta/conftest
+  tags:
+  - sha: 5edb74aecebc29967ecc694c89c87ad9fda33e6e72c1459dee697e2a55ac2bba
+    tag: v0.18.1
+- name: jaegertracing/all-in-one
+  overrideRepoName: jaeger-all-in-one
+  patterns:
+  - pattern: '>= 1.17.0'
+- name: jaegertracing/jaeger-operator
+  patterns:
+  - pattern: '>= 1.17.0'
 - name: jgsqware/fluentd-loki-plugin
   tags:
   - sha: 7dbe2ccfbf2eb7b29367f6a3ee7c0976c3b45e4e21d6363cb43b156c17488259
@@ -216,6 +232,18 @@
 - name: k8s.gcr.io/hyperkube
   patterns:
   - pattern: '>= v1.15'
+- name: k8s.gcr.io/kube-apiserver
+  patterns:
+  - pattern: '>= v1.16.9'
+- name: k8s.gcr.io/kube-controller-manager
+  patterns:
+  - pattern: '>= v1.16.9'
+- name: k8s.gcr.io/kube-proxy
+  patterns:
+  - pattern: '>= v1.16.9'
+- name: k8s.gcr.io/kube-scheduler
+  patterns:
+  - pattern: '>= v1.16.9'
 - name: k8s.gcr.io/metrics-server-amd64
   tags:
   - sha: 4ca116565ff6a46e582bada50ba3550f95b368db1d2415829241a565a6c38e2a
@@ -250,6 +278,17 @@
   tags:
   - sha: 0fb320e2a1b1620b4905facb3447e3d84ad36da0b2c8aa8fe3a5a81d1187b884
     tag: 1.13.12
+- name: nginxinc/nginx-unprivileged
+  tags:
+  - sha: 2d55b56b04c06a4992729ad5430d2fae1a6833bd9c4a87a00173ff4563bbee40
+    tag: 1.17-alpine
+- name: omnition/opencensus-collector
+  patterns:
+  - pattern: '>= 0.1.11'
+- name: peaceiris/hugo
+  tags:
+  - sha: 6cbae1884fd4c097c85d452d4ff9cde3bb8b198ced56ba2db8088dec5abf64db
+    tag: v0.68.3
 - name: prom/cloudwatch-exporter
   tags:
   - sha: 7ce6d17ad3360ed5d5dddc57ebf13dc7d676900c40a22b3144a8a17af352c399
@@ -270,16 +309,16 @@
     tag: v0.9.1
 - name: quay.io/calico/cni
   patterns:
-  - pattern: '>= v3.10.1'
+  - pattern: '>= v3.9.5'
 - name: quay.io/calico/kube-controllers
   patterns:
-  - pattern: '>= v3.10.1'
+  - pattern: '>= v3.9.5'
 - name: quay.io/calico/node
   patterns:
-  - pattern: '>= v3.10.1'
+  - pattern: '>= v3.9.5'
 - name: quay.io/calico/pod2daemon-flexvol
   patterns:
-  - pattern: '>= v3.10.1'
+  - pattern: '>= v3.9.5'
 - name: quay.io/calico/typha
   patterns:
   - pattern: '>= v3.10.1'
@@ -295,9 +334,8 @@
   - sha: 7806805c93b20a168d0bbbd25c6a213f00ac58a511c47e8fa6409543528a204e
     tag: v0.11.0-amd64
 - name: quay.io/coreos/kube-state-metrics
-  tags:
-  - sha: 99e18bb3ca7344cb8ece2b5ced2599d561d2de2306531366e8198364d17b0f22
-    tag: v1.9.2
+  patterns:
+  - pattern: '>= v1.9.2'
 - name: quay.io/coreos/prometheus-operator
   tags:
   - sha: 97697df680ea4c7e70c4cb4af5bdc44f7a70b25be7afde70bd921a658e4c62ec
@@ -309,6 +347,9 @@
 - name: quay.io/fluentd_elasticsearch/fluentd
   patterns:
   - pattern: '>= v2.9.0'
+- name: quay.io/giantswarm/amazon-k8s-cni
+  patterns:
+  - pattern: '>= v1.6.0'
 - name: quay.io/giantswarm/docker-strongswan
   tags:
   - sha: 0deee46507d8d9c354b9e924f969dfb370083539a7130531b575e05a09603a31
@@ -331,20 +372,19 @@
   tags:
   - sha: 7b99d26b07eb41c19186ef5f7ac334b93736b767d971fb46976c36908440ef82
     tag: v2.4.0
+- name: quay.io/jetstack/cert-manager-cainjector
+  patterns:
+  - pattern: '>= v0.14.2'
 - name: quay.io/jetstack/cert-manager-controller
-  tags:
-  - sha: 61546385c284af5620ac1e861943e73164a6ac37ec76520ef43be2ec2bd769fb
-    tag: v0.2.5
-  - sha: 3ff035464d9349f5b1d23a2fef9c9b8419026671506a5be5cbae6e958ac46802
-    tag: v0.4.0
-  - sha: 0f7e64825eddb1f7292a9f190a421b305a9237d21757ae27fb06d1d0f12281df
-    tag: v0.9.0
-  - sha: d76757df294f9ecd097e1dbda67e2aeac01cd3ae2b71d37cf4b70d6b7336c0ad
-    tag: v0.13.0
+  patterns:
+  - pattern: '>= v0.14.2'
 - name: quay.io/jetstack/cert-manager-ingress-shim
   tags:
   - sha: 544b8602ee566d7ca22aa9e76a92dde4c2ca8dab642f75ea3a4b0a577193632a
     tag: v0.2.5
+- name: quay.io/jetstack/cert-manager-webhook
+  patterns:
+  - pattern: '>= v0.14.2'
 - name: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
   patterns:
   - pattern: '>= v0.28.0'
@@ -379,6 +419,10 @@
       - USER root
       - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
       - USER giantswarm
+- name: quay.io/pusher/oauth2_proxy
+  tags:
+  - sha: 1fad3f247a8edeceead03230d833fcb4c3935a3a57b83787690f15f7daa6b59b
+    tag: v5.1.0
 - name: quay.io/uswitch/kiam
   tags:
   - sha: b24ef28b4a06371d10b6b9fea8a2d0a3b342dbf4928e798c07a208995e3945e3
@@ -399,15 +443,23 @@
     tag: v0.5.18
 - name: shelmangroup/coreos-nvidia-driver-installer
   tags:
-  - sha: 57be3ae881d61ea5f55ad6068bcc61708515ad17994884170b3e5df5b40856d3
-    tag: 1.0.0
+  - sha: cbe17171eb3eb3fee95e1e47456bdfeb38fe0d67acd30f6ffa2f7645f2174782
+    tag: 1.1.0
 - name: sysdig/falco
   tags:
   - sha: 3533054a0543e4a2eb4f4c61d68d5d3a39e5886a65d07f011d45044a5c470ccd
     tag: 0.11.1
+- name: toniblyx/prowler
+  tags:
+  - sha: 017a8fdecbb0aecd6af3446b1357ed36ef92533dd8a19c2283ad29f41b264bc3
+    tag: 2.2.0
 - name: vault
   patterns:
   - pattern: '>= v1.2.0'
+- name: weaveworks/watch
+  tags:
+  - sha: bb113953e19fff158de017c447be337aa7a3709c3223aeeab4a5bae50ee6f159
+    tag: master-5b2a6e5
 - name: zricethezav/gitleaks
   tags:
   - sha: 548f474c56f6cbf94959f48e66ee99f9b63d949c9c657b105d1e4a3c0a66c985
