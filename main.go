@@ -14,7 +14,7 @@ import (
 func main() {
 	err := mainE(context.Background())
 	if err != nil {
-		panic(microerror.Stack(err))
+		panic(microerror.JSON(err))
 	}
 }
 
@@ -47,7 +47,7 @@ func mainE(ctx context.Context) error {
 
 	err = rootCommand.Execute()
 	if err != nil {
-		logger.LogCtx(ctx, "level", "error", "message", "failed to execute command", "stack", microerror.Stack(err))
+		logger.LogCtx(ctx, "level", "error", "message", "failed to execute command", "stack", microerror.JSON(err))
 		os.Exit(1)
 	}
 

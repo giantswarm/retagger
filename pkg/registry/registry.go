@@ -89,7 +89,7 @@ func New(config Config) (*Registry, error) {
 	{
 		dockerClient, err = dockerclient.NewClientWithOpts(dockerclient.FromEnv, dockerclient.WithVersion("1.38"))
 		if err != nil {
-			return nil, microerror.Maskf(err, "dockerclient.New")
+			return nil, microerror.Mask(err)
 		}
 	}
 
