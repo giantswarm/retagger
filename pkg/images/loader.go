@@ -14,7 +14,7 @@ func FromFile(filePath string) (Images, error) {
 	{
 		yamlFile, err = ioutil.ReadFile(filePath)
 		if err != nil {
-			return nil, microerror.Mask(err)
+			return nil, microerror.Maskf(executionFailedError, "failed to read file %#q with error %#q", filePath, err)
 		}
 	}
 
@@ -22,7 +22,7 @@ func FromFile(filePath string) (Images, error) {
 	{
 		err = yaml.Unmarshal(yamlFile, &images)
 		if err != nil {
-			return nil, microerror.Mask(err)
+			return nil, microerror.Maskf(executionFailedError, "failed to parse YAML file %#q with error %#q", filePath, err)
 		}
 	}
 	return images, nil
