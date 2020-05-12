@@ -37,6 +37,10 @@
   tags:
   - sha: 9f1003c480699be56815db0f8146ad2e22efea85129b5b5983d0e0fb52d9ab70
     tag: 1.31.0
+- name: centos
+  tags:
+  - sha: fe8d824220415eed5477b63addf40fb06c3b049404242b31982106ac204f6700
+    tag: 8.1.1911
 - name: cibuilds/github
   tags:
   - sha: 9029b2f52ecd28aacec2fd8a86a321dc9f77a46df251de5e3f157dd6e80baea0
