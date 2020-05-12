@@ -54,7 +54,7 @@ func IsDocker(err error) bool {
 
 func IsDockerLoginFailed(response registry.AuthenticateOKBody, err error) error {
 	if err != nil {
-		return microerror.Maskf(err, "could not login to registry")
+		return microerror.Mask(err)
 	} else if response.Status != "Login Succeeded" {
 		return microerror.Mask(dockerError)
 	}

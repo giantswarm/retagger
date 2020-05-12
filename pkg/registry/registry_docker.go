@@ -49,7 +49,7 @@ func (r *Registry) PullImage(image string, sha string) error {
 
 	res, err := r.docker.ImagePull(context.Background(), shaName, types.ImagePullOptions{})
 	if err != nil {
-		return microerror.Maskf(err, "could not pull image")
+		return microerror.Mask(err)
 	}
 	defer res.Close()
 	err = r.logDocker(res)
@@ -81,7 +81,7 @@ func (r *Registry) TagSha(sourceImage, sha, destinationImage, destinationTag str
 
 	err := r.docker.ImageTag(context.Background(), imageSha, retaggedNameWithTag)
 	if err != nil {
-		return "", microerror.Maskf(err, "could not tag image")
+		return "", microerror.Mask(err)
 	}
 
 	return retaggedNameWithTag, nil
