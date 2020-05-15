@@ -282,6 +282,8 @@
   tags:
   - sha: 2d55b56b04c06a4992729ad5430d2fae1a6833bd9c4a87a00173ff4563bbee40
     tag: 1.17-alpine
+  - sha: ae4131942b2e200dd06cbc52915b6972275ad56d1a37788661d65ead039d3cf3
+    tag: 1.18-alpine
 - name: omnition/opencensus-collector
   patterns:
   - pattern: '>= 0.1.11'
@@ -289,6 +291,8 @@
   tags:
   - sha: 6cbae1884fd4c097c85d452d4ff9cde3bb8b198ced56ba2db8088dec5abf64db
     tag: v0.68.3
+  - sha: 6cb1c7beefed6b8a0bef324e44c01a7ba7fa464bbbbc4d60e0fb7f0fbd31ef75
+    tag: v0.70.0
 - name: prom/cloudwatch-exporter
   tags:
   - sha: 7ce6d17ad3360ed5d5dddc57ebf13dc7d676900c40a22b3144a8a17af352c399
