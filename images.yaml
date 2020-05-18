@@ -4,6 +4,7 @@
     customImages:
     - tagSuffix: giantswarm
       dockerfileOptions:
+      - RUN apk add --no-cache ca-certificates
       - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
       - USER giantswarm
     - tagSuffix: giantswarm-sysctl
