@@ -420,26 +420,19 @@
   - sha: d8da0790760c279d961e63aa711fac3fd6a3db237eccea3c8a21239dca64805c
     tag: v0.9.0
 - name: quay.io/prometheus/node-exporter
-  tags:
-  - sha: fc004c4a3d1096d5a0f144b1093daa9257a573ce1fde5a9b8511e59a7080a1bb
-    tag: v0.15.1
-  - sha: 1b129a3801a0440f9c5b2afb20082dfdb31bf6092b561f5f249531130000cb83
-    tag: v0.17.0
-  - sha: b2dd31b0d23fda63588674e40fd8d05010d07c5d4ac37163fc596ba9065ce38d
-    tag: v0.18.0
-    customImages:
-    - tagSuffix: giantswarm
-      dockerfileOptions:
-      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
-      - USER giantswarm
-  - sha: a2f29256e53cc3e0b64d7a472512600b2e9410347d53cdc85b49f659c17e02ee
-    tag: v0.18.1
+  patterns:
+  - pattern: '>= v0.18.0'
     customImages:
     - tagSuffix: giantswarm
       dockerfileOptions:
       - USER root
       - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
       - USER giantswarm
+  tags:
+  - sha: fc004c4a3d1096d5a0f144b1093daa9257a573ce1fde5a9b8511e59a7080a1bb
+    tag: v0.15.1
+  - sha: 1b129a3801a0440f9c5b2afb20082dfdb31bf6092b561f5f249531130000cb83
+    tag: v0.17.0
 - name: quay.io/pusher/oauth2_proxy
   tags:
   - sha: 1fad3f247a8edeceead03230d833fcb4c3935a3a57b83787690f15f7daa6b59b
