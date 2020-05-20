@@ -356,13 +356,13 @@
   - pattern: '>= v1.9.2'
 - name: quay.io/coreos/prometheus-config-reloader
   patterns:
-  - pattern: '>= v0.39.0'
+  - pattern: '>= v0.38.1'
 - name: quay.io/coreos/prometheus-operator
   tags:
   - sha: 97697df680ea4c7e70c4cb4af5bdc44f7a70b25be7afde70bd921a658e4c62ec
     tag: v0.30.1
   patterns:
-  - pattern: '>= 0.39.0'
+  - pattern: '>= 0.38.1'
 - name: quay.io/dexidp/dex
   tags:
   - sha: c14ea9dbf341de51c8c0858a65bfe905a0a2cc154311c959a0bfe609bfe177b5
