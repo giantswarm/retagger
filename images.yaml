@@ -99,7 +99,7 @@
 - name: quay.io/fluentd_elasticsearch/fluentd
   comment: |
     see https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/fluentd-elasticsearch/fluentd-es-ds.yaml
-    and it's used at https://github.com/giantswarm/fluentd-elasticsearch-app/ 
+    and it's used at https://github.com/giantswarm/fluentd-elasticsearch-app/
   patterns:
   - pattern: '>= v3.0.1'
 - name: gcr.io/google_containers/kube-state-metrics
