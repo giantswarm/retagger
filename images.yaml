@@ -96,11 +96,12 @@
     tag: "1.0"
   - sha: a64c8ed5df00c9f238ecdeb28eb4ed226faace573695e290a99d92d503593e87
     tag: "1.2"
-- name: gcr.io/google_containers/fluentd-elasticsearch
-  comment: see https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/fluentd-elasticsearch/fluentd-es-ds.yaml
-  tags:
-  - sha: b8c94527b489fb61d3d81ce5ad7f3ddbb7be71e9620a3a36e2bede2f2e487d73
-    tag: v2.0.4
+- name: quay.io/fluentd_elasticsearch/fluentd
+  comment: |
+    see https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/fluentd-elasticsearch/fluentd-es-ds.yaml
+    and it's used at https://github.com/giantswarm/fluentd-elasticsearch-app/ 
+  patterns:
+  - pattern: '>= v3.0.1'
 - name: gcr.io/google_containers/kube-state-metrics
   tags:
   - sha: 953a3b6bf0046333c656fcfa2fc3a08f4055dc3fbd5b1dcdcdf865a2534db526
