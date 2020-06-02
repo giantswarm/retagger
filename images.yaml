@@ -384,8 +384,8 @@
 - name: quay.io/helmpack/chart-testing
   overrideRepoName: helm-chart-testing
   tags:
-  - sha: 7b99d26b07eb41c19186ef5f7ac334b93736b767d971fb46976c36908440ef82
-    tag: v2.4.0
+  - sha: 55fb51929186d4dc8b0821569151a39283918785447628fb2e28f87d9b2937d2
+    tag: v3.0.0-rc.1
 - name: quay.io/jetstack/cert-manager-cainjector
   patterns:
   - pattern: '>= v0.14.2'
