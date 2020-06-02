@@ -88,10 +88,6 @@
 - name: fluent/fluent-bit
   patterns:
   - pattern: '>= 1.x.x'
-- name: fluent/fluent-bit-0.13-dev
-  tags:
-  - sha: 0ae482ad3e8d951a66090b968389f2a11b0b16b8a208b5edb4ccb0ca5800b90d
-    tag: "0.18"
 - name: fluent/fluentd-kubernetes-daemonset
   tags:
   - sha: f9fa60dab5e7a6ae4adbe972a2fc22cf7eaa148df74cde4cd7f57e7019260451
@@ -104,14 +100,6 @@
     tag: "1.0"
   - sha: a64c8ed5df00c9f238ecdeb28eb4ed226faace573695e290a99d92d503593e87
     tag: "1.2"
-- name: gcr.io/google_containers/kube-state-metrics
-  tags:
-  - sha: 953a3b6bf0046333c656fcfa2fc3a08f4055dc3fbd5b1dcdcdf865a2534db526
-    tag: v1.2.0
-- name: gcr.io/google_containers/nginx-ingress-controller
-  tags:
-  - sha: 03fd8fc46018d09b4050d4daaf50bff73c80936994b374319ed33cbb2c1684f4
-    tag: 0.9.0-beta.11
 - name: gcr.io/google_containers/pause-amd64
   tags:
   - sha: 59eec8837a4d942cc19a52b8c09ea75121acc38114a2c68b98983ce9356b8610
