@@ -450,11 +450,8 @@
   - sha: 87275ecd3017cdacd3e93eaf07e26f4a91d7f4d7c311b2305fccb50ec3a1a8cd
     tag: 4.0.9
 - name: registry.opensource.zalan.do/teapot/external-dns
-  tags:
-  - sha: 8df16e7dd1c43dd57b5dda6af8dd19882bf6fb45e783fca091750485cd737811
-    tag: v0.5.11
-  - sha: 403b9b0a8a7428c0d3fe57fe0aebf7ac8a69467d2660c2384a7463c574f3dbb2
-    tag: v0.5.18
+  patterns:
+  - pattern: '>= v0.6.0'
 
 # Used in prometheus-operator-app
 - name: squareup/ghostunnel
