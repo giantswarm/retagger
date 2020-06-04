@@ -449,7 +449,7 @@
     tag: 3.2.11-alpine
   - sha: 87275ecd3017cdacd3e93eaf07e26f4a91d7f4d7c311b2305fccb50ec3a1a8cd
     tag: 4.0.9
-- name: registry.opensource.zalan.do/teapot/external-dns
+- name: eu.gcr.io/k8s-artifacts-prod/external-dns/external-dns
   patterns:
   - pattern: '>= v0.6.0'
 
