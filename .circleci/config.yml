@@ -1,7 +1,8 @@
-version: 2
+version: 2.1
 jobs:
   build:
-    machine: true
+    machine:
+      image: ubuntu-1604:202004-01
     steps:
       - checkout
 
@@ -20,6 +21,12 @@ jobs:
             wget -q $(curl -sS -H "Authorization: token $RELEASE_TOKEN" https://api.github.com/repos/giantswarm/architect/releases/tags/v1.0.0 | grep browser_download_url | head -n 1 | cut -d '"' -f 4)
             chmod +x ./architect
             ./architect version
+
+      - run:
+          name: Install AWS CLI
+          command: |
+            sudo apt-get update
+            sudo apt-get install awscli
 
       - run:
           name: architect build
@@ -46,7 +53,8 @@ jobs:
     environment:
       REGISTRY: "quay.io"
       REGISTRY_ORGANISATION: "giantswarm"
-    machine: true
+    machine:
+      image: ubuntu-1604:202004-01
     steps:
       - attach_workspace:
           at: .
@@ -65,7 +73,8 @@ jobs:
     environment:
       REGISTRY: "quay.io"
       REGISTRY_ORGANISATION: "giantswarm"
-    machine: true
+    machine:
+      image: ubuntu-1604:202004-01
     steps:
       - attach_workspace:
           at: .
@@ -85,7 +94,8 @@ jobs:
     environment:
       REGISTRY: "registry-intl.cn-shanghai.aliyuncs.com"
       REGISTRY_ORGANISATION: "giantswarm"
-    machine: true
+    machine:
+      image: ubuntu-1604:202004-01
     steps:
       - attach_workspace:
           at: .
