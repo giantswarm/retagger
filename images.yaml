@@ -103,6 +103,10 @@
     tag: "1.0"
   - sha: a64c8ed5df00c9f238ecdeb28eb4ed226faace573695e290a99d92d503593e87
     tag: "1.2"
+- name: gcr.io/google-containers/startup-script
+  tags:
+  - sha: 9d0006c93668388b3616235bf87954a5e4d9aac16721a237761f0ff3ce61a58b
+    tag: v2
 - name: gcr.io/heptio-images/eventrouter
   tags:
   - sha: dba60a88600d2d94fcd4c365e2931e54ae9aa495e94a924f80814e019b7ea046
