@@ -230,16 +230,16 @@
   - pattern: '>= v1.15'
 - name: k8s.gcr.io/kube-apiserver
   patterns:
-  - pattern: '>= v1.16.9'
+  - pattern: '>= v1.16.8'
 - name: k8s.gcr.io/kube-controller-manager
   patterns:
-  - pattern: '>= v1.16.9'
+  - pattern: '>= v1.16.8'
 - name: k8s.gcr.io/kube-proxy
   patterns:
-  - pattern: '>= v1.16.9'
+  - pattern: '>= v1.16.8'
 - name: k8s.gcr.io/kube-scheduler
   patterns:
-  - pattern: '>= v1.16.9'
+  - pattern: '>= v1.16.8'
 - name: k8s.gcr.io/metrics-server-amd64
   tags:
   - sha: 4ca116565ff6a46e582bada50ba3550f95b368db1d2415829241a565a6c38e2a
