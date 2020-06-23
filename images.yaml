@@ -231,6 +231,18 @@
 - name: k8s.gcr.io/kube-apiserver
   patterns:
   - pattern: '>= v1.16.8'
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+  tags:
+  # Force 1.16.9 to be retagged with dockerfileOptions.
+  - sha: 4a6df5f6a19b533c578c25fb276d34cd33f0f3013c25e854244011fa9f1cde5a
+    tag: v1.16.9
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 - name: k8s.gcr.io/kube-controller-manager
   patterns:
   - pattern: '>= v1.16.8'
