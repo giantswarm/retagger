@@ -476,16 +476,16 @@
 # Used in strimzi-kafka-operator-app
 - name: strimzi/jmxtrans
   patterns:
-  - pattern: '>= 0.18.0'
+  - pattern: '>= 0.18.0-0'
 - name: strimzi/kafka
   patterns:
-  - pattern: '>= 0.18.0'
+  - pattern: '>= 0.18.0-0'
 - name: strimzi/kafka-bridge
   patterns:
-  - pattern: '>= 0.18.0'
+  - pattern: '>= 0.18.0-0'
 - name: strimzi/operator
   patterns:
-  - pattern: '>= 0.18.0'
+  - pattern: '>= 0.18.0-0'
 
 - name: sysdig/falco
   tags:
