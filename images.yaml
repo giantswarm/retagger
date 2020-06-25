@@ -475,15 +475,19 @@
 
 # Used in strimzi-kafka-operator-app
 - name: strimzi/jmxtrans
+  overrideRepoName: strimzi-jmxtrans
   patterns:
   - pattern: '>= 0.18.0-0'
 - name: strimzi/kafka
+  overrideRepoName: strimzi-kafka
   patterns:
   - pattern: '>= 0.18.0-0'
 - name: strimzi/kafka-bridge
+  overrideRepoName: strimzi-kafka-bridge
   patterns:
   - pattern: '>= 0.18.0-0'
 - name: strimzi/operator
+  overrideRepoName: strimzi-operator
   patterns:
   - pattern: '>= 0.18.0-0'
 
