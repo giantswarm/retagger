@@ -472,6 +472,21 @@
 - name: squareup/ghostunnel
   patterns:
   - pattern: '>= v1.5.2'
+
+# Used in strimzi-kafka-operator-app
+- name: strimzi/jmxtrans
+  patterns:
+  - pattern: '>= 0.18.0'
+- name: strimzi/kafka
+  patterns:
+  - pattern: '>= 0.18.0'
+- name: strimzi/kafka-bridge
+  patterns:
+  - pattern: '>= 0.18.0'
+- name: strimzi/operator
+  patterns:
+  - pattern: '>= 0.18.0'
+
 - name: sysdig/falco
   tags:
   - sha: 3533054a0543e4a2eb4f4c61d68d5d3a39e5886a65d07f011d45044a5c470ccd
