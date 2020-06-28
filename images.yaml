@@ -225,6 +225,9 @@
 - name: k8s.gcr.io/addon-resizer
   patterns:
   - pattern: '>= 1.8.7'
+- name: k8s.gcr.io/cluster-proportional-autoscaler-amd64
+  patterns:
+  - pattern: '>= 1.6.0'
 - name: k8s.gcr.io/hyperkube
   patterns:
   - pattern: '>= v1.15'
