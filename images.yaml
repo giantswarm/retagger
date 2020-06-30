@@ -286,11 +286,11 @@
 - name: mcr.microsoft.com/k8s/aad-pod-identity/mic
   tags:
   - sha: bd9465be94966b9a917e1e3904fa5e63dd91772ccadf304e18ffd8e4ad8ccedd
-    tag: 1.6.1  
+    tag: 1.6.1
 - name: mcr.microsoft.com/k8s/aad-pod-identity/nmi
   tags:
   - sha: 02128fefcdb7593ac53fc342e2c53a0fc6fabd813036bf60457bf43cc2940116
-    tag: 1.6.1 
+    tag: 1.6.1
 - name: mysql
   tags:
   - sha: c8f03238ca1783d25af320877f063a36dbfce0daa56a7b4955e6c6e05ab5c70b
