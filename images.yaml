@@ -262,6 +262,9 @@
   tags:
   - sha: 4b036e8844920336fa48f36edeb7d4398f426d6a934ba022848deed2edbf09aa
     tag: 1.0.0
+- name: k8s.gcr.io/pause
+  patterns:
+  - pattern: '>= 3.1'
 - name: k8s.gcr.io/pause-amd64
   patterns:
   - pattern: '>= 3.1'
