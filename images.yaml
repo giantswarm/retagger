@@ -210,6 +210,9 @@
   tags:
   - sha: 7dbe2ccfbf2eb7b29367f6a3ee7c0976c3b45e4e21d6363cb43b156c17488259
     tag: 9ee2ce8
+- name: jimmidyson/configmap-reload
+  patterns:
+  - pattern: '>= v0.2.0'
 - name: jimschubert/swagger-codegen-cli
   tags:
   - sha: 1d929c3de13d97fa351b2a76e48f306be6080d697cbbc4c1b6b6fb407f5d9a5e
