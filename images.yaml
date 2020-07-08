@@ -359,6 +359,10 @@
 - name: quay.io/coreos/configmap-reload
   patterns:
   - pattern: '>= v0.0.1'
+- name: docker.io/jimmidyson/configmap-reload
+  overrideRepoName: jd-configmap-reload
+  patterns:
+  - pattern: '>= v0.2.0'
 - name: quay.io/coreos/etcd
   patterns:
   - pattern: '>= v3.3'
