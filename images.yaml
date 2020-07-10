@@ -87,6 +87,10 @@
 - name: eu.gcr.io/k8s-artifacts-prod/external-dns/external-dns
   patterns:
   - pattern: '>= v0.6.0'
+- name: eu.gcr.io/k8s-artifacts-prod/ingress-nginx/controller
+  overrideRepoName: ingress-nginx-controller
+  patterns:
+  - pattern: '>= v0.34.0'
 - name: fluent/fluent-bit
   patterns:
   - pattern: '>= 1.x.x'
