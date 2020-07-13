@@ -136,7 +136,7 @@
   overrideRepoName: istio-operator
   tags:
   - sha: 4fc41a76a237de912507d9644860d33cdf90bedf6477c795d7c64f79778d33a0
-    tag: 1.7-dev
+    tag: 1.7
 - name: gcr.io/kubernetes-helm/tiller
   tags:
   - sha: 59b6200a822ddb18577ca7120fb644a3297635f47d92db521836b39b74ad19e8
