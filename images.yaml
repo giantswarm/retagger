@@ -419,10 +419,6 @@
   tags:
   - sha: 9a4f991725c0bfbc8a3b8b5a0d7fb4ea76136c65b5924d5f2c37a12f66a9b2d1
     tag: 1c0cdf1ed5ee18fdf59063ecdd84bf3787f80fac
-- name: quay.io/giantswarm/k8s-migrator
-  tags:
-  - sha: 9259af85d5a7f395feab8162b4d47a79f6b53a897568bc3a9d9d4908a8ac0de2
-    tag: 4a4c553280d99b28cb0114797ba59aa380e808b1
 - name: quay.io/giantswarm/k8s-setup-network-environment
   tags:
   - sha: e337d03e569e53b246f4dea91359efbabe7b3ddc78878e1875d0c7aaf0e17fd5
