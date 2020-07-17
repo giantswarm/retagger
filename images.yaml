@@ -61,6 +61,9 @@
   tags:
   - sha: b2d533b27109f7c9ea1e270e23f212c47906346f9cffaa4da6da48ed9d8031da
     tag: 0.4.0
+- name: directxman12/k8s-prometheus-adapter-amd64
+  patterns:
+  - pattern: '>=v0.6.0'
 - name: docker
   tags:
   - sha: e8e0f19612fef7fc1e190ec7ed6fb4c1f4e0c0f34424214dc44e9e94f8a1281d
