@@ -485,10 +485,8 @@
     tag: v5.1.0
 - name: quay.io/uswitch/kiam
   tags:
-  - sha: b24ef28b4a06371d10b6b9fea8a2d0a3b342dbf4928e798c07a208995e3945e3
-    tag: v3.4
-  - sha: 923020c93162636af89a54f4e96e062341c6ef87b85a6567d1cf0edb7fbff33c
-    tag: v3.5
+  - sha: 7c0017379036c306579997d27c1ab909689e6feaee67676770a3453eef84773b
+    tag: v3.6
 - name: redis
   tags:
   - sha: 002a1870fa2ffd11dbd7438527a2c17f794f6962f5d3a4f048f848963ab954a8
