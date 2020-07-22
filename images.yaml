@@ -81,6 +81,10 @@
     tag: 7.6.1
 - name: eu.gcr.io/k8s-artifacts-prod/autoscaling/cluster-autoscaler
   tags:
+  - tag: v1.18.1
+    sha: 1f5b11617389b8e4ce15eb45fdbbfd4321daeb63c234d46533449ab780b6ca9a
+  - tag: v1.17.2
+    sha: bd3714e294dcef2855e7c10f57c754b280fa2e7a1d470a511bbe6ac78150ff0f
   - tag: v1.16.5
     sha: aacbfd75b5cbbae9d9a663447e7b9ac42923136cc2487f93ea89e590f25c77a3
   - tag: v1.15.6
