@@ -83,6 +83,8 @@
   tags:
   - tag: v1.18.1
     sha: 1f5b11617389b8e4ce15eb45fdbbfd4321daeb63c234d46533449ab780b6ca9a
+  - tag: v1.17.3
+    sha: 94b2cb0238f6e24d8a7253418f89dd5bcc7dd5d24244f30a55c994cc1883fb59
   - tag: v1.17.2
     sha: bd3714e294dcef2855e7c10f57c754b280fa2e7a1d470a511bbe6ac78150ff0f
   - tag: v1.16.5
