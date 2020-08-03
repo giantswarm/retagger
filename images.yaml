@@ -37,7 +37,6 @@
 - name: busybox
   tags:
   - sha: 9f1003c480699be56815db0f8146ad2e22efea85129b5b5983d0e0fb52d9ab70
-    tag: 1.31.0
   patterns:
   - pattern: '>= 1.31.0'
 - name: centos
