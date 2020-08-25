@@ -326,6 +326,8 @@
   tags:
   - sha: 0fb320e2a1b1620b4905facb3447e3d84ad36da0b2c8aa8fe3a5a81d1187b884
     tag: 1.13.12
+  - sha: 8853c7e938c2aa5d9d7439e698f0e700f058df8414a83134a09fcbb68bb0707a
+    tag: 1.18-alpine
 - name: nginxinc/nginx-unprivileged
   tags:
   - sha: 2d55b56b04c06a4992729ad5430d2fae1a6833bd9c4a87a00173ff4563bbee40
