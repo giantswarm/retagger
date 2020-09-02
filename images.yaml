@@ -505,6 +505,10 @@
     tag: 3.2.11-alpine
   - sha: 87275ecd3017cdacd3e93eaf07e26f4a91d7f4d7c311b2305fccb50ec3a1a8cd
     tag: 4.0.9
+- name: untergeek/curator
+  overrideRepoName: elasticsearch-untergeek-curator
+  patterns:
+  - pattern: '>= 5.7.6'
 
 # Used in prometheus-operator-app
 - name: squareup/ghostunnel
