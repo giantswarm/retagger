@@ -409,6 +409,9 @@
   tags:
   - sha: c14ea9dbf341de51c8c0858a65bfe905a0a2cc154311c959a0bfe609bfe177b5
     tag: v2.21.0
+- name: quay.io/fairwinds/goldilocks
+  patterns:
+  - pattern: '>= v2.2.0'
 - name: quay.io/fluentd_elasticsearch/fluentd
   comment: |
     see https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/fluentd-elasticsearch/fluentd-es-ds.yaml
