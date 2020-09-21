@@ -338,6 +338,10 @@
 - name: omnition/opencensus-collector
   patterns:
   - pattern: '>= 0.1.11'
+- name: opsgenie/kubernetes-event-exporter
+  comment: used for https://github.com/giantswarm/event-exporter-app
+  patterns:
+  - pattern: '>= v0.9'
 - name: peaceiris/hugo
   tags:
   - sha: 6cbae1884fd4c097c85d452d4ff9cde3bb8b198ced56ba2db8088dec5abf64db
