@@ -303,6 +303,10 @@
 - name: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
   patterns:
   - pattern: '>= 0.7.0'
+- name: opsgenie/kubernetes-event-exporter
+  comment: used for https://github.com/giantswarm/event-exporter-app
+  patterns:
+  - pattern: '>= v0.9'
 - name: mcr.microsoft.com/k8s/aad-pod-identity/mic
   tags:
   - sha: bd9465be94966b9a917e1e3904fa5e63dd91772ccadf304e18ffd8e4ad8ccedd
