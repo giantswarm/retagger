@@ -447,6 +447,9 @@
   tags:
   - sha: 55fb51929186d4dc8b0821569151a39283918785447628fb2e28f87d9b2937d2
     tag: v3.0.0-rc.1
+- name: quay.io/jacksontj/promxy
+  patterns:
+  - pattern: '>= v0.0.60'
 - name: quay.io/jetstack/cert-manager-cainjector
   patterns:
   - pattern: '>= v0.14.2'
