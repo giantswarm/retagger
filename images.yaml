@@ -307,6 +307,10 @@
 - name: kong
   patterns:
   - pattern: '>= 1.4.3'
+  customImages:
+  - tagSuffix: lua-resty-openidc
+    dockerfileOptions:
+    - RUN luarocks install lua-resty-openidc 1.6.0
 - name: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
   patterns:
   - pattern: '>= 0.7.0'
