@@ -480,12 +480,12 @@
 - name: quay.io/k8scsi/csi-provisioner
   patterns:
   - pattern: '>= v1.6.0'
-- name: quay.io/k8scsi/csi-snapshotter
-  patterns:
-  - pattern: '>= v2.1.1'
 - name: quay.io/k8scsi/csi-resizer
   patterns:
   - pattern: '>= v0.3.0'
+- name: quay.io/k8scsi/csi-snapshotter
+  patterns:
+  - pattern: '>= v2.1.1'
 - name: quay.io/k8scsi/livenessprobe
   patterns:
   - pattern: '>= v1.1.0'
