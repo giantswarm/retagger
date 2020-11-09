@@ -374,12 +374,8 @@
   - pattern: '>= v0.9'
 - name: peaceiris/hugo
   tags:
-  - sha: 6cbae1884fd4c097c85d452d4ff9cde3bb8b198ced56ba2db8088dec5abf64db
-    tag: v0.68.3
-  - sha: 6cb1c7beefed6b8a0bef324e44c01a7ba7fa464bbbbc4d60e0fb7f0fbd31ef75
-    tag: v0.70.0
-  - sha: d1ae28a897cecfc648d21f9952dcea83ee4280373a471dd55e09e7b57aac9957
-    tag: v0.75.1
+  - sha: 98e2da8fbefd8155d1c2d036877e0c94913054805c2c8b1b76f835a3bdc9e4de
+    tag: v0.78.1
 - name: prom/cloudwatch-exporter
   tags:
   - sha: 7ce6d17ad3360ed5d5dddc57ebf13dc7d676900c40a22b3144a8a17af352c399
