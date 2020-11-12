@@ -3,6 +3,8 @@ package images
 import (
 	"sort"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 func Test_RetaggedName(t *testing.T) {
@@ -135,9 +137,10 @@ func TestImagesOrderedAlphabetically(t *testing.T) {
 
 	if !sort.StringsAreSorted(imageNames) {
 		t.Logf("images are not sorted alphabetically")
-		t.Logf("have \n%v", imageNames)
-		sort.Strings(imageNames)
-		t.Logf("want \n%v", imageNames)
+		var sorted = make([]string, len(imageNames))
+		copy(sorted, imageNames)
+		sort.Strings(sorted)
+		t.Logf(cmp.Diff(imageNames, sorted))
 		t.Fail()
 	}
 }
