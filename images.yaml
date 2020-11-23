@@ -179,7 +179,7 @@
 - name: ghcr.io/linkerd/cni-plugin
   overrideRepoName: linkerd2-cni-plugin
   patterns:
-    - pattern: '>= stable-2.9.0'
+  - pattern: '>= stable-2.9.0'
 - name: goharbor/chartmuseum-photon
   tags:
   - sha: e7115a56a8482930bab8f72bd3dac49954e2116e0ad9ab640a936278cb776f19
