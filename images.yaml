@@ -122,6 +122,26 @@
     tag: "1.0"
   - sha: a64c8ed5df00c9f238ecdeb28eb4ed226faace573695e290a99d92d503593e87
     tag: "1.2"
+- name: fluxcd/helm-controller
+  overrideRepoName: fluxcd-helm-controller
+  tags:
+  - sha: 9207b9f7df35c7b0e58e53d12fbe589d9981d5225c46050c42432fc11908a20e
+    tag: v0.3.0
+- name: fluxcd/kustomize-controller
+  overrideRepoName: fluxcd-kustomize-controller
+  tags:
+  - sha: 6619ec6317297cba12cf1094ed77ab76757d7b928de940aa5ac46f1550396c51
+    tag: v0.3.0
+- name: fluxcd/notification-controller
+  overrideRepoName: fluxcd-notification-controller
+  tags:
+  - sha: cd3f580d3d030cd7ac13a8192dac882460c9dadde886d376c466767c772b0c5e
+    tag: v0.3.0
+- name: fluxcd/source-controller
+  overrideRepoName: fluxcd-source-controller
+  tags:
+  - sha: a4d8462ae8f8a34f341ff950535b1b647b6fbd7501228540f24aae1cede35474
+    tag: v0.3.0
 - name: gcr.io/heptio-images/eventrouter
   tags:
   - sha: dba60a88600d2d94fcd4c365e2931e54ae9aa495e94a924f80814e019b7ea046
