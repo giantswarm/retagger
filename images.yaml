@@ -176,6 +176,10 @@
   tags:
   - sha: 4bba1afcd3af85b550b42647e92b3fab36448c75e1af611a65644f77f4dde314
     tag: kubernetes-3-ca-certs
+- name: ghcr.io/linkerd/cni-plugin
+  overrideRepoName: linkerd2-cni-plugin
+  patterns:
+  - pattern: '>= stable-2.9.0'
 - name: goharbor/chartmuseum-photon
   tags:
   - sha: e7115a56a8482930bab8f72bd3dac49954e2116e0ad9ab640a936278cb776f19
