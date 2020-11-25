@@ -12,11 +12,25 @@
       - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
       - 'RUN apk add --no-cache sudo && echo "giantswarm  ALL = NOPASSWD: /sbin/sysctl" >> /etc/sudoers'
       - USER giantswarm
+- name: alpine/git
+  overrideRepoName: alpinegit
+  tags:
+  - sha: 7b94cd6038bf3f5ddd7b1d99b9591f243e6484417bc5fb8fa7fdbc076e904794
+    tag: v2.26.2
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - RUN apk add --no-cache ca-certificates
+      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+      - USER giantswarm
 - name: amazon/aws-cli
   overrideRepoName: awscli
   tags:
   - sha: 9f670bbb42c30c9a2117c5a2cf924e49ba1d4d122cd673bdfbbca9fc031b9013
     tag: 2.0.24
+- name: amazon/aws-ebs-csi-driver
+  patterns:
+  - pattern: '>= 0.7.0'
 - name: amazon/opendistro-for-elasticsearch
   patterns:
   - pattern: '>= 1.3.0'
@@ -57,9 +71,8 @@
       dockerfileOptions:
       - EXPOSE 1053
 - name: curlimages/curl
-  tags:
-  - sha: 533cc13b5e395fd9203d68496603ed94fd01af959605523c770446986f38c874
-    tag: 7.67.0
+  patterns:
+  - pattern: '>= 7.67.0'
 - name: dduportal/bats
   tags:
   - sha: b2d533b27109f7c9ea1e270e23f212c47906346f9cffaa4da6da48ed9d8031da
@@ -84,6 +97,12 @@
     tag: 7.6.1
 - name: eu.gcr.io/k8s-artifacts-prod/autoscaling/cluster-autoscaler
   tags:
+  - tag: v1.19.1
+    sha: 06969498d858f456929b5715b82c7eae23788729763590ffa4e622c1c6b8c1c6
+  - tag: v1.18.3
+    sha: ad77e9587aff8cdaa90fb371cfff4458205ef63a4783734b5dd667872d1e91e1
+  - tag: v1.18.2
+    sha: 069e12b64d6134732b36b9557194ea927f3132a1ebe6cb6fa1ee1d1e7e8f000c
   - tag: v1.18.1
     sha: 1f5b11617389b8e4ce15eb45fdbbfd4321daeb63c234d46533449ab780b6ca9a
   - tag: v1.17.3
@@ -177,6 +196,11 @@
   tags:
   - sha: 4bba1afcd3af85b550b42647e92b3fab36448c75e1af611a65644f77f4dde314
     tag: kubernetes-3-ca-certs
+- name: ghcr.io/linkerd/cni-plugin
+  overrideRepoName: linkerd2-cni-plugin
+  tags:
+  - sha: 95cafe418077e1bac571255a6dcd43aba47687f5a6523e3cd73a95459cff8688
+    tag: stable-2.9.0
 - name: goharbor/chartmuseum-photon
   tags:
   - sha: e7115a56a8482930bab8f72bd3dac49954e2116e0ad9ab640a936278cb776f19
@@ -228,6 +252,9 @@
 - name: grafana/grafana
   patterns:
   - pattern: '>= 6.0.0'
+- name: grafana/grafana-image-renderer
+  patterns:
+  - pattern: '>= 2.0.0'
 - name: grafana/loki
   patterns:
   - pattern: '>= v1.2.0'
@@ -318,6 +345,9 @@
   overrideRepoName: kind-node
   patterns:
   - pattern: '>= v1.16'
+- name: kiwigrid/k8s-sidecar
+  patterns:
+  - pattern: '>= 1.1.0'
 - name: koalaman/shellcheck-alpine
   tags:
   - sha: 7d4d712a2686da99d37580b4e2f45eb658b74e4b01caf67c1099adc294b96b52
@@ -369,12 +399,8 @@
   - pattern: '>= v0.9'
 - name: peaceiris/hugo
   tags:
-  - sha: 6cbae1884fd4c097c85d452d4ff9cde3bb8b198ced56ba2db8088dec5abf64db
-    tag: v0.68.3
-  - sha: 6cb1c7beefed6b8a0bef324e44c01a7ba7fa464bbbbc4d60e0fb7f0fbd31ef75
-    tag: v0.70.0
-  - sha: d1ae28a897cecfc648d21f9952dcea83ee4280373a471dd55e09e7b57aac9957
-    tag: v0.75.1
+  - sha: 98e2da8fbefd8155d1c2d036877e0c94913054805c2c8b1b76f835a3bdc9e4de
+    tag: v0.78.1
 - name: prom/cloudwatch-exporter
   tags:
   - sha: 7ce6d17ad3360ed5d5dddc57ebf13dc7d676900c40a22b3144a8a17af352c399
@@ -486,12 +512,36 @@
 - name: quay.io/jetstack/cert-manager-webhook
   patterns:
   - pattern: '>= v0.14.2'
+- name: quay.io/k8scsi/csi-attacher
+  patterns:
+  - pattern: '>= v1.2.0'
+- name: quay.io/k8scsi/csi-node-driver-registrar
+  patterns:
+  - pattern: '>= v1.1.0'
+- name: quay.io/k8scsi/csi-provisioner
+  patterns:
+  - pattern: '>= v1.6.0'
+- name: quay.io/k8scsi/csi-resizer
+  patterns:
+  - pattern: '>= v0.3.0'
+- name: quay.io/k8scsi/csi-snapshotter
+  patterns:
+  - pattern: '>= v2.1.1'
+- name: quay.io/k8scsi/livenessprobe
+  patterns:
+  - pattern: '>= v1.1.0'
 - name: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
   patterns:
   - pattern: '>= v0.28.0'
 - name: quay.io/open-policy-agent/gatekeeper
   patterns:
   - pattern: '>= v3.1.0-beta.5'
+- name: quay.io/prometheus-operator/prometheus-config-reloader
+  patterns:
+  - pattern: '>= v0.43.0'
+- name: quay.io/prometheus-operator/prometheus-operator
+  patterns:
+  - pattern: '>= 0.43.0'
 - name: quay.io/prometheus/alertmanager
   patterns:
   - pattern: '>= v0.19.0'
