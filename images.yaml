@@ -297,6 +297,15 @@
 - name: k8s.gcr.io/addon-resizer
   patterns:
   - pattern: '>= 1.8.7'
+- name: k8s.gcr.io/autoscaling/vpa-admission-controller
+  patterns:
+  - pattern: '>= 0.8.0'
+- name: k8s.gcr.io/autoscaling/vpa-recommender
+  patterns:
+  - pattern: '>= 0.8.0'
+- name: k8s.gcr.io/autoscaling/vpa-updater
+  patterns:
+  - pattern: '>= 0.8.0'
 - name: k8s.gcr.io/cluster-proportional-autoscaler-amd64
   patterns:
   - pattern: '>= 1.6.0'
@@ -582,6 +591,10 @@
   tags:
   - sha: 1fad3f247a8edeceead03230d833fcb4c3935a3a57b83787690f15f7daa6b59b
     tag: v5.1.0
+- name: quay.io/reactiveops/ci-images
+  overrideRepoName: vpa-certgen-ci-images
+  patterns:
+  - pattern: '== v11-alpine'
 - name: quay.io/uswitch/kiam
   tags:
   - sha: 7c0017379036c306579997d27c1ab909689e6feaee67676770a3453eef84773b
