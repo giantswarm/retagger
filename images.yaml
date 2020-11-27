@@ -594,7 +594,7 @@
 - name: quay.io/reactiveops/ci-images
   overrideRepoName: vpa-certgen-ci-images
   patterns:
-  - pattern: '== v11-alpine'
+  - pattern: '= v11-alpine'
 - name: quay.io/uswitch/kiam
   tags:
   - sha: 7c0017379036c306579997d27c1ab909689e6feaee67676770a3453eef84773b
