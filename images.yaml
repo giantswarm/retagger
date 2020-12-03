@@ -431,32 +431,41 @@
   - sha: 22ae874390e34b7cbbaf9a1b204298e009d15dccb96f0aed8d93d797f9ba4b53
     tag: v0.9.1
 - name: public.ecr.aws/eks-distro/etcd-io/etcd
-  patterns:
-  - pattern: '>= v3.14.0'
+  tags:
+  - sha: ef13d109f5e7dc175d07a043c9e9f9eb12143cbc0180bd07e7b628ebc6ebee0d
+    tag: v3.4.14-eks-1-18-1
 - name: public.ecr.aws/eks-distro/kubernetes-sigs/aws-iam-authenticator
-  patterns:
-  - pattern: '>= v0.5.0'
+  tags:
+  - sha: 1f80e4596beaa6983275230a5fe2488db3f4470cac71eac543458571e0c1a469
+    tag: v0.5.2-eks-1-18-1
 - name: public.ecr.aws/eks-distro/kubernetes-sigs/metrics-server
-  patterns:
-  - pattern: '>= v0.4.0'
+  tags:
+  - sha: 4a5bf8196cb0ad5d793eecd39e4931dca0cba40b78b7177a23d7405634839b84
+    tag: v0.4.0-eks-1-18-1
 - name: public.ecr.aws/eks-distro/kubernetes/kube-apiserver
-  patterns:
-  - pattern: '>= v1.18.0'
+  tags:
+  - sha: 097950593e255f6b6273478d711d48a32d26cc34fcb8815ebe59855f851fa584
+    tag: v1.18.9-eks-1-18-1
 - name: public.ecr.aws/eks-distro/kubernetes/kube-controller-manager
-  patterns:
-  - pattern: '>= v1.18.0'
+  tags:
+  - sha: b655ff59e288776976715ccb9574be90d05d220aadbbe345a3bccca1a13fc235
+    tag: v1.18.9-eks-1-18-1
 - name: public.ecr.aws/eks-distro/kubernetes/kube-proxy
-  patterns:
-  - pattern: '>= v1.18.0'
+  tags:
+  - sha: 54381f903673164c9ccdc35536ac87996f88f64ad5aff1e37d01c39a08bc9a0c
+    tag: v1.18.9-eks-1-18-1
 - name: public.ecr.aws/eks-distro/kubernetes/kube-proxy-base
-  patterns:
-  - pattern: '>= v1.18.0'
+  tags:
+  - sha: 8d4cd61886355b785b2cad868cb18ec5108d30b6f0cf2ce576ada96c6075c648
+    tag: v0.4.2-eks-1-18-1
 - name: public.ecr.aws/eks-distro/kubernetes/kube-scheduler
-  patterns:
-  - pattern: '>= v1.18.0'
+  tags:
+  - sha: dcf9e415d3138fa84141dc795aa1929de88e9ad9bd0035e715b965d102e01442
+    tag: v1.18.9-eks-1-18-1
 - name: public.ecr.aws/eks-distro/kubernetes/pause
-  patterns:
-  - pattern: '>= v1.18.0'
+  tags:
+  - sha: a09980fe0d783eee0f8ed56a26f5f02a79318ac9f4e3c1514babca357cd35e36
+    tag: v1.18.9-eks-1-18-1
 - name: quay.io/calico/cni
   patterns:
   - pattern: '>= v3.9.5'
