@@ -433,6 +433,12 @@
 - name: public.ecr.aws/eks-distro/etcd-io/etcd
   patterns:
   - pattern: '>= v3.14.0'
+- name: public.ecr.aws/eks-distro/kubernetes-sigs/aws-iam-authenticator
+  patterns:
+  - pattern: '>= v0.5.0'
+- name: public.ecr.aws/eks-distro/kubernetes-sigs/metrics-server
+  patterns:
+  - pattern: '>= v0.4.0'
 - name: public.ecr.aws/eks-distro/kubernetes/kube-apiserver
   patterns:
   - pattern: '>= v1.18.0'
@@ -451,12 +457,6 @@
 - name: public.ecr.aws/eks-distro/kubernetes/pause
   patterns:
   - pattern: '>= v1.18.0'
-- name: public.ecr.aws/eks-distro/kubernetes-sigs/aws-iam-authenticator
-  patterns:
-  - pattern: '>= v0.5.0'
-- name: public.ecr.aws/eks-distro/kubernetes-sigs/metrics-server
-  patterns:
-  - pattern: '>= v0.4.0'
 - name: quay.io/calico/cni
   patterns:
   - pattern: '>= v3.9.5'
