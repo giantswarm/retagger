@@ -138,8 +138,8 @@
 - name: fluxcd/helm-controller
   overrideRepoName: fluxcd-helm-controller
   tags:
-  - sha: f55747924c0b3673b53b985df12b94b7eab94372ca1c4f03e8694b2e15e82139
-    tag: v0.4.0
+  - sha: 4e2d23eb640fd338d1585fb77c7ac5352483aafbc8bdfc1eeec11ac6e610b43d
+    tag: v0.4.1
 - name: fluxcd/kustomize-controller
   overrideRepoName: fluxcd-kustomize-controller
   tags:
