@@ -62,7 +62,7 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 
 	for _, match := range matches {
 		j := SingleJob{
-			Source: job.Source,
+			Source:  job.Source,
 			Options: job.Options,
 		}
 
