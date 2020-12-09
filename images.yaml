@@ -340,10 +340,10 @@
 - name: k8s.gcr.io/kube-scheduler
   patterns:
   - pattern: '>= v1.16.8'
-- name: k8s.gcr.io/metrics-server-amd64
+- name: k8s.gcr.io/metrics-server/metrics-server
   tags:
-  - sha: c9c4e95068b51d6b33a9dccc61875df07dc650abbf4ac1a19d58b4628f89288b
-    tag: v0.3.6
+  - sha: 78035f05bcf7e0f9b401bae1ac62b5a505f95f9c2122b80cff73dcc04d58497e
+    tag: v0.4.1
 - name: k8s.gcr.io/nvidia-gpu-device-plugin
   tags:
   - sha: 4b036e8844920336fa48f36edeb7d4398f426d6a934ba022848deed2edbf09aa
