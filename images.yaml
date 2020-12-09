@@ -95,6 +95,10 @@
   tags:
   - sha: 72d816c99cc86b117baf04385020121f71015d7f5f9eba2a59e72532d645d38f
     tag: 7.6.1
+- name: elasticsearch
+  tags:
+  - tag: 6.8.13
+    sha: 8d4e29332dc159e7c256efa131453bd62a35b6e90f32aa9ab3f76632e29372c3
 - name: eu.gcr.io/k8s-artifacts-prod/autoscaling/cluster-autoscaler
   tags:
   - tag: v1.19.1
@@ -134,23 +138,23 @@
 - name: fluxcd/helm-controller
   overrideRepoName: fluxcd-helm-controller
   tags:
-  - sha: 9207b9f7df35c7b0e58e53d12fbe589d9981d5225c46050c42432fc11908a20e
-    tag: v0.3.0
+  - sha: 4e2d23eb640fd338d1585fb77c7ac5352483aafbc8bdfc1eeec11ac6e610b43d
+    tag: v0.4.1
 - name: fluxcd/kustomize-controller
   overrideRepoName: fluxcd-kustomize-controller
   tags:
-  - sha: 6619ec6317297cba12cf1094ed77ab76757d7b928de940aa5ac46f1550396c51
-    tag: v0.3.0
+  - sha: 32acb2ef6b345099dab2981c2c012a1b11f0f8b15599decf7a7b907793351e09
+    tag: v0.4.0
 - name: fluxcd/notification-controller
   overrideRepoName: fluxcd-notification-controller
   tags:
-  - sha: cd3f580d3d030cd7ac13a8192dac882460c9dadde886d376c466767c772b0c5e
-    tag: v0.3.0
+  - sha: 4029662b088d38bb0b79991e6c5cc8621f75284d285b562b2209c093d753ce16
+    tag: v0.4.0
 - name: fluxcd/source-controller
   overrideRepoName: fluxcd-source-controller
   tags:
-  - sha: a4d8462ae8f8a34f341ff950535b1b647b6fbd7501228540f24aae1cede35474
-    tag: v0.3.0
+  - sha: 3b2b05669f0e201b078120df0fc2b135c29a8ca5295ae8f379a8b4c7f66d1bad
+    tag: v0.4.1
 - name: gcr.io/google-containers/startup-script
   tags:
   - sha: 9d0006c93668388b3616235bf87954a5e4d9aac16721a237761f0ff3ce61a58b
@@ -336,10 +340,10 @@
 - name: k8s.gcr.io/kube-scheduler
   patterns:
   - pattern: '>= v1.16.8'
-- name: k8s.gcr.io/metrics-server-amd64
+- name: k8s.gcr.io/metrics-server/metrics-server
   tags:
-  - sha: c9c4e95068b51d6b33a9dccc61875df07dc650abbf4ac1a19d58b4628f89288b
-    tag: v0.3.6
+  - sha: 78035f05bcf7e0f9b401bae1ac62b5a505f95f9c2122b80cff73dcc04d58497e
+    tag: v0.4.1
 - name: k8s.gcr.io/nvidia-gpu-device-plugin
   tags:
   - sha: 4b036e8844920336fa48f36edeb7d4398f426d6a934ba022848deed2edbf09aa
@@ -408,8 +412,8 @@
   - pattern: '>= v0.9'
 - name: peaceiris/hugo
   tags:
-  - sha: 98e2da8fbefd8155d1c2d036877e0c94913054805c2c8b1b76f835a3bdc9e4de
-    tag: v0.78.1
+  - sha: 461f9d1e18c123155e9076feb7631b422a8024bf8d6f5426614d80d8ecd7eaf4
+    tag: v0.79.0
 - name: prom/cloudwatch-exporter
   tags:
   - sha: 7ce6d17ad3360ed5d5dddc57ebf13dc7d676900c40a22b3144a8a17af352c399
