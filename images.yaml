@@ -319,7 +319,7 @@
 - name: k8s.gcr.io/kube-apiserver
   patterns:
   - pattern: '>= v1.19.0'
-  - pattern: '>= v1.16.8'
+  - pattern: '>= v1.16.8 < v1.19'
     customImages:
     - tagSuffix: giantswarm
       dockerfileOptions:
