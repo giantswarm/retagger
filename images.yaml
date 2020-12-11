@@ -307,9 +307,6 @@
 - name: k8s.gcr.io/autoscaling/vpa-updater
   patterns:
   - pattern: '>= 0.8.0'
-- name: k8s.gcr.io/provider-aws/aws-ebs-csi-driver
-  patterns:
-  - pattern: '>= 0.7.0'
 - name: k8s.gcr.io/cluster-proportional-autoscaler-amd64
   patterns:
   - pattern: '>= 1.6.0'
@@ -347,6 +344,9 @@
 - name: k8s.gcr.io/pause-amd64
   patterns:
   - pattern: '>= 3.1'
+- name: k8s.gcr.io/provider-aws/aws-ebs-csi-driver
+  patterns:
+  - pattern: '>= 0.7.0'
 - name: kindest/node
   overrideRepoName: kind-node
   patterns:
