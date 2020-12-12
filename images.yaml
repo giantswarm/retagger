@@ -202,6 +202,15 @@
   tags:
   - sha: 95cafe418077e1bac571255a6dcd43aba47687f5a6523e3cd73a95459cff8688
     tag: stable-2.9.0
+  - sha: 1e8d696de8c93325b3331be3a28dbfa42e2ea2b7aff0fae8431a8135786f5e8c
+    tag: stable-2.9.1
+- name: ghcr.io/linkerd/controller
+  overrideRepoName: linkerd2-controller
+  tags:
+  - sha: f58400afedb5684ace572b09d9e6fec1261673037883325a4b867585dcb4e34c
+    tag: stable-2.9.0
+  - sha: 744d95961ca4877bbd6da2c5a7302ad33516bc87e17b313645d3f3b9f3f8fcb1
+    tag: stable-2.9.1
 - name: goharbor/chartmuseum-photon
   tags:
   - sha: e7115a56a8482930bab8f72bd3dac49954e2116e0ad9ab640a936278cb776f19
