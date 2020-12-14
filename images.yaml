@@ -465,6 +465,9 @@
   tags:
   - sha: 22ae874390e34b7cbbaf9a1b204298e009d15dccb96f0aed8d93d797f9ba4b53
     tag: v0.9.1
+- name: python
+  patterns:
+  - pattern: '>= 3.8.6-slim'
 - name: quay.io/calico/cni
   patterns:
   - pattern: '>= v3.9.5'
