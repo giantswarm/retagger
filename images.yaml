@@ -92,9 +92,6 @@
   tags:
   - sha: 72d816c99cc86b117baf04385020121f71015d7f5f9eba2a59e72532d645d38f
     tag: 7.6.1
-- name: docker.pkg.github.com/prymitive/karma/karma
-  patterns:
-  - pattern: '>= 0.74'
 - name: elasticsearch
   tags:
   - tag: 6.8.13
