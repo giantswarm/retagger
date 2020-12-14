@@ -92,9 +92,6 @@
   tags:
   - sha: 72d816c99cc86b117baf04385020121f71015d7f5f9eba2a59e72532d645d38f
     tag: 7.6.1
-- name: docker.pkg.github.com/prymitive/karma/karma
-  patterns:
-  - pattern: '>= 0.74'
 - name: elasticsearch
   tags:
   - tag: 6.8.13
@@ -240,6 +237,9 @@
     tag: stable-2.9.0
   - sha: 10463d6eecaa3b41b170f9937553d3f942534e40e9676ab2ce11f99de12e07a7
     tag: stable-2.9.1
+- name: ghcr.io/prymitive/karma
+  patterns:
+  - pattern: '>= 0.74'
 - name: goharbor/chartmuseum-photon
   tags:
   - sha: e7115a56a8482930bab8f72bd3dac49954e2116e0ad9ab640a936278cb776f19
