@@ -135,23 +135,33 @@
 - name: fluxcd/helm-controller
   overrideRepoName: fluxcd-helm-controller
   tags:
-  - sha: 4e2d23eb640fd338d1585fb77c7ac5352483aafbc8bdfc1eeec11ac6e610b43d
-    tag: v0.4.1
+  - sha: 76bb92fd3d79acbc5f231df8c89f4ec39259e635208dff86d0b3ba6ef8910de4
+    tag: v0.4.3
+- name: fluxcd/image-automation-controller
+  overrideRepoName: fluxcd-image-automation-controller
+  tags:
+  - sha: 159aaf11eaee75c718ee5e2855ee4c073ab168aa3199acef41f194961fec50bd
+    tag: v0.1.0
+- name: fluxcd/image-reflector-controller
+  overrideRepoName: fluxcd-image-reflector-controller
+  tags:
+  - sha: bedb75aa1aceca12ab66378681852f5858b75e78b1124472ef9e8330917376e1
+    tag: v0.1.0
 - name: fluxcd/kustomize-controller
   overrideRepoName: fluxcd-kustomize-controller
   tags:
-  - sha: 32acb2ef6b345099dab2981c2c012a1b11f0f8b15599decf7a7b907793351e09
-    tag: v0.4.0
+  - sha: 944b59eb42852c7649ba51d7b17dda98afc6e02d580df2097a57016507da997f
+    tag: v0.5.1
 - name: fluxcd/notification-controller
   overrideRepoName: fluxcd-notification-controller
   tags:
-  - sha: 4029662b088d38bb0b79991e6c5cc8621f75284d285b562b2209c093d753ce16
-    tag: v0.4.0
+  - sha: 1ef2a06bb95555d1ef135842398e210ff01d106a250ad5c0b3d18a83fb5a8be0
+    tag: v0.5.0
 - name: fluxcd/source-controller
   overrideRepoName: fluxcd-source-controller
   tags:
-  - sha: 3b2b05669f0e201b078120df0fc2b135c29a8ca5295ae8f379a8b4c7f66d1bad
-    tag: v0.4.1
+  - sha: e8176d73645b0ee471229666f4bd45e44805a9189f86732d4b58a62400d4d355
+    tag: v0.5.4
 - name: gcr.io/google-containers/startup-script
   tags:
   - sha: 9d0006c93668388b3616235bf87954a5e4d9aac16721a237761f0ff3ce61a58b
@@ -466,8 +476,9 @@
   - sha: 22ae874390e34b7cbbaf9a1b204298e009d15dccb96f0aed8d93d797f9ba4b53
     tag: v0.9.1
 - name: python
-  patterns:
-  - pattern: '>= 3.8.6-slim'
+  tags:
+  - sha: 1263b94facc6fd812688f78e05a9e64497e96e21db7e3935be36c87fab038c7e
+    tag: 3.8.6-slim
 - name: quay.io/calico/cni
   patterns:
   - pattern: '>= v3.9.5'
