@@ -98,6 +98,8 @@
     sha: 8d4e29332dc159e7c256efa131453bd62a35b6e90f32aa9ab3f76632e29372c3
 - name: eu.gcr.io/k8s-artifacts-prod/autoscaling/cluster-autoscaler
   tags:
+  - tag: v1.20.0
+    sha: 1c19fa17b29db548d0304e9444adf84e8a6f38ee4c0a12d2ecaf262cb10c0e50
   - tag: v1.19.1
     sha: 06969498d858f456929b5715b82c7eae23788729763590ffa4e622c1c6b8c1c6
   - tag: v1.18.3
