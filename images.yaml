@@ -706,3 +706,7 @@
     tag: v3.3.0
   - sha: 237ba8547763ff8a147a420280f97c80e8605eea60312613f7e33d3968d99a0a
     tag: v6.0.0
+# used in azure tenant clusters
+- name: webdevops/azure-scheduledevents-manager
+  patterns:
+  - pattern: '>= 20.11.0'
