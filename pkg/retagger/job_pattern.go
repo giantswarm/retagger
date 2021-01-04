@@ -61,25 +61,23 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 	var jobs []SingleJob
 
 	for _, match := range matches {
-		_, exists := existingTagMap[match]
+		j := SingleJob{
+			Source:  job.Source,
+			Options: job.Options,
+		}
+
+		// Override Source options from our pattern.
+		j.Source.Tag = match
+		j.Destination = GetDestinationForJob(&j, r)
+
+		_, exists := existingTagMap[j.Destination.Tag]
 		if !exists {
 			// Tag is new - get SHA and tag it.
 			newDigest, err := externalRegistry.ManifestV2Digest(job.Source.FullImageName, match)
 			if err != nil {
 				return nil, microerror.Mask(err)
 			}
-			sourceSHA := strings.TrimPrefix(newDigest.String(), "sha256:")
-			// Create job with new SHA.
-			j := SingleJob{
-
-				Source: job.Source,
-
-				Options: job.Options,
-			}
-			// Override Source options from our pattern.
-			j.Source.Tag = match
-			j.Source.SHA = sourceSHA
-			j.Destination = GetDestinationForJob(&j, r)
+			j.Source.SHA = strings.TrimPrefix(newDigest.String(), "sha256:")
 			jobs = append(jobs, j)
 		}
 	}

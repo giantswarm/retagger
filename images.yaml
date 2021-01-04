@@ -28,9 +28,6 @@
   tags:
   - sha: 9f670bbb42c30c9a2117c5a2cf924e49ba1d4d122cd673bdfbbca9fc031b9013
     tag: 2.0.24
-- name: amazon/aws-ebs-csi-driver
-  patterns:
-  - pattern: '>= 0.7.0'
 - name: amazon/opendistro-for-elasticsearch
   patterns:
   - pattern: '>= 1.3.0'
@@ -101,6 +98,8 @@
     sha: 8d4e29332dc159e7c256efa131453bd62a35b6e90f32aa9ab3f76632e29372c3
 - name: eu.gcr.io/k8s-artifacts-prod/autoscaling/cluster-autoscaler
   tags:
+  - tag: v1.20.0
+    sha: 1c19fa17b29db548d0304e9444adf84e8a6f38ee4c0a12d2ecaf262cb10c0e50
   - tag: v1.19.1
     sha: 06969498d858f456929b5715b82c7eae23788729763590ffa4e622c1c6b8c1c6
   - tag: v1.18.3
@@ -138,23 +137,33 @@
 - name: fluxcd/helm-controller
   overrideRepoName: fluxcd-helm-controller
   tags:
-  - sha: 4e2d23eb640fd338d1585fb77c7ac5352483aafbc8bdfc1eeec11ac6e610b43d
-    tag: v0.4.1
+  - sha: 76bb92fd3d79acbc5f231df8c89f4ec39259e635208dff86d0b3ba6ef8910de4
+    tag: v0.4.3
+- name: fluxcd/image-automation-controller
+  overrideRepoName: fluxcd-image-automation-controller
+  tags:
+  - sha: 159aaf11eaee75c718ee5e2855ee4c073ab168aa3199acef41f194961fec50bd
+    tag: v0.1.0
+- name: fluxcd/image-reflector-controller
+  overrideRepoName: fluxcd-image-reflector-controller
+  tags:
+  - sha: bedb75aa1aceca12ab66378681852f5858b75e78b1124472ef9e8330917376e1
+    tag: v0.1.0
 - name: fluxcd/kustomize-controller
   overrideRepoName: fluxcd-kustomize-controller
   tags:
-  - sha: 32acb2ef6b345099dab2981c2c012a1b11f0f8b15599decf7a7b907793351e09
-    tag: v0.4.0
+  - sha: 944b59eb42852c7649ba51d7b17dda98afc6e02d580df2097a57016507da997f
+    tag: v0.5.1
 - name: fluxcd/notification-controller
   overrideRepoName: fluxcd-notification-controller
   tags:
-  - sha: 4029662b088d38bb0b79991e6c5cc8621f75284d285b562b2209c093d753ce16
-    tag: v0.4.0
+  - sha: 1ef2a06bb95555d1ef135842398e210ff01d106a250ad5c0b3d18a83fb5a8be0
+    tag: v0.5.0
 - name: fluxcd/source-controller
   overrideRepoName: fluxcd-source-controller
   tags:
-  - sha: 3b2b05669f0e201b078120df0fc2b135c29a8ca5295ae8f379a8b4c7f66d1bad
-    tag: v0.4.1
+  - sha: e8176d73645b0ee471229666f4bd45e44805a9189f86732d4b58a62400d4d355
+    tag: v0.5.4
 - name: gcr.io/google-containers/startup-script
   tags:
   - sha: 9d0006c93668388b3616235bf87954a5e4d9aac16721a237761f0ff3ce61a58b
@@ -205,6 +214,44 @@
   tags:
   - sha: 95cafe418077e1bac571255a6dcd43aba47687f5a6523e3cd73a95459cff8688
     tag: stable-2.9.0
+  - sha: 1e8d696de8c93325b3331be3a28dbfa42e2ea2b7aff0fae8431a8135786f5e8c
+    tag: stable-2.9.1
+- name: ghcr.io/linkerd/controller
+  overrideRepoName: linkerd2-controller
+  tags:
+  - sha: f58400afedb5684ace572b09d9e6fec1261673037883325a4b867585dcb4e34c
+    tag: stable-2.9.0
+  - sha: 744d95961ca4877bbd6da2c5a7302ad33516bc87e17b313645d3f3b9f3f8fcb1
+    tag: stable-2.9.1
+- name: ghcr.io/linkerd/debug
+  overrideRepoName: linkerd2-debug
+  tags:
+  - sha: c3c385085c4209e4f5c0b28c7e5aa29a41b2b7293ce3735632ba7502e9cd02df
+    tag: stable-2.9.0
+  - sha: a57ff92a575cab79405fbd99a64a26951e59ece15f049a42abb7e4d3d829c3a7
+    tag: stable-2.9.1
+- name: ghcr.io/linkerd/proxy
+  overrideRepoName: linkerd2-proxy
+  tags:
+  - sha: a7166c06fc4a4bf3ef88110e666b35de228df62f23304351ba97a6d81d611f99
+    tag: stable-2.9.0
+  - sha: 1e2b659819ba52195ec606a2deb9d227bb388758f8bcd6d2b814a298abc03282
+    tag: stable-2.9.1
+- name: ghcr.io/linkerd/proxy-init
+  overrideRepoName: linkerd2-proxy-init
+  tags:
+  - sha: 591d4f578a8c4431fc6343c8f2703338888865440f02f4cb44862a87c5557859
+    tag: v1.3.6
+- name: ghcr.io/linkerd/web
+  overrideRepoName: linkerd2-web
+  tags:
+  - sha: 0f6026f9455fd37385d6311a44b4b8249465085b446c64cfba4e31756b0ff15c
+    tag: stable-2.9.0
+  - sha: 10463d6eecaa3b41b170f9937553d3f942534e40e9676ab2ce11f99de12e07a7
+    tag: stable-2.9.1
+- name: ghcr.io/prymitive/karma
+  patterns:
+  - pattern: '>= 0.74'
 - name: goharbor/chartmuseum-photon
   tags:
   - sha: e7115a56a8482930bab8f72bd3dac49954e2116e0ad9ab640a936278cb776f19
@@ -318,15 +365,8 @@
   - pattern: '>= v1.15'
 - name: k8s.gcr.io/kube-apiserver
   patterns:
-  - pattern: '>= v1.16.8'
-    customImages:
-    - tagSuffix: giantswarm
-      dockerfileOptions:
-      - RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
-  tags:
-  # Force 1.16.9 to be retagged with dockerfileOptions.
-  - sha: 4a6df5f6a19b533c578c25fb276d34cd33f0f3013c25e854244011fa9f1cde5a
-    tag: v1.16.9
+  - pattern: '>= v1.19.0'
+  - pattern: '>= v1.16.8 < v1.19'
     customImages:
     - tagSuffix: giantswarm
       dockerfileOptions:
@@ -354,6 +394,9 @@
 - name: k8s.gcr.io/pause-amd64
   patterns:
   - pattern: '>= 3.1'
+- name: k8s.gcr.io/provider-aws/aws-ebs-csi-driver
+  patterns:
+  - pattern: '>= 0.7.0'
 - name: kindest/node
   overrideRepoName: kind-node
   patterns:
@@ -434,6 +477,10 @@
   tags:
   - sha: 22ae874390e34b7cbbaf9a1b204298e009d15dccb96f0aed8d93d797f9ba4b53
     tag: v0.9.1
+- name: python
+  tags:
+  - sha: 1263b94facc6fd812688f78e05a9e64497e96e21db7e3935be36c87fab038c7e
+    tag: 3.8.6-slim
 - name: quay.io/calico/cni
   patterns:
   - pattern: '>= v3.9.5'
@@ -653,6 +700,10 @@
   tags:
   - sha: bb113953e19fff158de017c447be337aa7a3709c3223aeeab4a5bae50ee6f159
     tag: master-5b2a6e5
+# used in azure tenant clusters
+- name: webdevops/azure-scheduledevents-manager
+  patterns:
+  - pattern: '>= 20.11.0'
 - name: zricethezav/gitleaks
   tags:
   - sha: 548f474c56f6cbf94959f48e66ee99f9b63d949c9c657b105d1e4a3c0a66c985

@@ -117,23 +117,26 @@ func fromImageTagPatternIncludeCustom(image images.Image, pattern images.TagPatt
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-	jobs = append(jobs, j)
 
-	for _, c := range pattern.CustomImages {
-		j, err = fromImageTagPattern(image, pattern)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-
-		if c.TagSuffix != "" {
-			j.Options.TagSuffix = c.TagSuffix
-		}
-
-		if c.DockerfileOptions != nil && len(c.DockerfileOptions) > 0 {
-			j.Options.DockerfileOptions = c.DockerfileOptions
-		}
-
+	if len(pattern.CustomImages) == 0 {
 		jobs = append(jobs, j)
+	} else {
+		for _, c := range pattern.CustomImages {
+			j, err = fromImageTagPattern(image, pattern)
+			if err != nil {
+				return nil, microerror.Mask(err)
+			}
+
+			if c.TagSuffix != "" {
+				j.Options.TagSuffix = c.TagSuffix
+			}
+
+			if c.DockerfileOptions != nil && len(c.DockerfileOptions) > 0 {
+				j.Options.DockerfileOptions = c.DockerfileOptions
+			}
+
+			jobs = append(jobs, j)
+		}
 	}
 
 	return jobs, nil
