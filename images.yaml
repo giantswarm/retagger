@@ -551,6 +551,9 @@
   tags:
   - sha: e337d03e569e53b246f4dea91359efbabe7b3ddc78878e1875d0c7aaf0e17fd5
     tag: 1f4ffc52095ac368847ce3428ea99b257003d9b9
+- name: quay.io/google-cloud-tools/kube-eagle
+  patterns:
+  - pattern: '>= v1.1.4'
 - name: quay.io/helmpack/chart-testing
   overrideRepoName: helm-chart-testing
   tags:
