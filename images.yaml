@@ -651,8 +651,8 @@
   - pattern: '= v11-alpine'
 - name: quay.io/uswitch/kiam
   tags:
-  - sha: 7c0017379036c306579997d27c1ab909689e6feaee67676770a3453eef84773b
-    tag: v3.6
+  - sha: be3a5846922de2e4952a0cbcb36f1bc65002a41025d79d3cab164fc1499cad2c
+    tag: v4.0
 - name: redis
   tags:
   - sha: 002a1870fa2ffd11dbd7438527a2c17f794f6962f5d3a4f048f848963ab954a8
