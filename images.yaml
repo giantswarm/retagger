@@ -441,8 +441,13 @@
   - sha: 8853c7e938c2aa5d9d7439e698f0e700f058df8414a83134a09fcbb68bb0707a
     tag: 1.18-alpine
 - name: nginxinc/nginx-unprivileged
-  patterns:
-  - pattern: '>= 1.17-alpine'
+  tags:
+  - sha: 2d55b56b04c06a4992729ad5430d2fae1a6833bd9c4a87a00173ff4563bbee40
+    tag: 1.17-alpine
+  - sha: 94da2c39b836871c1f15c49e150a5e7d9c8b24dcc5c8d6c557fee1300f2cbb0b
+    tag: 1.18-alpine
+  - sha: 503f1d45a9345c729d368e0df8de8ececd5e6123ec16b96447144c003f66b486
+    tag: 1.19-alpine
 - name: omnition/opencensus-collector
   patterns:
   - pattern: '>= 0.1.11'
