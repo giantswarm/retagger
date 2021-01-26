@@ -312,6 +312,9 @@
 - name: grafana/loki
   patterns:
   - pattern: '>= v1.2.0'
+- name: grafana/loki-canary
+  patterns:
+  - pattern: '>= v2.1.0'
 - name: grafana/promtail
   patterns:
   - pattern: '>= v1.2.0'
