@@ -66,6 +66,9 @@ func GetDestinationForJob(j CompilableJob, r *Retagger) Destination {
 		} else {
 			destinationTag = fmt.Sprintf("%s-%s", j.GetSource().Tag, j.GetOptions().TagSuffix)
 		}
+		if j.GetOptions().TagTrimVersionPrefix {
+			destinationTag = strings.TrimPrefix(destinationTag, "v")
+		}
 	}
 	return Destination{
 		Image: destinationImage,
