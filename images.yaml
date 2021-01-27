@@ -701,12 +701,12 @@
   overrideRepoName: elasticsearch-untergeek-curator
   patterns:
   - pattern: '>= 5.7.6'
-- name: velero/velero
-  patterns:
-  - pattern: '>= v1.5.3'
 - name: vault
   patterns:
   - pattern: '>= v1.2.0'
+- name: velero/velero
+  patterns:
+  - pattern: '>= v1.5.3'
 - name: weaveworks/watch
   tags:
   - sha: bb113953e19fff158de017c447be337aa7a3709c3223aeeab4a5bae50ee6f159
