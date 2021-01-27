@@ -326,9 +326,6 @@
 - name: jaegertracing/jaeger-operator
   patterns:
   - pattern: '>= 1.17.0'
-- name: velero/velero
-  patterns:
-  - pattern: '>= 1.5.3'
 # Used in prometheus-operator-app
 - name: jettech/kube-webhook-certgen
   patterns:
@@ -704,6 +701,9 @@
   overrideRepoName: elasticsearch-untergeek-curator
   patterns:
   - pattern: '>= 5.7.6'
+- name: velero/velero
+  patterns:
+  - pattern: '>= v1.5.3'
 - name: vault
   patterns:
   - pattern: '>= v1.2.0'
