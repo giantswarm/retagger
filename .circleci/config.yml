@@ -17,7 +17,7 @@ jobs:
       - run:
           name: Install architect
           command: |
-            wget -q $(curl -sS -H "Authorization: token $RELEASE_TOKEN" https://api.github.com/repos/giantswarm/architect/releases/tags/v1.0.0 | grep browser_download_url | head -n 1 | cut -d '"' -f 4)
+            curl -sSL $(curl -sS -H "Authorization: token $RELEASE_TOKEN" https://api.github.com/repos/giantswarm/architect/releases/tags/v2.1.6 | grep browser_download_url | grep linux | cut -d '"' -f 4) | tar xzv --strip-components=1
             chmod +x ./architect
             ./architect version
 
