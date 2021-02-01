@@ -28,6 +28,15 @@
   tags:
   - sha: 9f670bbb42c30c9a2117c5a2cf924e49ba1d4d122cd673bdfbbca9fc031b9013
     tag: 2.0.24
+- name: amazon/aws-cli
+  overrideRepoName: awscli-tar
+  tags:
+  - sha: 9f670bbb42c30c9a2117c5a2cf924e49ba1d4d122cd673bdfbbca9fc031b9013
+    tag: 2.0.24
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - RUN yum -y install tar
 - name: amazon/aws-efs-csi-driver
   patterns:
   - pattern: '>= 1.0.0'
@@ -722,6 +731,9 @@
 - name: vault
   patterns:
   - pattern: '>= v1.2.0'
+- name: velero/velero
+  patterns:
+  - pattern: '>= v1.4.3'
 - name: weaveworks/watch
   tags:
   - sha: bb113953e19fff158de017c447be337aa7a3709c3223aeeab4a5bae50ee6f159
