@@ -20,6 +20,8 @@ type JobOptions struct {
 
 	TagSuffix string
 
+	TagTrimVersionPrefix bool
+
 	OverrideRepoName string
 }
 

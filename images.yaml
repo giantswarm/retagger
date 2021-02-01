@@ -383,6 +383,24 @@
     - tagSuffix: giantswarm
       dockerfileOptions:
       - RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+- name: k8s.gcr.io/kube-apiserver
+  tagTrimVersionPrefix: true
+  overrideRepoName: hyperkube
+  patterns:
+  - pattern: '>= v1.19.8 || >= v1.20.0-0'
+    customImages:
+    - dockerfileOptions:
+      - |
+        FROM quay.io/giantswarm/alpine:3.12.1 AS downloader
+        WORKDIR /tmp/hyperkube
+        COPY --from=0 /usr/local/bin/kube-apiserver /tmp/hyperkube/kube-apiserver
+        RUN KUBERNETES_VERSION=$(/tmp/hyperkube/kube-apiserver --version | grep Kubernetes | cut -d ' ' -f 2) && \
+        wget -t 5 https://storage.googleapis.com/kubernetes-release/release/$KUBERNETES_VERSION/bin/linux/amd64/kubelet && \
+        wget -t 5 https://storage.googleapis.com/kubernetes-release/release/$KUBERNETES_VERSION/bin/linux/amd64/kubectl && \
+        chmod +x /tmp/hyperkube/kubelet /tmp/hyperkube/kubectl
+        FROM scratch
+        COPY --from=downloader /tmp/hyperkube/kubelet /kubelet
+        COPY --from=downloader /tmp/hyperkube/kubectl /kubectl
 - name: k8s.gcr.io/kube-controller-manager
   patterns:
   - pattern: '>= v1.16.8'
