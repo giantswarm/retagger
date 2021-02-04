@@ -49,6 +49,9 @@
 - name: aquasec/kube-bench
   patterns:
   - pattern: '>= 0.2'
+- name: bats/bats
+  patterns:
+  - pattern: '>= 1.2.1'
 - name: bitnami/kubectl
   patterns:
   - pattern: '>= 1.16'
@@ -83,6 +86,7 @@
   patterns:
   - pattern: '>= 7.67.0'
 - name: dduportal/bats
+  # See `name: bats/bats` for newer releases
   tags:
   - sha: b2d533b27109f7c9ea1e270e23f212c47906346f9cffaa4da6da48ed9d8031da
     tag: 0.4.0
