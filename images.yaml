@@ -190,8 +190,8 @@
   tags:
   - sha: e7617c2439114b094f807b41e3c38b2f040021dfad1c6693359f8657209154b9
     tag: v0.5.6
-  - sha: 69e7236f54b70c04a7400d18c4dbd1b58298b9a534068e017da0cc8fcf816ede
-    tag: v0.7.3
+  - sha: 51cd47349de3232990b1d449f3d7d36f042ca0554a09f2d7feafb47dffb5c52d
+    tag: v0.7.4
 - name: gcr.io/google-containers/startup-script
   tags:
   - sha: 9d0006c93668388b3616235bf87954a5e4d9aac16721a237761f0ff3ce61a58b
