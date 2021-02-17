@@ -455,6 +455,16 @@
   overrideRepoName: kind-node
   patterns:
   - pattern: '>= v1.16'
+- name: kedacore/keda
+  overrideRepoName: kedacore-keda
+  tags:
+  - sha: b4932b7c763d57e97bd3165749cfd994196b20575e21a3b4cfc3097067f3fd67
+    tag: 2.1.0
+- name: kedacore/keda-metrics-apiserver
+  overrideRepoName: kedacore-keda-metrics-apiserver
+  tags:
+  - sha: 8b315d56586ed4b658e0540fa80d395bf6ce0698693d07177aa4c13ce2c452f9
+    tag: 2.1.0
 - name: kiwigrid/k8s-sidecar
   patterns:
   - pattern: '>= 1.1.0'
