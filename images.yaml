@@ -451,10 +451,6 @@
 - name: k8s.gcr.io/provider-aws/aws-ebs-csi-driver
   patterns:
   - pattern: '>= 0.7.0'
-- name: kindest/node
-  overrideRepoName: kind-node
-  patterns:
-  - pattern: '>= v1.16'
 - name: kedacore/keda
   overrideRepoName: kedacore-keda
   tags:
@@ -465,6 +461,10 @@
   tags:
   - sha: 8b315d56586ed4b658e0540fa80d395bf6ce0698693d07177aa4c13ce2c452f9
     tag: 2.1.0
+- name: kindest/node
+  overrideRepoName: kind-node
+  patterns:
+  - pattern: '>= v1.16'
 - name: kiwigrid/k8s-sidecar
   patterns:
   - pattern: '>= 1.1.0'
