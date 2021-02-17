@@ -576,9 +576,8 @@
   patterns:
   - pattern: '>= 0.38.1'
 - name: quay.io/dexidp/dex
-  tags:
-  - sha: c14ea9dbf341de51c8c0858a65bfe905a0a2cc154311c959a0bfe609bfe177b5
-    tag: v2.21.0
+  patterns:
+  - pattern: '>=v2.24.0'
 - name: quay.io/fairwinds/goldilocks
   patterns:
   - pattern: '>= v2.2.0'
