@@ -76,6 +76,9 @@
   - sha: 9029b2f52ecd28aacec2fd8a86a321dc9f77a46df251de5e3f157dd6e80baea0
     tag: 0.12
 - name: coredns/coredns
+  tags:
+  - sha: 642ff9910da6ea9a8624b0234eef52af9ca75ecbec474c5507cb096bdfbae4e5
+    tag: 1.8.3
   patterns:
   - pattern: '>= 1.6.5'
     customImages:
