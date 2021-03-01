@@ -49,6 +49,9 @@
 - name: aquasec/kube-bench
   patterns:
   - pattern: '>= 0.2'
+- name: bash
+  patterns:
+  - pattern: '>= 5'
 - name: bats/bats
   patterns:
   - pattern: '>= 1.2.1'
