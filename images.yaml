@@ -491,12 +491,12 @@
 - name: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
   patterns:
   - pattern: '>= 0.7.0'
-- name: mcr.microsoft.com/k8s/aad-pod-identity/mic
+- name: mcr.microsoft.com/oss/azure/aad-pod-identity/mic
   patterns:
-  - pattern: '>= 1.6.1'
-- name: mcr.microsoft.com/k8s/aad-pod-identity/nmi
+  - pattern: '>= 1.7.0'
+- name: mcr.microsoft.com/oss/azure/aad-pod-identity/nmi
   patterns:
-  - pattern: '>= 1.6.1'
+  - pattern: '>= 1.7.0'
 - name: mintel/dex-k8s-authenticator
   patterns:
   - pattern: '>= 1.4.0'
