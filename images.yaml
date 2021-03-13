@@ -365,6 +365,8 @@
   tags:
   - sha: 5edb74aecebc29967ecc694c89c87ad9fda33e6e72c1459dee697e2a55ac2bba
     tag: v0.18.1
+  - sha: 7da62b227612d5cf50d6de80db740b77bcfb7fd52b2e1aa679dd9edd692fec21
+    tag: v0.21.0
 - name: jaegertracing/all-in-one
   overrideRepoName: jaeger-all-in-one
   patterns:
@@ -636,6 +638,8 @@
   tags:
   - sha: 55fb51929186d4dc8b0821569151a39283918785447628fb2e28f87d9b2937d2
     tag: v3.0.0-rc.1
+  - sha: 85c674b5aa7fd55c5acb642c1fd50be8ad399d6390ce3dd2a0562dc9de897d6f
+    tag: v3.3.1
 - name: quay.io/jacksontj/promxy
   patterns:
   - pattern: '>= v0.0.60'
