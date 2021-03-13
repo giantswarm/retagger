@@ -1,5 +1,6 @@
 - name: alpine
   patterns:
+  - pattern: '>= 3.13'
   - pattern: '>= 3.11'
     customImages:
     - tagSuffix: giantswarm
