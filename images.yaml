@@ -636,6 +636,8 @@
   tags:
   - sha: 55fb51929186d4dc8b0821569151a39283918785447628fb2e28f87d9b2937d2
     tag: v3.0.0-rc.1
+  - sha: 85c674b5aa7fd55c5acb642c1fd50be8ad399d6390ce3dd2a0562dc9de897d6f
+    tag: v3.3.1
 - name: quay.io/jacksontj/promxy
   patterns:
   - pattern: '>= v0.0.60'
