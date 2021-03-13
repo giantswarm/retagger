@@ -365,6 +365,8 @@
   tags:
   - sha: 5edb74aecebc29967ecc694c89c87ad9fda33e6e72c1459dee697e2a55ac2bba
     tag: v0.18.1
+  - sha: 7da62b227612d5cf50d6de80db740b77bcfb7fd52b2e1aa679dd9edd692fec21
+    tag: v0.21.0
 - name: jaegertracing/all-in-one
   overrideRepoName: jaeger-all-in-one
   patterns:
