@@ -733,6 +733,25 @@
   overrideRepoName: vpa-certgen-ci-images
   patterns:
   - pattern: '= v11-alpine'
+
+# Used in strimzi-kafka-operator-app
+- name: quay.io/strimzi/jmxtrans
+  overrideRepoName: strimzi-jmxtrans
+  patterns:
+  - pattern: '>= 0.18.0-0'
+- name: quay.io/strimzi/kafka
+  overrideRepoName: strimzi-kafka
+  patterns:
+  - pattern: '>= 0.18.0-0'
+- name: quay.io/strimzi/kafka-bridge
+  overrideRepoName: strimzi-kafka-bridge
+  patterns:
+  - pattern: '>= 0.18.0-0'
+- name: quay.io/strimzi/operator
+  overrideRepoName: strimzi-operator
+  patterns:
+  - pattern: '>= 0.18.0-0'
+
 - name: quay.io/uswitch/kiam
   tags:
   - sha: be3a5846922de2e4952a0cbcb36f1bc65002a41025d79d3cab164fc1499cad2c
@@ -748,24 +767,6 @@
 - name: squareup/ghostunnel
   patterns:
   - pattern: '>= v1.5.2'
-
-# Used in strimzi-kafka-operator-app
-- name: strimzi/jmxtrans
-  overrideRepoName: strimzi-jmxtrans
-  patterns:
-  - pattern: '>= 0.18.0-0'
-- name: strimzi/kafka
-  overrideRepoName: strimzi-kafka
-  patterns:
-  - pattern: '>= 0.18.0-0'
-- name: strimzi/kafka-bridge
-  overrideRepoName: strimzi-kafka-bridge
-  patterns:
-  - pattern: '>= 0.18.0-0'
-- name: strimzi/operator
-  overrideRepoName: strimzi-operator
-  patterns:
-  - pattern: '>= 0.18.0-0'
 
 - name: sysdig/falco
   tags:
