@@ -743,12 +743,7 @@
     tag: 3.2.11-alpine
   - sha: 87275ecd3017cdacd3e93eaf07e26f4a91d7f4d7c311b2305fccb50ec3a1a8cd
     tag: 4.0.9
-
-# Used in prometheus-operator-app
-- name: squareup/ghostunnel
-  patterns:
-  - pattern: '>= v1.5.2'
-
+      #
 # Used in strimzi-kafka-operator-app
 - name: quay.io/strimzi/jmxtrans
   overrideRepoName: strimzi-jmxtrans
@@ -766,6 +761,11 @@
   overrideRepoName: strimzi-operator
   patterns:
   - pattern: '>= 0.18.0-0'
+
+# Used in prometheus-operator-app
+- name: squareup/ghostunnel
+  patterns:
+  - pattern: '>= v1.5.2'
 
 - name: sysdig/falco
   tags:
