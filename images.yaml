@@ -750,19 +750,19 @@
   - pattern: '>= v1.5.2'
 
 # Used in strimzi-kafka-operator-app
-- name: quay.io/strimzi/jmxtrans
+- name: strimzi/jmxtrans
   overrideRepoName: strimzi-jmxtrans
   patterns:
   - pattern: '>= 0.18.0-0'
-- name: quay.io/strimzi/kafka
+- name: strimzi/kafka
   overrideRepoName: strimzi-kafka
   patterns:
   - pattern: '>= 0.18.0-0'
-- name: quay.io/strimzi/kafka-bridge
+- name: strimzi/kafka-bridge
   overrideRepoName: strimzi-kafka-bridge
   patterns:
   - pattern: '>= 0.18.0-0'
-- name: quay.io/strimzi/operator
+- name: strimzi/operator
   overrideRepoName: strimzi-operator
   patterns:
   - pattern: '>= 0.18.0-0'
