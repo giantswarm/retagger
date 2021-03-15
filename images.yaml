@@ -733,17 +733,7 @@
   overrideRepoName: vpa-certgen-ci-images
   patterns:
   - pattern: '= v11-alpine'
-- name: quay.io/uswitch/kiam
-  tags:
-  - sha: be3a5846922de2e4952a0cbcb36f1bc65002a41025d79d3cab164fc1499cad2c
-    tag: v4.0
-- name: redis
-  tags:
-  - sha: 002a1870fa2ffd11dbd7438527a2c17f794f6962f5d3a4f048f848963ab954a8
-    tag: 3.2.11-alpine
-  - sha: 87275ecd3017cdacd3e93eaf07e26f4a91d7f4d7c311b2305fccb50ec3a1a8cd
-    tag: 4.0.9
-      #
+
 # Used in strimzi-kafka-operator-app
 - name: quay.io/strimzi/jmxtrans
   overrideRepoName: strimzi-jmxtrans
@@ -761,6 +751,17 @@
   overrideRepoName: strimzi-operator
   patterns:
   - pattern: '>= 0.18.0-0'
+
+- name: quay.io/uswitch/kiam
+  tags:
+  - sha: be3a5846922de2e4952a0cbcb36f1bc65002a41025d79d3cab164fc1499cad2c
+    tag: v4.0
+- name: redis
+  tags:
+  - sha: 002a1870fa2ffd11dbd7438527a2c17f794f6962f5d3a4f048f848963ab954a8
+    tag: 3.2.11-alpine
+  - sha: 87275ecd3017cdacd3e93eaf07e26f4a91d7f4d7c311b2305fccb50ec3a1a8cd
+    tag: 4.0.9
 
 # Used in prometheus-operator-app
 - name: squareup/ghostunnel
