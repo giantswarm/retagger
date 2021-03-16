@@ -469,6 +469,10 @@
 - name: k8s.gcr.io/provider-aws/aws-ebs-csi-driver
   patterns:
   - pattern: '>= 0.7.0'
+- name: k8spin/loki-multi-tenant-proxy
+  tags:
+  - sha: 4819d2319477d1c5daf0321a97770d71cfb4aa2ec395662769909a7a1b3ae32c
+    tag: v1.0.0
 - name: kedacore/keda
   overrideRepoName: kedacore-keda
   tags:
