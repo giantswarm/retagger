@@ -209,6 +209,9 @@
     tag: v0.5.6
   - sha: 51cd47349de3232990b1d449f3d7d36f042ca0554a09f2d7feafb47dffb5c52d
     tag: v0.7.4
+- name: gcr.io/cluster-api-provider-vsphere/release/manager
+  patterns:
+  - pattern: '>= 0.7.0'
 - name: gcr.io/google-containers/startup-script
   tags:
   - sha: 9d0006c93668388b3616235bf87954a5e4d9aac16721a237761f0ff3ce61a58b
@@ -246,6 +249,9 @@
   tags:
   - sha: 4fc41a76a237de912507d9644860d33cdf90bedf6477c795d7c64f79778d33a0
     tag: 1.7
+- name: gcr.io/kubebuilder/kube-rbac-proxy
+  patterns:
+  - pattern: '>= 0.4.0'
 - name: gcr.io/kubernetes-helm/tiller
   tags:
   - sha: 59b6200a822ddb18577ca7120fb644a3297635f47d92db521836b39b74ad19e8
