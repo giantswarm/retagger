@@ -257,6 +257,9 @@
 - name: ghcr.io/kyverno/kyverno
   patterns:
   - pattern: '>= v1.3.4'
+- name: ghcr.io/kyverno/kyvernopre
+  patterns:
+  - pattern: '>= v1.3.4'
 - name: ghcr.io/linkerd/cni-plugin
   overrideRepoName: linkerd2-cni-plugin
   tags:
