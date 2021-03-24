@@ -261,6 +261,12 @@
   tags:
   - sha: 4bba1afcd3af85b550b42647e92b3fab36448c75e1af611a65644f77f4dde314
     tag: kubernetes-3-ca-certs
+- name: ghcr.io/kyverno/kyverno
+  patterns:
+  - pattern: '>= v1.3.4'
+- name: ghcr.io/kyverno/kyvernopre
+  patterns:
+  - pattern: '>= v1.3.4'
 - name: ghcr.io/linkerd/cni-plugin
   overrideRepoName: linkerd2-cni-plugin
   tags:
@@ -350,7 +356,7 @@
     tag: 1.15.2-alpine3.12
   - sha: 11f6b517bccb82779dbddfe57564a7e32c7d76d58ee032122967d0d9fc5edca1
     tag: 1.16-alpine3.12
-  - sha: a037b74580e4b9fdf64c19ac59820fd2cfdc3799b1948f94357229de4c0d2bf7
+  - sha: 12d5f94cd4d2840e538e82e26a5dfddf711b30cc98a9f6e01bcf65d7aaf7ccd8
     tag: 1.16.2-alpine3.13
 - name: golangci/golangci-lint
   tags:
@@ -476,6 +482,10 @@
 - name: k8s.gcr.io/provider-aws/aws-ebs-csi-driver
   patterns:
   - pattern: '>= 0.7.0'
+- name: k8spin/loki-multi-tenant-proxy
+  tags:
+  - sha: 4819d2319477d1c5daf0321a97770d71cfb4aa2ec395662769909a7a1b3ae32c
+    tag: v1.0.0
 - name: kedacore/keda
   overrideRepoName: kedacore-keda
   tags:
