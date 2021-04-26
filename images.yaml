@@ -586,7 +586,7 @@
 - name: quay.io/calico/kube-controllers
   overrideRepoName: calico-crd-installer
   patterns:
-  - pattern: '>= v3.16.0'
+  - pattern: '= v3.16.9'
     customImages:
     - dockerfileOptions:
       - |
