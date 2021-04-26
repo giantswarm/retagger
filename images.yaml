@@ -428,7 +428,7 @@
   - pattern: '>= v1.15'
 - name: k8s.gcr.io/kube-apiserver
   patterns:
-  - pattern: '>= v1.19.0'
+  - pattern: '>= v1.19.0 || >= v1.20.0-0'
   - pattern: '>= v1.16.8 < v1.19'
     customImages:
     - tagSuffix: giantswarm
@@ -454,13 +454,13 @@
         COPY --from=downloader /tmp/hyperkube/kubectl /kubectl
 - name: k8s.gcr.io/kube-controller-manager
   patterns:
-  - pattern: '>= v1.16.8'
+  - pattern: '>= v1.16.8 || >= v1.20.0-0'
 - name: k8s.gcr.io/kube-proxy
   patterns:
-  - pattern: '>= v1.16.8'
+  - pattern: '>= v1.16.8 || >= v1.20.0-0'
 - name: k8s.gcr.io/kube-scheduler
   patterns:
-  - pattern: '>= v1.16.8'
+  - pattern: '>= v1.16.8 || >= v1.20.0-0'
 - name: k8s.gcr.io/metrics-server/metrics-server
   tags:
   - sha: 78035f05bcf7e0f9b401bae1ac62b5a505f95f9c2122b80cff73dcc04d58497e
