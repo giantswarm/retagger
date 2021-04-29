@@ -586,11 +586,11 @@
 - name: quay.io/calico/kube-controllers
   overrideRepoName: calico-crd-installer
   patterns:
-  - pattern: '= v3.16.9'
+  - pattern: '>= v3.15.0'
     customImages:
     - dockerfileOptions:
       - |
-        FROM quay.io/giantswarm/crd-installer:0.1.0 AS installer
+        FROM quay.io/giantswarm/crd-installer:0.1.1 AS installer
         FROM quay.io/giantswarm/alpine:3.13.5 AS downloader
         WORKDIR /tmp/crd-installer
         COPY --from=0 /usr/bin/kube-controllers /crd-installer/kube-controllers
