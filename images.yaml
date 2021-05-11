@@ -577,6 +577,9 @@
     tag: 3.8.6-slim
   - sha: db35c8d2e810559d90af0a126dac55cf93601202061d3f61f94ac3c460d4a211
     tag: 3.9-alpine3.13
+- name: quay.io/argoproj/argocd
+  patterns:
+  - pattern: '>= v2.0.1'
 - name: quay.io/calico/cni
   patterns:
   - pattern: '>= v3.9.5'
