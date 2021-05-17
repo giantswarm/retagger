@@ -81,7 +81,7 @@
     tag: 0.12
 - name: cloudflare/cloudflared
   patterns:
-    - pattern: '>= 2021.0.0'
+  - pattern: '>= 2021.0.0'
 - name: coredns/coredns
   tags:
   - sha: 642ff9910da6ea9a8624b0234eef52af9ca75ecbec474c5507cb096bdfbae4e5
