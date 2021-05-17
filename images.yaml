@@ -80,9 +80,8 @@
   - sha: 9029b2f52ecd28aacec2fd8a86a321dc9f77a46df251de5e3f157dd6e80baea0
     tag: 0.12
 - name: cloudflare/cloudflared
-  tags:
-  - sha: d23ffd40f9efc7484473a1c877f388a7f7956e623c81252db37a0a16073ea269
-    tag: 2021.2.5
+  patterns:
+    - pattern: '>= 2021.0.0'
 - name: coredns/coredns
   tags:
   - sha: 642ff9910da6ea9a8624b0234eef52af9ca75ecbec474c5507cb096bdfbae4e5
