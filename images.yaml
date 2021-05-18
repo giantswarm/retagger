@@ -252,6 +252,10 @@
   tags:
   - sha: 59b6200a822ddb18577ca7120fb644a3297635f47d92db521836b39b74ad19e8
     tag: v2.16.8
+- name: gcr.io/spark-operator/spark-operator
+  tags:
+  - sha: deb7bb731c8354d15d5afe857016a79d81355e967ecd3aa8a95e7c7df916171a
+    tag: v2.4.0-v1beta1-latest
 - name: gfkse/oauth2_proxy
   tags:
   - sha: 4bba1afcd3af85b550b42647e92b3fab36448c75e1af611a65644f77f4dde314
