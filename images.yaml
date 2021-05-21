@@ -541,6 +541,10 @@
     tag: 1.18-alpine
   - sha: 503f1d45a9345c729d368e0df8de8ececd5e6123ec16b96447144c003f66b486
     tag: 1.19-alpine
+- name: ns1labs/flame
+  tags:
+  - sha: a86c25be95c8e568b2e604a6958e6e0899a2c7f870c9cee4728662ec4899a317
+    tag: 0.11.0
 - name: omnition/opencensus-collector
   patterns:
   - pattern: '>= 0.1.11'
