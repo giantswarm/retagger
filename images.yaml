@@ -512,9 +512,9 @@
 - name: kong
   patterns:
   - pattern: '>= 1.4.3'
-- name: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
+- name: kong/kubernetes-ingress-controller
   patterns:
-  - pattern: '>= 0.7.0'
+  - pattern: '>= 1.1.1'
 - name: mcr.microsoft.com/oss/azure/aad-pod-identity/mic
   patterns:
   - pattern: '>= 1.7.0'
