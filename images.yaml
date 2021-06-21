@@ -1,7 +1,7 @@
 - name: alpine
   tags:
-  - sha: 69e70a79f2d41ab5d637de98c1e0b055206ba40a8145e7bddb55ccc04e13cf8f
-    tag: 3.13
+  - sha: 234cb88d3020898631af0ccbbcca9a66ae7306ecd30c9720690858c1b007d2a0
+    tag: 3.14
   patterns:
   - pattern: '>= 3.13'
   - pattern: '>= 3.11'
