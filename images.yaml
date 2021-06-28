@@ -533,6 +533,10 @@
 - name: mcr.microsoft.com/oss/azure/aad-pod-identity/nmi
   patterns:
   - pattern: '>= 1.7.0'
+- name: microsoft/oms
+  tags:
+    - sha: e7be9f25f7a879c52efa1288f1224891a7657a15b2830b35e4c614778606d443
+      tag: 1.8.1-256
 - name: mintel/dex-k8s-authenticator
   patterns:
   - pattern: '>= 1.4.0'
