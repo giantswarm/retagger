@@ -529,7 +529,7 @@
   - pattern: '>= 1.1.1'
 - name: mcr.microsoft.com/azuremonitor/containerinsights/ciprod
   tags:
-  - sha: 80be8a2e752ded528249d52a3bb26c690748c74f144bf01acd28478093e3eddc
+  - sha: 46ebe46d7d5284455b256c6d0ebaa396cd38b2618cd292e607c447ab5a833311
     tag: 'ciprod06112021'
 - name: mcr.microsoft.com/oss/azure/aad-pod-identity/mic
   patterns:
