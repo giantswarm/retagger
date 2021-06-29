@@ -529,7 +529,7 @@
   - pattern: '>= 1.1.1'
 - name: mcr.microsoft.com/azuremonitor/containerinsights/ciprod
   tags:
-  - tag: ciprod06112021
+  - tag: "ciprod06112021"
 - name: mcr.microsoft.com/oss/azure/aad-pod-identity/mic
   patterns:
   - pattern: '>= 1.7.0'
