@@ -102,7 +102,7 @@
     tag: stable-2.9.0
   - sha: 1e8d696de8c93325b3331be3a28dbfa42e2ea2b7aff0fae8431a8135786f5e8c
     tag: stable-2.9.1
-  - sha: 71e7f7b3ad7be705099b0b9178df31bf89b592964e4ae9df9d56cc279f0dc2c3
+  - sha: 7dcf1c0a408670f3d817372f206f5be6a03625789d9ce9e1443e43ee0b1bf80c
     tag: stable-2.10.2
 - name: curlimages/curl
   patterns:
