@@ -209,13 +209,15 @@
   tags:
   - sha: 4bba1afcd3af85b550b42647e92b3fab36448c75e1af611a65644f77f4dde314
     tag: kubernetes-3-ca-certs
-- name: ghcr.io/linkerd/cni-plugin
+- name: cr.l5d.io/linkerd/cni-plugin
   overrideRepoName: linkerd2-cni-plugin
   tags:
   - sha: 95cafe418077e1bac571255a6dcd43aba47687f5a6523e3cd73a95459cff8688
     tag: stable-2.9.0
   - sha: 1e8d696de8c93325b3331be3a28dbfa42e2ea2b7aff0fae8431a8135786f5e8c
     tag: stable-2.9.1
+  - sha: 71e7f7b3ad7be705099b0b9178df31bf89b592964e4ae9df9d56cc279f0dc2c3
+    tag: stable-2.10.2
 - name: ghcr.io/linkerd/controller
   overrideRepoName: linkerd2-controller
   tags:
