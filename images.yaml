@@ -1,5 +1,9 @@
 - name: alpine
+  tags:
+  - sha: 234cb88d3020898631af0ccbbcca9a66ae7306ecd30c9720690858c1b007d2a0
+    tag: 3.14
   patterns:
+  - pattern: '>= 3.13'
   - pattern: '>= 3.11'
     customImages:
     - tagSuffix: giantswarm
@@ -28,6 +32,18 @@
   tags:
   - sha: 9f670bbb42c30c9a2117c5a2cf924e49ba1d4d122cd673bdfbbca9fc031b9013
     tag: 2.0.24
+- name: amazon/aws-cli
+  overrideRepoName: awscli-tar
+  tags:
+  - sha: 9f670bbb42c30c9a2117c5a2cf924e49ba1d4d122cd673bdfbbca9fc031b9013
+    tag: 2.0.24
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - RUN yum -y install tar
+- name: amazon/aws-efs-csi-driver
+  patterns:
+  - pattern: '>= 1.0.0'
 - name: amazon/opendistro-for-elasticsearch
   patterns:
   - pattern: '>= 1.3.0'
@@ -37,6 +53,12 @@
 - name: aquasec/kube-bench
   patterns:
   - pattern: '>= 0.2'
+- name: bash
+  patterns:
+  - pattern: '>= 5'
+- name: bats/bats
+  patterns:
+  - pattern: '>= 1.2.1'
 - name: bitnami/kubectl
   patterns:
   - pattern: '>= 1.16'
@@ -60,7 +82,13 @@
   tags:
   - sha: 9029b2f52ecd28aacec2fd8a86a321dc9f77a46df251de5e3f157dd6e80baea0
     tag: 0.12
+- name: cloudflare/cloudflared
+  patterns:
+  - pattern: '>= 2021.0.0'
 - name: coredns/coredns
+  tags:
+  - sha: 642ff9910da6ea9a8624b0234eef52af9ca75ecbec474c5507cb096bdfbae4e5
+    tag: 1.8.3
   patterns:
   - pattern: '>= 1.6.5'
     customImages:
@@ -71,9 +99,13 @@
   patterns:
   - pattern: '>= 7.67.0'
 - name: dduportal/bats
+  # See `name: bats/bats` for newer releases
   tags:
   - sha: b2d533b27109f7c9ea1e270e23f212c47906346f9cffaa4da6da48ed9d8031da
     tag: 0.4.0
+- name: dexidp/dex
+  patterns:
+  - pattern: '>=v2.27.0'
 - name: directxman12/k8s-prometheus-adapter-amd64
   patterns:
   - pattern: '>=v0.6.0'
@@ -92,6 +124,9 @@
   tags:
   - sha: 72d816c99cc86b117baf04385020121f71015d7f5f9eba2a59e72532d645d38f
     tag: 7.6.1
+- name: ealen/echo-server
+  patterns:
+  - pattern: '>=0.5.0'
 - name: elasticsearch
   tags:
   - tag: 6.8.13
@@ -139,31 +174,55 @@
   tags:
   - sha: deeca74a67d0897eaef9211f192b4236a7380a507249c3aeabf4ef657aba8c3b
     tag: v0.4.4
+  - sha: b4fa0586ecdda482141177d1d2771233e1673291604827b59430389de8174566
+    tag: v0.6.1
+  - sha: 482f53275786fc42d7de1c177743c3cfdadf57fee7157215b2079955a2d5ea4a
+    tag: v0.11.0
 - name: fluxcd/image-automation-controller
   overrideRepoName: fluxcd-image-automation-controller
   tags:
   - sha: 68e0daba8eee0b1ea27a36c1ecc207924acf80205224ddfbb103670ab96e4d9f
     tag: v0.2.0
+  - sha: f984192c6d699556e575dfcb1b68aee617b103accc9e64d2201d943a0c32fbbe
+    tag: v0.4.0
+  - sha: fb8dac6c98027035ba57d215432fe6fdc6abfd49df86a55b332121b0b0771bfc
+    tag: v0.12.0
 - name: fluxcd/image-reflector-controller
   overrideRepoName: fluxcd-image-reflector-controller
   tags:
   - sha: bedb75aa1aceca12ab66378681852f5858b75e78b1124472ef9e8330917376e1
     tag: v0.1.0
+  - sha: 8e30f421793af769734253e8f8f1407c6f093e89c4574049d33ed70b030eb0aa
+    tag: v0.5.0
+  - sha: 04b587eb0afbd5ed3871f11ad8286633d023fd9e446a025d6db1cb93dc57cd7b
+    tag: v0.10.0
 - name: fluxcd/kustomize-controller
   overrideRepoName: fluxcd-kustomize-controller
   tags:
   - sha: a477b75684e8f35041c1a988f83b4e8b6a6bbdaa46e7ae05e4804f3da6f6d3a1
     tag: v0.5.3
+  - sha: b3c107ce756b8b363d4886f9ecef6242e80e6cdf07853dd5fe2a49ae5d22edb1
+    tag: v0.7.4
+  - sha: 611d929779e986bc05937d3c2e5ed122c25da9f124ca86ed0ee4cc1d59dcdd65
+    tag: v0.13.0
 - name: fluxcd/notification-controller
   overrideRepoName: fluxcd-notification-controller
   tags:
   - sha: 1ef2a06bb95555d1ef135842398e210ff01d106a250ad5c0b3d18a83fb5a8be0
     tag: v0.5.0
+  - sha: cfe67fe76fe740fe86f10e99120f321e18c425a0b3990570cceda56368b4ddd8
+    tag: v0.7.1
+  - sha: 4a36666f78471b965d0ada188b16d54856d536ebf7ddb55cc9bde0b366d7f70f
+    tag: v0.15.0
 - name: fluxcd/source-controller
   overrideRepoName: fluxcd-source-controller
   tags:
   - sha: e7617c2439114b094f807b41e3c38b2f040021dfad1c6693359f8657209154b9
     tag: v0.5.6
+  - sha: 51cd47349de3232990b1d449f3d7d36f042ca0554a09f2d7feafb47dffb5c52d
+    tag: v0.7.4
+  - sha: c94485de2d1733c5e7df92403990945fd24c5b4a77d63d9fc4cabe0f5d6a7ffe
+    tag: v0.14.0
 - name: gcr.io/google-containers/startup-script
   tags:
   - sha: 9d0006c93668388b3616235bf87954a5e4d9aac16721a237761f0ff3ce61a58b
@@ -201,14 +260,27 @@
   tags:
   - sha: 4fc41a76a237de912507d9644860d33cdf90bedf6477c795d7c64f79778d33a0
     tag: 1.7
+- name: gcr.io/kubebuilder/kube-rbac-proxy
+  patterns:
+  - pattern: '>= v0.4.1'
 - name: gcr.io/kubernetes-helm/tiller
   tags:
   - sha: 59b6200a822ddb18577ca7120fb644a3297635f47d92db521836b39b74ad19e8
     tag: v2.16.8
+- name: gcr.io/spark-operator/spark-operator
+  tags:
+  - sha: deb7bb731c8354d15d5afe857016a79d81355e967ecd3aa8a95e7c7df916171a
+    tag: v2.4.0-v1beta1-latest
 - name: gfkse/oauth2_proxy
   tags:
   - sha: 4bba1afcd3af85b550b42647e92b3fab36448c75e1af611a65644f77f4dde314
     tag: kubernetes-3-ca-certs
+- name: ghcr.io/kyverno/kyverno
+  patterns:
+  - pattern: '>= v1.3.4'
+- name: ghcr.io/kyverno/kyvernopre
+  patterns:
+  - pattern: '>= v1.3.4'
 - name: cr.l5d.io/linkerd/cni-plugin
   overrideRepoName: linkerd2-cni-plugin
   tags:
@@ -298,6 +370,10 @@
     tag: 1.14.1-alpine3.11
   - sha: 4d8abd16b03209b30b48f69a2e10347aacf7ce65d8f9f685e8c3e20a512234d9
     tag: 1.15.2-alpine3.12
+  - sha: 11f6b517bccb82779dbddfe57564a7e32c7d76d58ee032122967d0d9fc5edca1
+    tag: 1.16-alpine3.12
+  - sha: 12d5f94cd4d2840e538e82e26a5dfddf711b30cc98a9f6e01bcf65d7aaf7ccd8
+    tag: 1.16.2-alpine3.13
 - name: golangci/golangci-lint
   tags:
   - sha: 05764fbd373c2b2c44186b0a98774b37499cbe71d41854def5487ead8b9861b5
@@ -311,6 +387,9 @@
 - name: grafana/loki
   patterns:
   - pattern: '>= v1.2.0'
+- name: grafana/loki-canary
+  patterns:
+  - pattern: '>= v2.1.0'
 - name: grafana/promtail
   patterns:
   - pattern: '>= v1.2.0'
@@ -318,6 +397,8 @@
   tags:
   - sha: 5edb74aecebc29967ecc694c89c87ad9fda33e6e72c1459dee697e2a55ac2bba
     tag: v0.18.1
+  - sha: 7da62b227612d5cf50d6de80db740b77bcfb7fd52b2e1aa679dd9edd692fec21
+    tag: v0.21.0
 - name: jaegertracing/all-in-one
   overrideRepoName: jaeger-all-in-one
   patterns:
@@ -367,21 +448,39 @@
   - pattern: '>= v1.15'
 - name: k8s.gcr.io/kube-apiserver
   patterns:
-  - pattern: '>= v1.19.0'
+  - pattern: '>= v1.19.0 || >= v1.20.0-0'
   - pattern: '>= v1.16.8 < v1.19'
     customImages:
     - tagSuffix: giantswarm
       dockerfileOptions:
       - RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+- name: k8s.gcr.io/kube-apiserver
+  tagTrimVersionPrefix: true
+  overrideRepoName: hyperkube
+  patterns:
+  - pattern: '>= v1.19.8 || >= v1.20.0-0'
+    customImages:
+    - dockerfileOptions:
+      - |
+        FROM quay.io/giantswarm/alpine:3.12.1 AS downloader
+        WORKDIR /tmp/hyperkube
+        COPY --from=0 /usr/local/bin/kube-apiserver /tmp/hyperkube/kube-apiserver
+        RUN KUBERNETES_VERSION=$(/tmp/hyperkube/kube-apiserver --version | grep Kubernetes | cut -d ' ' -f 2) && \
+        wget -t 5 https://storage.googleapis.com/kubernetes-release/release/$KUBERNETES_VERSION/bin/linux/amd64/kubelet && \
+        wget -t 5 https://storage.googleapis.com/kubernetes-release/release/$KUBERNETES_VERSION/bin/linux/amd64/kubectl && \
+        chmod +x /tmp/hyperkube/kubelet /tmp/hyperkube/kubectl
+        FROM scratch
+        COPY --from=downloader /tmp/hyperkube/kubelet /kubelet
+        COPY --from=downloader /tmp/hyperkube/kubectl /kubectl
 - name: k8s.gcr.io/kube-controller-manager
   patterns:
-  - pattern: '>= v1.16.8'
+  - pattern: '>= v1.16.8 || >= v1.20.0-0'
 - name: k8s.gcr.io/kube-proxy
   patterns:
-  - pattern: '>= v1.16.8'
+  - pattern: '>= v1.16.8 || >= v1.20.0-0'
 - name: k8s.gcr.io/kube-scheduler
   patterns:
-  - pattern: '>= v1.16.8'
+  - pattern: '>= v1.16.8 || >= v1.20.0-0'
 - name: k8s.gcr.io/metrics-server/metrics-server
   tags:
   - sha: 78035f05bcf7e0f9b401bae1ac62b5a505f95f9c2122b80cff73dcc04d58497e
@@ -399,6 +498,20 @@
 - name: k8s.gcr.io/provider-aws/aws-ebs-csi-driver
   patterns:
   - pattern: '>= 0.7.0'
+- name: k8spin/loki-multi-tenant-proxy
+  tags:
+  - sha: 4819d2319477d1c5daf0321a97770d71cfb4aa2ec395662769909a7a1b3ae32c
+    tag: v1.0.0
+- name: kedacore/keda
+  overrideRepoName: kedacore-keda
+  tags:
+  - sha: b4932b7c763d57e97bd3165749cfd994196b20575e21a3b4cfc3097067f3fd67
+    tag: 2.1.0
+- name: kedacore/keda-metrics-apiserver
+  overrideRepoName: kedacore-keda-metrics-apiserver
+  tags:
+  - sha: 8b315d56586ed4b658e0540fa80d395bf6ce0698693d07177aa4c13ce2c452f9
+    tag: 2.1.0
 - name: kindest/node
   overrideRepoName: kind-node
   patterns:
@@ -413,21 +526,22 @@
 - name: kong
   patterns:
   - pattern: '>= 1.4.3'
-- name: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller
+- name: kong/kubernetes-ingress-controller
   patterns:
-  - pattern: '>= 0.7.0'
-- name: mcr.microsoft.com/k8s/aad-pod-identity/mic
+  - pattern: '>= 1.1.1'
+- name: mcr.microsoft.com/azuremonitor/containerinsights/ciprod
   tags:
-  - sha: bd9465be94966b9a917e1e3904fa5e63dd91772ccadf304e18ffd8e4ad8ccedd
-    tag: 1.6.1
-- name: mcr.microsoft.com/k8s/aad-pod-identity/nmi
-  tags:
-  - sha: 02128fefcdb7593ac53fc342e2c53a0fc6fabd813036bf60457bf43cc2940116
-    tag: 1.6.1
+  - sha: 46ebe46d7d5284455b256c6d0ebaa396cd38b2618cd292e607c447ab5a833311
+    tag: 'ciprod06112021'
+- name: mcr.microsoft.com/oss/azure/aad-pod-identity/mic
+  patterns:
+  - pattern: '>= 1.7.0'
+- name: mcr.microsoft.com/oss/azure/aad-pod-identity/nmi
+  patterns:
+  - pattern: '>= 1.7.0'
 - name: mintel/dex-k8s-authenticator
-  tags:
-  - sha: a3789f95d73411708f441361e8a41d2c2c5bfae4480cdeacff3be7ea8d3cdccc
-    tag: 1.2.0
+  patterns:
+  - pattern: '>= 1.4.0'
 - name: mysql
   tags:
   - sha: c8f03238ca1783d25af320877f063a36dbfce0daa56a7b4955e6c6e05ab5c70b
@@ -438,10 +552,8 @@
       - USER mysql
 - name: nginx
   tags:
-  - sha: 0fb320e2a1b1620b4905facb3447e3d84ad36da0b2c8aa8fe3a5a81d1187b884
-    tag: 1.13.12
-  - sha: 8853c7e938c2aa5d9d7439e698f0e700f058df8414a83134a09fcbb68bb0707a
-    tag: 1.18-alpine
+  - sha: 3e129fe0de45ea916f768ceb792a75c473dc32147d6c3a0913fd9c3ae28dd8f1
+    tag: 1.20-alpine
 - name: nginxinc/nginx-unprivileged
   tags:
   - sha: 2d55b56b04c06a4992729ad5430d2fae1a6833bd9c4a87a00173ff4563bbee40
@@ -450,6 +562,10 @@
     tag: 1.18-alpine
   - sha: 503f1d45a9345c729d368e0df8de8ececd5e6123ec16b96447144c003f66b486
     tag: 1.19-alpine
+- name: ns1labs/flame
+  tags:
+  - sha: a86c25be95c8e568b2e604a6958e6e0899a2c7f870c9cee4728662ec4899a317
+    tag: 0.11.0
 - name: omnition/opencensus-collector
   patterns:
   - pattern: '>= 0.1.11'
@@ -485,12 +601,35 @@
   tags:
   - sha: 1263b94facc6fd812688f78e05a9e64497e96e21db7e3935be36c87fab038c7e
     tag: 3.8.6-slim
+  - sha: db35c8d2e810559d90af0a126dac55cf93601202061d3f61f94ac3c460d4a211
+    tag: 3.9-alpine3.13
+- name: quay.io/argoproj/argocd
+  patterns:
+  - pattern: '>= v2.0.1'
 - name: quay.io/calico/cni
   patterns:
   - pattern: '>= v3.9.5'
 - name: quay.io/calico/kube-controllers
   patterns:
   - pattern: '>= v3.9.5'
+- name: quay.io/calico/kube-controllers
+  overrideRepoName: calico-crd-installer
+  patterns:
+  - pattern: '>= v3.15.0'
+    customImages:
+    - dockerfileOptions:
+      - |
+        FROM quay.io/giantswarm/crd-installer:0.1.1 AS installer
+        FROM quay.io/giantswarm/alpine:3.13.5 AS downloader
+        WORKDIR /tmp/crd-installer
+        COPY --from=0 /usr/bin/kube-controllers /crd-installer/kube-controllers
+        COPY --from=installer /scripts /scripts
+        RUN CALICO_VERSION=$(/crd-installer/kube-controllers -version) && \
+            /scripts/download-calico-crds.sh $CALICO_VERSION
+        FROM scratch
+        COPY --from=downloader /tmp/crd-installer/crds /crds
+        COPY --from=installer /usr/local/bin/crd-installer /usr/local/bin/crd-installer
+        CMD ["/usr/local/bin/crd-installer", "-dir", "/crds"]
 - name: quay.io/calico/node
   patterns:
   - pattern: '>= v3.9.5'
@@ -527,9 +666,8 @@
   patterns:
   - pattern: '>= 0.38.1'
 - name: quay.io/dexidp/dex
-  tags:
-  - sha: c14ea9dbf341de51c8c0858a65bfe905a0a2cc154311c959a0bfe609bfe177b5
-    tag: v2.21.0
+  patterns:
+  - pattern: '>=v2.24.0'
 - name: quay.io/fairwinds/goldilocks
   patterns:
   - pattern: '>= v2.2.0'
@@ -560,9 +698,8 @@
   - pattern: '>= v1.1.4'
 - name: quay.io/helmpack/chart-testing
   overrideRepoName: helm-chart-testing
-  tags:
-  - sha: 55fb51929186d4dc8b0821569151a39283918785447628fb2e28f87d9b2937d2
-    tag: v3.0.0-rc.1
+  patterns:
+  - pattern: '>= v3.4.0'
 - name: quay.io/jacksontj/promxy
   patterns:
   - pattern: '>= v0.0.60'
@@ -653,6 +790,25 @@
   overrideRepoName: vpa-certgen-ci-images
   patterns:
   - pattern: '= v11-alpine'
+
+# Used in strimzi-kafka-operator-app
+- name: quay.io/strimzi/jmxtrans
+  overrideRepoName: strimzi-jmxtrans
+  patterns:
+  - pattern: '>= 0.18.0-0'
+- name: quay.io/strimzi/kafka
+  overrideRepoName: strimzi-kafka
+  patterns:
+  - pattern: '>= 0.18.0-0'
+- name: quay.io/strimzi/kafka-bridge
+  overrideRepoName: strimzi-kafka-bridge
+  patterns:
+  - pattern: '>= 0.18.0-0'
+- name: quay.io/strimzi/operator
+  overrideRepoName: strimzi-operator
+  patterns:
+  - pattern: '>= 0.18.0-0'
+
 - name: quay.io/uswitch/kiam
   tags:
   - sha: be3a5846922de2e4952a0cbcb36f1bc65002a41025d79d3cab164fc1499cad2c
@@ -663,29 +819,13 @@
     tag: 3.2.11-alpine
   - sha: 87275ecd3017cdacd3e93eaf07e26f4a91d7f4d7c311b2305fccb50ec3a1a8cd
     tag: 4.0.9
+  - sha: cd68f7db2caeff01a62bab0cdb5630e86e2a608b0aba3b988b1d13dcf3cfdedb
+    tag: 6.2.1-alpine
 
 # Used in prometheus-operator-app
 - name: squareup/ghostunnel
   patterns:
   - pattern: '>= v1.5.2'
-
-# Used in strimzi-kafka-operator-app
-- name: strimzi/jmxtrans
-  overrideRepoName: strimzi-jmxtrans
-  patterns:
-  - pattern: '>= 0.18.0-0'
-- name: strimzi/kafka
-  overrideRepoName: strimzi-kafka
-  patterns:
-  - pattern: '>= 0.18.0-0'
-- name: strimzi/kafka-bridge
-  overrideRepoName: strimzi-kafka-bridge
-  patterns:
-  - pattern: '>= 0.18.0-0'
-- name: strimzi/operator
-  overrideRepoName: strimzi-operator
-  patterns:
-  - pattern: '>= 0.18.0-0'
 
 - name: sysdig/falco
   tags:
@@ -703,6 +843,9 @@
 - name: vault
   patterns:
   - pattern: '>= v1.2.0'
+- name: velero/velero
+  patterns:
+  - pattern: '>= v1.4.3'
 - name: weaveworks/watch
   tags:
   - sha: bb113953e19fff158de017c447be337aa7a3709c3223aeeab4a5bae50ee6f159

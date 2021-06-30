@@ -169,7 +169,7 @@ func (r *Registry) logDocker(reader io.Reader) error {
 			return microerror.Maskf(dockerError, "docker task failed: %s", logMsg)
 		}
 
-		r.logger.Log("level", "debug", "message", fmt.Sprintf("docker status"), "docker", string(s.Bytes()))
+		r.logger.Log("level", "debug", "message", "docker status", "docker", string(s.Bytes()))
 	}
 	if err := s.Err(); err != nil {
 		return microerror.Mask(err)

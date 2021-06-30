@@ -147,10 +147,10 @@ func fromImageTag(image images.Image, tag images.Tag) (JobDefinition, error) {
 		SourceImage: image.Name,
 		SourceTag:   tag.Tag,
 		SourceSha:   tag.Sha,
-	}
-
-	if image.OverrideRepoName != "" {
-		j.Options.OverrideRepoName = image.OverrideRepoName
+		Options: JobOptions{
+			TagTrimVersionPrefix: image.TagTrimVersionPrefix,
+			OverrideRepoName:     image.OverrideRepoName,
+		},
 	}
 
 	return j, nil
@@ -160,10 +160,10 @@ func fromImageTagPattern(image images.Image, tagPattern images.TagPattern) (JobD
 	j := JobDefinition{
 		SourceImage:   image.Name,
 		SourcePattern: tagPattern.Pattern,
-	}
-
-	if image.OverrideRepoName != "" {
-		j.Options.OverrideRepoName = image.OverrideRepoName
+		Options: JobOptions{
+			TagTrimVersionPrefix: image.TagTrimVersionPrefix,
+			OverrideRepoName:     image.OverrideRepoName,
+		},
 	}
 
 	return j, nil
