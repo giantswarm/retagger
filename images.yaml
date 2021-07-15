@@ -190,10 +190,6 @@
 - name: eu.gcr.io/k8s-artifacts-prod/external-dns/external-dns
   patterns:
   - pattern: '>= v0.6.0'
-- name: eu.gcr.io/k8s-artifacts-prod/ingress-nginx/controller
-  overrideRepoName: ingress-nginx-controller
-  patterns:
-  - pattern: '>= v0.34.0'
 - name: fluent/fluent-bit
   patterns:
   - pattern: '>= 1.x.x'
@@ -438,6 +434,10 @@
 - name: k8s.gcr.io/hyperkube
   patterns:
   - pattern: '>= v1.15'
+- name: k8s.gcr.io/ingress-nginx/controller
+  overrideRepoName: ingress-nginx-controller
+  patterns:
+  - pattern: '>= v0.48.1'
 - name: k8s.gcr.io/kube-apiserver
   patterns:
   - pattern: '>= v1.19.0 || >= v1.20.0-0'
@@ -726,9 +726,6 @@
 - name: quay.io/k8scsi/livenessprobe
   patterns:
   - pattern: '>= v1.1.0'
-- name: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
-  patterns:
-  - pattern: '>= v0.28.0'
 - name: quay.io/open-policy-agent/gatekeeper
   patterns:
   - pattern: '>= v3.1.0-beta.5'
