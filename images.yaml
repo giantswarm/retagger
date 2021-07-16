@@ -190,6 +190,18 @@
 - name: eu.gcr.io/k8s-artifacts-prod/external-dns/external-dns
   patterns:
   - pattern: '>= v0.6.0'
+
+# falco-app images
+- name: falcosecurity/falco
+  patterns:
+  - pattern: '>= 0.28.0'
+- name: falcosecurity/falco-exporter
+  patterns:
+  - pattern: '>= v0.5.0'
+- name: falcosecurity/falcosidekick
+  patterns:
+  - pattern: '>= 2.22.0'
+
 - name: fluent/fluent-bit
   patterns:
   - pattern: '>= 1.x.x'
@@ -815,10 +827,6 @@
   patterns:
   - pattern: '>= v1.5.2'
 
-- name: sysdig/falco
-  tags:
-  - sha: 3533054a0543e4a2eb4f4c61d68d5d3a39e5886a65d07f011d45044a5c470ccd
-    tag: 0.11.1
 - name: toniblyx/prowler
   tags:
   - sha: 017a8fdecbb0aecd6af3446b1357ed36ef92533dd8a19c2283ad29f41b264bc3
