@@ -195,12 +195,12 @@
 - name: falcosecurity/falco
   patterns:
   - pattern: '>= 0.28.0'
-- name: falcosecurity/falcosidekick
-  patterns:
-  - pattern: '>= 2.22.0'
 - name: falcosecurity/falco-exporter
   patterns:
   - pattern: '>= v0.5.0'
+- name: falcosecurity/falcosidekick
+  patterns:
+  - pattern: '>= 2.22.0'
 
 - name: fluent/fluent-bit
   patterns:
