@@ -293,10 +293,6 @@
   tags:
   - sha: 4b63b91265ed0e4a986db9ce4bab22f590d773108713f806180990bd0e0c0806
     tag: v1.11
-- name: gcr.io/heptio-images/sonobuoy
-  tags:
-  - sha: 9f2a352b44143c8c4dc72ea2df07d1b3c9d37e45a2ebcfa72c048cca17b9d6eb
-    tag: v0.10.0
 - name: gcr.io/istio-testing/operator
   overrideRepoName: istio-operator
   tags:
@@ -817,6 +813,18 @@
     tag: 4.0.9
   - sha: cd68f7db2caeff01a62bab0cdb5630e86e2a608b0aba3b988b1d13dcf3cfdedb
     tag: 6.2.1-alpine
+
+- name: sonobuoy/sonobuoy
+  patterns:
+  - pattern: '>= v0.52.0'
+    customImages:
+    - tagSuffix: alpine-giantswarm
+      dockerfileOptions:
+      - |
+        FROM quay.io/giantswarm/alpine:3.14.0-giantswarm
+        COPY --from=0 /sonobuoy /sonobuoy
+        WORKDIR /
+        CMD ["/sonobuoy", "aggregator", "--no-exit", "-v", "3", "--logtostderr"]
 
 # Used in prometheus-operator-app
 - name: squareup/ghostunnel
