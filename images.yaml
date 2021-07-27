@@ -530,6 +530,7 @@
   patterns:
   - pattern: '>= 1.1.1'
 - name: macropower/analytics-panel-server
+  overrideRepoName: macropower-analytics-panel-server
   patterns:
   - pattern: '>= 0.0.1'
 - name: mcr.microsoft.com/azuremonitor/containerinsights/ciprod
