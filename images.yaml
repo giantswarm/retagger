@@ -818,7 +818,8 @@
   patterns:
   - pattern: '>= v0.52.0'
     customImages:
-    - dockerfileOptions:
+    - tagSuffix: alpine-giantswarm
+      dockerfileOptions:
       - |
         FROM quay.io/giantswarm/alpine:3.14.0-giantswarm
         COPY --from=0 /sonobuoy /sonobuoy
