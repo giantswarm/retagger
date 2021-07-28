@@ -300,8 +300,8 @@
     tag: 1.7
 - name: gcr.io/k8s-staging-cluster-api-azure/cluster-api-azure-controller
   tags:
-    - sha: da43384036f94cdbf9183318653aa06f1bb91027997c6483c2562c0628f33c08
-      tag: v0.5.0
+  - sha: da43384036f94cdbf9183318653aa06f1bb91027997c6483c2562c0628f33c08
+    tag: v0.5.0
 - name: gcr.io/kubebuilder/kube-rbac-proxy
   patterns:
   - pattern: '>= v0.4.1'
