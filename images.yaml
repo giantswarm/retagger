@@ -85,6 +85,10 @@
 - name: cloudflare/cloudflared
   patterns:
   - pattern: '>= 2021.0.0'
+- name: gcr.io/k8s-staging-cluster-api-azure/cluster-api-azure-controller
+  tags:
+    - sha: da43384036f94cdbf9183318653aa06f1bb91027997c6483c2562c0628f33c08
+      tag: v0.5.0
 - name: coredns/coredns
   tags:
   - sha: 642ff9910da6ea9a8624b0234eef52af9ca75ecbec474c5507cb096bdfbae4e5
