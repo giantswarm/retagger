@@ -766,7 +766,6 @@
   overrideRepoName: strimzi-operator
   patterns:
   - pattern: '>= 0.18.0-0'
-
 - name: sysdig/falco
   tags:
   - sha: 3533054a0543e4a2eb4f4c61d68d5d3a39e5886a65d07f011d45044a5c470ccd
@@ -799,3 +798,4 @@
     tag: v3.3.0
   - sha: 237ba8547763ff8a147a420280f97c80e8605eea60312613f7e33d3968d99a0a
     tag: v6.0.0
+    
