@@ -781,12 +781,27 @@
 # CAPI Core Images
 - name: k8s.gcr.io/cluster-api/kubeadm-bootstrap-controller
   patterns:
-  - pattern: '>= v0.3.0'
+  - pattern: '>= v0.4.0'
 - name: k8s.gcr.io/cluster-api/kubeadm-control-plane-controller
   patterns:
-  - pattern: '>= v0.3.0'
+  - pattern: '>= v0.4.0'
 - name: k8s.gcr.io/cluster-api/cluster-api-controller
   patterns:
-  - pattern: '>= v0.3.0'
-  
+  - pattern: '>= v0.4.0'
 # CAPI Provider Images
+## aws
+- name: 
+k8s.gcr.io/cluster-api-aws/cluster-api-aws-controller
+  patterns:
+  - pattern: '>= v0.6.7'
+- name: k8s.gcr.io/cluster-api-aws/eks-bootstrap-controller
+  patterns:
+  - pattern: '>= v0.6.7'
+- name: k8s.gcr.io/cluster-api-aws/eks-controlplane-controller
+  patterns:
+  - pattern: '>= v0.6.7'
+## azure
+- name: us.gcr.io/k8s-artifacts-prod/cluster-api-azure/cluster-api-azure-controller
+  patterns:
+  - pattern: '>= v0.5.0'
+
