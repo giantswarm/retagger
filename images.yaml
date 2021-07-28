@@ -777,7 +777,7 @@
   - sha: 548f474c56f6cbf94959f48e66ee99f9b63d949c9c657b105d1e4a3c0a66c985
     tag: v3.3.0
   - sha: 237ba8547763ff8a147a420280f97c80e8605eea60312613f7e33d3968d99a0a
-    tag: v6.0.0 
+    tag: v6.0.0
 # CAPI Core Images
 - name: k8s.gcr.io/cluster-api/kubeadm-bootstrap-controller
   patterns:
@@ -790,8 +790,7 @@
   - pattern: '>= v0.4.0'
 # CAPI Provider Images
 ## aws
-- name: 
-k8s.gcr.io/cluster-api-aws/cluster-api-aws-controller
+- name: k8s.gcr.io/cluster-api-aws/cluster-api-aws-controller
   patterns:
   - pattern: '>= v0.6.7'
 - name: k8s.gcr.io/cluster-api-aws/eks-bootstrap-controller
@@ -804,4 +803,3 @@ k8s.gcr.io/cluster-api-aws/cluster-api-aws-controller
 - name: us.gcr.io/k8s-artifacts-prod/cluster-api-azure/cluster-api-azure-controller
   patterns:
   - pattern: '>= v0.5.0'
-
