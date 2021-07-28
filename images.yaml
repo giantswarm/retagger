@@ -393,15 +393,6 @@
 - name: k8s.gcr.io/autoscaling/vpa-updater
   patterns:
   - pattern: '>= 0.8.0'
-- name: k8s.gcr.io/cluster-api/cluster-api-controller
-  patterns:
-  - pattern: '>= v0.4.0'
-- name: k8s.gcr.io/cluster-api/kubeadm-bootstrap-controller
-  patterns:
-  - pattern: '>= v0.4.0'
-- name: k8s.gcr.io/cluster-api/kubeadm-control-plane-controller
-  patterns:
-  - pattern: '>= v0.4.0'
 - name: k8s.gcr.io/cluster-api-aws/cluster-api-aws-controller
   patterns:
   - pattern: '>= v0.6.7'
@@ -411,6 +402,15 @@
 - name: k8s.gcr.io/cluster-api-aws/eks-controlplane-controller
   patterns:
   - pattern: '>= v0.6.7'
+- name: k8s.gcr.io/cluster-api/cluster-api-controller
+  patterns:
+  - pattern: '>= v0.4.0'
+- name: k8s.gcr.io/cluster-api/kubeadm-bootstrap-controller
+  patterns:
+  - pattern: '>= v0.4.0'
+- name: k8s.gcr.io/cluster-api/kubeadm-control-plane-controller
+  patterns:
+  - pattern: '>= v0.4.0'
 - name: k8s.gcr.io/cluster-proportional-autoscaler-amd64
   patterns:
   - pattern: '>= 1.6.0'
