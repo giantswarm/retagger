@@ -827,6 +827,9 @@
   overrideRepoName: strimzi-operator
   patterns:
   - pattern: '>= 0.18.0-0'
+- name: quay.io/thanos/thanos
+  patterns:
+  - pattern: '>= v0.17.2'
 
 - name: quay.io/uswitch/kiam
   patterns:
@@ -856,7 +859,6 @@
 - name: squareup/ghostunnel
   patterns:
   - pattern: '>= v1.5.2'
-
 - name: toniblyx/prowler
   tags:
   - sha: 017a8fdecbb0aecd6af3446b1357ed36ef92533dd8a19c2283ad29f41b264bc3
