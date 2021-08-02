@@ -856,6 +856,9 @@
 - name: squareup/ghostunnel
   patterns:
   - pattern: '>= v1.5.2'
+- name: quay.io/thanos/thanos
+  patterns:
+  - pattern: '>= v0.17.2'
 
 - name: toniblyx/prowler
   tags:
