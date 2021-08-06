@@ -637,10 +637,8 @@
 - name: quay.io/calico/kube-controllers
   overrideRepoName: calico-crd-installer
   patterns:
-  # v3.19.2 is not functional, so we treat is "as is" without
-  # applying our additional build options.
-  - pattern: '== v3.19.2'
-  - pattern: '>= v3.15.0'
+  # Skip v3.19.2 as it's not functional
+  - pattern: '>= v3.15.0 || != v3.19.2'
     customImages:
     - dockerfileOptions:
       - |
