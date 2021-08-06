@@ -578,7 +578,7 @@
       - USER mysql
 - name: nginx
   tags:
-  - sha: cc8c413c74aba9fef9dae7f3da736725136bad1e3f24fbc93788aea1944f51c4
+  - sha: 1b68400cbeec3d5334edcb8606b2ac4badc9b0401cc209e8941853aec332efea
     tag: 1.21-alpine
 - name: nginxinc/nginx-unprivileged
   tags:
