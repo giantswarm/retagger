@@ -642,6 +642,7 @@
   patterns:
   - pattern: '>= v3.9.5'
 - name: quay.io/calico/ctl
+  overrideRepoName: calicoctl
   patterns:
   - pattern: '>= v3.19.0'
     customImages:
