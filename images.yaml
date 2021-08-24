@@ -649,7 +649,7 @@
     - dockerfileOptions:
       - |
         FROM quay.io/giantswarm/alpine:3.13.5
-        COPY --from=1 /calicoctl /calicoctl
+        COPY --from=0 /calicoctl /calicoctl
         ENV PATH=$PATH:/
         ENTRYPOINT ["calicoctl"]
 - name: quay.io/calico/kube-controllers
