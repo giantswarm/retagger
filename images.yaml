@@ -559,6 +559,7 @@
   patterns:
   - pattern: '>= 1.4.3'
 - name: kong/kubernetes-ingress-controller
+  overrideRepoName: kong-ingress-controller
   patterns:
   - pattern: '>= 1.1.1'
 - name: macropower/analytics-panel-server
