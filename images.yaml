@@ -18,7 +18,7 @@
       - USER giantswarm
     - tagSuffix: python3
       dockerfileOptions:
-        - RUN apk add --no-cache python3 py3-yaml
+      - RUN apk add --no-cache python3 py3-yaml
 - name: alpine/git
   overrideRepoName: alpinegit
   tags:
