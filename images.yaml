@@ -756,6 +756,9 @@
 - name: quay.io/jetstack/cert-manager-controller
   patterns:
   - pattern: '>= v0.14.2'
+- name: quay.io/jetstack/cert-manager-ctl
+  patterns:
+  - pattern: '>= v1.5.3'
 - name: quay.io/jetstack/cert-manager-ingress-shim
   tags:
   - sha: 544b8602ee566d7ca22aa9e76a92dde4c2ca8dab642f75ea3a4b0a577193632a
