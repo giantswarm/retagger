@@ -56,6 +56,15 @@
 - name: aquasec/kube-bench
   patterns:
   - pattern: '>= 0.2'
+- name:  aquasec/starboard-operator
+  patterns:
+  - pattern: '>= 0.11.0'
+- name:  aquasec/scanner
+  patterns:
+  - pattern: '>= 5.3'
+- name:  aquasec/trivy
+  patterns:
+  - pattern: '>= 0.19.2'
 - name: bash
   patterns:
   - pattern: '>= 5'
@@ -613,6 +622,9 @@
 - name: omnition/opencensus-collector
   patterns:
   - pattern: '>= 0.1.11'
+- name: openpolicyagent/conftest
+  patterns:
+  - pattern: '>= v0.25.0'
 - name: peaceiris/hugo
   tags:
   - sha: 7af5290d6b843de172fb0552cd74831f55dee05eaa8c2171ce2ee29dd9a5c547
@@ -722,6 +734,9 @@
 - name: quay.io/fairwinds/goldilocks
   patterns:
   - pattern: '>= v2.2.0'
+- name: quay.io/fairwinds/polaris
+  patterns:
+  - pattern: '>= 4.0'
 - name: quay.io/fluentd_elasticsearch/fluentd
   comment: |
     see https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/fluentd-elasticsearch/fluentd-es-ds.yaml
