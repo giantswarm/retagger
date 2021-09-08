@@ -334,6 +334,10 @@
 - name: ghcr.io/kyverno/kyvernopre
   patterns:
   - pattern: '>= v1.3.4'
+- name: ghcr.io/opsgenie/kubernetes-event-exporter
+  comment: used for https://github.com/giantswarm/event-exporter-app
+  patterns:
+  - pattern: '>= v0.9'
 - name: ghcr.io/prymitive/karma
   patterns:
   - pattern: '>= 0.74'
@@ -605,10 +609,6 @@
 - name: omnition/opencensus-collector
   patterns:
   - pattern: '>= 0.1.11'
-- name: ghcr.io/opsgenie/kubernetes-event-exporter
-  comment: used for https://github.com/giantswarm/event-exporter-app
-  patterns:
-  - pattern: '>= v0.9'
 - name: peaceiris/hugo
   tags:
   - sha: 7af5290d6b843de172fb0552cd74831f55dee05eaa8c2171ce2ee29dd9a5c547
