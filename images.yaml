@@ -605,7 +605,7 @@
 - name: omnition/opencensus-collector
   patterns:
   - pattern: '>= 0.1.11'
-- name: opsgenie/kubernetes-event-exporter
+- name: ghcr.io/opsgenie/kubernetes-event-exporter
   comment: used for https://github.com/giantswarm/event-exporter-app
   patterns:
   - pattern: '>= v0.9'
