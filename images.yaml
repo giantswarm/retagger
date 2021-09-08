@@ -56,13 +56,13 @@
 - name: aquasec/kube-bench
   patterns:
   - pattern: '>= 0.2'
-- name:  aquasec/starboard-operator
+- name: aquasec/starboard-operator
   patterns:
   - pattern: '>= 0.11.0'
-- name:  aquasec/scanner
+- name: aquasec/scanner
   patterns:
   - pattern: '>= 5.3'
-- name:  aquasec/trivy
+- name: aquasec/trivy
   patterns:
   - pattern: '>= 0.19.2'
 - name: bash
