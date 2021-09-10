@@ -651,8 +651,8 @@
     tag: v0.9.1
 - name: python
   tags:
-  - sha: 1263b94facc6fd812688f78e05a9e64497e96e21db7e3935be36c87fab038c7e
-    tag: 3.8.6-slim
+  - sha: bcf411d825f03f081d26668f278f067d2ac18189f14ac545e1e3b68b53bf7381
+    tag: 3.8.12-slim
   - sha: db35c8d2e810559d90af0a126dac55cf93601202061d3f61f94ac3c460d4a211
     tag: 3.9-alpine3.13
 - name: quay.io/argoproj/argocd
