@@ -269,8 +269,8 @@
     tag: v0.7.4
   - sha: 611d929779e986bc05937d3c2e5ed122c25da9f124ca86ed0ee4cc1d59dcdd65
     tag: v0.13.0
-  - sha: 8440cd903f470c4719da59f3f5af1e34defe6dce862f5b84cbbd2a139bd097cc
-    tag: v0.14.0
+  - sha: 545126048c252d5b02a9702b171e62c13a9252078eb074c569030e8c95f08574
+    tag: v0.14.1
 - name: fluxcd/notification-controller
   overrideRepoName: fluxcd-notification-controller
   tags:
