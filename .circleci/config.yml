@@ -81,6 +81,46 @@ jobs:
           name: Execute retagger
           command: ./retagger -r ${REGISTRY} -o ${REGISTRY_ORGANISATION} -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD}
 
+
+  e2eDockerhub:
+    environment:
+      REGISTRY: "docker.io"
+      REGISTRY_ORGANISATION: "giantswarm"
+    machine: true
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Set registry credentials
+          command: |
+            echo 'export REGISTRY_USERNAME=${DOCKERHUB_USERNAME}' >> $BASH_ENV
+            echo 'export REGISTRY_PASSWORD=${DOCKERHUB_PASSWORD}' >> $BASH_ENV
+            source $BASH_ENV
+      - run:
+          name: Run e2e test
+          command: |
+            ./e2e.test -test.run ".*E2e.*" -test.v
+
+  retagDockerhub:
+    environment:
+      REGISTRY: "docker.io"
+      REGISTRY_ORGANISATION: "giantswarm"
+    machine: true
+    steps:
+      - attach_workspace:
+          at: .
+
+      - run:
+          name: Set registry credentials
+          command: |
+            echo 'export REGISTRY_USERNAME=${DOCKERHUB_USERNAME}' >> $BASH_ENV
+            echo 'export REGISTRY_PASSWORD=${DOCKERHUB_PASSWORD}' >> $BASH_ENV
+            source $BASH_ENV
+
+      - run:
+          name: Execute retagger
+          command: ./retagger -r ${REGISTRY} -o ${REGISTRY_ORGANISATION} -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD}
+
   retagAliyun:
     environment:
       REGISTRY: "registry-intl.cn-shanghai.aliyuncs.com"
@@ -111,6 +151,18 @@ build_and_retag:  &build_and_retag
         requires:
           - build
     - retagQuay:
+        filters:
+          branches:
+            only: master
+        requires:
+          - build
+    - e2eDockerhub:
+        filters:
+          branches:
+            ignore: master
+        requires:
+          - build
+    - retagDockerhub:
         filters:
           branches:
             only: master
