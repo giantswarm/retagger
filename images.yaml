@@ -218,6 +218,17 @@
   patterns:
   - pattern: '>= 2.22.0'
 
+# policy-reporter images
+- name: fjogeleit/policy-reporter
+  patterns:
+  - pattern: '>= 1.8.6'
+- name: fjogeleit/policy-reporter-kyverno-plugin
+  patterns:
+  - pattern: '>= 0.3.2'
+- name: fjogeleit/policy-reporter-ui
+  patterns:
+  - pattern: '>= 0.14.0'
+
 - name: fluent/fluent-bit
   patterns:
   - pattern: '>= 1.x.x'
