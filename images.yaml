@@ -777,7 +777,8 @@
     - tagSuffix: opendistro-patch
       dockerfileOptions:
       - USER root
-      - RUN apk add --no-cache --update --virtual .build-deps \
+      - |
+        RUN apk add --no-cache --update --virtual .build-deps \
               sudo build-base ruby-dev \
               # Pin the elasticsearch-ruby library < 7.14.
               # See https://github.com/uken/fluent-plugin-elasticsearch/issues/912
