@@ -774,20 +774,9 @@
   - sha: e6d9906ec23867dd53ce0c42aa7f1a61672a2224f22170eee18804a5f37d4dfc
     tag: v3.3.0
     customImages:
-    - tagSuffix: opendistro-patch
+    - tagSuffix: for-opendistro
       dockerfileOptions:
-      - USER root
-      - |
-        RUN apk add --no-cache --update --virtual .build-deps \
-              sudo build-base ruby-dev \
-              # Pin the elasticsearch-ruby library < 7.14.
-              # See https://github.com/uken/fluent-plugin-elasticsearch/issues/912
-              && sudo gem install elasticsearch -v 7.13.3 \
-              && sudo gem install fluent-plugin-elasticsearch \
-              && sudo gem sources --clear-all \
-              && apk del .build-deps \
-              && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem
-      - USER fluent
+      - RUN sed -i -e '80,85d' /usr/local/bundle/gems/elasticsearch-7.14.0/lib/elasticsearch.rb
 - name: quay.io/giantswarm/amazon-k8s-cni
   patterns:
   - pattern: '>= v1.6.0'
