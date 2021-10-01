@@ -229,9 +229,11 @@
   patterns:
   - pattern: '>= 0.14.0'
 
+# fluent-bit images
 - name: fluent/fluent-bit
   patterns:
   - pattern: '>= 1.x.x'
+  - pattern: '>= 1.x.x-debug'
     customImages:
     - tagSuffix: giantswarm
       dockerfileOptions:
