@@ -233,7 +233,7 @@
 - name: fluent/fluent-bit
   patterns:
   - pattern: '>= 1.x.x'
-  tags: 
+  tags:
   - tag: '1.7.1-debug'
     customImages:
     - dockerfileOptions:
