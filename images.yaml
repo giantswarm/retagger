@@ -229,14 +229,17 @@
   patterns:
   - pattern: '>= 0.14.0'
 
+# fluent-bit images
 - name: fluent/fluent-bit
   patterns:
   - pattern: '>= 1.x.x'
+  - pattern: '>= 1.x.x-debug'
     customImages:
     - tagSuffix: giantswarm
       dockerfileOptions:
       - RUN echo "deb http://deb.debian.org/debian buster-backports main" > /etc/apt/sources.list.d/backports.list && apt-get update
       - RUN apt-get install -y --no-install-recommends libsystemd-dev/buster-backports
+      - COPY --from=builder /usr/lib/x86_64-linux-gnu/libsystemd* /usr/lib/x86_64-linux-gnu/
 - name: fluent/fluentd-kubernetes-daemonset
   tags:
   - sha: f9fa60dab5e7a6ae4adbe972a2fc22cf7eaa148df74cde4cd7f57e7019260451
