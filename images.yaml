@@ -234,7 +234,8 @@
   patterns:
   - pattern: '>= 1.x.x'
   tags:
-  - tag: '1.7.1-debug'
+  - sha: 20f8a39d61a38e217c40ace09d52436ee1547d3666586d0e68df71db9b6b2f8b
+    tag: '1.7.1-debug'
     customImages:
     - dockerfileOptions:
       - RUN echo "deb http://deb.debian.org/debian buster-backports main" > /etc/apt/sources.list.d/backports.list && apt-get update
