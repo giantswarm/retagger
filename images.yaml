@@ -614,7 +614,7 @@
     tag: v0.6.0
 - name: kong
   patterns:
-  - pattern: '>= 1.4.3'
+  - pattern: '>= 1.4.3 < 2.6'
 - name: kong/kubernetes-ingress-controller
   overrideRepoName: kong-ingress-controller
   patterns:
