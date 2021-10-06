@@ -245,13 +245,14 @@
     customImages:
     - tagSuffix: systemd247
       dockerfileOptions:
-      - FROM amd64/debian:buster-slim as builder
-      - RUN echo "deb http://deb.debian.org/debian buster-backports main" > /etc/apt/sources.list.d/backports.list && \
+      - |
+        FROM amd64/debian:buster-slim as builder
+        RUN echo "deb http://deb.debian.org/debian buster-backports main" > /etc/apt/sources.list.d/backports.list && \
             apt-get update && \
             apt-get install -y --no-install-recommends \
             libsystemd-dev/buster-backports
-      - FROM fluent/fluent-bit:1.7.1-debug
-      - COPY --from=builder /usr/lib/x86_64-linux-gnu/libsystemd* /lib/x86_64-linux-gnu/
+        FROM fluent/fluent-bit:1.7.1-debug
+        COPY --from=builder /usr/lib/x86_64-linux-gnu/libsystemd* /lib/x86_64-linux-gnu/
 - name: fluent/fluentd-kubernetes-daemonset
   tags:
   - sha: f9fa60dab5e7a6ae4adbe972a2fc22cf7eaa148df74cde4cd7f57e7019260451
