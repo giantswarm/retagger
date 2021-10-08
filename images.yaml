@@ -618,6 +618,9 @@
 - name: k8s.gcr.io/sig-storage/livenessprobe
   patterns:
   - pattern: '>= v1.1.0'
+- name: k8s.gcr.io/sig-storage/snapshot-controller
+  patterns:
+  - pattern: '>= v3.0.0'
 - name: k8spin/loki-multi-tenant-proxy
   tags:
   - sha: 4819d2319477d1c5daf0321a97770d71cfb4aa2ec395662769909a7a1b3ae32c
