@@ -600,6 +600,24 @@
 - name: k8s.gcr.io/provider-aws/aws-ebs-csi-driver
   patterns:
   - pattern: '>= 0.7.0'
+- name: k8s.gcr.io/sig-storage/csi-attacher
+  patterns:
+  - pattern: '>= v1.2.0'
+- name: k8s.gcr.io/sig-storage/csi-node-driver-registrar
+  patterns:
+  - pattern: '>= v1.1.0'
+- name: k8s.gcr.io/sig-storage/csi-provisioner
+  patterns:
+  - pattern: '>= v1.6.0'
+- name: k8s.gcr.io/sig-storage/csi-resizer
+  patterns:
+  - pattern: '>= v0.3.0'
+- name: k8s.gcr.io/sig-storage/csi-snapshotter
+  patterns:
+  - pattern: '>= v2.1.1'
+- name: k8s.gcr.io/sig-storage/livenessprobe
+  patterns:
+  - pattern: '>= v1.1.0'
 - name: k8spin/loki-multi-tenant-proxy
   tags:
   - sha: 4819d2319477d1c5daf0321a97770d71cfb4aa2ec395662769909a7a1b3ae32c
@@ -842,24 +860,6 @@
 - name: quay.io/jetstack/cert-manager-webhook
   patterns:
   - pattern: '>= v0.14.2'
-- name: quay.io/k8scsi/csi-attacher
-  patterns:
-  - pattern: '>= v1.2.0'
-- name: quay.io/k8scsi/csi-node-driver-registrar
-  patterns:
-  - pattern: '>= v1.1.0'
-- name: quay.io/k8scsi/csi-provisioner
-  patterns:
-  - pattern: '>= v1.6.0'
-- name: quay.io/k8scsi/csi-resizer
-  patterns:
-  - pattern: '>= v0.3.0'
-- name: quay.io/k8scsi/csi-snapshotter
-  patterns:
-  - pattern: '>= v2.1.1'
-- name: quay.io/k8scsi/livenessprobe
-  patterns:
-  - pattern: '>= v1.1.0'
 - name: quay.io/oauth2-proxy/oauth2-proxy
   patterns:
   - pattern: '>= v7.1.3'
