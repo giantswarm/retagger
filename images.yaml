@@ -270,6 +270,8 @@
     tag: v0.11.0
   - sha: c83a60fe3f561418140fc3dd343316d87393cf22d915665649197a40eda3adf7
     tag: v0.11.2
+  - sha: 8ab45a4e24afa6ddf8d5573d5446c9ef622b883bf16ffed39d88f34ccf778a34
+    tag: v0.12.1
 - name: fluxcd/image-automation-controller
   overrideRepoName: fluxcd-image-automation-controller
   tags:
@@ -281,6 +283,8 @@
     tag: v0.12.0
   - sha: 7ed657248b283254441e220ceca3ede1326f173d482e26b23efe9af0e607f375
     tag: v0.14.1
+  - sha: bde909f757ef1d7d94bd14ab2f42e7c8ea0f4dfa2e8f4e13721fac4861ba7624
+    tag: v0.15.0
 - name: fluxcd/image-reflector-controller
   overrideRepoName: fluxcd-image-reflector-controller
   tags:
@@ -292,6 +296,8 @@
     tag: v0.10.0
   - sha: abac17341a9c49b3501ead044c986249d5fee118f9f98cd037dd155488a8739d
     tag: v0.11.1
+  - sha: d4aeda7803cfb84a90f14749f98c9b0c8320e5e4f459f537c14f04227904bd40
+    tag: v0.13.0
 - name: fluxcd/kustomize-controller
   overrideRepoName: fluxcd-kustomize-controller
   tags:
@@ -303,6 +309,8 @@
     tag: v0.13.0
   - sha: 545126048c252d5b02a9702b171e62c13a9252078eb074c569030e8c95f08574
     tag: v0.14.1
+  - sha: 72f06af97f1f7dc62d7d3ca3623ceddb6f1ed1f9008b9105688baaa04755ae7d
+    tag: v0.16.0
 - name: fluxcd/notification-controller
   overrideRepoName: fluxcd-notification-controller
   tags:
@@ -314,6 +322,8 @@
     tag: v0.15.0
   - sha: 6295839811f39c39e62ea3dc01f0bcb30c3d87ace06d438a59ce2a1844b76089
     tag: v0.16.0
+  - sha: cb7322a21c75ae7df9ec0f6eb9894015e373f67b229efe224790b240326402a5
+    tag: v0.18.0
 - name: fluxcd/source-controller
   overrideRepoName: fluxcd-source-controller
   tags:
@@ -325,6 +335,8 @@
     tag: v0.14.0
   - sha: cf81befcebb634e67cd40c599b3aeb19deacbd4ba1199d3947e03824566aa6ae
     tag: v0.15.4
+  - sha: fad2f392664d86e17e7270aef93fb12acbfe3207df5164d66daa41e90f929a0b
+    tag: v0.16.0
 - name: gcr.io/cluster-api-provider-vsphere/release/manager
   overrideRepoName: cluster-api-vsphere-controller
   patterns:
@@ -863,6 +875,24 @@
 - name: quay.io/jetstack/cert-manager-webhook
   patterns:
   - pattern: '>= v0.14.2'
+- name: quay.io/oauth2-proxy/oauth2-proxy
+  patterns:
+  - pattern: '>= v1.2.0'
+- name: quay.io/k8scsi/csi-node-driver-registrar
+  patterns:
+  - pattern: '>= v1.1.0'
+- name: quay.io/k8scsi/csi-provisioner
+  patterns:
+  - pattern: '>= v1.6.0'
+- name: quay.io/k8scsi/csi-resizer
+  patterns:
+  - pattern: '>= v0.3.0'
+- name: quay.io/k8scsi/csi-snapshotter
+  patterns:
+  - pattern: '>= v2.1.1'
+- name: quay.io/k8scsi/livenessprobe
+  patterns:
+  - pattern: '>= v1.1.0'
 - name: quay.io/oauth2-proxy/oauth2-proxy
   patterns:
   - pattern: '>= v7.1.3'
