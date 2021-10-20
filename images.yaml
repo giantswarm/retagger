@@ -270,7 +270,7 @@
     tag: v0.11.0
   - sha: c83a60fe3f561418140fc3dd343316d87393cf22d915665649197a40eda3adf7
     tag: v0.11.2
-  - sha: 73d759b392deb64dbea9a56079c357441c64d3266f9c26aad03f73df0273f5a8
+  - sha: 74b0442a90350b1de9fb34e3180c326d1d7814caa14bf5501750a71a1782d10d
     tag: v0.12.1
 - name: fluxcd/image-automation-controller
   overrideRepoName: fluxcd-image-automation-controller
@@ -283,7 +283,7 @@
     tag: v0.12.0
   - sha: 7ed657248b283254441e220ceca3ede1326f173d482e26b23efe9af0e607f375
     tag: v0.14.1
-  - sha: f7cf28870f5509a75cec6b4809956871776f960e05a5ef4fbd8a779d46ce8cc1
+  - sha: e5dcbe48c1d032e0103997de4551df8f6576f9a9e91e8e3a768410171c2fc5b8
     tag: v0.15.0
 - name: fluxcd/image-reflector-controller
   overrideRepoName: fluxcd-image-reflector-controller
@@ -296,7 +296,7 @@
     tag: v0.10.0
   - sha: abac17341a9c49b3501ead044c986249d5fee118f9f98cd037dd155488a8739d
     tag: v0.11.1
-  - sha: 7ac5b612af01f48d71be84eb013e4ad5985c3c1a0f6889c0d492011a5e3d3f51
+  - sha: 406037178b8da79f8f98b90b78fd365c966bbf7f8ab55e26c7e1f47c8ffca77f
     tag: v0.13.0
 - name: fluxcd/kustomize-controller
   overrideRepoName: fluxcd-kustomize-controller
@@ -309,7 +309,7 @@
     tag: v0.13.0
   - sha: 545126048c252d5b02a9702b171e62c13a9252078eb074c569030e8c95f08574
     tag: v0.14.1
-  - sha: c3a5df8416646cf4f32ccef098d97c99a1cf9b1276b13238645d27b46ee17829
+  - sha: e1a3622f8524b8790cb94a73683afcb58c413342ab752ca704ab3f02bd69d4e1
     tag: v0.16.0
 - name: fluxcd/notification-controller
   overrideRepoName: fluxcd-notification-controller
@@ -322,7 +322,7 @@
     tag: v0.15.0
   - sha: 6295839811f39c39e62ea3dc01f0bcb30c3d87ace06d438a59ce2a1844b76089
     tag: v0.16.0
-  - sha: c34ef625ffdbff152543ee97fc01b7f4cbe22722107793b4931631e3a2c94a93
+  - sha: f547ba98ca089d3285b30d17cf88c0e48873dd184e6b464174b14f81aedf64aa
     tag: v0.18.0
 - name: fluxcd/source-controller
   overrideRepoName: fluxcd-source-controller
@@ -335,7 +335,7 @@
     tag: v0.14.0
   - sha: cf81befcebb634e67cd40c599b3aeb19deacbd4ba1199d3947e03824566aa6ae
     tag: v0.15.4
-  - sha: 1c595e465ccbd73f7b842fa91e8bb738673a883445a835a9e147520987adbc2c
+  - sha: b344b5fd32c285218e36e1ce34b1f17edf66270045f0db5ab395fcb59a51e119
     tag: v0.16.0
 - name: gcr.io/cluster-api-provider-vsphere/release/manager
   overrideRepoName: cluster-api-vsphere-controller
