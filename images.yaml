@@ -218,17 +218,6 @@
   patterns:
   - pattern: '>= 2.22.0'
 
-# policy-reporter images
-- name: fjogeleit/policy-reporter
-  patterns:
-  - pattern: '>= 1.8.6'
-- name: fjogeleit/policy-reporter-kyverno-plugin
-  patterns:
-  - pattern: '>= 0.3.2'
-- name: fjogeleit/policy-reporter-ui
-  patterns:
-  - pattern: '>= 0.14.0'
-
 # fluent-bit images
 - name: fluent/fluent-bit
   patterns:
@@ -409,6 +398,16 @@
 - name: ghcr.io/kyverno/kyvernopre
   patterns:
   - pattern: '>= v1.3.4'
+# policy-reporter images
+- name: ghcr.io/kyverno/policy-reporter
+  patterns:
+  - pattern: '>= 1.8.6'
+- name: ghcr.io/kyverno/policy-reporter-kyverno-plugin
+  patterns:
+  - pattern: '>= 0.3.2'
+- name: ghcr.io/kyverno/policy-reporter-ui
+  patterns:
+  - pattern: '>= 0.14.0'
 - name: ghcr.io/opsgenie/kubernetes-event-exporter
   comment: used for https://github.com/giantswarm/event-exporter-app
   patterns:
