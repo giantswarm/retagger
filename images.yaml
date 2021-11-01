@@ -515,7 +515,7 @@
     tag: 0.1
 - name: justwatch/elasticsearch_exporter
   patterns:
-  - pattern: '>= v1.1.0'- 
+  - pattern: '>= v1.1.0'
 - name: k8s.gcr.io/autoscaling/vpa-updater
   patterns:
   - pattern: '>= 0.8.0'
