@@ -543,9 +543,6 @@
 - name: k8s.gcr.io/cluster-api-aws/cluster-api-aws-controller
   patterns:
   - pattern: '>= v0.6.7'
-- name: k8s.gcr.io/cluster-api-aws/cluster-api-aws-controller
-  patterns:
-  - pattern: '>= v0.6.7'
 - name: k8s.gcr.io/cluster-api-aws/eks-bootstrap-controller
   patterns:
   - pattern: '>= v0.6.7'
