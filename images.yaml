@@ -668,6 +668,10 @@
   overrideRepoName: macropower-analytics-panel-server
   patterns:
   - pattern: '>= 0.0.1'
+- name: madnight/alpine-wkhtmltopdf-builder
+  tags:
+  - sha: 009bc5a3e8823b92568473f075e157b59488d0ddf3209865a7aa39108323bfad
+    tag: '0.12.5-alpine3.10-606718795'
 - name: mcr.microsoft.com/azuremonitor/containerinsights/ciprod
   tags:
   - sha: 46ebe46d7d5284455b256c6d0ebaa396cd38b2618cd292e607c447ab5a833311
