@@ -516,9 +516,6 @@
 - name: justwatch/elasticsearch_exporter
   patterns:
   - pattern: '>= v1.1.0'
-- name: k8s.gcr.io/autoscaling/vpa-updater
-  patterns:
-  - pattern: '>= 0.8.0'
 - name: k8scloudprovider/cinder-csi-plugin
   patterns:
   - pattern: '>= 1.22.0'
@@ -528,6 +525,9 @@
 - name: k8scloudprovider/openstack-cloud-controller-manager
   patterns:
   - pattern: '>= 1.22.0'
+- name: k8s.gcr.io/autoscaling/vpa-updater
+  patterns:
+  - pattern: '>= 0.8.0'
 - name: k8s.gcr.io/addon-resizer
   patterns:
   - pattern: '>= 1.8.7'
