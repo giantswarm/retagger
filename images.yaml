@@ -271,6 +271,8 @@
     tag: v0.14.1
   - sha: e5dcbe48c1d032e0103997de4551df8f6576f9a9e91e8e3a768410171c2fc5b8
     tag: v0.15.0
+  - sha: 4140e621065c5ec7d98052dab50f3cd32e59e75e135c7e7845103fc482cf5809
+    tag: v0.16.0
 - name: fluxcd/image-reflector-controller
   overrideRepoName: fluxcd-image-reflector-controller
   tags:
@@ -310,6 +312,8 @@
     tag: v0.16.0
   - sha: f547ba98ca089d3285b30d17cf88c0e48873dd184e6b464174b14f81aedf64aa
     tag: v0.18.0
+  - sha: 66ac4fdb16ccaa934bc674a766f581d8ba75f7ff3213453fa8f40a088a5c6f11
+    tag: v0.18.1
 - name: fluxcd/source-controller
   overrideRepoName: fluxcd-source-controller
   tags:
@@ -323,6 +327,8 @@
     tag: v0.15.4
   - sha: b344b5fd32c285218e36e1ce34b1f17edf66270045f0db5ab395fcb59a51e119
     tag: v0.16.0
+  - sha: ce9b42e587f419bd223dac2b56977b6858cb675cd800d202f1bcdd92b8e1c6d2
+    tag: v0.17.1
 - name: gcr.io/cluster-api-provider-vsphere/release/manager
   overrideRepoName: cluster-api-vsphere-controller
   patterns:
