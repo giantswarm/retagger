@@ -247,82 +247,28 @@
     tag: "v1.9.3-debian-cloudwatch-1.0"
 - name: fluxcd/helm-controller
   overrideRepoName: fluxcd-helm-controller
-  tags:
-  - sha: deeca74a67d0897eaef9211f192b4236a7380a507249c3aeabf4ef657aba8c3b
-    tag: v0.4.4
-  - sha: b4fa0586ecdda482141177d1d2771233e1673291604827b59430389de8174566
-    tag: v0.6.1
-  - sha: 482f53275786fc42d7de1c177743c3cfdadf57fee7157215b2079955a2d5ea4a
-    tag: v0.11.0
-  - sha: c83a60fe3f561418140fc3dd343316d87393cf22d915665649197a40eda3adf7
-    tag: v0.11.2
-  - sha: 74b0442a90350b1de9fb34e3180c326d1d7814caa14bf5501750a71a1782d10d
-    tag: v0.12.1
+  patterns:
+  - pattern: '>= v0.12.0'
 - name: fluxcd/image-automation-controller
   overrideRepoName: fluxcd-image-automation-controller
-  tags:
-  - sha: 68e0daba8eee0b1ea27a36c1ecc207924acf80205224ddfbb103670ab96e4d9f
-    tag: v0.2.0
-  - sha: f984192c6d699556e575dfcb1b68aee617b103accc9e64d2201d943a0c32fbbe
-    tag: v0.4.0
-  - sha: fb8dac6c98027035ba57d215432fe6fdc6abfd49df86a55b332121b0b0771bfc
-    tag: v0.12.0
-  - sha: 7ed657248b283254441e220ceca3ede1326f173d482e26b23efe9af0e607f375
-    tag: v0.14.1
-  - sha: e5dcbe48c1d032e0103997de4551df8f6576f9a9e91e8e3a768410171c2fc5b8
-    tag: v0.15.0
+  patterns:
+  - pattern: '>= v0.16.0'
 - name: fluxcd/image-reflector-controller
   overrideRepoName: fluxcd-image-reflector-controller
-  tags:
-  - sha: bedb75aa1aceca12ab66378681852f5858b75e78b1124472ef9e8330917376e1
-    tag: v0.1.0
-  - sha: 8e30f421793af769734253e8f8f1407c6f093e89c4574049d33ed70b030eb0aa
-    tag: v0.5.0
-  - sha: 04b587eb0afbd5ed3871f11ad8286633d023fd9e446a025d6db1cb93dc57cd7b
-    tag: v0.10.0
-  - sha: abac17341a9c49b3501ead044c986249d5fee118f9f98cd037dd155488a8739d
-    tag: v0.11.1
-  - sha: 406037178b8da79f8f98b90b78fd365c966bbf7f8ab55e26c7e1f47c8ffca77f
-    tag: v0.13.0
+  patterns:
+  - pattern: '>= v0.13.0'
 - name: fluxcd/kustomize-controller
   overrideRepoName: fluxcd-kustomize-controller
-  tags:
-  - sha: a477b75684e8f35041c1a988f83b4e8b6a6bbdaa46e7ae05e4804f3da6f6d3a1
-    tag: v0.5.3
-  - sha: b3c107ce756b8b363d4886f9ecef6242e80e6cdf07853dd5fe2a49ae5d22edb1
-    tag: v0.7.4
-  - sha: 611d929779e986bc05937d3c2e5ed122c25da9f124ca86ed0ee4cc1d59dcdd65
-    tag: v0.13.0
-  - sha: 545126048c252d5b02a9702b171e62c13a9252078eb074c569030e8c95f08574
-    tag: v0.14.1
-  - sha: e1a3622f8524b8790cb94a73683afcb58c413342ab752ca704ab3f02bd69d4e1
-    tag: v0.16.0
+  patterns:
+  - pattern: '>= v0.16.0'
 - name: fluxcd/notification-controller
   overrideRepoName: fluxcd-notification-controller
-  tags:
-  - sha: 1ef2a06bb95555d1ef135842398e210ff01d106a250ad5c0b3d18a83fb5a8be0
-    tag: v0.5.0
-  - sha: cfe67fe76fe740fe86f10e99120f321e18c425a0b3990570cceda56368b4ddd8
-    tag: v0.7.1
-  - sha: 4a36666f78471b965d0ada188b16d54856d536ebf7ddb55cc9bde0b366d7f70f
-    tag: v0.15.0
-  - sha: 6295839811f39c39e62ea3dc01f0bcb30c3d87ace06d438a59ce2a1844b76089
-    tag: v0.16.0
-  - sha: f547ba98ca089d3285b30d17cf88c0e48873dd184e6b464174b14f81aedf64aa
-    tag: v0.18.0
+  patterns:
+  - pattern: '>= v0.18.0'
 - name: fluxcd/source-controller
   overrideRepoName: fluxcd-source-controller
-  tags:
-  - sha: e7617c2439114b094f807b41e3c38b2f040021dfad1c6693359f8657209154b9
-    tag: v0.5.6
-  - sha: 51cd47349de3232990b1d449f3d7d36f042ca0554a09f2d7feafb47dffb5c52d
-    tag: v0.7.4
-  - sha: c94485de2d1733c5e7df92403990945fd24c5b4a77d63d9fc4cabe0f5d6a7ffe
-    tag: v0.14.0
-  - sha: cf81befcebb634e67cd40c599b3aeb19deacbd4ba1199d3947e03824566aa6ae
-    tag: v0.15.4
-  - sha: b344b5fd32c285218e36e1ce34b1f17edf66270045f0db5ab395fcb59a51e119
-    tag: v0.16.0
+  patterns:
+  - pattern: '>= v0.17.0'
 - name: gcr.io/cluster-api-provider-vsphere/release/manager
   overrideRepoName: cluster-api-vsphere-controller
   patterns:
