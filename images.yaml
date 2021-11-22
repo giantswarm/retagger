@@ -547,9 +547,8 @@
   patterns:
   - pattern: '>= v1.16.8 || >= v1.20.0-0'
 - name: k8s.gcr.io/metrics-server/metrics-server
-  tags:
-  - sha: 78035f05bcf7e0f9b401bae1ac62b5a505f95f9c2122b80cff73dcc04d58497e
-    tag: v0.4.1
+  patterns:
+  - pattern: '>= v0.4.2'
 - name: k8s.gcr.io/nvidia-gpu-device-plugin
   tags:
   - sha: 4b036e8844920336fa48f36edeb7d4398f426d6a934ba022848deed2edbf09aa
