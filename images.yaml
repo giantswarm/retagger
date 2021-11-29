@@ -546,6 +546,9 @@
 - name: k8s.gcr.io/kube-scheduler
   patterns:
   - pattern: '>= v1.16.8 || >= v1.20.0-0'
+- name: k8s.gcr.io/kube-state-metrics/kube-state-metrics
+  patterns:
+  - pattern: '> v1.9.8'
 - name: k8s.gcr.io/metrics-server/metrics-server
   patterns:
   - pattern: '>= v0.4.2'
@@ -762,9 +765,6 @@
   tags:
   - sha: 7806805c93b20a168d0bbbd25c6a213f00ac58a511c47e8fa6409543528a204e
     tag: v0.11.0-amd64
-- name: k8s.gcr.io/kube-state-metrics/kube-state-metrics
-  patterns:
-  - pattern: '> v1.9.8'
 - name: quay.io/coreos/prometheus-config-reloader
   patterns:
   - pattern: '>= v0.38.1'
