@@ -443,6 +443,10 @@
 - name: jaegertracing/jaeger-operator
   patterns:
   - pattern: '>= 1.17.0'
+# Used in prometheus-operator-app
+- name: jettech/kube-webhook-certgen
+  patterns:
+  - pattern: '>= v1.2.0'
 - name: jgsqware/fluentd-loki-plugin
   tags:
   - sha: 7dbe2ccfbf2eb7b29367f6a3ee7c0976c3b45e4e21d6363cb43b156c17488259
@@ -507,10 +511,6 @@
   overrideRepoName: ingress-nginx-controller
   patterns:
   - pattern: '>= v0.48.1'
-# Used in prometheus-operator-app
-- name: k8s.gcr.io/ingress-nginx/kube-webhook-certgen
-  patterns:
-  - pattern: '>= v1.0'
 - name: k8s.gcr.io/kube-apiserver
   patterns:
   - pattern: '>= v1.19.0 || >= v1.20.0-0'
