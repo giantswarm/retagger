@@ -444,9 +444,6 @@
   patterns:
   - pattern: '>= 1.17.0'
 # Used in prometheus-operator-app
-- name: jettech/kube-webhook-certgen
-  patterns:
-  - pattern: '>= v1.2.0'
 - name: k8s.gcr.io/ingress-nginx/kube-webhook-certgen
   patterns:
   - pattern: '>= v1.0'
