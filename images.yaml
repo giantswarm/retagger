@@ -511,6 +511,10 @@
   overrideRepoName: ingress-nginx-controller
   patterns:
   - pattern: '>= v0.48.1'
+- name: k8s.gcr.io/ingress-nginx/kube-webhook-certgen
+  patterns:
+    # This would otherwise collide with jettech/kube-webhook-certgen
+  - pattern: '< v1.2.0'
 - name: k8s.gcr.io/kube-apiserver
   patterns:
   - pattern: '>= v1.19.0 || >= v1.20.0-0'
