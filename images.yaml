@@ -248,6 +248,8 @@
     tag: "v1.3-debian-cloudwatch"
   - sha: da2c32a98e87809ecc6c2aea3be0d0b0f5cab31c4d75b6fb46b86d76d5554f23
     tag: "v1.9.3-debian-cloudwatch-1.0"
+  - sha: 38a151b26982cf511730922748c33d9e5cbc70bcae5099b328530c44ca531570
+    tag: "v1.14-debian-cloudwatch-1"
 - name: fluxcd/helm-controller
   overrideRepoName: fluxcd-helm-controller
   patterns:
