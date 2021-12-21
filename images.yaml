@@ -148,6 +148,7 @@
   patterns:
   - pattern: '>= 7.67.0'
 - name: cytopia/yamllint
+  overrideRepoName: cytopia-yamllint
   patterns:
   - pattern: '>= 1.9'
 - name: dduportal/bats
