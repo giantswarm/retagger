@@ -905,6 +905,14 @@
       - USER root
       - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
       - USER giantswarm
+  - sha: f2269e73124dd0f60a7d19a2ce1264d33d08a985aed0ee6b0b89d0be470592cd
+    tag: v1.3.1
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - USER root
+      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+      - USER giantswarm
 - name: quay.io/pusher/oauth2_proxy
   tags:
   - sha: 1fad3f247a8edeceead03230d833fcb4c3935a3a57b83787690f15f7daa6b59b
