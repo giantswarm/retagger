@@ -841,6 +841,9 @@
 - name: quay.io/jacksontj/promxy
   patterns:
   - pattern: '>= v0.0.60'
+- name: quay.io/jetstack/cert-manager-acmesolver
+  patterns:
+  - pattern: '>= v1.6.1'
 - name: quay.io/jetstack/cert-manager-cainjector
   patterns:
   - pattern: '>= v0.14.2'
