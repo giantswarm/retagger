@@ -745,24 +745,26 @@
 - name: quay.io/calico/kube-controllers
   patterns:
   - pattern: '>= v3.9.5'
-#- name: quay.io/calico/kube-controllers
-#  overrideRepoName: calico-crd-installer
-#  patterns:
-#  - pattern: '>= v3.15.0'
-#    customImages:
-#    - dockerfileOptions:
-#      - |
-#        FROM quay.io/giantswarm/crd-installer:0.1.1 AS installer
-#        FROM quay.io/giantswarm/alpine:3.13.5 AS downloader
-#        WORKDIR /tmp/crd-installer
-#        COPY --from=0 /usr/bin/kube-controllers /crd-installer/kube-controllers
-#        COPY --from=installer /scripts /scripts
-#        RUN CALICO_VERSION=$(/crd-installer/kube-controllers -version) && \
-#            /scripts/download-calico-crds.sh $CALICO_VERSION
-#        FROM scratch
-#        COPY --from=downloader /tmp/crd-installer/crds /crds
-#        COPY --from=installer /usr/local/bin/crd-installer /usr/local/bin/crd-installer
-#        CMD ["/usr/local/bin/crd-installer", "-dir", "/crds"]
+- name: quay.io/calico/kube-controllers
+  overrideRepoName: calico-crd-installer
+  patterns:
+  - pattern: '>= v3.15.0'
+    customImages:
+    - dockerfileOptions:
+      - |
+        FROM quay.io/giantswarm/crd-installer:0.1.1 AS installer
+        FROM quay.io/giantswarm/alpine:3.15.0 AS downloader
+        WORKDIR /tmp/crd-installer
+        COPY --from=0 /usr/bin/kube-controllers /crd-installer/kube-controllers
+        COPY --from=0 /lib/ /lib
+        COPY --from=0 /lib64/ /lib64
+        COPY --from=installer /scripts /scripts
+        RUN CALICO_VERSION=$(/crd-installer/kube-controllers -version) && \
+            /scripts/download-calico-crds.sh $CALICO_VERSION
+        FROM scratch
+        COPY --from=downloader /tmp/crd-installer/crds /crds
+        COPY --from=installer /usr/local/bin/crd-installer /usr/local/bin/crd-installer
+        CMD ["/usr/local/bin/crd-installer", "-dir", "/crds"]
 - name: quay.io/calico/node
   patterns:
   - pattern: '>= v3.9.5'
