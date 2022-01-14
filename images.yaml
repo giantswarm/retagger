@@ -752,7 +752,7 @@
     customImages:
     - dockerfileOptions:
       - |
-        FROM quay.io/giantswarm/crd-installer:0.1.1 AS installer
+        FROM quay.io/giantswarm/crd-installer:0.1.2 AS installer
         FROM quay.io/giantswarm/alpine:3.15.0 AS downloader
         WORKDIR /tmp/crd-installer
         COPY --from=0 /usr/bin/kube-controllers /crd-installer/kube-controllers
