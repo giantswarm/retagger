@@ -19,9 +19,6 @@
     - tagSuffix: python3
       dockerfileOptions:
       - RUN apk add --no-cache python3 py3-yaml
-    - tagSuffix: curl
-      dockerfileOptions:
-      - RUN apk add --no-cache curl
 - name: alpine/git
   overrideRepoName: alpinegit
   tags:
