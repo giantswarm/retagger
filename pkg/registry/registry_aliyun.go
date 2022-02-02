@@ -95,8 +95,8 @@ func (r *Registry) GetAliyunTagsWithDetails(image string) (tags []QuayTag, err e
 			return nil, microerror.Mask(err)
 		}
 
-		for _, tag := range apiResponse.Data.Tags {
-			aliTags = append(aliTags, quayTagFromTag(&tag))
+		for i := range apiResponse.Data.Tags {
+			aliTags = append(aliTags, quayTagFromTag(&apiResponse.Data.Tags[i]))
 		}
 
 		remaining := int(apiResponse.Data.TotalRecords) - len(aliTags)
