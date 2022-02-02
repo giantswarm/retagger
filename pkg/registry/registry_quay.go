@@ -11,6 +11,7 @@ import (
 
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
+
 	"github.com/giantswarm/retagger/pkg/images"
 )
 
