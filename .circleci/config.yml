@@ -1,9 +1,16 @@
 version: 2
+
+orbs:
+  architect: giantswarm/architect@4.9.0
+
 jobs:
-  build:
-    machine: true
+  validate-yaml:
+    executor: "architect"
     steps:
       - checkout
+
+      - setup_remote_docker:
+          version: 20.10.11
 
       - run:
           name: Validate YAML
@@ -14,61 +21,22 @@ jobs:
             -d '{extends: default, rules: {line-length: {max: 200}, document-start: disable, indentation: {spaces: 0}}}' \
             images.yaml
 
-      - run:
-          name: Install architect
-          command: |
-            curl -sSL $(curl -sS -H "Authorization: token $RELEASE_TOKEN" https://api.github.com/repos/giantswarm/architect/releases/tags/v2.1.6 | grep browser_download_url | grep linux | cut -d '"' -f 4) | tar xzv --strip-components=1
-            chmod +x ./architect
-            ./architect version
-
-      - run:
-          name: architect build
-          command: ./architect build
-
-      - run:
-          name: compile e2e test
-          command: |
-            docker run --rm -it \
-            -v $PWD:/go/src/github.com/giantswarm/retagger \
-            -w /go/src/github.com/giantswarm/retagger \
-            quay.io/giantswarm/golang:1.13.0 \
-            go test -c -tags e2e ./integration/test/e2e
-
-      - persist_to_workspace:
-          root: .
-          paths:
-            - ./retagger
-            - ./e2e.test
-            - ./images-e2e.yaml
-            - ./images.yaml
-
-  e2eQuay:
-    environment:
-      REGISTRY: "quay.io"
-      REGISTRY_ORGANISATION: "giantswarm"
-    machine: true
-    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Set registry credentials
-          command: |
-            echo 'export REGISTRY_USERNAME=${QUAY_USERNAME}' >> $BASH_ENV
-            echo 'export REGISTRY_PASSWORD=${QUAY_PASSWORD}' >> $BASH_ENV
-            source $BASH_ENV
-      - run:
-          name: Run e2e test
-          command: |
-            ./e2e.test -test.run ".*E2e.*" -test.v
-
   retagQuay:
     environment:
       REGISTRY: "quay.io"
       REGISTRY_ORGANISATION: "giantswarm"
-    machine: true
+    executor: "architect"
     steps:
-      - attach_workspace:
-          at: .
+      - checkout
+
+      - run:
+          name: Get latest retagger binary
+          command: |
+            curl -s -H "Authorization: token $RELEASE_TOKEN" https://api.github.com/repos/giantswarm/retagger/releases/latest | \
+              jq -rc '.assets[] | select(.name | contains("linux-amd64")) | .browser_download_url' | \
+              xargs curl -sSL | tar xzv --strip-components=1
+
+            ./retagger version
 
       - run:
           name: Set registry credentials
@@ -85,17 +53,18 @@ jobs:
     environment:
       REGISTRY: "registry-intl.cn-shanghai.aliyuncs.com"
       REGISTRY_ORGANISATION: "giantswarm"
-    machine: true
+    executor: "architect"
     steps:
-      - attach_workspace:
-          at: .
+      - checkout
 
       - run:
-          name: Set registry credentials
+          name: Get latest retagger binary
           command: |
-            echo 'export REGISTRY_USERNAME=${ALIYUN_USERNAME}' >> $BASH_ENV
-            echo 'export REGISTRY_PASSWORD=${ALIYUN_PASSWORD}' >> $BASH_ENV
-            source $BASH_ENV
+            curl -s -H "Authorization: token $RELEASE_TOKEN" https://api.github.com/repos/giantswarm/retagger/releases/latest | \
+              jq -rc '.assets[] | select(.name | contains("linux-amd64")) | .browser_download_url' | \
+              xargs curl -sSL | tar xzv --strip-components=1
+
+            ./retagger version
 
       - run:
           name: Execute retagger
@@ -103,37 +72,40 @@ jobs:
 
 build_and_retag:  &build_and_retag
   jobs:
-    - build
-    - e2eQuay:
-        filters:
-          branches:
-            ignore: master
-        requires:
-          - build
     - retagQuay:
         filters:
           branches:
             only: master
         requires:
           - build
-    - retagAliyun:
-        filters:
-          branches:
-            only: master
-        requires:
-          - build
+    #- retagAliyun:
+    #    filters:
+    #      branches:
+    #        only: master
+    #    requires:
+    #      - build
 
 workflows:
   version: 2
-  build_retag: 
-    <<: *build_and_retag
+  #build_retag:
+  #  <<: *build_and_retag
 
-  # Runs nightly at 21:30 UTC (22:30 Berlin)
-  build_retag_nightly:
-    triggers:
-      - schedule:
-          cron: "30 21 * * *"
+  go-build:
+    jobs:
+      - architect/go-build:
+          name: go-build-retagger
+          binary: retagger
+          # Needed to trigger job also on git tag.
           filters:
-            branches:
-              only: master
-    <<: *build_and_retag
+            tags:
+              only: /^v.*/
+
+  ## Runs nightly at 21:30 UTC (22:30 Berlin)
+  #build_retag_nightly:
+  #  triggers:
+  #    - schedule:
+  #        cron: "30 21 * * *"
+  #        filters:
+  #          branches:
+  #            only: master
+  #  <<: *build_and_retag
