@@ -645,8 +645,13 @@
   patterns:
   - pattern: '>= 1.4.3'
 - name: kong/kong-gateway
-  patterns:
-  - pattern: '>= 2.3.3.2'
+  tags:
+  - sha: 97eef523687765cee839588b8390474bde36efb66c3e11befc7f0a0bc65ba990
+    tag: '2.3.3.2-alpine'
+  - sha: dede21952cb80fc55b5b36653e0c8e340a72ee29141d92d0af9e330da67b4d4f
+    tag: '2.5.1.2-alpine'
+  - sha: f74c2be09e6acadadb95f3c4f585ee5f9c74c5a8232705990f290ce682def5f0
+    tag: '2.7.1.1-alpine'
 - name: kong/kubernetes-ingress-controller
   overrideRepoName: kong-ingress-controller
   patterns:
