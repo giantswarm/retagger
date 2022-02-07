@@ -644,6 +644,9 @@
 - name: kong
   patterns:
   - pattern: '>= 1.4.3'
+- name: kong/kong-gateway
+  patterns:
+  - pattern: '>= 2.3.3.2'
 - name: kong/kubernetes-ingress-controller
   overrideRepoName: kong-ingress-controller
   patterns:
