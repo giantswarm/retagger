@@ -6,7 +6,7 @@ require (
 	github.com/Masterminds/semver/v3 v3.1.1
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.246
 	github.com/containerd/containerd v1.5.5 // indirect
-	github.com/docker/distribution v2.7.1+incompatible
+	github.com/docker/distribution v2.8.0+incompatible
 	github.com/docker/docker v1.4.2-0.20200103225628-a9507c6f7662
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/libtrust v0.0.0-20160708172513-aabc10ec26b7 // indirect
