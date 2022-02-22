@@ -178,6 +178,10 @@
   tags:
   - sha: 72d816c99cc86b117baf04385020121f71015d7f5f9eba2a59e72532d645d38f
     tag: 7.6.1
+- name: docker.io/fluxcd/flux-cli
+  tags:
+  - sha: 60ec02342a2770f44d4afe78ae38bc195b4e3f21d4620dad02a3037b9c3721da
+    tag: v0.27.0
 - name: ealen/echo-server
   patterns:
   - pattern: '>=0.5.0'
