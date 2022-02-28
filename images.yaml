@@ -50,6 +50,9 @@
 - name: amazon/aws-efs-csi-driver
   patterns:
   - pattern: '>= 1.0.0'
+- name: public.ecr.aws/aws-ec2/aws-node-termination-handler
+  patterns:
+  - pattern: '>= v1.15.0'
 - name: amazon/opendistro-for-elasticsearch
   patterns:
   - pattern: '>= 1.3.0'
