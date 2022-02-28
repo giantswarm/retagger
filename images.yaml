@@ -51,9 +51,8 @@
   patterns:
   - pattern: '>= 1.0.0'
 - name: amazon/opendistro-for-elasticsearch
-  tags:
-  - sha: 09ddd27b8a0d3108bb282309058740f0136ccad4dc9da847e3efa58ea0c958ea
-    tag: 1.15.0
+  patterns:
+  - pattern: '>= 1.3.0'
 - name: amazon/opendistro-for-elasticsearch-kibana
   patterns:
   - pattern: '>= 1.3.0'
@@ -735,8 +734,9 @@
   - sha: 22ae874390e34b7cbbaf9a1b204298e009d15dccb96f0aed8d93d797f9ba4b53
     tag: v0.9.1
 - name: public.ecr.aws/aws-ec2/aws-node-termination-handler
-  patterns:
-  - pattern: '>= v1.15.0'
+  tags:
+  - sha: 09ddd27b8a0d3108bb282309058740f0136ccad4dc9da847e3efa58ea0c958ea
+    tag: 1.15.0
 - name: python
   tags:
   - sha: 50e21e0bac13e1dfa37626d1c05433cc29e0f1d15fa390e2ecbae32221c6646d
