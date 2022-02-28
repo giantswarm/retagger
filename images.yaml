@@ -51,8 +51,9 @@
   patterns:
   - pattern: '>= 1.0.0'
 - name: amazon/opendistro-for-elasticsearch
-  patterns:
-  - pattern: '>= 1.3.0'
+  tags:
+  - sha: 09ddd27b8a0d3108bb282309058740f0136ccad4dc9da847e3efa58ea0c958ea
+    tag: 1.15.0
 - name: amazon/opendistro-for-elasticsearch-kibana
   patterns:
   - pattern: '>= 1.3.0'
