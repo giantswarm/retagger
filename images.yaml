@@ -30,6 +30,9 @@
       - RUN apk add --no-cache ca-certificates
       - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
       - USER giantswarm
+- name: amazon/amazon-eks-pod-identity-webhook
+  patterns:
+  - pattern: '>= v0.3.0'
 - name: amazon/aws-alb-ingress-controller
   patterns:
   - pattern: '>= 2.3'
