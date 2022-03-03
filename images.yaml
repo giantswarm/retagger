@@ -527,6 +527,9 @@
 - name: k8s.gcr.io/cluster-proportional-autoscaler-amd64
   patterns:
   - pattern: '>= 1.6.0'
+- name: k8s.gcr.io/dns/k8s-dns-node-cache
+  patterns:
+  - pattern: '>= 1.21.1'
 - name: k8s.gcr.io/external-dns/external-dns
   patterns:
   - pattern: '>= v0.10.1'
