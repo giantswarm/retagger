@@ -124,31 +124,43 @@
     tag: stable-2.9.1
   - sha: 7dcf1c0a408670f3d817372f206f5be6a03625789d9ce9e1443e43ee0b1bf80c
     tag: stable-2.10.2
+  - sha: 4aacd99bde921807ed31226f08204caf9555631feec3cb81ad63b072620e08d3
+    tag: stable-2.11.1
 - name: cr.l5d.io/linkerd/controller
   overrideRepoName: linkerd2-controller
   tags:
   - sha: 4508ffd137e9fa6adf2b8ad9771bfa3ff7a4ac09c1110545fafb9f2382c3f1e6
     tag: stable-2.10.2
+  - sha: 75f2dce572c11971bf3834fa84a2bf6022c5f0f0f377792d0df159087fb42bb6
+    tag: stable-2.11.1
 - name: cr.l5d.io/linkerd/debug
   overrideRepoName: linkerd2-debug
   tags:
   - sha: 095b8c746a5a5aa862a37ce59f2f21404f7a9d03771839a2fdca52c52f2df593
     tag: stable-2.10.2
+  - sha: 8f41406015729abec0d4dc3407f63dd66bb677e78d226c5a8fa7a703c829069d
+    tag: stable-2.11.1
 - name: cr.l5d.io/linkerd/proxy
   overrideRepoName: linkerd2-proxy
   tags:
   - sha: 7dd7f009acc6b5662acd1166ef9e99be583ae63362c3643e163955870f304ef8
     tag: stable-2.10.2
+  - sha: 91b53d4b39e4c058e5fc63b72dd7ab6fe7f7051869ec5251dc9c0d8287b2771f
+    tag: stable-2.11.1
 - name: cr.l5d.io/linkerd/proxy-init
   overrideRepoName: linkerd2-proxy-init
   tags:
   - sha: 9a7d17d2bce7274f5abfd611d34e24460a59c55e55ff93440c31ab6b60b542b2
     tag: v1.3.11
+  - sha: 60d12fbb0b4a53962a5c2a59b496b3ee20052d26c0c56fd2ee38fd7fae62146e
+    tag: v1.4.0
 - name: cr.l5d.io/linkerd/web
   overrideRepoName: linkerd2-web
   tags:
   - sha: 8a3af1c6763982c8cc124361c1661c2a6a7ab50678c5ebe2b555a4d667ff8b5f
     tag: stable-2.10.2
+  - sha: 04d103ecf7d43b2009f4271fa1a8c375eecf402d071d5e5e93f69c09deb94358
+    tag: stable-2.11.1
 - name: curlimages/curl
   patterns:
   - pattern: '>= 7.67.0'
