@@ -437,6 +437,8 @@
     tag: 1.17.1-alpine3.14
   - sha: 31d0f68e6b1207775713e6ad3fe291bbe6061a8d49540343f4c5b69e800580f7
     tag: 1.17.7-alpine3.14
+  - sha: d45bdb73eb0e1c4629e3e42082f2541cb0b997ca2ad9c60b86b33e8a71340681
+    tag: 1.17.8-alpine3.14
 - name: golangci/golangci-lint
   tags:
   - sha: 05764fbd373c2b2c44186b0a98774b37499cbe71d41854def5487ead8b9861b5
