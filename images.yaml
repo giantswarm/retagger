@@ -750,9 +750,8 @@
   patterns:
   - pattern: '>= 2.17.0'
 - name: prom/pushgateway
-  tags:
-  - sha: 22ae874390e34b7cbbaf9a1b204298e009d15dccb96f0aed8d93d797f9ba4b53
-    tag: v0.9.1
+  patterns:
+  - pattern: '>= v1.0.0'
 - name: public.ecr.aws/aws-ec2/aws-node-termination-handler
   tags:
   - sha: 09ddd27b8a0d3108bb282309058740f0136ccad4dc9da847e3efa58ea0c958ea
