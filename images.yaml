@@ -700,6 +700,12 @@
 - name: mcr.microsoft.com/oss/azure/aad-pod-identity/nmi
   patterns:
   - pattern: '>= 1.7.0'
+- name: mcr.microsoft.com/oss/kubernetes/azure-cloud-controller-manager
+  patterns:
+  - pattern: '>= v1.1.8'
+- name: mcr.microsoft.com/oss/kubernetes/azure-cloud-node-manager
+  patterns:
+  - pattern: '>= v1.1.8'
 - name: mintel/dex-k8s-authenticator
   patterns:
   - pattern: '>= 1.4.0'
