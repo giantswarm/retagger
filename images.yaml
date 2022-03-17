@@ -779,6 +779,8 @@
     tag: 3.8.12-slim
   - sha: db35c8d2e810559d90af0a126dac55cf93601202061d3f61f94ac3c460d4a211
     tag: 3.9-alpine3.13
+  - sha: d1657b8c38e1c4003b44c2c39c205374bfbf53b3a0fa4b24e7d2d2671594aa41
+    tag: 3.10.3-slim
 - name: quay.io/argoproj/argocd
   patterns:
   - pattern: '>= v2.0.1'
