@@ -541,6 +541,9 @@
 - name: k8s.gcr.io/cluster-proportional-autoscaler-amd64
   patterns:
   - pattern: '>= 1.6.0'
+- name: k8s.gcr.io/descheduler/descheduler:v0.23.1
+  patterns:
+  - pattern: '>= v0.20.0'
 - name: k8s.gcr.io/dns/k8s-dns-node-cache
   patterns:
   - pattern: '>= 1.21.1'
