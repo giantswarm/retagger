@@ -345,12 +345,6 @@
   tags:
   - sha: 4fc41a76a237de912507d9644860d33cdf90bedf6477c795d7c64f79778d33a0
     tag: 1.7
-- name: gcr.io/k8s-staging-cluster-api-azure/cluster-api-azure-controller
-  tags:
-  - sha: da43384036f94cdbf9183318653aa06f1bb91027997c6483c2562c0628f33c08
-    tag: v0.5.0
-  - sha: eb38cfb0c9a380ae47d9175c1f5260016d23ffb838631a6668a5e60cc186f4b8
-    tag: v0.5.3
 - name: gcr.io/kubebuilder/kube-rbac-proxy
   patterns:
   - pattern: '>= v0.4.1'
@@ -529,6 +523,12 @@
 - name: k8s.gcr.io/cluster-api-aws/eks-controlplane-controller
   patterns:
   - pattern: '>= v0.6.7'
+- name: k8s.gcr.io/cluster-api-azure/cluster-api-azure-controller
+  patterns:
+  - pattern: '>= v0.5.0'
+- name: k8s.gcr.io/cluster-api-gcp/cluster-api-gcp-controller
+  patterns:
+  - pattern: '>= v1.0.2'
 - name: k8s.gcr.io/cluster-api/cluster-api-controller
   patterns:
   - pattern: '>= v0.4.0'
@@ -1052,9 +1052,6 @@
   overrideRepoName: elasticsearch-untergeek-curator
   patterns:
   - pattern: '>= 5.7.6'
-- name: us.gcr.io/k8s-artifacts-prod/cluster-api-azure/cluster-api-azure-controller
-  patterns:
-  - pattern: '>= v0.5.0'
 - name: vault
   patterns:
   - pattern: '>= v1.2.0'
