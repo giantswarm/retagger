@@ -1055,7 +1055,7 @@
 - name: us.gcr.io/k8s-artifacts-prod/provider-aws/cloud-controller-manager
   overrideRepoName: aws-cloud-controller-manager
   patterns:
-    - pattern: '>= v1.21.0-alpha.0'
+  - pattern: '>= v1.21.0-alpha.0'
 - name: vault
   patterns:
   - pattern: '>= v1.2.0'
