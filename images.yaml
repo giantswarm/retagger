@@ -920,6 +920,11 @@
 - name: quay.io/jetstack/cert-manager-webhook
   patterns:
   - pattern: '>= v0.14.2'
+- name: quay.io/jiralert/jiralert-linux-amd64
+  overrideRepoName: jiralert
+  tags:
+  - sha: 56477327ee511d4165cb19c5f52e1b2e3abb89a743185e5a5da58bbd695a398b
+    tag: 1.1
 - name: quay.io/oauth2-proxy/oauth2-proxy
   patterns:
   - pattern: '>= v7.1.3'
