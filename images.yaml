@@ -752,6 +752,11 @@
   tags:
   - sha: c7ef83090082e0ba06f42126f5acfd9a785ae0deca3217b82862cab9be0978aa
     tag: v0.93.3
+- name: docker.io/bitnami/postgresql
+  overrideRepoName: postgresql-bitnami
+  tags:
+  - sha: 9f32478fdb19fb3a392999e7bc89cec54c2e74aa3313dc7667cdd750bb9b03e0
+    tag: 13.6.0-debian-10-r52
 - name: prom/cloudwatch-exporter
   tags:
   - sha: 7ce6d17ad3360ed5d5dddc57ebf13dc7d676900c40a22b3144a8a17af352c399
