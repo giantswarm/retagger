@@ -839,7 +839,7 @@
   - pattern: '>= v3.10.1'
 - name: quay.io/ceph/ceph
   patterns:
-  - pattern: 'v16.2.5-20210708'
+  - pattern: '>= v16.2.5-20210708'
 - name: quay.io/cephcsi/cephcsi
   patterns:
   - pattern: '>= v3.1.1'
