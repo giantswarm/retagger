@@ -33,10 +33,6 @@
 - name: amazon/amazon-eks-pod-identity-webhook
   patterns:
   - pattern: '>= v0.3.0'
-# fluent-bit images
-- name: amazon/aws-for-fluent-bit
-  patterns:
-  - pattern: '>= 2.x.x'
 - name: amazon/aws-alb-ingress-controller
   patterns:
   - pattern: '>= 2.3'
@@ -57,6 +53,10 @@
 - name: amazon/aws-efs-csi-driver
   patterns:
   - pattern: '>= 1.0.0'
+# fluent-bit images
+- name: amazon/aws-for-fluent-bit
+  patterns:
+  - pattern: '>= 2.x.x'
 - name: amazon/opendistro-for-elasticsearch
   patterns:
   - pattern: '>= 1.3.0'
