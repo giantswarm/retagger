@@ -56,7 +56,7 @@
 # fluent-bit images
 - name: amazon/aws-for-fluent-bit
   patterns:
-  - pattern: '>= 2.x.x'
+  - pattern: '>= 1.0.0'
 - name: amazon/opendistro-for-elasticsearch
   patterns:
   - pattern: '>= 1.3.0'
