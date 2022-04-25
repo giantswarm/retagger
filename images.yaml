@@ -262,11 +262,6 @@
 - name: falcosecurity/falcosidekick
   patterns:
   - pattern: '>= 2.22.0'
-
-# fluent-bit images
-- name: amazon/aws-for-fluent-bit
-  patterns:
-  - pattern: '>= 1.x.x'
 - name: fluxcd/helm-controller
   overrideRepoName: fluxcd-helm-controller
   patterns:
