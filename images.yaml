@@ -33,6 +33,10 @@
 - name: amazon/amazon-eks-pod-identity-webhook
   patterns:
   - pattern: '>= v0.3.0'
+# fluent-bit images
+- name: amazon/aws-for-fluent-bit
+  patterns:
+  - pattern: '>= 2.x.x'
 - name: amazon/aws-alb-ingress-controller
   patterns:
   - pattern: '>= 2.3'
@@ -260,37 +264,9 @@
   - pattern: '>= 2.22.0'
 
 # fluent-bit images
-- name: fluent/fluent-bit
+- name: amazon/aws-for-fluent-bit
   patterns:
   - pattern: '>= 1.x.x'
-  tags:
-  - sha: 20f8a39d61a38e217c40ace09d52436ee1547d3666586d0e68df71db9b6b2f8b
-    tag: '1.7.1-debug'
-    customImages:
-    - dockerfileOptions:
-      - RUN echo "deb http://deb.debian.org/debian buster-backports main" > /etc/apt/sources.list.d/backports.list && apt-get update
-      - RUN apt-get install -y --no-install-recommends libsystemd-dev/buster-backports
-  - sha: befafedde34f12d7756985aae4dc9825a7e2b1287f3d44780cac2038ee2ddb2f
-    tag: 1.7.1
-    customImages:
-    - tagSuffix: systemd247
-      dockerfileOptions:
-      - |
-        FROM amd64/debian:buster-slim as builder
-        RUN echo "deb http://deb.debian.org/debian buster-backports main" > /etc/apt/sources.list.d/backports.list && \
-            apt-get update && \
-            apt-get install -y --no-install-recommends \
-            libsystemd-dev/buster-backports
-        FROM fluent/fluent-bit:1.7.1
-        COPY --from=builder /usr/lib/x86_64-linux-gnu/libsystemd* /lib/x86_64-linux-gnu/
-- name: fluent/fluentd-kubernetes-daemonset
-  tags:
-  - sha: f9fa60dab5e7a6ae4adbe972a2fc22cf7eaa148df74cde4cd7f57e7019260451
-    tag: "v1.3-debian-cloudwatch"
-  - sha: da2c32a98e87809ecc6c2aea3be0d0b0f5cab31c4d75b6fb46b86d76d5554f23
-    tag: "v1.9.3-debian-cloudwatch-1.0"
-  - sha: 38a151b26982cf511730922748c33d9e5cbc70bcae5099b328530c44ca531570
-    tag: "v1.14-debian-cloudwatch-1"
 - name: fluxcd/helm-controller
   overrideRepoName: fluxcd-helm-controller
   patterns:
