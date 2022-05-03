@@ -1011,6 +1011,7 @@
   - sha: 0039796b887fd30e460353f14e46ba1004152aa97f5f59094cc21eac445fc89b
     tag: 6.2.4-alpine
 - name: rook/ceph
+  overrideRepoName: rook-ceph
   patterns:
   - pattern: '>= v1.7.0'
 - name: sonobuoy/sonobuoy
