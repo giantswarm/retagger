@@ -18,5 +18,6 @@ require (
 	github.com/nokia/docker-registry-client v0.0.0-20190305095957-e91f10057c5b
 	github.com/opencontainers/go-digest v1.0.0
 	github.com/spf13/cobra v1.2.1
+	go.uber.org/multierr v1.8.0
 	gopkg.in/yaml.v2 v2.4.0
 )

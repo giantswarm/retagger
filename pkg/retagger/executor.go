@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/giantswarm/microerror"
+	"go.uber.org/multierr"
 )
 
 // CompileJobs compiles all jobs in this Retagger's list of jobs into a list of concrete SingleJobs.
@@ -34,15 +35,18 @@ func (r *Retagger) ExecuteJobs() error {
 		r.logger.Log("level", "info", "message", "Retagger is in --dry-run mode. Listing jobs, but not running them.")
 	}
 
+	var err error
 	for _, j := range r.compiledJobs {
 		if r.dryrun {
 			r.logger.Log("level", "info", "message", fmt.Sprintf("Dry-Run: %s", j.Describe()))
 		} else {
-			err := j.Execute(r)
-			if err != nil {
-				return microerror.Mask(err)
-			}
+			// We combine all errors into 1 to allow working images to be build then fail
+			err = multierr.Combine(err, j.Execute(r))
 		}
+	}
+
+	if err != nil {
+		return microerror.Mask(err)
 	}
 
 	r.logger.Log("level", "debug", "message", fmt.Sprintf("successfully finished executing %d jobs", len(r.compiledJobs)))
