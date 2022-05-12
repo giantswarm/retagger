@@ -317,6 +317,9 @@
   overrideRepoName: fluxcd-source-controller
   patterns:
   - pattern: '>= v0.17.0'
+- name: gcr.io/cadvisor/cadvisor
+  patterns:
+    - pattern: '>= v0.44.1'
 - name: gcr.io/cluster-api-provider-vsphere/release/manager
   overrideRepoName: cluster-api-vsphere-controller
   patterns:
