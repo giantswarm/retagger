@@ -151,7 +151,7 @@
 - name: cr.l5d.io/linkerd/policy-controller
   overrideRepoName: linkerd2-policy-controller
   tags:
-  - sha: 394a75410ed3c2431cfa5cf2463ba700708a558eb7cbfaf82fa5051f76825db6
+  - sha: 46b261bad5b9bda29707d5179b6709c8563634ee9d74ccffb2074cfa50c4815a
     tag: stable-2.11.2
 - name: cr.l5d.io/linkerd/proxy
   overrideRepoName: linkerd2-proxy
