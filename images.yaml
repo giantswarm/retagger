@@ -320,6 +320,10 @@
 - name: gcr.io/cadvisor/cadvisor
   patterns:
   - pattern: '>= v0.44.0'
+- name: gcr.io/cloud-provider-vsphere/cpi/release/manager
+  overrideRepoName: cloud-provider-vsphere
+  patterns:
+  - pattern: '>= v1.22.6'
 - name: gcr.io/cluster-api-provider-vsphere/release/manager
   overrideRepoName: cluster-api-vsphere-controller
   patterns:
