@@ -71,6 +71,9 @@
 - name: aquasec/trivy
   patterns:
   - pattern: '>= 0.19.2'
+- name: aquasec/trivy-operator
+  patterns:
+  - pattern: '>= 0.0.5'
 - name: bash
   patterns:
   - pattern: '>= 5'
