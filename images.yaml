@@ -773,6 +773,16 @@
   tags:
   - sha: c7ef83090082e0ba06f42126f5acfd9a785ae0deca3217b82862cab9be0978aa
     tag: v0.93.3
+- name: projects.registry.vmware.com/vmware-cloud-director/cloud-director-named-disk-csi-driver
+  overrideRepoName: csi-cloud-director
+  tags:
+  - tag: 1.2.0.latest
+    sha: e281f711687e29a4c94ab2de12096a5d020515941d2d935ca1ee8f10b575c3e7
+- name: projects.registry.vmware.com/vmware-cloud-director/cloud-provider-for-cloud-director
+  overrideRepoName: cpi-cloud-director
+  tags:
+  - tag: 1.1.1.latest
+    sha: 027502f234b7e1153d5c1e13b6efb8eadb75c821da114f3ea85767869d2c8736
 - name: prom/cloudwatch-exporter
   tags:
   - sha: 7ce6d17ad3360ed5d5dddc57ebf13dc7d676900c40a22b3144a8a17af352c399
