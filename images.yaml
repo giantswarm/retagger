@@ -573,7 +573,7 @@
   - pattern: '>= v0.10.1'
 - name: k8s.gcr.io/hyperkube
   patterns:
-  - pattern: '>= v1.15'
+  - pattern: '>= v1.15 < 1.24'
 - name: k8s.gcr.io/ingress-nginx/controller
   overrideRepoName: ingress-nginx-controller
   patterns:
