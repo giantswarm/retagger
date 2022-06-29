@@ -757,8 +757,10 @@
     tag: 1.21-alpine
 - name: nginxinc/nginx-unprivileged
   tags:
-  - sha: 08fc2709903b6f56648f3c593f5a4494e92c905a3c790379c1e7212ac9f8313d
+  - sha: 0fd172200e9ef7d3187cf526b24567027992ffce8a34cc9d5ac0d18deb974d33
     tag: 1.21-alpine
+  - sha: 40231e6ef8fad3135da641da12ec265806de11925e75c4f10c0f7369958673f9
+    tag: 1.22-alpine
 - name: ns1labs/flame
   tags:
   - sha: a86c25be95c8e568b2e604a6958e6e0899a2c7f870c9cee4728662ec4899a317
