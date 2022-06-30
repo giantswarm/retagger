@@ -806,6 +806,8 @@
   - pattern: '>= v1.0.0'
 - name: public.ecr.aws/aws-ec2/aws-node-termination-handler
   tags:
+  - sha: 9b75919ea935031f47f607d72c22411ad6502c6485191fe06176035342a2a697
+    tag: v1.16.5
   - sha: 09ddd27b8a0d3108bb282309058740f0136ccad4dc9da847e3efa58ea0c958ea
     tag: v1.15.0
 - name: python
