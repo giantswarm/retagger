@@ -710,6 +710,10 @@
   overrideRepoName: kong-ingress-controller
   patterns:
   - pattern: '>= 1.1.1'
+- name: looztra/kubesplit
+  tags:
+  - sha: 21bf896bb17dc1a9563c05a4a3edfad9690ea52bb0f33f12fe300d5c48e70e6d
+    tag: 0.3.2-dd13538
 - name: macropower/analytics-panel-server
   overrideRepoName: macropower-analytics-panel-server
   patterns:
