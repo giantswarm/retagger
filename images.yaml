@@ -220,6 +220,9 @@
   tags:
   - sha: 9f32478fdb19fb3a392999e7bc89cec54c2e74aa3313dc7667cdd750bb9b03e0
     tag: 13.6.0-debian-10-r52
+- name: docker.io/envoyproxy/envoy
+  patterns:
+  - pattern: '>= 1.18.4'
 - name: docker.io/fluxcd/flux-cli
   tags:
   - sha: 60ec02342a2770f44d4afe78ae38bc195b4e3f21d4620dad02a3037b9c3721da
@@ -883,6 +886,38 @@
 - name: quay.io/cephcsi/cephcsi
   patterns:
   - pattern: '>= v3.1.1'
+- name: quay.io/cilium/certgen
+  overrideRepoName: cilium-certgen
+  patterns:
+  - pattern: '>= v0.1.5'
+- name: quay.io/cilium/cilium
+  patterns:
+  - pattern: '>= v1.11.2'
+- name: quay.io/cilium/cilium-etcd-operator
+  patterns:
+  - pattern: '>= v2.0.7'
+- name: quay.io/cilium/clustermesh-apiserver
+  overrideRepoName: cilium-clustermesh-apiserver
+  patterns:
+  - pattern: '>= v1.11.2'
+- name: quay.io/cilium/hubble-relay
+  patterns:
+  - pattern: '>= v1.11.2'
+- name: quay.io/cilium/hubble-ui
+  patterns:
+  - pattern: '>= v0.8.5'
+- name: quay.io/cilium/hubble-ui-backend
+  patterns:
+  - pattern: '>= v0.8.5'
+- name: quay.io/cilium/operator
+  overrideRepoName: cilium-operator
+  patterns:
+  - pattern: '>= v1.11.2'
+- name: quay.io/cilium/startup-script
+  overrideRepoName: cilium-startup-script
+  tags:
+  - sha: 72db9d6d9b319e36d68ad3a4cd9c43e3f8ded80694972dc458afacd34e73eb46
+    tag: 62bfbe88c17778aad7bef9fa57ff9e2d4a9ba0d8
 - name: quay.io/coreos/configmap-reload
   patterns:
   - pattern: '>= v0.0.1'
