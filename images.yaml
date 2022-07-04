@@ -222,7 +222,7 @@
     tag: 13.6.0-debian-10-r52
 - name: docker.io/envoyproxy/envoy
   patterns:
-    - pattern: '>= 1.18.4'
+  - pattern: '>= 1.18.4'
 - name: docker.io/fluxcd/flux-cli
   tags:
   - sha: 60ec02342a2770f44d4afe78ae38bc195b4e3f21d4620dad02a3037b9c3721da
