@@ -775,6 +775,12 @@
 - name: openpolicyagent/conftest
   patterns:
   - pattern: '>= v0.25.0'
+- name: opensearchproject/opensearch-dashboards
+  patterns:
+  - pattern: '>= v2.0.0'
+- name: opensearchproject/opensearch
+  patterns:
+  - pattern: '>= v2.0.0'
 - name: peaceiris/hugo
   tags:
   - sha: c7ef83090082e0ba06f42126f5acfd9a785ae0deca3217b82862cab9be0978aa
