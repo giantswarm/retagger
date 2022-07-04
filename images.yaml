@@ -913,6 +913,10 @@
   overrideRepoName: cilium-operator
   patterns:
   - pattern: '>= v1.11.2'
+- name: quay.io/cilium/operator-generic
+  overrideRepoName: cilium-operator-generic
+  patterns:
+  - pattern: '>= v1.11.2'
 - name: quay.io/cilium/startup-script
   overrideRepoName: cilium-startup-script
   tags:
