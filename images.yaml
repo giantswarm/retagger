@@ -1015,7 +1015,7 @@
 - name: quay.io/jiralert/jiralert-linux-amd64
   overrideRepoName: jiralert
   patterns:
-  - pattern: '>= 1.1'
+  - pattern: '>= 1.0'
 - name: quay.io/oauth2-proxy/oauth2-proxy
   patterns:
   - pattern: '>= v7.1.3'
