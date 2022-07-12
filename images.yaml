@@ -108,6 +108,8 @@
   - pattern: '>= 2021.0.0'
 - name: coredns/coredns
   tags:
+  - sha: 8e352a029d304ca7431c6507b56800636c321cb52289686a581ab70aaa8a2e2a
+    tag: 1.9.3
   - sha: 58508c172b14716350dc5185baefd78265a703514281d309d1d54aa1b721ad68
     tag: 1.8.7
   - sha: 5b6ec0d6de9baaf3e92d0f66cd96a25b9edbce8716f5f15dcd1a616b3abd590e
