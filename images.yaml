@@ -542,6 +542,9 @@
 - name: k8s.gcr.io/capi-openstack/capi-openstack-controller
   patterns:
   - pattern: '>= 0.4.0'
+- name: k8s.gcr.io/cloud-provider-gcp/gcp-compute-persistent-disk-csi-driver
+  patterns:
+  - pattern: '>= 1.7.0'
 - name: k8s.gcr.io/cluster-api-aws/cluster-api-aws-controller
   patterns:
   - pattern: '>= v0.6.7'
