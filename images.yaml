@@ -579,9 +579,10 @@
   patterns:
   - pattern: '>= 1.21.1'
 - name: k8s.gcr.io/etcd
-  overrideRepoName: etcd-k8s
   patterns:
   - pattern: '>= v3.5.4-0'
+    customImages:
+    - tagSuffix: k8s
 - name: k8s.gcr.io/external-dns/external-dns
   patterns:
   - pattern: '>= v0.10.1'
