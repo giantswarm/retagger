@@ -2,6 +2,12 @@
   tags:
   - sha: 234cb88d3020898631af0ccbbcca9a66ae7306ecd30c9720690858c1b007d2a0
     tag: 3.14
+  - sha: 0483110c51a764abe175a8cefb941541ca0bc0f628ce418d3a660338abf4622a
+    tag: 3.15.5
+    customImages:
+    - tagSuffix: envsubst
+      dockerfileOptions:
+      - RUN apk add --no-cache gettext
   patterns:
   - pattern: '>= 3.13'
   - pattern: '>= 3.11'
@@ -19,9 +25,6 @@
     - tagSuffix: python3
       dockerfileOptions:
       - RUN apk add --no-cache python3 py3-yaml
-    - tagSuffix: envsubst
-      dockerfileOptions:
-      - RUN apk add --no-cache gettext
 - name: alpine/git
   overrideRepoName: alpinegit
   tags:
