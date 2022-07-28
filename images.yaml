@@ -404,6 +404,8 @@
   tags:
   - sha: ab94a03c7b8d25cc6b2c70878f95b26e3b6ebbb569119acb5ee988711bb139c1
     tag: v3.9-thick-amd64
+  - sha: ce4c3a421b0ca97540af911f34858bdd9b06fa5817ba7fa2b3bbb906f9237b46
+    tag: v3.9-amd64
 - name: ghcr.io/kyverno/kyverno
   patterns:
   - pattern: '>= v1.3.4'
