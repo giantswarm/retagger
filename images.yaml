@@ -321,9 +321,9 @@
 
         FROM fluent/fluent-bit:1.7.9
         COPY --from=builder /usr/lib/x86_64-linux-gnu/libsystemd* /lib/x86_64-linux-gnu/
-        COPY --from=aws-fluent-bit-plugins:latest /kinesis-streams/bin/kinesis.so /fluent-bit/kinesis.so
-        COPY --from=aws-fluent-bit-plugins:latest /kinesis-firehose/bin/firehose.so /fluent-bit/firehose.so
-        COPY --from=aws-fluent-bit-plugins:latest /cloudwatch/bin/cloudwatch.so /fluent-bit/cloudwatch.so
+        COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/kinesis.so /fluent-bit/kinesis.so
+        COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/firehose.so /fluent-bit/firehose.so
+        COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/cloudwatch.so /fluent-bit/cloudwatch.so
 - name: fluxcd/helm-controller
   overrideRepoName: fluxcd-helm-controller
   patterns:
