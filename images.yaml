@@ -312,15 +312,7 @@
     - tagSuffix: systemd247-with-aws
       dockefileOptions:
       - |
-        FROM amd64/debian:buster-slim as builder
-
-        RUN echo "deb http://deb.debian.org/debian buster-backports main" > /etc/apt/sources.list.d/backports.list && \
-            apt-get update && \
-            apt-get install -y --no-install-recommends \
-            libsystemd-dev/buster-backports
-
-        FROM fluent/fluent-bit:1.7.9
-        COPY --from=builder /usr/lib/x86_64-linux-gnu/libsystemd* /lib/x86_64-linux-gnu/
+        FROM quay.io/giantswarm/fluent-bit:1.7.9-systemd247
         COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/kinesis.so /fluent-bit/kinesis.so
         COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/firehose.so /fluent-bit/firehose.so
         COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/cloudwatch.so /fluent-bit/cloudwatch.so
