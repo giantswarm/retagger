@@ -376,11 +376,6 @@
   tags:
   - sha: 4b63b91265ed0e4a986db9ce4bab22f590d773108713f806180990bd0e0c0806
     tag: v1.11
-- name: gcr.io/istio-testing/operator
-  overrideRepoName: istio-operator
-  tags:
-  - sha: 4fc41a76a237de912507d9644860d33cdf90bedf6477c795d7c64f79778d33a0
-    tag: 1.7
 - name: gcr.io/kubebuilder/kube-rbac-proxy
   patterns:
   - pattern: '>= v0.4.1'
