@@ -202,9 +202,6 @@
   tags:
   - sha: b2d533b27109f7c9ea1e270e23f212c47906346f9cffaa4da6da48ed9d8031da
     tag: 0.4.0
-- name: dexidp/dex
-  patterns:
-  - pattern: '>=v2.27.0'
 - name: directxman12/k8s-prometheus-adapter-amd64
   patterns:
   - pattern: '>=v0.6.0'
