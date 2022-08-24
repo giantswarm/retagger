@@ -1148,7 +1148,7 @@
   - sha: d1707ca76d3b044ab8a28277a2466a02100ee9f58a86af1535a3edf9323ea1b5
     tag: v1.3.0
 - name: registry.k8s.io/ingress-nginx/kube-webhook-certgen
-  overrideRepoName: ingress-nginx-kube-webhook
+  overrideRepoName: ingress-nginx-kube-webhook-certgen
   tags:
   - sha: 549e71a6ca248c5abd51cdb73dbc3083df62cf92ed5e6147c780e30f7e007a47
     tag: v1.3.0
