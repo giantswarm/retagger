@@ -890,7 +890,6 @@
         FROM quay.io/giantswarm/alpine:3.15.0 AS downloader
         WORKDIR /tmp/crd-installer
         COPY --from=0 /usr/bin/kube-controllers /crd-installer/kube-controllers
-        COPY --from=0 /lib/ /lib
         COPY --from=0 /lib64/ /lib64
         COPY --from=installer /scripts /scripts
         RUN CALICO_VERSION=$(/crd-installer/kube-controllers -version) && \
