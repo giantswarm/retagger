@@ -1152,6 +1152,10 @@
   tags:
   - sha: 549e71a6ca248c5abd51cdb73dbc3083df62cf92ed5e6147c780e30f7e007a47
     tag: v1.3.0
+- name: registry.k8s.io/provider-aws/cloud-controller-manager
+  overrideRepoName: aws-cloud-controller-manager
+  patterns:
+  - pattern: '>= v1.21.0-alpha.0'
 - name: rook/ceph
   overrideRepoName: rook-ceph
   patterns:
@@ -1188,10 +1192,6 @@
   overrideRepoName: elasticsearch-untergeek-curator
   patterns:
   - pattern: '>= 5.7.6'
-- name: us.gcr.io/k8s-artifacts-prod/provider-aws/cloud-controller-manager
-  overrideRepoName: aws-cloud-controller-manager
-  patterns:
-  - pattern: '>= v1.21.0-alpha.0'
 - name: vault
   patterns:
   - pattern: '>= v1.2.0'
