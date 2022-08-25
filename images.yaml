@@ -1142,6 +1142,10 @@
     tag: 6.2.1-alpine
   - sha: 0039796b887fd30e460353f14e46ba1004152aa97f5f59094cc21eac445fc89b
     tag: 6.2.4-alpine
+- name: registry.k8s.io/provider-aws/cloud-controller-manager
+  overrideRepoName: aws-cloud-controller-manager
+  patterns:
+  - pattern: '>= v1.21.0-alpha.0'
 - name: registry.k8s.io/ingress-nginx/controller
   overrideRepoName: ingress-nginx-controller
   tags:
@@ -1188,10 +1192,6 @@
   overrideRepoName: elasticsearch-untergeek-curator
   patterns:
   - pattern: '>= 5.7.6'
-- name: us.gcr.io/k8s-artifacts-prod/provider-aws/cloud-controller-manager
-  overrideRepoName: aws-cloud-controller-manager
-  patterns:
-  - pattern: '>= v1.21.0-alpha.0'
 - name: vault
   patterns:
   - pattern: '>= v1.2.0'
