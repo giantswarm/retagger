@@ -547,143 +547,6 @@
 - name: justwatch/elasticsearch_exporter
   patterns:
   - pattern: '>= v1.1.0'
-- name: registry.k8s.io/addon-resizer
-  patterns:
-  - pattern: '>= 1.8.7'
-- name: registry.k8s.io/autoscaling/vpa-admission-controller
-  patterns:
-  - pattern: '>= 0.8.0'
-- name: registry.k8s.io/autoscaling/vpa-recommender
-  patterns:
-  - pattern: '>= 0.8.0'
-- name: registry.k8s.io/autoscaling/vpa-updater
-  patterns:
-  - pattern: '>= 0.8.0'
-- name: registry.k8s.io/capi-openstack/capi-openstack-controller
-  patterns:
-  - pattern: '>= 0.4.0'
-- name: registry.k8s.io/cloud-provider-gcp/gcp-compute-persistent-disk-csi-driver
-  patterns:
-  - pattern: '>= 1.7.0'
-- name: registry.k8s.io/cluster-api-aws/cluster-api-aws-controller
-  patterns:
-  - pattern: '>= v0.6.7'
-- name: registry.k8s.io/cluster-api-aws/eks-bootstrap-controller
-  patterns:
-  - pattern: '>= v0.6.7'
-- name: registry.k8s.io/cluster-api-aws/eks-controlplane-controller
-  patterns:
-  - pattern: '>= v0.6.7'
-- name: registry.k8s.io/cluster-api-azure/cluster-api-azure-controller
-  patterns:
-  - pattern: '>= v0.5.0'
-- name: registry.k8s.io/cluster-api-gcp/cluster-api-gcp-controller
-  patterns:
-  - pattern: '>= v1.0.2'
-- name: registry.k8s.io/cluster-api/cluster-api-controller
-  patterns:
-  - pattern: '>= v0.4.0'
-- name: registry.k8s.io/cluster-api/kubeadm-bootstrap-controller
-  patterns:
-  - pattern: '>= v0.4.0'
-- name: registry.k8s.io/cluster-api/kubeadm-control-plane-controller
-  patterns:
-  - pattern: '>= v0.4.0'
-- name: registry.k8s.io/cluster-proportional-autoscaler-amd64
-  patterns:
-  - pattern: '>= 1.6.0'
-- name: registry.k8s.io/descheduler/descheduler
-  patterns:
-  - pattern: '>= v0.20.0'
-- name: registry.k8s.io/dns/k8s-dns-node-cache
-  patterns:
-  - pattern: '>= 1.21.1'
-- name: registry.k8s.io/etcd
-  patterns:
-  - pattern: '>= v3.5.4-0'
-    customImages:
-    - tagSuffix: k8s
-- name: registry.k8s.io/external-dns/external-dns
-  patterns:
-  - pattern: '>= v0.10.1'
-- name: registry.k8s.io/hyperkube
-  patterns:
-  - pattern: '>= v1.15 < 1.24'
-- name: registry.k8s.io/kube-apiserver
-  patterns:
-  - pattern: '>= v1.19.0 || >= v1.20.0-0'
-  - pattern: '>= v1.16.8 < v1.19'
-    customImages:
-    - tagSuffix: giantswarm
-      dockerfileOptions:
-      - RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
-- name: registry.k8s.io/kube-apiserver
-  tagTrimVersionPrefix: true
-  overrideRepoName: hyperkube
-  patterns:
-  - pattern: '>= v1.19.8 || >= v1.20.0-0'
-    customImages:
-    - dockerfileOptions:
-      - |
-        FROM quay.io/giantswarm/alpine:3.12.1 AS downloader
-        WORKDIR /tmp/hyperkube
-        COPY --from=0 /usr/local/bin/kube-apiserver /tmp/hyperkube/kube-apiserver
-        RUN KUBERNETES_VERSION=$(/tmp/hyperkube/kube-apiserver --version | grep Kubernetes | cut -d ' ' -f 2) && \
-        wget -t 5 https://storage.googleapis.com/kubernetes-release/release/$KUBERNETES_VERSION/bin/linux/amd64/kubelet && \
-        wget -t 5 https://storage.googleapis.com/kubernetes-release/release/$KUBERNETES_VERSION/bin/linux/amd64/kubectl && \
-        chmod +x /tmp/hyperkube/kubelet /tmp/hyperkube/kubectl
-        FROM scratch
-        COPY --from=downloader /tmp/hyperkube/kubelet /kubelet
-        COPY --from=downloader /tmp/hyperkube/kubectl /kubectl
-- name: registry.k8s.io/kube-controller-manager
-  patterns:
-  - pattern: '>= v1.16.8 || >= v1.20.0-0'
-- name: registry.k8s.io/kube-proxy
-  patterns:
-  - pattern: '>= v1.16.8 || >= v1.20.0-0'
-- name: registry.k8s.io/kube-scheduler
-  patterns:
-  - pattern: '>= v1.16.8 || >= v1.20.0-0'
-- name: registry.k8s.io/kube-state-metrics/kube-state-metrics
-  patterns:
-  - pattern: '> v1.9.8'
-- name: registry.k8s.io/metrics-server/metrics-server
-  patterns:
-  - pattern: '>= v0.4.2'
-- name: registry.k8s.io/nvidia-gpu-device-plugin
-  tags:
-  - sha: 4b036e8844920336fa48f36edeb7d4398f426d6a934ba022848deed2edbf09aa
-    tag: 1.0.0
-- name: registry.k8s.io/pause
-  patterns:
-  - pattern: '>= 3.1'
-- name: registry.k8s.io/pause-amd64
-  patterns:
-  - pattern: '>= 3.1'
-- name: registry.k8s.io/provider-aws/aws-ebs-csi-driver
-  patterns:
-  - pattern: '>= 0.7.0'
-- name: registry.k8s.io/sig-storage/csi-attacher
-  patterns:
-  - pattern: '>= v1.2.0'
-- name: registry.k8s.io/sig-storage/csi-node-driver-registrar
-  patterns:
-  - pattern: '>= v1.1.0'
-- name: registry.k8s.io/sig-storage/csi-provisioner
-  patterns:
-  - pattern: '>= v1.6.0'
-- name: registry.k8s.io/sig-storage/csi-resizer
-  patterns:
-  - pattern: '>= v0.3.0'
-- name: registry.k8s.io/sig-storage/csi-snapshotter
-  patterns:
-  - pattern: '>= v2.1.1'
-- name: registry.k8s.io/sig-storage/livenessprobe
-  patterns:
-  - pattern: '>= v1.1.0'
-- name: registry.k8s.io/sig-storage/snapshot-controller
-  patterns:
-  - pattern: '>= v3.0.0'
 - name: k8scloudprovider/cinder-csi-plugin
   patterns:
   - pattern: '>= 1.20.0'
@@ -1142,20 +1005,157 @@
     tag: 6.2.1-alpine
   - sha: 0039796b887fd30e460353f14e46ba1004152aa97f5f59094cc21eac445fc89b
     tag: 6.2.4-alpine
+- name: registry.k8s.io/addon-resizer
+  patterns:
+    - pattern: '>= 1.8.7'
+- name: registry.k8s.io/autoscaling/vpa-admission-controller
+  patterns:
+    - pattern: '>= 0.8.0'
+- name: registry.k8s.io/autoscaling/vpa-recommender
+  patterns:
+    - pattern: '>= 0.8.0'
+- name: registry.k8s.io/autoscaling/vpa-updater
+  patterns:
+    - pattern: '>= 0.8.0'
+- name: registry.k8s.io/capi-openstack/capi-openstack-controller
+  patterns:
+    - pattern: '>= 0.4.0'
+- name: registry.k8s.io/cloud-provider-gcp/gcp-compute-persistent-disk-csi-driver
+  patterns:
+    - pattern: '>= 1.7.0'
+- name: registry.k8s.io/cluster-api-aws/cluster-api-aws-controller
+  patterns:
+    - pattern: '>= v0.6.7'
+- name: registry.k8s.io/cluster-api-aws/eks-bootstrap-controller
+  patterns:
+    - pattern: '>= v0.6.7'
+- name: registry.k8s.io/cluster-api-aws/eks-controlplane-controller
+  patterns:
+    - pattern: '>= v0.6.7'
+- name: registry.k8s.io/cluster-api-azure/cluster-api-azure-controller
+  patterns:
+    - pattern: '>= v0.5.0'
+- name: registry.k8s.io/cluster-api-gcp/cluster-api-gcp-controller
+  patterns:
+    - pattern: '>= v1.0.2'
+- name: registry.k8s.io/cluster-api/cluster-api-controller
+  patterns:
+    - pattern: '>= v0.4.0'
+- name: registry.k8s.io/cluster-api/kubeadm-bootstrap-controller
+  patterns:
+    - pattern: '>= v0.4.0'
+- name: registry.k8s.io/cluster-api/kubeadm-control-plane-controller
+  patterns:
+    - pattern: '>= v0.4.0'
+- name: registry.k8s.io/cluster-proportional-autoscaler-amd64
+  patterns:
+    - pattern: '>= 1.6.0'
+- name: registry.k8s.io/descheduler/descheduler
+  patterns:
+    - pattern: '>= v0.20.0'
+- name: registry.k8s.io/dns/k8s-dns-node-cache
+  patterns:
+    - pattern: '>= 1.21.1'
+- name: registry.k8s.io/etcd
+  patterns:
+    - pattern: '>= v3.5.4-0'
+      customImages:
+        - tagSuffix: k8s
+- name: registry.k8s.io/external-dns/external-dns
+  patterns:
+    - pattern: '>= v0.10.1'
+- name: registry.k8s.io/hyperkube
+  patterns:
+    - pattern: '>= v1.15 < 1.24'
 - name: registry.k8s.io/ingress-nginx/controller
   overrideRepoName: ingress-nginx-controller
   tags:
-  - sha: d1707ca76d3b044ab8a28277a2466a02100ee9f58a86af1535a3edf9323ea1b5
-    tag: v1.3.0
+    - sha: d1707ca76d3b044ab8a28277a2466a02100ee9f58a86af1535a3edf9323ea1b5
+      tag: v1.3.0
 - name: registry.k8s.io/ingress-nginx/kube-webhook-certgen
   overrideRepoName: ingress-nginx-kube-webhook-certgen
   tags:
-  - sha: 549e71a6ca248c5abd51cdb73dbc3083df62cf92ed5e6147c780e30f7e007a47
-    tag: v1.3.0
+    - sha: 549e71a6ca248c5abd51cdb73dbc3083df62cf92ed5e6147c780e30f7e007a47
+      tag: v1.3.0
+- name: registry.k8s.io/kube-apiserver
+  patterns:
+    - pattern: '>= v1.19.0 || >= v1.20.0-0'
+    - pattern: '>= v1.16.8 < v1.19'
+      customImages:
+        - tagSuffix: giantswarm
+          dockerfileOptions:
+            - RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+- name: registry.k8s.io/kube-apiserver
+  tagTrimVersionPrefix: true
+  overrideRepoName: hyperkube
+  patterns:
+    - pattern: '>= v1.19.8 || >= v1.20.0-0'
+      customImages:
+        - dockerfileOptions:
+            - |
+              FROM quay.io/giantswarm/alpine:3.12.1 AS downloader
+              WORKDIR /tmp/hyperkube
+              COPY --from=0 /usr/local/bin/kube-apiserver /tmp/hyperkube/kube-apiserver
+              RUN KUBERNETES_VERSION=$(/tmp/hyperkube/kube-apiserver --version | grep Kubernetes | cut -d ' ' -f 2) && \
+              wget -t 5 https://storage.googleapis.com/kubernetes-release/release/$KUBERNETES_VERSION/bin/linux/amd64/kubelet && \
+              wget -t 5 https://storage.googleapis.com/kubernetes-release/release/$KUBERNETES_VERSION/bin/linux/amd64/kubectl && \
+              chmod +x /tmp/hyperkube/kubelet /tmp/hyperkube/kubectl
+              FROM scratch
+              COPY --from=downloader /tmp/hyperkube/kubelet /kubelet
+              COPY --from=downloader /tmp/hyperkube/kubectl /kubectl
+- name: registry.k8s.io/kube-controller-manager
+  patterns:
+    - pattern: '>= v1.16.8 || >= v1.20.0-0'
+- name: registry.k8s.io/kube-proxy
+  patterns:
+    - pattern: '>= v1.16.8 || >= v1.20.0-0'
+- name: registry.k8s.io/kube-scheduler
+  patterns:
+    - pattern: '>= v1.16.8 || >= v1.20.0-0'
+- name: registry.k8s.io/kube-state-metrics/kube-state-metrics
+  patterns:
+    - pattern: '> v1.9.8'
+- name: registry.k8s.io/metrics-server/metrics-server
+  patterns:
+    - pattern: '>= v0.4.2'
+- name: registry.k8s.io/nvidia-gpu-device-plugin
+  tags:
+    - sha: 4b036e8844920336fa48f36edeb7d4398f426d6a934ba022848deed2edbf09aa
+      tag: 1.0.0
+- name: registry.k8s.io/pause
+  patterns:
+    - pattern: '>= 3.1'
+- name: registry.k8s.io/pause-amd64
+  patterns:
+    - pattern: '>= 3.1'
+- name: registry.k8s.io/provider-aws/aws-ebs-csi-driver
+  patterns:
+    - pattern: '>= 0.7.0'
 - name: registry.k8s.io/provider-aws/cloud-controller-manager
   overrideRepoName: aws-cloud-controller-manager
   patterns:
-  - pattern: '>= v1.21.0-alpha.0'
+    - pattern: '>= v1.21.0-alpha.0'
+- name: registry.k8s.io/sig-storage/csi-attacher
+  patterns:
+    - pattern: '>= v1.2.0'
+- name: registry.k8s.io/sig-storage/csi-node-driver-registrar
+  patterns:
+    - pattern: '>= v1.1.0'
+- name: registry.k8s.io/sig-storage/csi-provisioner
+  patterns:
+    - pattern: '>= v1.6.0'
+- name: registry.k8s.io/sig-storage/csi-resizer
+  patterns:
+    - pattern: '>= v0.3.0'
+- name: registry.k8s.io/sig-storage/csi-snapshotter
+  patterns:
+    - pattern: '>= v2.1.1'
+- name: registry.k8s.io/sig-storage/livenessprobe
+  patterns:
+    - pattern: '>= v1.1.0'
+- name: registry.k8s.io/sig-storage/snapshot-controller
+  patterns:
+    - pattern: '>= v3.0.0'
 - name: rook/ceph
   overrideRepoName: rook-ceph
   patterns:
