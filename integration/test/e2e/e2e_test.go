@@ -66,10 +66,6 @@ func TestE2e(t *testing.T) {
 			image: "retagger-e2e",
 			tag:   "3.7",
 		},
-		"3.9 exists": {
-			image: "retagger-e2e",
-			tag:   "3.9",
-		},
 		"3.9 exists tag overriden": {
 			image: "retagger-e2e",
 			tag:   "3.9-giantswarm",
