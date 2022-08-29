@@ -1,3 +1,4 @@
+//go:build e2e
 // +build e2e
 
 package e2e
@@ -6,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"testing"
+	"time"
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger/microloggertest"
@@ -15,6 +17,8 @@ import (
 )
 
 const e2eRepository = "retagger-e2e"
+
+const waitTimeInSecondsBeforeCheckingImagesInRegistry = 15
 
 func TestE2e(t *testing.T) {
 	c := registry.Config{
@@ -44,6 +48,9 @@ func TestE2e(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	t.Logf("waiting %d seconds before checking images in registry...", waitTimeInSecondsBeforeCheckingImagesInRegistry)
+	time.Sleep(waitTimeInSecondsBeforeCheckingImagesInRegistry * time.Second)
 
 	CheckImageDoesNotExistOrFail(t, r, "retagger-e2e", "2.5")
 
