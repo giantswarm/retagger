@@ -4,11 +4,13 @@
 package e2e
 
 import (
-	"github.com/giantswarm/microerror"
-	"github.com/giantswarm/micrologger/microloggertest"
 	"os"
 	"os/exec"
 	"testing"
+	"time"
+
+	"github.com/giantswarm/microerror"
+	"github.com/giantswarm/micrologger/microloggertest"
 
 	"github.com/giantswarm/retagger/pkg/images"
 	"github.com/giantswarm/retagger/pkg/registry"
@@ -46,6 +48,9 @@ func TestE2e(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	t.Logf("waiting %d seconds before checking images in registry...", waitTimeInSecondsBeforeCheckingImagesInRegistry)
+	time.Sleep(waitTimeInSecondsBeforeCheckingImagesInRegistry * time.Second)
 
 	CheckImageDoesNotExistOrFail(t, r, "retagger-e2e", "2.5")
 
