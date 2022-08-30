@@ -5,18 +5,33 @@ jobs:
       image: ubuntu-2004:2022.04.1
     resource_class: arm.medium
     steps:
+      - run:
+          name: "architect/machine-install-go: Remove old Go"
+          command: |
+            sudo rm -rf /usr/local/go
+      - run:
+          name: "architect/machine-install-go: Download Go"
+          command: |
+            wget https://go.dev/dl/go1.18.5.linux-arm64.tar.gz
+      - run:
+          name: "architect/machine-install-go: Install Go"
+          command: |
+            sudo tar -C /usr/local -xzf go1.18.5.linux-arm64.tar.gz
+      - run:
+          name: "architect/machine-install-go: Set Go environment"
+          command: |
+            go env -w GOBIN=/home/circleci/.go_workspace/bin
+      - run:
+          name: "architect/machine-install-go: Remove downloaded Go files"
+          command: |
+            rm go1.18.5.linux-arm64.tar.gz
+
       - checkout
 
       - run:
-          name: Install architect
-          command: |
-            curl -sSL $(curl -sS -H "Authorization: token $RELEASE_TOKEN" https://api.github.com/repos/giantswarm/architect/releases/tags/v2.1.6 | grep browser_download_url | grep linux-arm64 | cut -d '"' -f 4) | tar xzv --strip-components=1
-            chmod +x ./architect
-            ./architect version
-
-      - run:
           name: architect build
-          command: ./architect build
+          command: |
+            CGO_ENABLED=0 GOARCH="arm64" go build -ldflags "-w -linkmode 'auto' -extldflags '-static'" -o retagger .
 
       - run:
           name: compile e2e test
