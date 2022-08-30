@@ -3,6 +3,7 @@ jobs:
   build:
     machine:
       image: ubuntu-2004:202010-01
+    resource_class: arm.medium
     steps:
       - checkout
 
@@ -18,7 +19,7 @@ jobs:
       - run:
           name: Install architect
           command: |
-            curl -sSL $(curl -sS -H "Authorization: token $RELEASE_TOKEN" https://api.github.com/repos/giantswarm/architect/releases/tags/v6.6.0 | grep browser_download_url | grep linux | cut -d '"' -f 4) | tar xzv --strip-components=1
+            curl -sSL $(curl -sS -H "Authorization: token $RELEASE_TOKEN" https://api.github.com/repos/giantswarm/architect/releases/tags/v2.1.6 | grep browser_download_url | grep linux-arm64 | cut -d '"' -f 4) | tar xzv --strip-components=1
             chmod +x ./architect
             ./architect version
 
@@ -49,6 +50,7 @@ jobs:
       REGISTRY_ORGANISATION: "giantswarm"
     machine:
       image: ubuntu-2004:202010-01
+    resource_class: arm.medium
     steps:
       - attach_workspace:
           at: .
@@ -69,6 +71,7 @@ jobs:
       REGISTRY_ORGANISATION: "giantswarm"
     machine:
       image: ubuntu-2004:202010-01
+    resource_class: arm.medium
     steps:
       - attach_workspace:
           at: .
@@ -90,6 +93,7 @@ jobs:
       REGISTRY_ORGANISATION: "giantswarm"
     machine:
       image: ubuntu-2004:202010-01
+    resource_class: arm.medium
     steps:
       - attach_workspace:
           at: .
