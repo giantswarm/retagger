@@ -33,20 +33,10 @@ jobs:
           command: |
             CGO_ENABLED=0 GOARCH="arm64" go build -ldflags "-w -linkmode 'auto' -extldflags '-static'" -o retagger .
 
-      - run:
-          name: compile e2e test
-          command: |
-            docker run --rm -it \
-            -v $PWD:/go/src/github.com/giantswarm/retagger \
-            -w /go/src/github.com/giantswarm/retagger \
-            quay.io/giantswarm/golang:1.18.5 \
-            go test -c -tags e2e ./integration/test/e2e
-
       - persist_to_workspace:
           root: .
           paths:
             - ./retagger
-            - ./e2e.test
             - ./images-e2e.yaml
             - ./images.yaml
 
@@ -66,10 +56,6 @@ jobs:
             echo 'export REGISTRY_USERNAME=${QUAY_USERNAME}' >> $BASH_ENV
             echo 'export REGISTRY_PASSWORD=${QUAY_PASSWORD}' >> $BASH_ENV
             source $BASH_ENV
-      - run:
-          name: Run e2e test
-          command: |
-            ./e2e.test -test.run ".*E2e.*" -test.v
 
   retagQuay:
     environment:
