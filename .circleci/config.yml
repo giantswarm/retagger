@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     machine:
-      image: ubuntu-2004:202010-01
+      image: ubuntu-2004:2022.04.1
     resource_class: arm.medium
     steps:
       - checkout
@@ -49,7 +49,7 @@ jobs:
       REGISTRY: "quay.io"
       REGISTRY_ORGANISATION: "giantswarm"
     machine:
-      image: ubuntu-2004:202010-01
+      image: ubuntu-2004:2022.04.1
     resource_class: arm.medium
     steps:
       - attach_workspace:
@@ -70,7 +70,7 @@ jobs:
       REGISTRY: "quay.io"
       REGISTRY_ORGANISATION: "giantswarm"
     machine:
-      image: ubuntu-2004:202010-01
+      image: ubuntu-2004:2022.04.1
     resource_class: arm.medium
     steps:
       - attach_workspace:
@@ -92,7 +92,7 @@ jobs:
       REGISTRY: "registry-intl.cn-shanghai.aliyuncs.com"
       REGISTRY_ORGANISATION: "giantswarm"
     machine:
-      image: ubuntu-2004:202010-01
+      image: ubuntu-2004:2022.04.1
     resource_class: arm.medium
     steps:
       - attach_workspace:
