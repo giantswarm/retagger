@@ -111,9 +111,6 @@ build_and_retag:  &build_and_retag
         requires:
           - build
     - retagQuay:
-        filters:
-          branches:
-            only: master
         requires:
           - build
     - retagAliyun:
