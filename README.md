@@ -58,7 +58,7 @@ Here is an example entry:
     - tagSuffix: giantswarm
       dockerfileOptions:
       - EXPOSE 1053
-- name: k8s.gcr.io/hyperkube
+- name: registry.k8s.io/hyperkube
   tags:
   - sha: 29590ae7991517b214a9239349ee1cc803a22f2a36279612a52caa2bc8673ff0
     tag: v1.16.3
@@ -120,7 +120,7 @@ _Hint:_ The `v` infront of a version is optional - so `v1.0.0` and `1.0.0` behav
 For example, at the time of this writing:
 
 ```yaml
-- name: k8s.gcr.io/hyperkube
+- name: registry.k8s.io/hyperkube
   patterns:
     - pattern: '>= v1.17.0'       # Match any v1.17.x
 ```
