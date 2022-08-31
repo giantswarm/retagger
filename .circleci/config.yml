@@ -15,7 +15,7 @@ jobs:
       - run:
           name: copy
           command: |
-            skopeo copy --preserve-digests --multi-arch all --dest-precompute-digests docker://quay.io/coreos/etcd docker://quay.io/giantswarm/etcd
+            skopeo copy --preserve-digests --multi-arch all --dest-precompute-digests docker://quay.io/coreos/etcd:v3.4.20 docker://quay.io/giantswarm/etcd:v3.4.20:v3.4.20
 
   build:
     machine:
