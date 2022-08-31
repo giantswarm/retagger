@@ -1,5 +1,22 @@
 version: 2
 jobs:
+  skopeo:
+    docker:
+    - image: quay.io/skopeo/stable:v1.9.2
+    # machine:
+    #   image: ubuntu-2004:2022.04.1
+    # resource_class: arm.medium
+    steps:
+      - run:
+          name: login
+          command: |
+            skopeo login --password "${QUAY_PASSWORD}" --username "${QUAY_USERNAME}" quay.io
+
+      - run:
+          name: copy
+          command: |
+            skopeo copy --all --preserve-digest --multi-arch all --dest-precompute-digests docker://quay.io/coreos/etcd quay.io/giantswarm/etcd
+
   build:
     machine:
       image: ubuntu-2004:2022.04.1
@@ -103,22 +120,23 @@ jobs:
 
 build_and_retag:  &build_and_retag
   jobs:
-    - build
-    - e2eQuay:
-        filters:
-          branches:
-            ignore: master
-        requires:
-          - build
-    - retagQuay:
-        requires:
-          - build
-    - retagAliyun:
-        filters:
-          branches:
-            only: master
-        requires:
-          - build
+    - skopeo
+    #- build
+    #- e2eQuay:
+    #    filters:
+    #      branches:
+    #        ignore: master
+    #    requires:
+    #      - build
+    #- retagQuay:
+    #    requires:
+    #      - build
+    #- retagAliyun:
+    #    filters:
+    #      branches:
+    #        only: master
+    #    requires:
+    #      - build
 
 workflows:
   version: 2
