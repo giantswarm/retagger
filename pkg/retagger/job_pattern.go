@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"regexp"
 	"strings"
 	"time"
 
@@ -18,6 +19,7 @@ import (
 type PatternJob struct {
 	logger micrologger.Logger
 
+	SourceFilter  string
 	SourcePattern string
 	Source        Source
 
@@ -28,7 +30,7 @@ type PatternJob struct {
 
 // Compile expands a PatternJob into one or multiple SingleJobs using the given Retagger instance.
 func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
-	r.logger.Log("level", "debug", "message", fmt.Sprintf("compiling jobs for image %v / %v using pattern %v, with options %#v", job.Source.RepoPath, job.Source.Image, job.SourcePattern, job.Options))
+	r.logger.Log("level", "debug", "message", fmt.Sprintf("compiling jobs for image %v / %v using pattern %v with filter %s, with options %#v", job.Source.RepoPath, job.Source.Image, job.SourcePattern, job.SourceFilter, job.Options))
 
 	// Create a reference to the external registry.
 	url := fmt.Sprintf("https://%s", job.Source.RepoPath)
@@ -41,7 +43,7 @@ func (job *PatternJob) Compile(r *Retagger) ([]SingleJob, error) {
 	}
 
 	// Find tags which match the pattern.
-	matches, err := job.getExternalTagMatches(externalRegistry, job.Source.FullImageName, job.SourcePattern)
+	matches, err := job.getExternalTagMatches(externalRegistry, job.Source.FullImageName, job.SourcePattern, job.SourceFilter)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -96,7 +98,7 @@ func (job *PatternJob) GetSource() Source {
 }
 
 // getExternalTagMatches searches the given docker registry for tags matching the given pattern.
-func (job *PatternJob) getExternalTagMatches(r *dockerRegistry.Registry, image string, pattern string) ([]string, error) {
+func (job *PatternJob) getExternalTagMatches(r *dockerRegistry.Registry, image string, pattern string, filter string) ([]string, error) {
 	// Make sure our constraint is valid.
 	c, err := semver.NewConstraint(pattern)
 	if err != nil {
@@ -123,11 +125,29 @@ func (job *PatternJob) getExternalTagMatches(r *dockerRegistry.Registry, image s
 		}
 	}
 
+	m, err := regexp.Compile(filter)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
 	// Find tags matching our configured pattern.
 	var matches []string
 	for _, t := range externalRegistryTags {
 		job.logger.Log("level", "debug", "message", fmt.Sprintf("Checking external tag: %s ", t))
-		v, err := semver.NewVersion(t)
+
+		ts := t
+		if filter != "" {
+			if submatches := m.FindStringSubmatchIndex(t); len(submatches) > 0 {
+				result := []byte{}
+				result = m.ExpandString(result, "$version", t, submatches)
+				ts = string(result)
+			} else {
+				job.logger.Log("level", "debug", "message", fmt.Sprintf("Image %s:%s does not match the filter %s", image, t, filter))
+				continue
+			}
+		}
+
+		v, err := semver.NewVersion(ts)
 		if err != nil { // We do not care if the version is not semver.
 			continue
 		}
@@ -151,6 +171,7 @@ func PatternJobFromJobDefinition(jobDef *JobDefinition, r *Retagger) *PatternJob
 		logger: r.logger,
 
 		SourcePattern: jobDef.SourcePattern,
+		SourceFilter:  jobDef.SourceFilter,
 		Source:        GetSourceForJob(jobDef, r),
 
 		Options: jobDef.Options,

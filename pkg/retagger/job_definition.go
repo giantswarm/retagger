@@ -14,6 +14,7 @@ type JobDefinition struct {
 	SourceTag     string
 	SourceSha     string
 	SourcePattern string
+	SourceFilter  string
 
 	Options JobOptions
 }
@@ -161,6 +162,8 @@ func fromImageTagPattern(image images.Image, tagPattern images.TagPattern) (JobD
 	j := JobDefinition{
 		SourceImage:   image.Name,
 		SourcePattern: tagPattern.Pattern,
+		SourceFilter:  tagPattern.Filter,
+
 		Options: JobOptions{
 			TagTrimVersionPrefix: image.TagTrimVersionPrefix,
 			OverrideRepoName:     image.OverrideRepoName,
