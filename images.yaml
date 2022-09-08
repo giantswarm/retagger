@@ -111,7 +111,8 @@
     tag: 0.12
 - name: cloudflare/cloudflared
   patterns:
-  - pattern: '>= 2021.0.0'
+  - pattern: '>= 2022.8.0'
+    filter: '^(?P<version>.*)-amd64'
 - name: coredns/coredns
   tags:
   - sha: 8e352a029d304ca7431c6507b56800636c321cb52289686a581ab70aaa8a2e2a
