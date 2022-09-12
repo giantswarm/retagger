@@ -1,6 +1,9 @@
-version: 2
+orbs:
+  architect: giantswarm/architect@4.24.0
+
+version: 2.1
 jobs:
-  build:
+  validate:
     machine:
       image: ubuntu-2004:202010-01
     steps:
@@ -15,17 +18,10 @@ jobs:
             -d '{extends: default, rules: {line-length: {max: 200}, document-start: disable, indentation: {spaces: 0}}}' \
             images.yaml
 
-      - run:
-          name: Install architect
-          command: |
-            curl -sSL $(curl -sS -H "Authorization: token $RELEASE_TOKEN" https://api.github.com/repos/giantswarm/architect/releases/tags/v2.1.6 | grep browser_download_url | grep linux | cut -d '"' -f 4) | tar xzv --strip-components=1
-            chmod +x ./architect
-            ./architect version
-
-      - run:
-          name: architect build
-          command: ./architect build
-
+  builde2e:
+    machine:
+      image: ubuntu-2004:202010-01
+    steps:
       - run:
           name: compile e2e test
           command: |
@@ -38,10 +34,8 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - ./retagger
             - ./e2e.test
             - ./images-e2e.yaml
-            - ./images.yaml
 
   e2eQuay:
     environment:
@@ -107,7 +101,12 @@ jobs:
 
 build_and_retag:  &build_and_retag
   jobs:
-    - build
+    - validate
+    - builde2e
+    - architect/go-build:
+        context: architect
+        name: go-build
+        binary: retagger
     - e2eQuay:
         filters:
           branches:
@@ -129,7 +128,7 @@ build_and_retag:  &build_and_retag
 
 workflows:
   version: 2
-  build_retag: 
+  build_retag:
     <<: *build_and_retag
 
   # Runs nightly at 21:30 UTC (22:30 Berlin)
