@@ -150,7 +150,7 @@ func (r *Registry) GetDigest(image string, tag string) (digest.Digest, error) {
 
 // GuessRegistryPath examines the given image string, determines whether it describes a full
 // image path, is hosted on Docker hub, or belongs to the Docker standard library, and returns
-//  a URL representing the full path.
+// a URL representing the full path.
 func (r *Registry) GuessRegistryPath(image string) (*nurl.URL, error) {
 
 	dockerName, err := dockerRef.ParseNormalizedNamed(image)

@@ -11,6 +11,7 @@ import (
 
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
+
 	"github.com/giantswarm/retagger/pkg/images"
 )
 
@@ -59,7 +60,7 @@ func (t *QuayTag) GetSize() int64 {
 // Matches an RFC 5988 (https://tools.ietf.org/html/rfc5988#section-5)
 // Link header. For example,
 //
-//    <http://registry.example.com/v2/_catalog?n=5&last=tag5>; type="application/json"; rel="next"
+//	<http://registry.example.com/v2/_catalog?n=5&last=tag5>; type="application/json"; rel="next"
 //
 // The URL is _supposed_ to be wrapped by angle brackets `< ... >`,
 // but e.g., quay.io does not include them. Similarly, params like
