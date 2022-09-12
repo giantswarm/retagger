@@ -118,18 +118,19 @@ build_and_retag: &build_and_retag
             ignore: master
         requires:
           - builde2e
+          - go-build
     - retagQuay:
         filters:
           branches:
             only: master
         requires:
-          - builde2e
+          - go-build
     - retagAliyun:
         filters:
           branches:
             only: master
         requires:
-          - builde2e
+          - go-build
 
 workflows:
   version: 2
