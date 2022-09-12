@@ -18,6 +18,16 @@ jobs:
             -d '{extends: default, rules: {line-length: {max: 200}, document-start: disable, indentation: {spaces: 0}}}' \
             images.yaml
 
+  copy:
+    machine:
+      image: ubuntu-2004:202010-01
+    steps:
+      - checkout
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./images.yaml
+
   builde2e:
     machine:
       image: ubuntu-2004:202010-01
@@ -104,6 +114,9 @@ build_and_retag: &build_and_retag
   jobs:
     - validate
     - builde2e:
+        filters:
+          branches:
+            ignore: master
         requires:
           - validate
     - architect/go-build:
@@ -119,17 +132,25 @@ build_and_retag: &build_and_retag
         requires:
           - builde2e
           - go-build
+    - copy:
+        filters:
+          branches:
+            only: master
+        requires:
+          - validate
     - retagQuay:
         filters:
           branches:
             only: master
         requires:
+          - copy
           - go-build
     - retagAliyun:
         filters:
           branches:
             only: master
         requires:
+          - copy
           - go-build
 
 workflows:
