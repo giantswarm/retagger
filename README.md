@@ -31,7 +31,8 @@ will become
 
 Images can be defined using their SHA or using a tag pattern.
 
-If using a SHA, the exact image version is pulled from the source repository, pushed to Quay, and tagged with the given tag.
+If using a SHA, the exact image version is pulled from the source repository, pushed to Quay, and tagged with the given
+tag.
 
 If using a pattern, all tags in the original repository are compared against the pattern.
 If a matching tag is found, the image at that tag is pulled and retagged in Quay with the same tag
@@ -86,7 +87,9 @@ A `pattern` may also include all optional features of a `tag`, such as a `tagSuf
 
 ## Adding an image
 
-Images can be added by SHA or by pattern. It is preferable to use a SHA whenever possible as this avoids tagging unnecessary images and guarantees a certain known image. Patterns should be used when automation is in place to handle new images, and not simply used as a convenience.
+Images can be added by SHA or by pattern. It is preferable to use a SHA whenever possible as this avoids tagging
+unnecessary images and guarantees a certain known image. Patterns should be used when automation is in place to handle
+new images, and not simply used as a convenience.
 
 **Note:** Images in the `images.yaml` file need to be sorted alphabetically, otherwise CI will stay red!
 
@@ -108,7 +111,8 @@ the target tag should be `v1.5.2-2`, `v1.5.2-3`, and so on.
 
 ### By Pattern
 
-**Warning:** Run `retagger` locally with `--dry-run` _before_ pushing your pattern to the repository to make sure it does what you want.
+**Warning:** Run `retagger` locally with `--dry-run` _before_ pushing your pattern to the repository to make sure it
+does what you want.
 
 It is also possible to watch and automatically retag new tagged releases in the upstream repository.
 To do this, specify a pattern for the image in the `images.yaml` configuration file.
@@ -130,22 +134,26 @@ For example, at the time of this writing:
 Please provide a PR with the change. Once merged into master, CI will execute
 `retagger` to push any new images.
 
-**Note**: To keep execution speedy, when adding a new version, please remove older versions (tags) that are no longer used from the configuration.
+**Note**: To keep execution speedy, when adding a new version, please remove older versions (tags) that are no longer
+used from the configuration.
 
 ## Background and details
 
 - `retagger` checks if an image and tag are already available in the target
-registry, to avoid unnecessary pushing.
+  registry, to avoid unnecessary pushing.
 
 - `retagger` currently only supports public images as a source.
 
 - In Quay, a repository must exist for the image before retagger can push an image.
 
-The `retagger` works inside a CI build. On merges to master, the binary is executed. The workflow is to add a new image / sha tag pair or pattern in a PR, review it, and then merge. The `retagger` will take care that the image is handled. Users will still need to create repositories in the registry.
+The `retagger` works inside a CI build. On merges to master, the binary is executed. The workflow is to add a new image
+/ sha tag pair or pattern in a PR, review it, and then merge. The `retagger` will take care that the image is handled.
+Users will still need to create repositories in the registry.
 
 ### Usage
 
-The environment variables `REGISTRY`, `REGISTRY_ORGANISATION`, `REGISTRY_USERNAME`, and `REGISTRY_PASSWORD` need to be set (or passed as arguments).
+The environment variables `REGISTRY`, `REGISTRY_ORGANISATION`, `REGISTRY_USERNAME`, and `REGISTRY_PASSWORD` need to be
+set (or passed as arguments).
 
 Executing
 
@@ -153,7 +161,8 @@ Executing
 ./retagger
 ```
 
-will iterate through the defined images, pull them from a public registry, and push them to the specified private registry.
+will iterate through the defined images, pull them from a public registry, and push them to the specified private
+registry.
 
 #### Options
 

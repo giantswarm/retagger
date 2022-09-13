@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/giantswarm/microerror"
+
 	"github.com/giantswarm/retagger/pkg/images"
 )
 
