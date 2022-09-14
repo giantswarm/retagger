@@ -167,11 +167,10 @@ func (job *PatternJob) findTags(tags []string, c *semver.Constraints, m *regexp.
 }
 
 func filterAndExtract(t string, m *regexp.Regexp) string {
-	ts := t
 	if submatches := m.FindStringSubmatchIndex(t); len(submatches) > 0 {
 		result := []byte{}
 		result = m.ExpandString(result, "$version", t, submatches)
-		ts = string(result)
+		ts := string(result)
 		return ts
 	}
 	return ""
