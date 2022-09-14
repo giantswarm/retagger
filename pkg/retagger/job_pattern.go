@@ -125,26 +125,27 @@ func (job *PatternJob) getExternalTagMatches(r *dockerRegistry.Registry, image s
 		}
 	}
 
+	if filter == "" {
+		filter = "(?P<version>.*)"
+	}
 	m, err := regexp.Compile(filter)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
+	matches := job.findTags(externalRegistryTags, c, m)
+	return matches, nil
+}
+
+func (job *PatternJob) findTags(tags []string, c *semver.Constraints, m *regexp.Regexp) (matches []string) {
 	// Find tags matching our configured pattern.
-	var matches []string
-	for _, t := range externalRegistryTags {
+	for _, t := range tags {
 		job.logger.Log("level", "debug", "message", fmt.Sprintf("Checking external tag: %s ", t))
 
-		ts := t
-		if filter != "" {
-			if submatches := m.FindStringSubmatchIndex(t); len(submatches) > 0 {
-				result := []byte{}
-				result = m.ExpandString(result, "$version", t, submatches)
-				ts = string(result)
-			} else {
-				job.logger.Log("level", "debug", "message", fmt.Sprintf("Image %s:%s does not match the filter %s", image, t, filter))
-				continue
-			}
+		ts := filterAndExtract(t, m)
+		if ts == "" {
+			job.logger.Log("level", "debug", "message", fmt.Sprintf("Image %s:%s does not match the filter %s", job.Source.Image, t, job.SourceFilter))
+			continue
 		}
 
 		v, err := semver.NewVersion(ts)
@@ -154,7 +155,7 @@ func (job *PatternJob) getExternalTagMatches(r *dockerRegistry.Registry, image s
 
 		m, errs := c.Validate(v)
 		for _, e := range errs {
-			job.logger.Log("level", "debug", "message", fmt.Sprintf("Image %s:%s does not fulfill constraint %s because %s", image, t, pattern, e.Error()))
+			job.logger.Log("level", "debug", "message", fmt.Sprintf("Image %s:%s does not fulfill constraint %s because %s", job.Source.Image, t, job.SourcePattern, e.Error()))
 		}
 
 		if m {
@@ -162,7 +163,18 @@ func (job *PatternJob) getExternalTagMatches(r *dockerRegistry.Registry, image s
 		}
 	}
 
-	return matches, nil
+	return matches
+}
+
+func filterAndExtract(t string, m *regexp.Regexp) string {
+	ts := t
+	if submatches := m.FindStringSubmatchIndex(t); len(submatches) > 0 {
+		result := []byte{}
+		result = m.ExpandString(result, "$version", t, submatches)
+		ts = string(result)
+		return ts
+	}
+	return ""
 }
 
 // PatternJobFromJobDefinition converts a JobDefinition into a PatternJob.
