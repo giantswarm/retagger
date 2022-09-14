@@ -123,6 +123,10 @@ jobs:
 build_and_retag: &build_and_retag
   jobs:
     - validate
+    - unitTest:
+        filters:
+          branches:
+            ignore: master
     - builde2e:
         filters:
           branches:
@@ -135,6 +139,7 @@ build_and_retag: &build_and_retag
         binary: retagger
         requires:
           - validate
+          - unitTest
     - e2eQuay:
         filters:
           branches:
