@@ -1195,8 +1195,9 @@
   - sha: 017a8fdecbb0aecd6af3446b1357ed36ef92533dd8a19c2283ad29f41b264bc3
     tag: 2.2.0
 - name: ubuntu/squid
-  patterns:
-  - pattern: '>= 5.1'
+  tags:
+  - sha: a3df22307c1eb5a7b470f980e0141e97fa98beeaaeb9932743604b121835f3c8
+    tag: 5.2-22.04_beta
 # used by efk-stack-app
 - name: untergeek/curator
   overrideRepoName: elasticsearch-untergeek-curator
