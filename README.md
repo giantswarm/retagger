@@ -80,10 +80,12 @@ What the attributes mean:
 - `tags[].customImages[].dockerfileOptions[]`: The list of Dockerfile options, used to override base image
 - `patterns[]`: List of patterns. New tags matching one of these patterns will be automatically retagged.
 - `patterns[].pattern`: Valid semver condition to match tags.
+- `patterns[].filter`: Regex to filter tags before validating semver. If empty, filtering is not done. 
 - `patterns[].customImages[]`: Custom images as explained above.
 
 An image may define both `tags` and `patterns`.
 A `pattern` may also include all optional features of a `tag`, such as a `tagSuffix` or `dockerfileOptions`.
+The `filter` MUST include the `<version>` capture group, e.g.: `(?P<version>.*)-alpine`. This way, the version is extracted from the tag and validated against SemVer as usual.
 
 ## Adding an image
 

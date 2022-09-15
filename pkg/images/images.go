@@ -21,6 +21,7 @@ type Image struct {
 // and stores some configuration for how to handle this group.
 type TagPattern struct {
 	Pattern      string        `yaml:"pattern"`
+	Filter       string        `yaml:"filter,omitempty"`
 	Tag          string        `yaml:"tag"`
 	CustomImages []CustomImage `yaml:"customImages"`
 }

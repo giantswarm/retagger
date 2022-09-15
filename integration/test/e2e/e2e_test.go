@@ -18,7 +18,7 @@ import (
 
 const e2eRepository = "retagger-e2e"
 
-const waitTimeInSecondsBeforeCheckingImagesInRegistry = 15
+const waitTimeInSecondsBeforeCheckingImagesInRegistry = 90
 
 func TestE2e(t *testing.T) {
 	c := registry.Config{
