@@ -8,6 +8,9 @@
     - tagSuffix: envsubst
       dockerfileOptions:
       - RUN apk add --no-cache gettext
+    - tagSuffix: yq
+      dockerfileOptions:
+      - RUN apk add --no-cache yq bash
   patterns:
   - pattern: '>= 3.13'
   - pattern: '>= 3.11'
@@ -25,9 +28,6 @@
     - tagSuffix: python3
       dockerfileOptions:
       - RUN apk add --no-cache python3 py3-yaml
-    - tagSuffix: yq
-      dockerfileOptions:
-      - RUN apk add --no-cache yq bash
 - name: alpine/git
   overrideRepoName: alpinegit
   tags:
