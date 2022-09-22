@@ -97,7 +97,11 @@ jobs:
 
       - run:
           name: Execute retagger
-          command: ./retagger -r ${REGISTRY} -o ${REGISTRY_ORGANISATION} -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD}
+          command: ./retagger -r ${REGISTRY} -o ${REGISTRY_ORGANISATION} -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD} > /tmp/quay.log
+
+      - store_artifacts:
+          path: /tmp/quay.log
+          destination: quay.log
 
   retagAliyun:
     environment:
@@ -118,7 +122,11 @@ jobs:
 
       - run:
           name: Execute retagger
-          command: ./retagger -r ${REGISTRY} -o ${REGISTRY_ORGANISATION} -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD} --access-key ${ALIYUN_ACCESS_KEY} --access-secret ${ALIYUN_ACCESS_SECRET} --aliyun-region ${ALIYUN_REGION}
+          command: ./retagger -r ${REGISTRY} -o ${REGISTRY_ORGANISATION} -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD} --access-key ${ALIYUN_ACCESS_KEY} --access-secret ${ALIYUN_ACCESS_SECRET} --aliyun-region ${ALIYUN_REGION} > /tmp/aliyun.log
+
+      - store_artifacts:
+          path: /tmp/aliyun.log
+          destination: aliyun.log
 
 build_and_retag: &build_and_retag
   jobs:
