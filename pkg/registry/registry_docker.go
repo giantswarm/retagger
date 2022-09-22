@@ -77,7 +77,7 @@ func (r *Registry) TagSha(sourceImage, sha, destinationImage, destinationTag str
 	imageSha := images.ShaName(sourceImage, sha)
 	retaggedNameWithTag := images.NameWithTag(destinationImage, destinationTag)
 
-	//r.logger.Log("level", "debug", "message", fmt.Sprintf("executing: docker tag %s %s", imageSha, retaggedNameWithTag))
+	r.logger.Log("level", "debug", "message", fmt.Sprintf("executing: docker tag %s %s", imageSha, retaggedNameWithTag))
 
 	err := r.docker.ImageTag(context.Background(), imageSha, retaggedNameWithTag)
 	if err != nil {
@@ -169,7 +169,7 @@ func (r *Registry) logDocker(reader io.Reader) error {
 			return microerror.Maskf(dockerError, "docker task failed: %s", logMsg)
 		}
 
-		//r.logger.Log("level", "debug", "message", "docker status", "docker", string(s.Bytes()))
+		r.logger.Log("level", "debug", "message", "docker status", "docker", string(s.Bytes()))
 	}
 	if err := s.Err(); err != nil {
 		return microerror.Mask(err)

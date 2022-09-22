@@ -140,11 +140,11 @@ func (job *PatternJob) getExternalTagMatches(r *dockerRegistry.Registry, image s
 func (job *PatternJob) findTags(tags []string, c *semver.Constraints, m *regexp.Regexp) (matches []string) {
 	// Find tags matching our configured pattern.
 	for _, t := range tags {
-		//job.logger.Log("level", "debug", "message", fmt.Sprintf("Checking external tag: %s ", t))
+		job.logger.Log("level", "debug", "message", fmt.Sprintf("Checking external tag: %s ", t))
 
 		ts := filterAndExtract(t, m)
 		if ts == "" {
-			//job.logger.Log("level", "debug", "message", fmt.Sprintf("Image %s:%s does not match the filter %s", job.Source.Image, t, job.SourceFilter))
+			job.logger.Log("level", "debug", "message", fmt.Sprintf("Image %s:%s does not match the filter %s", job.Source.Image, t, job.SourceFilter))
 			continue
 		}
 
@@ -153,10 +153,10 @@ func (job *PatternJob) findTags(tags []string, c *semver.Constraints, m *regexp.
 			continue
 		}
 
-		m, _ := c.Validate(v)
-		//for _, e := range errs {
-		//	job.logger.Log("level", "debug", "message", fmt.Sprintf("Image %s:%s does not fulfill constraint %s because %s", job.Source.Image, t, job.SourcePattern, e.Error()))
-		//}
+		m, errs := c.Validate(v)
+		for _, e := range errs {
+			job.logger.Log("level", "debug", "message", fmt.Sprintf("Image %s:%s does not fulfill constraint %s because %s", job.Source.Image, t, job.SourcePattern, e.Error()))
+		}
 
 		if m {
 			matches = append(matches, t)
