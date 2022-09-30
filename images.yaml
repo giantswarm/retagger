@@ -48,13 +48,13 @@
 - name: amazon/aws-cli
   overrideRepoName: awscli
   tags:
-  - sha: 9f670bbb42c30c9a2117c5a2cf924e49ba1d4d122cd673bdfbbca9fc031b9013
-    tag: 2.0.24
+  - sha: e5988c45f13ec9c9500e9fb6742e19de642a5bdc2750f2cc0482a857f13c30ea
+    tag: 2.7.35
 - name: amazon/aws-cli
   overrideRepoName: awscli-tar
   tags:
-  - sha: 9f670bbb42c30c9a2117c5a2cf924e49ba1d4d122cd673bdfbbca9fc031b9013
-    tag: 2.0.24
+  - sha: e5988c45f13ec9c9500e9fb6742e19de642a5bdc2750f2cc0482a857f13c30ea
+    tag: 2.7.35
     customImages:
     - tagSuffix: giantswarm
       dockerfileOptions:
