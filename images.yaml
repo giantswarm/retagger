@@ -2,8 +2,8 @@
   tags:
   - sha: 234cb88d3020898631af0ccbbcca9a66ae7306ecd30c9720690858c1b007d2a0
     tag: 3.14
-  - sha: 9b2a28eb47540823042a2ba401386845089bb7b62a9637d55816132c4c3c36eb
-    tag: 3.16.1
+  - sha: 1304f174557314a7ed9eddb4eab12fed12cb0cd9809e4c28f29af86979a3c870
+    tag: 3.16.2
     customImages:
     - tagSuffix: envsubst
       dockerfileOptions:
@@ -511,6 +511,8 @@
     tag: 1.17.8-alpine3.14
   - sha: 42d35674864fbb577594b60b84ddfba1be52b4d4298c961b46ba95e9fb4712e8
     tag: 1.18.1-alpine3.15
+  - sha: ca4f0513119dfbdc65ae7b76b69688f0723ed00d9ecf9de68abbf6ed01ef11bf
+    tag: 1.19.1-alpine3.16
 - name: golangci/golangci-lint
   tags:
   - sha: 05764fbd373c2b2c44186b0a98774b37499cbe71d41854def5487ead8b9861b5
