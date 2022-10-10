@@ -392,12 +392,12 @@
     tag: v3.9-thick-amd64
   - sha: ce4c3a421b0ca97540af911f34858bdd9b06fa5817ba7fa2b3bbb906f9237b46
     tag: v3.9-amd64
-- name: ghcr.io/kyverno/kyverno
-  patterns:
-  - pattern: '>= v1.3.4'
-- name: ghcr.io/kyverno/kyvernopre
-  patterns:
-  - pattern: '>= v1.3.4'
+# - name: ghcr.io/kyverno/kyverno
+#   patterns:
+#   - pattern: '>= v1.3.4'
+# - name: ghcr.io/kyverno/kyvernopre
+#   patterns:
+#   - pattern: '>= v1.3.4'
 # policy-reporter images
 - name: ghcr.io/kyverno/policy-reporter
   patterns:
