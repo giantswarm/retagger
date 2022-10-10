@@ -395,9 +395,9 @@
 # - name: ghcr.io/kyverno/kyverno
 #   patterns:
 #   - pattern: '>= v1.3.4'
-# - name: ghcr.io/kyverno/kyvernopre
-#   patterns:
-#   - pattern: '>= v1.3.4'
+- name: ghcr.io/kyverno/kyvernopre
+  patterns:
+  - pattern: '>= v1.7.0'
 # policy-reporter images
 - name: ghcr.io/kyverno/policy-reporter
   patterns:
