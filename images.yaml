@@ -167,6 +167,10 @@
   patterns:
   - pattern: '>= 2.11.4'
     filter: '^stable-(?P<version>.*)'
+- name: crossplane/crossplane
+  overrideRepoName: crossplane
+  patterns:
+  - pattern: '>= v1.9.1'
 - name: curlimages/curl
   patterns:
   - pattern: '>= 7.67.0'
