@@ -589,6 +589,8 @@
     tag: '2.8.1.3-alpine'
   - sha: 2dc8774cd71a4344963934c6ec51e88cb143feff47cdae81d29b20ec52b19f76
     tag: '2.8.1.4-alpine'
+  - sha: c25655e3ffb93d503fbb1ea117bec381de6910c9f31607d1f08bef2e4ab65320
+    tag: '2.8.2.0-alpine'
   - sha: f111f0e906abd5f4cffeb1e06ee2df46b165d34f45ed8d561468d37987baacbd
     tag: '3.0.0.0-alpine'
 - name: kong/kubernetes-ingress-controller
