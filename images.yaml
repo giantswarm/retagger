@@ -147,6 +147,11 @@
   patterns:
   - pattern: '>= 2.11.4'
     filter: '^stable-(?P<version>.*)'
+- name: cr.l5d.io/linkerd/metrics-api
+  overrideRepoName: linkerd-metrics-api
+  patterns:
+  - pattern: '>= 2.11.4'
+    filter: '^stable-(?P<version>.*)'
 - name: cr.l5d.io/linkerd/policy-controller
   overrideRepoName: linkerd2-policy-controller
   patterns:
