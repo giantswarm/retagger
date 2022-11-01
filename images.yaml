@@ -167,6 +167,11 @@
   patterns:
   - pattern: '>= 2.11.4'
     filter: '^stable-(?P<version>.*)'
+- name: cr.l5d.io/linkerd/tap
+  overrideRepoName: linkerd-tap
+  patterns:
+  - pattern: '>= 2.11.4'
+    filter: '^stable-(?P<version>.*)'
 - name: cr.l5d.io/linkerd/web
   overrideRepoName: linkerd2-web
   patterns:
