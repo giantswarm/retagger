@@ -688,8 +688,8 @@
   - pattern: '>= v2.0.0'
 - name: peaceiris/hugo
   tags:
-  - sha: c7ef83090082e0ba06f42126f5acfd9a785ae0deca3217b82862cab9be0978aa
-    tag: v0.93.3
+  - tag: v0.104.3
+    sha: 5d2d12f4780da9d43395e4f9958fb1f1c18ae8a1ea758c896115c5c504b3d1c6
 - name: projects.registry.vmware.com/vmware-cloud-director/cloud-director-named-disk-csi-driver
   overrideRepoName: csi-cloud-director
   tags:
