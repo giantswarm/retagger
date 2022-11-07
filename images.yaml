@@ -1193,6 +1193,11 @@
 - name: spvest/azure-keyvault-webhook
   patterns:
   - pattern: '>= 1.3.0'
+# Used in caicloud-event-exporter-app
+- name: caicloud/event-exporter
+  overrideRepoName: caicloud-event-exporter
+  patterns:
+  - pattern: '>= v1.0.0'
 # Used in prometheus-operator-app
 - name: squareup/ghostunnel
   patterns:
