@@ -277,6 +277,9 @@
 - name: falcosecurity/falco
   patterns:
   - pattern: '>= 0.28.0'
+- name: falcosecurity/falco-driver-loader
+  patterns:
+  - pattern: '>= 0.32.0'
 - name: falcosecurity/falco-exporter
   patterns:
   - pattern: '>= v0.5.0'
