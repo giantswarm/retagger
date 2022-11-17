@@ -5,7 +5,7 @@ version: 2.1
 jobs:
   validate:
     machine:
-      image: ubuntu-2004:202010-01
+      image: ubuntu-2004:2022.10.1
     steps:
       - checkout
 
@@ -20,7 +20,7 @@ jobs:
 
   copy:
     machine:
-      image: ubuntu-2004:202010-01
+      image: ubuntu-2004:2022.10.1
     steps:
       - checkout
       - persist_to_workspace:
@@ -30,7 +30,7 @@ jobs:
 
   unitTest:
     machine:
-      image: ubuntu-2004:202010-01
+      image: ubuntu-2004:2022.10.1
     steps:
       - checkout
       - run:
@@ -40,7 +40,7 @@ jobs:
 
   builde2e:
     machine:
-      image: ubuntu-2004:202010-01
+      image: ubuntu-2004:2022.10.1
     steps:
       - checkout
       - run:
@@ -49,7 +49,7 @@ jobs:
             docker run --rm -it \
             -v $PWD:/go/src/github.com/giantswarm/retagger \
             -w /go/src/github.com/giantswarm/retagger \
-            quay.io/giantswarm/golang:1.13.0 \
+            quay.io/giantswarm/golang:1.19.0 \
             go test -c -tags e2e ./integration/test/e2e
 
       - persist_to_workspace:
@@ -63,7 +63,7 @@ jobs:
       REGISTRY: "quay.io"
       REGISTRY_ORGANISATION: "giantswarm"
     machine:
-      image: ubuntu-2004:202010-01
+      image: ubuntu-2004:2022.10.1
     steps:
       - attach_workspace:
           at: .
@@ -83,7 +83,7 @@ jobs:
       REGISTRY: "quay.io"
       REGISTRY_ORGANISATION: "giantswarm"
     machine:
-      image: ubuntu-2004:202010-01
+      image: ubuntu-2004:2022.10.1
     steps:
       - attach_workspace:
           at: .
@@ -108,7 +108,7 @@ jobs:
       REGISTRY: "registry-intl.cn-shanghai.aliyuncs.com"
       REGISTRY_ORGANISATION: "giantswarm"
     machine:
-      image: ubuntu-2004:202010-01
+      image: ubuntu-2004:2022.10.1
     steps:
       - attach_workspace:
           at: .
