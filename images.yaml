@@ -420,12 +420,16 @@
     tag: v1.8.0
   - sha: 14c019a58a27355daea7b5e354a5f90e31e6affa18312dccbfc61d4779eb4591
     tag: v1.8.1
+  - sha: ddb6b2637e7e4f2eb638f89953c7011371a74c18d924fece3ae67471aef13363
+    tag: v1.8.2
 - name: ghcr.io/kyverno/kyvernopre
   tags:
   - sha: 94fd71f37158003f05e422056efeb475e2966cc8cdd980ec452caef3faf81eb8
     tag: v1.8.0
   - sha: af22790a7ba24bf48b4c1cea3bb3bac69dd83a2daa122248c3000d575e549949
     tag: v1.8.1
+  - sha: fcf6a5566835f0554e070d4a1ac62e2ea6263bffd34e855bd69a23aba8cc69a5
+    tag: v1.8.2
 # policy-reporter images
 - name: ghcr.io/kyverno/policy-reporter
   patterns:
