@@ -1232,6 +1232,18 @@
   tags:
   - sha: bb113953e19fff158de017c447be337aa7a3709c3223aeeab4a5bae50ee6f159
     tag: master-5b2a6e5
+- name: xpkg.upbound.io/crossplane-contrib/provider-aws
+  overrideRepoName: crossplane-provider-aws
+  patterns:
+  - pattern: '>= v0.33.0'
+- name: xpkg.upbound.io/crossplane-contrib/provider-azure
+  overrideRepoName: crossplane-provider-azure
+  patterns:
+  - pattern: '>= v0.20.1'
+- name: xpkg.upbound.io/crossplane-contrib/provider-gcp
+  overrideRepoName: crossplane-provider-gcp
+  patterns:
+  - pattern: '>= v0.22.0'
 - name: zricethezav/gitleaks
   tags:
   - sha: 548f474c56f6cbf94959f48e66ee99f9b63d949c9c657b105d1e4a3c0a66c985
