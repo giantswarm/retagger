@@ -133,7 +133,7 @@ For example, at the time of this writing:
 
 ### Execution
 
-Please provide a PR with the change. Once merged into master, CI will execute
+Please provide a PR with the change. Once merged into main, CI will execute
 `retagger` to push any new images.
 
 **Note**: To keep execution speedy, when adding a new version, please remove older versions (tags) that are no longer
@@ -148,7 +148,7 @@ used from the configuration.
 
 - In Quay, a repository must exist for the image before retagger can push an image.
 
-The `retagger` works inside a CI build. On merges to master, the binary is executed. The workflow is to add a new image
+The `retagger` works inside a CI build. On merges to main, the binary is executed. The workflow is to add a new image
 / sha tag pair or pattern in a PR, review it, and then merge. The `retagger` will take care that the image is handled.
 Users will still need to create repositories in the registry.
 
