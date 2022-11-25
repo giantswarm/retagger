@@ -995,10 +995,6 @@
   overrideRepoName: vpa-certgen-ci-images
   patterns:
   - pattern: '= v11-alpine'
-    customImages:
-    - tagSuffix: openssl
-      dockerfileOptions:
-      - RUN apk --update add openssl
 # Used in strimzi-kafka-operator-app
 - name: quay.io/strimzi/jmxtrans
   overrideRepoName: strimzi-jmxtrans
