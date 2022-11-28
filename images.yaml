@@ -643,9 +643,6 @@
   tags:
   - sha: 46ebe46d7d5284455b256c6d0ebaa396cd38b2618cd292e607c447ab5a833311
     tag: 'ciprod06112021'
-- name: mcr.microsoft.com/oss/kubernetes-csi/azurefile-csi
-  patterns:
-  - pattern: '>= v1.12.0'
 - name: mcr.microsoft.com/oss/azure/aad-pod-identity/mic
   patterns:
   - pattern: '>= 1.7.0'
@@ -653,6 +650,9 @@
   patterns:
   - pattern: '>= 1.7.0'
 - name: mcr.microsoft.com/oss/kubernetes-csi/azuredisk-csi
+  patterns:
+  - pattern: '>= v1.12.0'
+- name: mcr.microsoft.com/oss/kubernetes-csi/azurefile-csi
   patterns:
   - pattern: '>= v1.12.0'
 - name: mcr.microsoft.com/oss/kubernetes/azure-cloud-controller-manager
