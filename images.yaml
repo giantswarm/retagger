@@ -1216,6 +1216,10 @@
   tags:
   - sha: a3df22307c1eb5a7b470f980e0141e97fa98beeaaeb9932743604b121835f3c8
     tag: 5.2-22.04_beta
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - RUN sed -i 's/http_access deny CONNECT/#http_access deny CONNECT/g' /etc/squid/squid.conf
 # used by efk-stack-app
 - name: untergeek/curator
   overrideRepoName: elasticsearch-untergeek-curator
