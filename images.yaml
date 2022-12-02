@@ -996,7 +996,8 @@
 - name: quay.io/reactiveops/ci-images
   overrideRepoName: vpa-certgen-ci-images
   patterns:
-  - pattern: '= v11-alpine'
+  - pattern: '>= v11'
+    filter: '^(?P<version>.*)-alpine'
     customImages:
     - tagSuffix: openssl
       dockerfileOptions:
