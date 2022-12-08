@@ -276,13 +276,16 @@
 # falco-app images
 - name: falcosecurity/falco
   patterns:
-  - pattern: '>= 0.28.0'
+  - pattern: '>= 0.33.0'
 - name: falcosecurity/falco-driver-loader
   patterns:
   - pattern: '>= 0.32.0'
 - name: falcosecurity/falco-exporter
   patterns:
   - pattern: '>= v0.5.0'
+- name: falcosecurity/falco-no-driver
+  patterns:
+  - pattern: '>= 0.33.0'
 - name: falcosecurity/falcosidekick
   patterns:
   - pattern: '>= 2.22.0'
