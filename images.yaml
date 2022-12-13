@@ -403,6 +403,9 @@
   tags:
   - sha: 4bba1afcd3af85b550b42647e92b3fab36448c75e1af611a65644f77f4dde314
     tag: kubernetes-3-ca-certs
+- name: ghcr.io/external-secrets/external-secrets
+  patterns:
+  - pattern: '>= v0.7.0'
 - name: ghcr.io/inlets/inlets-operator
   tags:
   - sha: e60e6528ff10b650de8614bc1e30fd516dc559ab603f54d0dae2cd3b2d319884
