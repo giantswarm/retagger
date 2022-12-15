@@ -422,6 +422,23 @@
     tag: v3.9-thick-amd64
   - sha: ce4c3a421b0ca97540af911f34858bdd9b06fa5817ba7fa2b3bbb906f9237b46
     tag: v3.9-amd64
+#Kubeclarity images
+- name: ghcr.io/openclarity/kubeclarity
+  patterns:
+  - pattern: '>= v2.9.0'
+- name: ghcr.io/openclarity/kubeclarity-cis-docker-benchmark-scanner 
+  patterns:
+  - pattern: '>= v2.9.0'
+- name: ghcr.io/openclarity/kubeclarity-cli
+  patterns:
+  - pattern: '>= v2.9.0'
+- name: ghcr.io/openclarity/kubeclarity-runtime-k8s-scanner
+  patterns:
+  - pattern: '>= v2.9.0'
+- name: ghcr.io/openclarity/kubeclarity-sbom-db
+  patterns:
+  - pattern: '>= v2.9.0'
+#Kyverno images
 - name: ghcr.io/kyverno/kyverno
   tags:
   - sha: 86577d2e18c1b23b0cc9d76f1f2ee49fea429d4fa7dfbb91585e53ffb5b32dcb
