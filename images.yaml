@@ -639,6 +639,10 @@
     tag: '3.0.0.0-alpine'
   - sha: cc4808ce896d1d2e3fcedccb52a0d09adf9c90c88748eb4ac90db40ae42538ca
     tag: '3.0.1.0-alpine'
+  - sha: 6be8640d368927ff1cc6b08edaf5817bb0134f5644060b825debe329f4be8d5f
+    tag: '2.8.2.3-alpine'
+  - sha: 17ee621199bae5227567c14d451daac0b47fd3012224ba54c938d73e96ecce92
+    tag: '2.8.2.3-debian'
 - name: kong/kubernetes-ingress-controller
   overrideRepoName: kong-ingress-controller
   patterns:
