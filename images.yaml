@@ -220,6 +220,8 @@
   tags:
   - sha: 9f32478fdb19fb3a392999e7bc89cec54c2e74aa3313dc7667cdd750bb9b03e0
     tag: 13.6.0-debian-10-r52
+  - sha: c9d75b4521dbb75747d936504cb16031a087ae51755868c6b4e7fad0e2b8615d
+    tag: 15.1.0-debian-11-r20
 - name: docker.io/envoyproxy/envoy
   patterns:
   - pattern: '>= 1.18.4'
