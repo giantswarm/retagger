@@ -140,7 +140,7 @@ func (job *PatternJob) getExternalTagMatches(r *dockerRegistry.Registry, image s
 func (job *PatternJob) findTags(tags []string, c *semver.Constraints, m *regexp.Regexp) (matches []string) {
 	// Find tags matching our configured pattern.
 	for _, t := range tags {
-		job.logger.Log("level", "debug", "message", fmt.Sprintf("Checking external tag: %s ", t))
+		job.logger.Log("level", "debug", "message", fmt.Sprintf("Checking external tag: %s", t))
 
 		ts := filterAndExtract(t, m)
 		if ts == "" {
@@ -189,4 +189,20 @@ func PatternJobFromJobDefinition(jobDef *JobDefinition, r *Retagger) *PatternJob
 	}
 	job.Destination = GetDestinationForJob(job, r)
 	return job
+}
+
+func checkConflicts(jobs []SingleJob) error {
+	imageAndTagToSHA := make(map[string]string)
+
+	for _, job := range jobs {
+		imageAndTag := fmt.Sprintf("%s:%s", job.Destination.Image, job.Destination.Tag)
+
+		if otherJobSHA, ok := imageAndTagToSHA[imageAndTag]; ok && otherJobSHA != job.Source.SHA {
+			return fmt.Errorf("two jobs write to the same destination %s, but with different digest %s vs. %s", imageAndTag, otherJobSHA, job.Source.SHA)
+		}
+
+		imageAndTagToSHA[imageAndTag] = job.Source.SHA
+	}
+
+	return nil
 }

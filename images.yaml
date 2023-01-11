@@ -1097,6 +1097,20 @@
 - name: registry.k8s.io/cluster-proportional-autoscaler-amd64
   patterns:
   - pattern: '>= 1.6.0'
+
+# We have to ensure that etcd is available to CAPI clusters - we set
+# `clusterConfiguration.imageRepository=docker.io/giantswarm` (e.g. in cluster-aws:
+# https://github.com/giantswarm/cluster-aws/search?q=imageRepository%3A) and that means `kubeadm join` will use
+# the images from our Docker Hub repo. Kubernetes does not support tag suffixes, so we must publish images as
+# `docker.io/giantswarm/coredns:v1.10.0`. And those must not conflict with the `coreos/coreos` tags - since those
+# use a suffix, we're fine here.
+#
+# Once https://github.com/kubernetes/kubeadm/issues/2603 (kubeadm shouldn't pull the coredns image at all since
+# we skip the coredns addon and instead install it using our app platform) is fixed, we can remove this:
+- name: registry.k8s.io/coredns/coredns
+  patterns:
+  - pattern: '>= v1.8.0'
+
 - name: registry.k8s.io/descheduler/descheduler
   patterns:
   - pattern: '>= v0.20.0'
@@ -1108,6 +1122,16 @@
   - pattern: '>= v3.5.4-0'
     customImages:
     - tagSuffix: k8s
+
+    # There's also `quay.io/coreos/etcd` which is a different image (content and available binaries).
+    # `quay.io/coreos/etcd` has tags such as `v3.4.7`, while `registry.k8s.io/etcd` has tags such as `3.4.7-0`
+    # (but also `3.4.7` which could be the same content as `3.4.7-0`). We have to ensure that etcd is available to
+    # CAPI clusters - we set `clusterConfiguration.imageRepository=docker.io/giantswarm` (e.g. in cluster-aws:
+    # https://github.com/giantswarm/cluster-aws/search?q=imageRepository%3A) and that means `kubeadm join` will use
+    # the images from our Docker Hub repo. Kubernetes does not support suffixes such as the `-k8s` that we already had
+    # here, so we must publish images as `docker.io/giantswarm/etcd:3.5.6-0`. And those must not conflict with the
+    # `quay.io/coreos/etcd` tags. Since those have the `v` in front, we believe to be fine here.
+    - tagSuffix: ""
 - name: registry.k8s.io/external-dns/external-dns
   patterns:
   - pattern: '>= v0.10.1'
