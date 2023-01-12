@@ -221,10 +221,10 @@ func Test_checkConflicts(t *testing.T) {
 	}
 
 	for _, tc := range tcs {
-		err := checkConflicts(tc.jobs)
-		if err != nil && !tc.hasConflicts {
-			t.Errorf("Case %s: Expected case to show no conflicts, but got an error: %s", tc.description, err)
-		} else if err == nil && tc.hasConflicts {
+		errors := checkConflicts(tc.jobs)
+		if len(errors) > 0 && !tc.hasConflicts {
+			t.Errorf("Case %s: Expected case to show no conflicts, but got an error: %s", tc.description, errors[0])
+		} else if len(errors) == 0 && tc.hasConflicts {
 			t.Errorf("Case %s: Expected case to show conflicts, but got no error", tc.description)
 		}
 	}
