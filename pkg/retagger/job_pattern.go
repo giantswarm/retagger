@@ -191,18 +191,19 @@ func PatternJobFromJobDefinition(jobDef *JobDefinition, r *Retagger) *PatternJob
 	return job
 }
 
-func checkConflicts(jobs []SingleJob) error {
-	imageAndTagToSHA := make(map[string]string)
+func checkConflicts(jobs []SingleJob) []error {
+	imageAndTagToJob := make(map[string]SingleJob)
+	var errors []error
 
 	for _, job := range jobs {
 		imageAndTag := fmt.Sprintf("%s:%s", job.Destination.Image, job.Destination.Tag)
 
-		if otherJobSHA, ok := imageAndTagToSHA[imageAndTag]; ok && otherJobSHA != job.Source.SHA {
-			return fmt.Errorf("two jobs write to the same destination %s, but with different digest %s vs. %s", imageAndTag, otherJobSHA, job.Source.SHA)
+		if otherJob, ok := imageAndTagToJob[imageAndTag]; ok && otherJob.Source.SHA != job.Source.SHA {
+			errors = append(errors, fmt.Errorf("two jobs write to the same destination %s, but with different digest (%+v vs. %+v)", imageAndTag, otherJob, job))
 		}
 
-		imageAndTagToSHA[imageAndTag] = job.Source.SHA
+		imageAndTagToJob[imageAndTag] = job
 	}
 
-	return nil
+	return errors
 }
