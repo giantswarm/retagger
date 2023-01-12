@@ -101,3 +101,131 @@ func Test_findTags(t *testing.T) {
 		})
 	}
 }
+
+func Test_checkConflicts(t *testing.T) {
+	tcs := []struct {
+		description  string
+		hasConflicts bool
+		jobs         []SingleJob
+	}{
+		{
+			description:  "same digest, different destination tag suffix",
+			hasConflicts: false,
+			jobs: []SingleJob{
+				{
+					Source: Source{
+						SHA: "1111111111111111111111111111111111111111111111111111111111111111",
+					},
+					Destination: Destination{
+						Image: "mytool",
+						Tag:   "v1.0.0",
+					},
+				},
+				{
+					Source: Source{
+						SHA: "1111111111111111111111111111111111111111111111111111111111111111",
+					},
+					Destination: Destination{
+						Image: "mytool",
+						Tag:   "v1.0.0-mysuffix",
+					},
+				},
+			},
+		},
+
+		{
+			description:  "different digest, different destination tag",
+			hasConflicts: false,
+			jobs: []SingleJob{
+				{
+					Source: Source{
+						SHA: "1111111111111111111111111111111111111111111111111111111111111111",
+					},
+					Destination: Destination{
+						Image: "mytool",
+						Tag:   "v1.0.0",
+					},
+				},
+				{
+					Source: Source{
+						SHA: "2222222222222222222222222222222222222222222222222222222222222222",
+					},
+					Destination: Destination{
+						Image: "mytool",
+						Tag:   "v1.0.0-0",
+					},
+				},
+			},
+		},
+
+		{
+			description:  "real use case (positive)",
+			hasConflicts: false,
+			jobs: []SingleJob{
+				{
+					Source: Source{
+						// coreos image...
+						SHA: "1111111111111111111111111111111111111111111111111111111111111111",
+					},
+					Destination: Destination{
+						Image: "quay.io/giantswarm/etcd",
+						Tag:   "v3.5.6",
+					},
+				},
+				{
+					Source: Source{
+						// ...differs from Kubernetes image of etcd
+						SHA: "2222222222222222222222222222222222222222222222222222222222222222",
+					},
+					Destination: Destination{
+						Image: "quay.io/giantswarm/etcd",
+						Tag:   "3.5.6-0",
+					},
+				},
+				{
+					Source: Source{
+						SHA: "2222222222222222222222222222222222222222222222222222222222222222",
+					},
+					Destination: Destination{
+						Image: "quay.io/giantswarm/etcd",
+						Tag:   "3.5.6-0-k8s",
+					},
+				},
+			},
+		},
+
+		{
+			description:  "different digest, same destination tag",
+			hasConflicts: true,
+			jobs: []SingleJob{
+				{
+					Source: Source{
+						SHA: "1111111111111111111111111111111111111111111111111111111111111111",
+					},
+					Destination: Destination{
+						Image: "mytool",
+						Tag:   "v1.0.0",
+					},
+				},
+				{
+					Source: Source{
+						SHA: "2222222222222222222222222222222222222222222222222222222222222222",
+					},
+					Destination: Destination{
+						Image: "mytool",
+						Tag:   "v1.0.0",
+					},
+				},
+			},
+		},
+	}
+
+	for _, tc := range tcs {
+		err := checkConflicts(tc.jobs)
+		if err != nil && !tc.hasConflicts {
+			t.Errorf("Case %s: Expected case to show no conflicts, but got an error: %s", tc.description, err)
+		} else if err == nil && tc.hasConflicts {
+			t.Errorf("Case %s: Expected case to show conflicts, but got no error", tc.description)
+		}
+	}
+}

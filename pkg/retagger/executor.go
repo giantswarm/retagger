@@ -34,6 +34,10 @@ func (r *Retagger) ExecuteJobs() error {
 		r.logger.Log("level", "info", "message", "Retagger is in --dry-run mode. Listing jobs, but not running them.")
 	}
 
+	if err := checkConflicts(r.compiledJobs); err != nil {
+		return err
+	}
+
 	for _, j := range r.compiledJobs {
 		if r.dryrun {
 			r.logger.Log("level", "info", "message", fmt.Sprintf("Dry-Run: %s", j.Describe()))
