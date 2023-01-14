@@ -39,6 +39,9 @@
       - RUN apk add --no-cache ca-certificates
       - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
       - USER giantswarm
+- name: alpine/helm
+  patterns:
+  - pattern: '>= 3.9.3'
 - name: amazon/amazon-eks-pod-identity-webhook
   patterns:
   - pattern: '>= v0.3.0'
