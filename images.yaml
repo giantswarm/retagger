@@ -651,6 +651,8 @@
     tag: '3.1.0.0-debian'
   - sha: d666353114fb4947543d0f45e7bb5f5bf35502c5e16a9c0ee7611c5f778e6a04
     tag: '3.1.1.1-debian'
+  - sha: 684970a659b0dd3638701b89b0247b646ccfb7fc7ac16161e7843950aae20cb1
+    tag: '3.1.1.2-debian'
 - name: kong/kubernetes-ingress-controller
   overrideRepoName: kong-ingress-controller
   patterns:
