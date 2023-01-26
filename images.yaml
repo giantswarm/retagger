@@ -25,7 +25,7 @@
       - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
       - 'RUN apk add --no-cache sudo && echo "giantswarm  ALL = NOPASSWD: /sbin/sysctl" >> /etc/sudoers'
       - USER giantswarm
-    - tagSuffix: pyjaegertracing/jaeger-operatorthon3
+    - tagSuffix: python3
       dockerfileOptions:
       - RUN apk add --no-cache python3 py3-yaml
 - name: alpine/git
