@@ -592,9 +592,6 @@
   overrideRepoName: kind-node
   patterns:
   - pattern: '>= v1.16'
-- name: kiwigrid/k8s-sidecar
-  patterns:
-  - pattern: '>= 1.1.0'
 - name: koalaman/shellcheck-alpine
   tags:
   - sha: 7d4d712a2686da99d37580b4e2f45eb658b74e4b01caf67c1099adc294b96b52
