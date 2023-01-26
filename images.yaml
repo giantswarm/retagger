@@ -1284,14 +1284,6 @@
   overrideRepoName: crossplane-provider-aws
   patterns:
   - pattern: '>= v0.33.0'
-- name: xpkg.upbound.io/crossplane-contrib/provider-azure
-  overrideRepoName: crossplane-provider-azure
-  patterns:
-  - pattern: '>= v0.20.1'
-- name: xpkg.upbound.io/crossplane-contrib/provider-gcp
-  overrideRepoName: crossplane-provider-gcp
-  patterns:
-  - pattern: '>= v0.22.0'
 - name: xpkg.upbound.io/upbound/provider-aws
   overrideRepoName: upbound-provider-aws
   patterns:
