@@ -1284,14 +1284,22 @@
   overrideRepoName: crossplane-provider-aws
   patterns:
   - pattern: '>= v0.33.0'
-- name: xpkg.upbound.io/crossplane-contrib/provider-azure
-  overrideRepoName: crossplane-provider-azure
+- name: xpkg.upbound.io/upbound/provider-aws
+  overrideRepoName: upbound-provider-aws
   patterns:
-  - pattern: '>= v0.20.1'
-- name: xpkg.upbound.io/crossplane-contrib/provider-gcp
-  overrideRepoName: crossplane-provider-gcp
+  - pattern: '>= v0.27.0'
+- name: xpkg.upbound.io/upbound/provider-azure
+  overrideRepoName: upbound-provider-azure
   patterns:
-  - pattern: '>= v0.22.0'
+  - pattern: '>= v0.26.0'
+- name: xpkg.upbound.io/upbound/provider-gcp
+  overrideRepoName: upbound-provider-gcp
+  patterns:
+  - pattern: '>= v0.26.0'
+- name: xpkg.upbound.io/upbound/provider-terraform
+  overrideRepoName: upbound-provider-terraform
+  patterns:
+  - pattern: '>= v0.4.0'
 - name: zricethezav/gitleaks
   tags:
   - sha: 548f474c56f6cbf94959f48e66ee99f9b63d949c9c657b105d1e4a3c0a66c985
