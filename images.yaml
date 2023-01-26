@@ -446,16 +446,6 @@
     tag: v1.8.2
   - sha: 0447e825c733a887a27160c71ee93fc78273794c960153d9aaf987c8a3f92fd0
     tag: v1.8.4
-# policy-reporter images
-- name: ghcr.io/kyverno/policy-reporter
-  patterns:
-  - pattern: '>= 1.8.6'
-- name: ghcr.io/kyverno/policy-reporter-kyverno-plugin
-  patterns:
-  - pattern: '>= 0.3.2'
-- name: ghcr.io/kyverno/policy-reporter-ui
-  patterns:
-  - pattern: '>= 0.14.0'
 - name: ghcr.io/opsgenie/kubernetes-event-exporter
   comment: used for https://github.com/giantswarm/event-exporter-app
   patterns:
