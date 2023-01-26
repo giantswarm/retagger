@@ -1287,7 +1287,7 @@
 - name: xpkg.upbound.io/upbound/provider-aws
   overrideRepoName: upbound-provider-aws
   patterns:
-    - pattern: '>= v0.27.0'
+  - pattern: '>= v0.27.0'
 - name: xpkg.upbound.io/upbound/provider-azure
   overrideRepoName: upbound-provider-azure
   patterns:
