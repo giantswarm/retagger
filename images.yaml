@@ -880,19 +880,6 @@
 - name: quay.io/fairwinds/polaris
   patterns:
   - pattern: '>= 4.0'
-- name: quay.io/fluentd_elasticsearch/fluentd
-  comment: |
-    see https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/fluentd-elasticsearch/fluentd-es-ds.yaml
-    and it's used at https://github.com/giantswarm/fluentd-elasticsearch-app/
-  patterns:
-  - pattern: '>= v3.0.1'
-  tags:
-  - sha: e6d9906ec23867dd53ce0c42aa7f1a61672a2224f22170eee18804a5f37d4dfc
-    tag: v3.3.0
-    customImages:
-    - tagSuffix: for-opendistro
-      dockerfileOptions:
-      - RUN sed -i -e '80,85d' /usr/local/bundle/gems/elasticsearch-7.14.0/lib/elasticsearch.rb
 - name: quay.io/giantswarm/amazon-k8s-cni
   patterns:
   - pattern: '>= v1.6.0'
