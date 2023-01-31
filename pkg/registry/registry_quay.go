@@ -70,7 +70,7 @@ var nextLinkRE = regexp.MustCompile(`^ *<?([^;>]+)>? *(?:;[^;]*)*; *rel="?next"?
 // GetQuayTagsWithDetails fetches tags for the given image including extra information defined in a QuayTag
 // This uses the Quay API, so assumes a Quay host. Other hosts are likely to fail.
 func (r *Registry) GetQuayTagsWithDetails(image string) (tags []QuayTag, err error) {
-	if r.host == "registry-intl.cn-shanghai.aliyuncs.com" {
+	if r.host == "giantswarm-registry.cn-shanghai.cr.aliyuncs.com" {
 		// Get Aliyun tags instead
 		return r.GetAliyunTagsWithDetails(image)
 	}
