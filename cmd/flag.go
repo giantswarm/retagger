@@ -11,6 +11,7 @@ type flag struct {
 	AliyunRegion string
 	ConfigFile   string
 	Host         string
+	RegistryType string
 	Organization string
 	Username     string
 	Password     string
@@ -23,6 +24,7 @@ func (f *flag) Init(cmd *cobra.Command) {
 	cmd.Flags().StringVarP(&f.AliyunRegion, "aliyun-region", "", "", "region where registry is hosted (aliyun only)")
 	cmd.Flags().StringVarP(&f.ConfigFile, "file", "f", "images.yaml", "retagger config file to use")
 	cmd.Flags().StringVarP(&f.Host, "host", "r", "", "Registry hostname (e.g. quay.io)")
+	cmd.Flags().StringVarP(&f.RegistryType, "registry-type", "", "", "defines which registry product you are using. Values: quay, harbor, alibaba. Empty value defaults to quay")
 	cmd.Flags().StringVarP(&f.Organization, "organization", "o", "giantswarm", "organization to tag images for")
 	cmd.Flags().StringVarP(&f.Username, "username", "u", "", "username to authenticate against registry")
 	cmd.Flags().StringVarP(&f.Password, "password", "p", "", "password to authenticate against registry")

@@ -28,6 +28,7 @@ type Config struct {
 	AccessSecret string
 	AliyunRegion string
 	Host         string
+	RegistryType string
 	Organisation string
 	Password     string
 	Username     string
@@ -35,12 +36,21 @@ type Config struct {
 	Logger       micrologger.Logger
 }
 
+type RegistryType string
+
+const (
+	Alibaba RegistryType = "alibaba"
+	Quay                 = "quay"
+	Harbor               = "harbor"
+)
+
 type Registry struct {
 	registryClient *registry.Registry
 	logger         micrologger.Logger
 	docker         *dockerclient.Client
 
 	host         string
+	registryType RegistryType
 	organisation string
 	password     string
 	username     string
@@ -98,6 +108,7 @@ func New(config Config) (*Registry, error) {
 		accessSecret: config.AccessSecret,
 		aliyunRegion: config.AliyunRegion,
 		host:         config.Host,
+		registryType: RegistryType(config.RegistryType),
 		organisation: config.Organisation,
 		password:     config.Password,
 		username:     config.Username,

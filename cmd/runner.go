@@ -57,6 +57,7 @@ func (r *runner) run(ctx context.Context, cmd *cobra.Command, args []string) err
 			AccessSecret: r.flag.AccessSecret,
 			AliyunRegion: r.flag.AliyunRegion,
 			Host:         r.flag.Host,
+			RegistryType: r.flag.RegistryType,
 			Organisation: r.flag.Organization,
 			Password:     r.flag.Password,
 			Username:     r.flag.Username,
