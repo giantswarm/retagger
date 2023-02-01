@@ -186,10 +186,12 @@
   patterns:
   - pattern: '>= 2.11.4'
     filter: '^stable-(?P<version>.*)'
-- name: crossplane/crossplane
-  overrideRepoName: crossplane
-  patterns:
-  - pattern: '>= v1.9.1'
+# Momentarily disable due failing OCI index
+# Seeh ttps://gigantic.slack.com/archives/C3C7ZQXC1/p1674735852349169
+# - name: crossplane/crossplane
+#   overrideRepoName: crossplane
+#   patterns:
+#   - pattern: '>= v1.9.1'
 - name: curlimages/curl
   patterns:
   - pattern: '>= 7.67.0'
@@ -348,10 +350,12 @@
   overrideRepoName: fluxcd-notification-controller
   patterns:
   - pattern: '>= v0.18.0'
-- name: fluxcd/source-controller
-  overrideRepoName: fluxcd-source-controller
-  patterns:
-  - pattern: '>= v0.17.0'
+# Momentarily disable due failing OCI index
+# Seeh ttps://gigantic.slack.com/archives/C3C7ZQXC1/p1674735852349169
+# - name: fluxcd/source-controller
+#   overrideRepoName: fluxcd-source-controller
+#   patterns:
+#   - pattern: '>= v0.17.0'
 - name: gcr.io/cadvisor/cadvisor
   patterns:
   - pattern: '>= v0.44.0'
