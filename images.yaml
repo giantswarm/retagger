@@ -330,22 +330,26 @@
         COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/firehose.so /fluent-bit/firehose.so
         COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/cloudwatch.so /fluent-bit/cloudwatch.so
         CMD ["/fluent-bit/bin/fluent-bit", "-e", "/fluent-bit/firehose.so", "-e", "/fluent-bit/cloudwatch.so", "-e", "/fluent-bit/kinesis.so", "-c", "/fluent-bit/etc/fluent-bit.conf"]
-- name: fluxcd/helm-controller
-  overrideRepoName: fluxcd-helm-controller
-  patterns:
-  - pattern: '>= v0.12.0'
+# Momentarily disable due failing OCI index
+# Seeh ttps://gigantic.slack.com/archives/C3C7ZQXC1/p1674735852349169
+# - name: fluxcd/helm-controller
+#   overrideRepoName: fluxcd-helm-controller
+#   patterns:
+#   - pattern: '>= v0.12.0'
 - name: fluxcd/image-automation-controller
   overrideRepoName: fluxcd-image-automation-controller
   patterns:
   - pattern: '>= v0.16.0'
-- name: fluxcd/image-reflector-controller
-  overrideRepoName: fluxcd-image-reflector-controller
-  patterns:
-  - pattern: '>= v0.13.0'
-- name: fluxcd/kustomize-controller
-  overrideRepoName: fluxcd-kustomize-controller
-  patterns:
-  - pattern: '>= v0.16.0'
+# Momentarily disable due failing OCI index
+# Seeh ttps://gigantic.slack.com/archives/C3C7ZQXC1/p1674735852349169
+# - name: fluxcd/image-reflector-controller
+#   overrideRepoName: fluxcd-image-reflector-controller
+#   patterns:
+#   - pattern: '>= v0.13.0'
+# - name: fluxcd/kustomize-controller
+#   overrideRepoName: fluxcd-kustomize-controller
+#   patterns:
+#   - pattern: '>= v0.16.0'
 - name: fluxcd/notification-controller
   overrideRepoName: fluxcd-notification-controller
   patterns:
