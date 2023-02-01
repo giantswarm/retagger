@@ -2,6 +2,7 @@ package registry
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	nurl "net/url"
@@ -70,9 +71,20 @@ var nextLinkRE = regexp.MustCompile(`^ *<?([^;>]+)>? *(?:;[^;]*)*; *rel="?next"?
 // GetQuayTagsWithDetails fetches tags for the given image including extra information defined in a QuayTag
 // This uses the Quay API, so assumes a Quay host. Other hosts are likely to fail.
 func (r *Registry) GetQuayTagsWithDetails(image string) (tags []QuayTag, err error) {
-	if r.host == "registry-intl.cn-shanghai.aliyuncs.com" {
+	quayHost := "quay.io"
+	alibabaHost := "registry-intl.cn-shanghai.aliyuncs.com"
+
+	if r.registryType == Harbor {
+		return r.GetHarborTagsWithDetails(image)
+	}
+
+	if r.host == alibabaHost || r.registryType == Alibaba {
 		// Get Aliyun tags instead
 		return r.GetAliyunTagsWithDetails(image)
+	}
+
+	if r.host != quayHost {
+		return nil, errors.New(fmt.Sprintf("Supported registries are %s, %s and harbor private registries", quayHost, alibabaHost))
 	}
 
 	url := fmt.Sprintf("https://%s/api/v1/repository/%s/tag/", r.host, images.Name(r.organisation, image))
