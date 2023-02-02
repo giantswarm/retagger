@@ -27,7 +27,7 @@ So, for example:
 will become
 
     quay.io/giantswarm/bar:first-version
-    registry-intl.cn-shanghai.aliyuncs.com/giantswarm/bar:first-version
+    giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm/bar:first-version
 
 Images can be defined using their SHA or using a tag pattern.
 
