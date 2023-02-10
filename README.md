@@ -34,7 +34,6 @@ skopeo version 1.11.1-dev
 
 > **Important:** Make sure Golang versions in the Dockerfile match. Just in case.
 
-- **CircleCI runner**, also Golang version  - update `cimg/go` version in the [Dockerfile](/Dockerfile).
+- **CircleCI runner**, also Golang version  - update `GOLANG_VERSION` version in the [Dockerfile](/Dockerfile).
 - **Skopeo** - update `skopeo` [subtree](/skopeo). You might want to update
-               `skopeo-builder`'s Golang version to match [the upstream](https://github.com/containers/skopeo/blob/main/go.mod#L3)
-               as well.
+               `GOLANG_VERSION` as well to match [the upstream](https://github.com/containers/skopeo/blob/main/go.mod#L3).
