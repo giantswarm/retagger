@@ -13,7 +13,7 @@ Your best bet is building a docker container using the `Dockerfile` contained in
 ```
 docker build -t retagger:latest .
 ```
-The Dockerfile uses a Golang container to build a static binary of skopeo
+The Dockerfile uses a Golang container to build a static binary of `skopeo`
 (following [this doc](https://github.com/containers/skopeo/blob/main/install.md#building-a-static-binary)).
 Then it copies the binary to a `cimg/go`-based container, which is an official
 CircleCI's runner with Golang installed. The resulting image is used in the
