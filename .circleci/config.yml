@@ -57,6 +57,7 @@ jobs:
       - run:
           name: Push Docker image
           command: |
+            echo "Pushing tag '<<parameters.tag>>' to <<parameters.registry>>..."
             docker push "<<parameters.registry>>/giantswarm/retagger:<<parameters.tag>>"
 
 workflows:
