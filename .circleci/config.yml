@@ -1,192 +1,234 @@
-orbs:
-  architect: giantswarm/architect@4.24.0
-
 version: 2.1
+orbs:
+  architect: giantswarm/architect@4.27.0
+
 jobs:
   validate:
     machine:
-      image: ubuntu-2004:2022.10.1
+      image: ubuntu-2004:current
     steps:
       - checkout
-
       - run:
           name: Validate YAML
           command: |
-            docker run --rm -ti \
-            -v $PWD:/workdir \
-            giantswarm/yamllint \
-            -d '{extends: default, rules: {line-length: {max: 200}, document-start: disable, indentation: {spaces: 0}}}' \
-            images.yaml
-
-  copy:
-    machine:
-      image: ubuntu-2004:2022.10.1
-    steps:
-      - checkout
-      - persist_to_workspace:
-          root: .
-          paths:
-            - ./images.yaml
-
-  unitTest:
-    machine:
-      image: ubuntu-2004:2022.10.1
-    steps:
-      - checkout
-      - run:
-          name: unit test
-          command: |
-            go test -v ./...
-
-  builde2e:
-    machine:
-      image: ubuntu-2004:2022.10.1
-    steps:
-      - checkout
-      - run:
-          name: compile e2e test
-          command: |
             docker run --rm -it \
-            -v $PWD:/go/src/github.com/giantswarm/retagger \
-            -w /go/src/github.com/giantswarm/retagger \
-            quay.io/giantswarm/golang:1.19.0 \
-            go test -c -tags e2e ./integration/test/e2e
-
-      - persist_to_workspace:
-          root: .
-          paths:
-            - ./e2e.test
-            - ./images-e2e.yaml
-
-  e2eQuay:
-    environment:
-      REGISTRY: "quay.io"
-      REGISTRY_ORGANISATION: "giantswarm"
-    machine:
-      image: ubuntu-2004:2022.10.1
-    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Set registry credentials
-          command: |
-            echo 'export REGISTRY_USERNAME=${QUAY_USERNAME}' >> $BASH_ENV
-            echo 'export REGISTRY_PASSWORD=${QUAY_PASSWORD}' >> $BASH_ENV
-            source $BASH_ENV
-      - run:
-          name: Run e2e test
-          command: |
-            ./e2e.test -test.run ".*E2e.*" -test.v
-
-  retagQuay:
-    environment:
-      REGISTRY: "quay.io"
-      REGISTRY_ORGANISATION: "giantswarm"
-    machine:
-      image: ubuntu-2004:2022.10.1
-    steps:
-      - attach_workspace:
-          at: .
-
-      - run:
-          name: Set registry credentials
-          command: |
-            echo 'export REGISTRY_USERNAME=${QUAY_USERNAME}' >> $BASH_ENV
-            echo 'export REGISTRY_PASSWORD=${QUAY_PASSWORD}' >> $BASH_ENV
-            source $BASH_ENV
-
-      - run:
-          name: Execute retagger
-          command: ./retagger -r ${REGISTRY} -o ${REGISTRY_ORGANISATION} -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD} > /tmp/quay.log
-
-      - store_artifacts:
-          path: /tmp/quay.log
-          destination: quay.log
-
-  retagAliyun:
-    environment:
-      REGISTRY: "registry-intl.cn-shanghai.aliyuncs.com"
-      REGISTRY_ORGANISATION: "giantswarm"
-    machine:
-      image: ubuntu-2004:2022.10.1
-    steps:
-      - attach_workspace:
-          at: .
-
-      - run:
-          name: Set registry credentials
-          command: |
-            echo 'export REGISTRY_USERNAME=${ALIYUN_USERNAME}' >> $BASH_ENV
-            echo 'export REGISTRY_PASSWORD=${ALIYUN_PASSWORD}' >> $BASH_ENV
-            source $BASH_ENV
-
-      - run:
-          name: Execute retagger
-          command: ./retagger -r ${REGISTRY} -o ${REGISTRY_ORGANISATION} -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD} --access-key ${ALIYUN_ACCESS_KEY} --access-secret ${ALIYUN_ACCESS_SECRET} --aliyun-region ${ALIYUN_REGION} > /tmp/aliyun.log
-
-      - store_artifacts:
-          path: /tmp/aliyun.log
-          destination: aliyun.log
-
-build_and_retag: &build_and_retag
-  jobs:
-    - validate
-    - unitTest:
-        filters:
-          branches:
-            ignore: main
-    - builde2e:
-        filters:
-          branches:
-            ignore: main
-        requires:
-          - validate
-    - architect/go-build:
-        context: architect
-        name: go-build
-        binary: retagger
-        requires:
-          - validate
-          - unitTest
-    - e2eQuay:
-        filters:
-          branches:
-            ignore: main
-        requires:
-          - builde2e
-          - go-build
-    - copy:
-        filters:
-          branches:
-            only: main
-        requires:
-          - validate
-    - retagQuay:
-        filters:
-          branches:
-            only: main
-        requires:
-          - copy
-          - go-build
-    - retagAliyun:
-        filters:
-          branches:
-            only: main
-        requires:
-          - copy
-          - go-build
+             -v $PWD:/workdir \
+             giantswarm/yamllint \
+             -d '{extends: default, rules: {line-length: {max: 200}, document-start: disable, indentation: {spaces: 0}}}' \
+             images.yaml
 
 workflows:
-  version: 2
-  build_retag:
-    <<: *build_and_retag
-
-  # Runs nightly at 21:30 UTC (22:30 Berlin)
-  build_retag_nightly:
-    triggers:
-      - schedule:
-          cron: "30 21 * * *"
+  build_and_push_runner_image:
+    jobs:
+      - validate:
+          name: validate-images-yaml
+      - architect/go-build:
+          context: architect
+          name: go-build
+          binary: retagger
+          requires:
+            - validate
           filters:
-            branches:
-              only: main
-    <<: *build_and_retag
+            tags:
+              only: /^v.*/
+      - architect/push-to-docker:
+          context: architect
+          name: push-retagger-to-quay
+          image: "quay.io/giantswarm/retagger"
+          username_envar: "QUAY_USERNAME"
+          password_envar: "QUAY_PASSWORD"
+          requires:
+            - go-build
+          filters:
+            tags:
+              only: /^v.*/
+
+
+# jobs:
+#   validate:
+#     machine:
+#       image: ubuntu-2004:2022.10.1
+#     steps:
+#       - checkout
+#
+#       - run:
+#           name: Validate YAML
+#           command: |
+#             docker run --rm -ti \
+#             -v $PWD:/workdir \
+#             giantswarm/yamllint \
+#             -d '{extends: default, rules: {line-length: {max: 200}, document-start: disable, indentation: {spaces: 0}}}' \
+#             images.yaml
+#
+#   copy:
+#     machine:
+#       image: ubuntu-2004:2022.10.1
+#     steps:
+#       - checkout
+#       - persist_to_workspace:
+#           root: .
+#           paths:
+#             - ./images.yaml
+#
+#   unitTest:
+#     machine:
+#       image: ubuntu-2004:2022.10.1
+#     steps:
+#       - checkout
+#       - run:
+#           name: unit test
+#           command: |
+#             go test -v ./...
+#
+#   builde2e:
+#     machine:
+#       image: ubuntu-2004:2022.10.1
+#     steps:
+#       - checkout
+#       - run:
+#           name: compile e2e test
+#           command: |
+#             docker run --rm -it \
+#             -v $PWD:/go/src/github.com/giantswarm/retagger \
+#             -w /go/src/github.com/giantswarm/retagger \
+#             quay.io/giantswarm/golang:1.19.0 \
+#             go test -c -tags e2e ./integration/test/e2e
+#
+#       - persist_to_workspace:
+#           root: .
+#           paths:
+#             - ./e2e.test
+#             - ./images-e2e.yaml
+#
+#   e2eQuay:
+#     environment:
+#       REGISTRY: "quay.io"
+#       REGISTRY_ORGANISATION: "giantswarm"
+#     machine:
+#       image: ubuntu-2004:2022.10.1
+#     steps:
+#       - attach_workspace:
+#           at: .
+#       - run:
+#           name: Set registry credentials
+#           command: |
+#             echo 'export REGISTRY_USERNAME=${QUAY_USERNAME}' >> $BASH_ENV
+#             echo 'export REGISTRY_PASSWORD=${QUAY_PASSWORD}' >> $BASH_ENV
+#             source $BASH_ENV
+#       - run:
+#           name: Run e2e test
+#           command: |
+#             ./e2e.test -test.run ".*E2e.*" -test.v
+#
+#   retagQuay:
+#     environment:
+#       REGISTRY: "quay.io"
+#       REGISTRY_ORGANISATION: "giantswarm"
+#     machine:
+#       image: ubuntu-2004:2022.10.1
+#     steps:
+#       - attach_workspace:
+#           at: .
+#
+#       - run:
+#           name: Set registry credentials
+#           command: |
+#             echo 'export REGISTRY_USERNAME=${QUAY_USERNAME}' >> $BASH_ENV
+#             echo 'export REGISTRY_PASSWORD=${QUAY_PASSWORD}' >> $BASH_ENV
+#             source $BASH_ENV
+#
+#       - run:
+#           name: Execute retagger
+#           command: ./retagger -r ${REGISTRY} -o ${REGISTRY_ORGANISATION} -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD} > /tmp/quay.log
+#
+#       - store_artifacts:
+#           path: /tmp/quay.log
+#           destination: quay.log
+#
+#   retagAliyun:
+#     environment:
+#       REGISTRY: "registry-intl.cn-shanghai.aliyuncs.com"
+#       REGISTRY_ORGANISATION: "giantswarm"
+#     machine:
+#       image: ubuntu-2004:2022.10.1
+#     steps:
+#       - attach_workspace:
+#           at: .
+#
+#       - run:
+#           name: Set registry credentials
+#           command: |
+#             echo 'export REGISTRY_USERNAME=${ALIYUN_USERNAME}' >> $BASH_ENV
+#             echo 'export REGISTRY_PASSWORD=${ALIYUN_PASSWORD}' >> $BASH_ENV
+#             source $BASH_ENV
+#
+#       - run:
+#           name: Execute retagger
+#           command: ./retagger -r ${REGISTRY} -o ${REGISTRY_ORGANISATION} -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD} --access-key ${ALIYUN_ACCESS_KEY} --access-secret ${ALIYUN_ACCESS_SECRET} --aliyun-region ${ALIYUN_REGION} > /tmp/aliyun.log
+#
+#       - store_artifacts:
+#           path: /tmp/aliyun.log
+#           destination: aliyun.log
+#
+# build_and_retag: &build_and_retag
+#   jobs:
+#     - validate
+#     - unitTest:
+#         filters:
+#           branches:
+#             ignore: main
+#     - builde2e:
+#         filters:
+#           branches:
+#             ignore: main
+#         requires:
+#           - validate
+#     - architect/go-build:
+#         context: architect
+#         name: go-build
+#         binary: retagger
+#         requires:
+#           - validate
+#           - unitTest
+#     - e2eQuay:
+#         filters:
+#           branches:
+#             ignore: main
+#         requires:
+#           - builde2e
+#           - go-build
+#     - copy:
+#         filters:
+#           branches:
+#             only: main
+#         requires:
+#           - validate
+#     - retagQuay:
+#         filters:
+#           branches:
+#             only: main
+#         requires:
+#           - copy
+#           - go-build
+#     - retagAliyun:
+#         filters:
+#           branches:
+#             only: main
+#         requires:
+#           - copy
+#           - go-build
+#
+# workflows:
+#   version: 2
+#   build_retag:
+#     <<: *build_and_retag
+#
+#   # Runs nightly at 21:30 UTC (22:30 Berlin)
+#   build_retag_nightly:
+#     triggers:
+#       - schedule:
+#           cron: "30 21 * * *"
+#           filters:
+#             branches:
+#               only: main
+#     <<: *build_and_retag
