@@ -1,6 +1,6 @@
 ARG GOLANG_VERSION=1.18
 
-FROM golang:${GOLANG_VERSION} AS skopeo-builder
+FROM cimg/go:${GOLANG_VERSION} AS skopeo-builder
 COPY skopeo /skopeo
 WORKDIR /skopeo
 ENV CGO_ENABLED=0
