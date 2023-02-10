@@ -78,7 +78,7 @@ workflows:
           username: ${QUAY_USERNAME}
           password: ${QUAY_PASSWORD}
           registry: "quay.io"
-          tag: ${CIRCLE_TAG}
+          tag: ${CIRCLE_TAG:-$CIRCLE_SHA1}
           requires:
             - build-go
 
