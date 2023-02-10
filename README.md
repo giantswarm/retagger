@@ -14,7 +14,7 @@
 - Rebuild `images.yaml` for `skopeo`
 - Build custom Dockerfiles for modified images (parameterized with `${TAG/SHA}`)
 - Add a custom bit of Go code to:
-  - use skopeo to sniff out all the tags/SHAs
+  - use skopeo to sniff out all the tags/SHAs: `skopeo inspect --raw docker://ghcr.io/kyverno/kyverno:v1.8.1 | jq`
   - rebuild the images using custom Dockerfiles
   - sync built images to registries
 
