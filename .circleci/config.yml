@@ -27,7 +27,7 @@ workflows:
           name: go-build
           binary: retagger
           requires:
-            - validate
+            - validate-images-yaml
           filters:
             tags:
               only: /^v.*/
