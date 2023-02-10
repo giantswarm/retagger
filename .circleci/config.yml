@@ -16,32 +16,71 @@ jobs:
              giantswarm/yamllint \
              -d '{extends: default, rules: {line-length: {max: 200}, document-start: disable, indentation: {spaces: 0}}}' \
              images.yaml
+  build-go:
+    machine:
+      image: ubuntu-2004:current
+    steps:
+      - checkout
+      - run:
+          name: Build Golang binary
+          command: |
+            CGO_ENABLED=0 GOOS=linux go build -ldflags "$(cat .ldflags)" -o retagger .
+      - persist_to_workspace:
+          root: .
+          paths:
+            - retagger
+
+  build-and-push-docker:
+    machine:
+      image: ubuntu-2004:current
+    parameters:
+      username:
+        type: string
+      password:
+        type: string
+      registry:
+        type: string
+      tag:
+        type: string
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build Docker image
+          command: |
+            docker build -t "<<parameters.registry>>/giantswarm/retagger:<<parameters.tag>>" .
+      - run:
+          name: Authenticate to Docker registry
+          command: |
+            docker login -u "<<parameters.username>>" -p "<<parameters.password>>" "<<parameters.registry>>"
+      - run:
+          name: Push Docker image
+          command: |
+            docker push "<<parameters.registry>>/giantswarm/retagger:<<parameters.tag>>"
 
 workflows:
   build_and_push_runner_image:
     jobs:
       - validate:
           name: validate-images-yaml
-      - architect/go-build:
+      - build-go:
           context: architect
-          name: go-build
-          binary: retagger
+          name: build-go
           requires:
             - validate-images-yaml
           filters:
             tags:
               only: /^v.*/
-      - architect/push-to-docker:
+      - build-and-push-docker:
           context: architect
-          name: push-retagger-to-quay
-          image: "quay.io/giantswarm/retagger"
-          username_envar: "QUAY_USERNAME"
-          password_envar: "QUAY_PASSWORD"
+          name: build-and-push-docker
+          username: ${QUAY_USERNAME}
+          password: ${QUAY_PASSWORD}
+          registry: "quay.io"
+          tag: ${CIRCLE_TAG}
           requires:
-            - go-build
-          filters:
-            tags:
-              only: /^v.*/
+            - build-go
 
 
 # jobs:

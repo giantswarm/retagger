@@ -12,8 +12,8 @@ FROM quay.io/skopeo/stable:v1 AS skopeo-upstream
 FROM cimg/go:${GOLANG_VERSION}
 USER root
 COPY --from=skopeo-upstream /etc/containers/* /etc/containers/
-RUN ls /etc/containers/
 COPY --from=skopeo-upstream /usr/share/containers/* /usr/share/containers/
 COPY --from=skopeo-upstream /var/lib/containers/* /var/lib/containers/
 COPY --from=skopeo-builder /skopeo/bin/skopeo /usr/bin/
+COPY retagger retagger
 USER circleci
