@@ -105,7 +105,7 @@ jobs:
 
   retagAliyun:
     environment:
-      REGISTRY: "registry-intl.cn-shanghai.aliyuncs.com"
+      REGISTRY: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com"
       REGISTRY_ORGANISATION: "giantswarm"
     machine:
       image: ubuntu-2004:2022.10.1
@@ -134,11 +134,11 @@ build_and_retag: &build_and_retag
     - unitTest:
         filters:
           branches:
-            ignore: master
+            ignore: main
     - builde2e:
         filters:
           branches:
-            ignore: master
+            ignore: main
         requires:
           - validate
     - architect/go-build:
@@ -151,27 +151,27 @@ build_and_retag: &build_and_retag
     - e2eQuay:
         filters:
           branches:
-            ignore: master
+            ignore: main
         requires:
           - builde2e
           - go-build
     - copy:
         filters:
           branches:
-            only: master
+            only: main
         requires:
           - validate
     - retagQuay:
         filters:
           branches:
-            only: master
+            only: main
         requires:
           - copy
           - go-build
     - retagAliyun:
         filters:
           branches:
-            only: master
+            only: main
         requires:
           - copy
           - go-build
@@ -188,5 +188,5 @@ workflows:
           cron: "30 21 * * *"
           filters:
             branches:
-              only: master
+              only: main
     <<: *build_and_retag

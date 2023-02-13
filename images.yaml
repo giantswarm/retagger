@@ -39,6 +39,10 @@
       - RUN apk add --no-cache ca-certificates
       - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
       - USER giantswarm
+- name: alpine/helm
+  overrideRepoName: alpine-helm
+  patterns:
+  - pattern: '>= 3.9.3'
 - name: amazon/amazon-eks-pod-identity-webhook
   patterns:
   - pattern: '>= v0.3.0'
@@ -185,10 +189,12 @@
   patterns:
   - pattern: '>= 2.11.4'
     filter: '^stable-(?P<version>.*)'
-- name: crossplane/crossplane
-  overrideRepoName: crossplane
-  patterns:
-  - pattern: '>= v1.9.1'
+# Momentarily disable due failing OCI index
+# Seeh ttps://gigantic.slack.com/archives/C3C7ZQXC1/p1674735852349169
+# - name: crossplane/crossplane
+#   overrideRepoName: crossplane
+#   patterns:
+#   - pattern: '>= v1.9.1'
 - name: curlimages/curl
   patterns:
   - pattern: '>= 7.67.0'
@@ -223,6 +229,8 @@
   tags:
   - sha: 9f32478fdb19fb3a392999e7bc89cec54c2e74aa3313dc7667cdd750bb9b03e0
     tag: 13.6.0-debian-10-r52
+  - sha: c9d75b4521dbb75747d936504cb16031a087ae51755868c6b4e7fad0e2b8615d
+    tag: 15.1.0-debian-11-r20
 - name: docker.io/envoyproxy/envoy
   patterns:
   - pattern: '>= 1.18.4'
@@ -279,13 +287,16 @@
 # falco-app images
 - name: falcosecurity/falco
   patterns:
-  - pattern: '>= 0.28.0'
+  - pattern: '>= 0.33.0'
 - name: falcosecurity/falco-driver-loader
   patterns:
   - pattern: '>= 0.32.0'
 - name: falcosecurity/falco-exporter
   patterns:
   - pattern: '>= v0.5.0'
+- name: falcosecurity/falco-no-driver
+  patterns:
+  - pattern: '>= 0.33.0'
 - name: falcosecurity/falcosidekick
   patterns:
   - pattern: '>= 2.22.0'
@@ -322,30 +333,36 @@
         COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/firehose.so /fluent-bit/firehose.so
         COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/cloudwatch.so /fluent-bit/cloudwatch.so
         CMD ["/fluent-bit/bin/fluent-bit", "-e", "/fluent-bit/firehose.so", "-e", "/fluent-bit/cloudwatch.so", "-e", "/fluent-bit/kinesis.so", "-c", "/fluent-bit/etc/fluent-bit.conf"]
-- name: fluxcd/helm-controller
-  overrideRepoName: fluxcd-helm-controller
-  patterns:
-  - pattern: '>= v0.12.0'
+# Momentarily disable due failing OCI index
+# Seeh ttps://gigantic.slack.com/archives/C3C7ZQXC1/p1674735852349169
+# - name: fluxcd/helm-controller
+#   overrideRepoName: fluxcd-helm-controller
+#   patterns:
+#   - pattern: '>= v0.12.0'
 - name: fluxcd/image-automation-controller
   overrideRepoName: fluxcd-image-automation-controller
   patterns:
   - pattern: '>= v0.16.0'
-- name: fluxcd/image-reflector-controller
-  overrideRepoName: fluxcd-image-reflector-controller
-  patterns:
-  - pattern: '>= v0.13.0'
-- name: fluxcd/kustomize-controller
-  overrideRepoName: fluxcd-kustomize-controller
-  patterns:
-  - pattern: '>= v0.16.0'
+# Momentarily disable due failing OCI index
+# Seeh ttps://gigantic.slack.com/archives/C3C7ZQXC1/p1674735852349169
+# - name: fluxcd/image-reflector-controller
+#   overrideRepoName: fluxcd-image-reflector-controller
+#   patterns:
+#   - pattern: '>= v0.13.0'
+# - name: fluxcd/kustomize-controller
+#   overrideRepoName: fluxcd-kustomize-controller
+#   patterns:
+#   - pattern: '>= v0.16.0'
 - name: fluxcd/notification-controller
   overrideRepoName: fluxcd-notification-controller
   patterns:
   - pattern: '>= v0.18.0'
-- name: fluxcd/source-controller
-  overrideRepoName: fluxcd-source-controller
-  patterns:
-  - pattern: '>= v0.17.0'
+# Momentarily disable due failing OCI index
+# Seeh ttps://gigantic.slack.com/archives/C3C7ZQXC1/p1674735852349169
+# - name: fluxcd/source-controller
+#   overrideRepoName: fluxcd-source-controller
+#   patterns:
+#   - pattern: '>= v0.17.0'
 - name: gcr.io/cadvisor/cadvisor
   patterns:
   - pattern: '>= v0.44.0'
@@ -403,6 +420,9 @@
   tags:
   - sha: 4bba1afcd3af85b550b42647e92b3fab36448c75e1af611a65644f77f4dde314
     tag: kubernetes-3-ca-certs
+- name: ghcr.io/external-secrets/external-secrets
+  patterns:
+  - pattern: '>= v0.7.0'
 - name: ghcr.io/inlets/inlets-operator
   tags:
   - sha: e60e6528ff10b650de8614bc1e30fd516dc559ab603f54d0dae2cd3b2d319884
@@ -419,30 +439,27 @@
     tag: v3.9-amd64
 - name: ghcr.io/kyverno/kyverno
   tags:
-  - sha: 86577d2e18c1b23b0cc9d76f1f2ee49fea429d4fa7dfbb91585e53ffb5b32dcb
-    tag: v1.8.0
-  - sha: 14c019a58a27355daea7b5e354a5f90e31e6affa18312dccbfc61d4779eb4591
-    tag: v1.8.1
-  - sha: ddb6b2637e7e4f2eb638f89953c7011371a74c18d924fece3ae67471aef13363
-    tag: v1.8.2
+  - sha: 0b65e9f07df7073bf055339fea2c3f42ad799b7cc350314e469dcd9809140911
+    tag: v1.8.4
+  - sha: 99b5ada2cd047e99377c45b2a9a363890bc631301a2b53f1ee07308e123d39d6
+    tag: v1.9.0
 - name: ghcr.io/kyverno/kyvernopre
   tags:
-  - sha: 94fd71f37158003f05e422056efeb475e2966cc8cdd980ec452caef3faf81eb8
-    tag: v1.8.0
-  - sha: af22790a7ba24bf48b4c1cea3bb3bac69dd83a2daa122248c3000d575e549949
-    tag: v1.8.1
-  - sha: fcf6a5566835f0554e070d4a1ac62e2ea6263bffd34e855bd69a23aba8cc69a5
-    tag: v1.8.2
-# policy-reporter images
+  - sha: 0447e825c733a887a27160c71ee93fc78273794c960153d9aaf987c8a3f92fd0
+    tag: v1.8.4
+  - sha: c0afa540192d3c5bcd62234ef558bafa01df98859c8230dc51b1c70835cfc9cc
+    tag: v1.9.0
 - name: ghcr.io/kyverno/policy-reporter
-  patterns:
-  - pattern: '>= 1.8.6'
+  tags:
+  - sha: 6babf7ebfe5d2c4395cceba14c1b5e31b39fa3e5a7e6416e1defbf0c25ec7b6a
+    tag: '2.12.0'
 - name: ghcr.io/kyverno/policy-reporter-kyverno-plugin
   patterns:
   - pattern: '>= 0.3.2'
 - name: ghcr.io/kyverno/policy-reporter-ui
-  patterns:
-  - pattern: '>= 0.14.0'
+  tags:
+  - sha: 6085d283ac401a1ef8d70682af855054c77bc8611ca66ada137f7f37b9ca9076
+    tag: '1.7.2'
 - name: ghcr.io/opsgenie/kubernetes-event-exporter
   comment: used for https://github.com/giantswarm/event-exporter-app
   patterns:
@@ -537,9 +554,6 @@
   overrideRepoName: jaeger-all-in-one
   patterns:
   - pattern: '>= 1.17.0'
-- name: jaegertracing/jaeger-operator
-  patterns:
-  - pattern: '>= 1.17.0'
 # Used in prometheus-operator-app
 - name: jettech/kube-webhook-certgen
   patterns:
@@ -592,9 +606,6 @@
   overrideRepoName: kind-node
   patterns:
   - pattern: '>= v1.16'
-- name: kiwigrid/k8s-sidecar
-  patterns:
-  - pattern: '>= 1.1.0'
 - name: koalaman/shellcheck-alpine
   tags:
   - sha: 7d4d712a2686da99d37580b4e2f45eb658b74e4b01caf67c1099adc294b96b52
@@ -622,10 +633,26 @@
     tag: '2.8.1.4-alpine'
   - sha: c25655e3ffb93d503fbb1ea117bec381de6910c9f31607d1f08bef2e4ab65320
     tag: '2.8.2.0-alpine'
+  - sha: 3148c18d95b30a931455ffefb4d391e50a545b48c97afc51792a989b74242c1b
+    tag: '2.8.2.1-alpine'
+  - sha: 3e3808c20a50305ac148d187a3bc6c7ee3a0b7e67b6de732d84cbc901e2ad92f
+    tag: '2.8.2.2-alpine'
   - sha: f111f0e906abd5f4cffeb1e06ee2df46b165d34f45ed8d561468d37987baacbd
     tag: '3.0.0.0-alpine'
   - sha: cc4808ce896d1d2e3fcedccb52a0d09adf9c90c88748eb4ac90db40ae42538ca
     tag: '3.0.1.0-alpine'
+  - sha: 6be8640d368927ff1cc6b08edaf5817bb0134f5644060b825debe329f4be8d5f
+    tag: '2.8.2.3-alpine'
+  - sha: 17ee621199bae5227567c14d451daac0b47fd3012224ba54c938d73e96ecce92
+    tag: '2.8.2.3-debian'
+  - sha: ad345462fe02a5acec549ad0e6d6f56d1e479ca41f5fcdb5366f971bb8bdfa9f
+    tag: '3.1.0.0-debian'
+  - sha: d666353114fb4947543d0f45e7bb5f5bf35502c5e16a9c0ee7611c5f778e6a04
+    tag: '3.1.1.1-debian'
+  - sha: 684970a659b0dd3638701b89b0247b646ccfb7fc7ac16161e7843950aae20cb1
+    tag: '3.1.1.2-debian'
+  - sha: 63548882c75f719d32120ef3817950b0791ea58504edf7304490a4de4ee5ff64
+    tag: '3.1.1.3-debian'
 - name: kong/kubernetes-ingress-controller
   overrideRepoName: kong-ingress-controller
   patterns:
@@ -646,9 +673,6 @@
   tags:
   - sha: 46ebe46d7d5284455b256c6d0ebaa396cd38b2618cd292e607c447ab5a833311
     tag: 'ciprod06112021'
-- name: mcr.microsoft.com/k8s/csi/azurefile-csi
-  patterns:
-  - pattern: '>= v1.12.0'
 - name: mcr.microsoft.com/oss/azure/aad-pod-identity/mic
   patterns:
   - pattern: '>= 1.7.0'
@@ -656,6 +680,9 @@
   patterns:
   - pattern: '>= 1.7.0'
 - name: mcr.microsoft.com/oss/kubernetes-csi/azuredisk-csi
+  patterns:
+  - pattern: '>= v1.12.0'
+- name: mcr.microsoft.com/oss/kubernetes-csi/azurefile-csi
   patterns:
   - pattern: '>= v1.12.0'
 - name: mcr.microsoft.com/oss/kubernetes/azure-cloud-controller-manager
@@ -681,10 +708,8 @@
     sha: 2452715dd322b3273419652b7721b64aa60305f606ef7a674ae28b6f12d155a3
 - name: nginxinc/nginx-unprivileged
   tags:
-  - sha: 0fd172200e9ef7d3187cf526b24567027992ffce8a34cc9d5ac0d18deb974d33
-    tag: 1.21-alpine
-  - sha: 40231e6ef8fad3135da641da12ec265806de11925e75c4f10c0f7369958673f9
-    tag: 1.22-alpine
+  - sha: bea513e7cca17da4fd24733bbb21c5693c305bda75d40ccddb77717a56a5fb4b
+    tag: 1.23-alpine
 - name: ns1labs/flame
   tags:
   - sha: a86c25be95c8e568b2e604a6958e6e0899a2c7f870c9cee4728662ec4899a317
@@ -712,9 +737,8 @@
     sha: e281f711687e29a4c94ab2de12096a5d020515941d2d935ca1ee8f10b575c3e7
 - name: projects.registry.vmware.com/vmware-cloud-director/cloud-provider-for-cloud-director
   overrideRepoName: cpi-cloud-director
-  tags:
-  - tag: 1.1.1.latest
-    sha: 027502f234b7e1153d5c1e13b6efb8eadb75c821da114f3ea85767869d2c8736
+  patterns:
+  - pattern: '>= 1.2.0'
 - name: prom/cloudwatch-exporter
   tags:
   - sha: 7ce6d17ad3360ed5d5dddc57ebf13dc7d676900c40a22b3144a8a17af352c399
@@ -872,19 +896,6 @@
 - name: quay.io/fairwinds/polaris
   patterns:
   - pattern: '>= 4.0'
-- name: quay.io/fluentd_elasticsearch/fluentd
-  comment: |
-    see https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/fluentd-elasticsearch/fluentd-es-ds.yaml
-    and it's used at https://github.com/giantswarm/fluentd-elasticsearch-app/
-  patterns:
-  - pattern: '>= v3.0.1'
-  tags:
-  - sha: e6d9906ec23867dd53ce0c42aa7f1a61672a2224f22170eee18804a5f37d4dfc
-    tag: v3.3.0
-    customImages:
-    - tagSuffix: for-opendistro
-      dockerfileOptions:
-      - RUN sed -i -e '80,85d' /usr/local/bundle/gems/elasticsearch-7.14.0/lib/elasticsearch.rb
 - name: quay.io/giantswarm/amazon-k8s-cni
   patterns:
   - pattern: '>= v1.6.0'
@@ -953,6 +964,7 @@
   tags:
   - sha: d8da0790760c279d961e63aa711fac3fd6a3db237eccea3c8a21239dca64805c
     tag: v0.9.0
+# node-exporter-app < 1.14.0 relies on custom node-exporter images
 - name: quay.io/prometheus/node-exporter
   tags:
   - sha: fc004c4a3d1096d5a0f144b1093daa9257a573ce1fde5a9b8511e59a7080a1bb
@@ -990,6 +1002,10 @@
       - USER root
       - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
       - USER giantswarm
+# node-exporter-app >= 1.14.0 just uses vanilla images
+- name: quay.io/prometheus/node-exporter
+  patterns:
+  - pattern: '>= v1.3.0'
 - name: quay.io/pusher/oauth2_proxy
   tags:
   - sha: 1fad3f247a8edeceead03230d833fcb4c3935a3a57b83787690f15f7daa6b59b
@@ -997,8 +1013,12 @@
 - name: quay.io/reactiveops/ci-images
   overrideRepoName: vpa-certgen-ci-images
   patterns:
-  - pattern: '= v11-alpine'
-
+  - pattern: '>= v11'
+    filter: '^(?P<version>.*)-alpine'
+    customImages:
+    - tagSuffix: openssl
+      dockerfileOptions:
+      - RUN apk add --no-cache openssl
 # Used in strimzi-kafka-operator-app
 - name: quay.io/strimzi/jmxtrans
   overrideRepoName: strimzi-jmxtrans
@@ -1075,6 +1095,20 @@
 - name: registry.k8s.io/cluster-proportional-autoscaler-amd64
   patterns:
   - pattern: '>= 1.6.0'
+
+# We have to ensure that etcd is available to CAPI clusters - we set
+# `clusterConfiguration.imageRepository=docker.io/giantswarm` (e.g. in cluster-aws:
+# https://github.com/giantswarm/cluster-aws/search?q=imageRepository%3A) and that means `kubeadm join` will use
+# the images from our Docker Hub repo. Kubernetes does not support tag suffixes, so we must publish images as
+# `docker.io/giantswarm/coredns:v1.10.0`. And those must not conflict with the `coreos/coreos` tags - since those
+# use a suffix, we're fine here.
+#
+# Once https://github.com/kubernetes/kubeadm/issues/2603 (kubeadm shouldn't pull the coredns image at all since
+# we skip the coredns addon and instead install it using our app platform) is fixed, we can remove this:
+- name: registry.k8s.io/coredns/coredns
+  patterns:
+  - pattern: '>= v1.8.0'
+
 - name: registry.k8s.io/descheduler/descheduler
   patterns:
   - pattern: '>= v0.20.0'
@@ -1086,6 +1120,16 @@
   - pattern: '>= v3.5.4-0'
     customImages:
     - tagSuffix: k8s
+
+    # There's also `quay.io/coreos/etcd` which is a different image (content and available binaries).
+    # `quay.io/coreos/etcd` has tags such as `v3.4.7`, while `registry.k8s.io/etcd` has tags such as `3.4.7-0`
+    # (but also `3.4.7` which could be the same content as `3.4.7-0`). We have to ensure that etcd is available to
+    # CAPI clusters - we set `clusterConfiguration.imageRepository=docker.io/giantswarm` (e.g. in cluster-aws:
+    # https://github.com/giantswarm/cluster-aws/search?q=imageRepository%3A) and that means `kubeadm join` will use
+    # the images from our Docker Hub repo. Kubernetes does not support suffixes such as the `-k8s` that we already had
+    # here, so we must publish images as `docker.io/giantswarm/etcd:3.5.6-0`. And those must not conflict with the
+    # `quay.io/coreos/etcd` tags. Since those have the `v` in front, we believe to be fine here.
+    - tagSuffix: ""
 - name: registry.k8s.io/external-dns/external-dns
   patterns:
   - pattern: '>= v0.10.1'
@@ -1220,6 +1264,10 @@
   tags:
   - sha: a3df22307c1eb5a7b470f980e0141e97fa98beeaaeb9932743604b121835f3c8
     tag: 5.2-22.04_beta
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - RUN sed -i 's/http_access deny CONNECT/#http_access deny CONNECT/g' /etc/squid/squid.conf
 # used by efk-stack-app
 - name: untergeek/curator
   overrideRepoName: elasticsearch-untergeek-curator
@@ -1235,6 +1283,26 @@
   tags:
   - sha: bb113953e19fff158de017c447be337aa7a3709c3223aeeab4a5bae50ee6f159
     tag: master-5b2a6e5
+- name: xpkg.upbound.io/crossplane-contrib/provider-aws
+  overrideRepoName: crossplane-provider-aws
+  patterns:
+  - pattern: '>= v0.33.0'
+- name: xpkg.upbound.io/upbound/provider-aws
+  overrideRepoName: upbound-provider-aws
+  patterns:
+  - pattern: '>= v0.27.0'
+- name: xpkg.upbound.io/upbound/provider-azure
+  overrideRepoName: upbound-provider-azure
+  patterns:
+  - pattern: '>= v0.26.0'
+- name: xpkg.upbound.io/upbound/provider-gcp
+  overrideRepoName: upbound-provider-gcp
+  patterns:
+  - pattern: '>= v0.26.0'
+- name: xpkg.upbound.io/upbound/provider-terraform
+  overrideRepoName: upbound-provider-terraform
+  patterns:
+  - pattern: '>= v0.4.0'
 - name: zricethezav/gitleaks
   tags:
   - sha: 548f474c56f6cbf94959f48e66ee99f9b63d949c9c657b105d1e4a3c0a66c985

@@ -34,6 +34,16 @@ func (r *Retagger) ExecuteJobs() error {
 		r.logger.Log("level", "info", "message", "Retagger is in --dry-run mode. Listing jobs, but not running them.")
 	}
 
+	if conflictErrors := checkConflicts(r.compiledJobs); len(conflictErrors) > 0 {
+		// These are warnings since we already had lots of conflicts on purpose in our configuration.
+		// For example, if we choose a fixed SHA for `alpine:3.14` and the upstream tag `3.14` gets updated to a
+		// newer image, it's a conflict and we don't want to fail for such normal use cases.
+		for _, conflictError := range conflictErrors {
+			r.logger.Log("level", "warn", "message", fmt.Sprintf("Found conflict: %s", conflictError))
+
+		}
+	}
+
 	for _, j := range r.compiledJobs {
 		if r.dryrun {
 			r.logger.Log("level", "info", "message", fmt.Sprintf("Dry-Run: %s", j.Describe()))
