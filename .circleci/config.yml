@@ -15,7 +15,7 @@ jobs:
              -v $PWD:/workdir \
              giantswarm/yamllint \
              -d '{extends: default, rules: {line-length: {max: 200}, document-start: disable, indentation: {spaces: 0}}}' \
-             images.yaml
+             images*.yaml
   build-go:
     machine:
       image: ubuntu-2004:current
