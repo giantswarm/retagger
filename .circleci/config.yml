@@ -16,6 +16,10 @@ jobs:
              giantswarm/yamllint \
              -c .yamllint \
              images*.yaml
+      - persist_to_workspace:
+          root: .
+          paths:
+            - "images*.yaml"
   build-go:
     machine:
       image: ubuntu-2004:current
@@ -73,7 +77,6 @@ jobs:
       images_file:
         type: string
     steps:
-      - checkout
       - attach_workspace:
           at: .
       - run:
