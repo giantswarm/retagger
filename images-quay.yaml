@@ -1,18 +1,5 @@
-# DOCS: https://github.com/containers/skopeo/blob/main/docs/skopeo-sync.1.md
-# CMD: >
-# docker run --rm -it -v "$(pwd)/skopeo-images.yaml:/home/circleci/project/skopeo-images.yaml" retagger-test:x \
-# skopeo sync --src yaml --dest docker --dest-creds=(cat ~/.docker/config.json | yq -r '.auths."quay.io".auth' | base64 -d) \
-# --append-suffix=kuba skopeo-images.yaml quay.io/giantswarm/
-
-# REMEMBER!!!!!!!!: use `--all` flag to sync SHAs for all platforms and the manifest as well
-#
-# REMEMBER!!!!!!!!: use `--keep-going` to continue syncing despite single failures!
 docker.io:
   images:
     busybox:
       - "1.35"
   images-by-tag-regex: {}
-    # busybox: "^1.3[345]{1}$"
-  # credentials:
-  #   username: ""
-  #   password: ""
