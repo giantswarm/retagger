@@ -94,9 +94,8 @@
   patterns:
   - pattern: '>= 5'
 - name: bats/bats
-  tags:
-  - sha: acd28536088c346bc81f1a01d0c4c166d2a244f86ecaa486d92d6edfbf5bd258
-    tag: 1.9.0
+  patterns:
+  - pattern: '>= 1.2.1'
 - name: bitnami/kubectl
   patterns:
   - pattern: '>= 1.16'
