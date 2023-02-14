@@ -62,7 +62,7 @@ jobs:
 
   retag-registry:
     docker:
-      - image: quay.io/giantswarm/retagger:latest
+      - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
     parameters:
       username:
         type: string
