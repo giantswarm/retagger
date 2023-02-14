@@ -60,35 +60,35 @@ jobs:
             echo "Pushing tag '<<parameters.tag>>' to <<parameters.registry>>..."
             docker push "<<parameters.registry>>/giantswarm/retagger:<<parameters.tag>>"
 
-    retag-registry:
-      docker:
-        image: quay.io/giantswarm/retagger:latest
-      parameters:
-        username:
-          type: string
-        password:
-          type: string
-        registry:
-          type: string
-        images_file:
-          type: string
-      steps:
-        - checkout
-        - attach_workspace:
-            at: .
-        - run:
-            name: Log in to Docker registry
-            command: |
-              skopeo login -u "<<parameters.username>>" -p "<<parameters.password>>" "<<parameters.registry>>"
-        - run:
-            name: Retag images
-            command: |
-              skopeo sync --all --keep-going --src yaml --dest docker \
-                --append-suffix=kuba \
-                "<<parameters.images_file>>" "<<parameters.registry>>/giantswarm" > /tmp/skopeo.log
-        - store_artifacts:
-            path: /tmp/skopeo.log
-            destination: "<<parameters.registry>>.log"
+  retag-registry:
+    docker:
+      image: quay.io/giantswarm/retagger:latest
+    parameters:
+      username:
+        type: string
+      password:
+        type: string
+      registry:
+        type: string
+      images_file:
+        type: string
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Log in to Docker registry
+          command: |
+            skopeo login -u "<<parameters.username>>" -p "<<parameters.password>>" "<<parameters.registry>>"
+      - run:
+          name: Retag images
+          command: |
+            skopeo sync --all --keep-going --src yaml --dest docker \
+              --append-suffix=kuba \
+              "<<parameters.images_file>>" "<<parameters.registry>>/giantswarm" > /tmp/skopeo.log
+      - store_artifacts:
+          path: /tmp/skopeo.log
+          destination: "<<parameters.registry>>.log"
 
 
 # Define 'build_and_retag' workflow steps, so we can reuse it.
