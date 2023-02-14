@@ -60,28 +60,94 @@ jobs:
             echo "Pushing tag '<<parameters.tag>>' to <<parameters.registry>>..."
             docker push "<<parameters.registry>>/giantswarm/retagger:<<parameters.tag>>"
 
+    retag-registry:
+      docker:
+        image: quay.io/giantswarm/retagger:latest
+      parameters:
+        username:
+          type: string
+        password:
+          type: string
+        registry:
+          type: string
+        images_file:
+          type: string
+      steps:
+        - checkout
+        - attach_workspace:
+            at: .
+        - run:
+            name: Log in to Docker registry
+            command: |
+              skopeo login -u "<<parameters.username>>" -p "<<parameters.password>>" "<<parameters.registry>>"
+        - run:
+            name: Retag images
+            command: |
+              skopeo sync --all --keep-going --src yaml --dest docker \
+                --append-suffix=kuba \
+                "<<parameters.images_file>>" "<<parameters.registry>>/giantswarm" > /tmp/skopeo.log
+        - store_artifacts:
+            path: /tmp/skopeo.log
+            destination: "<<parameters.registry>>.log"
+
+
+# Define 'build_and_retag' workflow steps, so we can reuse it.
+build_and_retag:
+  jobs:
+    - validate:
+        name: validate-images-yaml
+    - build-go:
+        context: architect
+        name: build-go
+        requires:
+          - validate-images-yaml
+        filters:
+          tags:
+            only: /^v.*/
+    - build-and-push-docker:
+        context: architect
+        name: build-and-push-docker
+        username: ${QUAY_USERNAME}
+        password: ${QUAY_PASSWORD}
+        registry: "quay.io"
+        tag: ${CIRCLE_TAG:-$CIRCLE_SHA1}
+        requires:
+          - build-go
+    - retag-registry:
+        context: architect
+        name: retag-quay
+        username: ${QUAY_USERNAME}
+        password: ${QUAY_PASSWORD}
+        registry: "quay.io"
+        images_file: images-quay.yaml
+        requires:
+          - build-and-push-docker
+    - retag-registry:
+        context: architect
+        name: retag-aliyun
+        username: ${ALIYUN_USERNAME}
+        password: ${ALIYUN_PASSWORD}
+        registry: "registry-intl.cn-shanghai.aliyuncs.com"
+        images_file: images-aliyun.yaml
+        requires:
+          - build-and-push-docker
+
 workflows:
-  build_and_push_runner_image:
-    jobs:
-      - validate:
-          name: validate-images-yaml
-      - build-go:
-          context: architect
-          name: build-go
-          requires:
-            - validate-images-yaml
+  version: 2
+  build_retag:
+    <<: *build_and_retag
+
+  # Runs nightly at 21:30 UTC (22:30 Berlin)
+  build_retag_nightly:
+    triggers:
+      - schedule:
+          cron: "30 21 * * *"
           filters:
-            tags:
-              only: /^v.*/
-      - build-and-push-docker:
-          context: architect
-          name: build-and-push-docker
-          username: ${QUAY_USERNAME}
-          password: ${QUAY_PASSWORD}
-          registry: "quay.io"
-          tag: ${CIRCLE_TAG:-$CIRCLE_SHA1}
-          requires:
-            - build-go
+            branches:
+              only: main
+    <<: *build_and_retag
+
+
 
 
 # jobs:
