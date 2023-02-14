@@ -64,11 +64,8 @@
       dockerfileOptions:
       - RUN yum -y install tar
 - name: amazon/aws-efs-csi-driver
-  tags:
-  - sha: 1ce58290da18394e87c6439cc382758e7be18be7af3f6025ce48f08f81249b02
-    tag: v1.5.0
-  - sha: d8371846dbd792aaae1d476cdab9bf849f7566e6220585f5cf1af4aca2331b80
-    tag: v1.5.1
+  patterns:
+  - pattern: '>= 1.0.0'
 - name: amazon/opendistro-for-elasticsearch
   patterns:
   - pattern: '>= 1.3.0'
