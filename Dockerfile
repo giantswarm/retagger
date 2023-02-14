@@ -15,5 +15,7 @@ COPY --from=skopeo-upstream /etc/containers/* /etc/containers/
 COPY --from=skopeo-upstream /usr/share/containers/* /usr/share/containers/
 COPY --from=skopeo-upstream /var/lib/containers/* /var/lib/containers/
 COPY --from=skopeo-builder /skopeo/bin/skopeo /usr/bin/
+RUN mkdir -p /run/containers && \
+    chown -R circleci:circleci /run/containers
 COPY retagger retagger
 USER circleci
