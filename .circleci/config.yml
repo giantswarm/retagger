@@ -92,7 +92,7 @@ jobs:
 
 
 # Define 'build_and_retag' workflow steps, so we can reuse it.
-build_and_retag:
+build_and_retag: &build_and_retag
   jobs:
     - validate:
         name: validate-images-yaml
