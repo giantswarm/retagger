@@ -130,7 +130,7 @@ build_and_retag: &build_and_retag
         name: retag-aliyun
         username: ${ALIYUN_USERNAME}
         password: ${ALIYUN_PASSWORD}
-        registry: "registry-intl.cn-shanghai.aliyuncs.com"
+        registry: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com"
         images_file: images-aliyun.yaml
         requires:
           - build-and-push-docker
