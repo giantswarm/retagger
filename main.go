@@ -18,6 +18,7 @@ var (
 
 const (
 	defaultPlatform = "linux/amd64"
+	dockerTransport = "docker://"
 )
 
 type DockerBuildx struct {
@@ -61,6 +62,15 @@ type Dockerfile struct {
 	TagPattern     string `yaml:"tag_pattern"`
 	DockerfilePath string `yaml:"dockerfile_path"`
 	AddTagSuffix   string `yaml:"add_tag_suffix,omitempty"`
+}
+
+func (d *Dockerfile) BuildAndTag() error {
+	// (code) Check if dockerfile_path exists
+	// (code) List tags and find the ones that match
+	// (code) Prepare temporary dockerfile by generating 'FROM X:Y, buildplatform' and appending dockerfile_path
+	// (docker buildx binary) Rebuild image with temporary dockerfile for each tag
+	// (skopeo binary) Push the images to QUAY and ALIYUN
+	return nil
 }
 
 func NewDockerBuildx() (*DockerBuildx, error) {
