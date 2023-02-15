@@ -15,11 +15,12 @@ jobs:
              -v $PWD:/workdir \
              giantswarm/yamllint \
              -c .yamllint \
-             images*.yaml
+             *.yaml
       - persist_to_workspace:
           root: .
           paths:
-            - "images*.yaml"
+            - "*.yaml"
+            - "customized-dockerfiles"
   build-go:
     machine:
       image: ubuntu-2004:current

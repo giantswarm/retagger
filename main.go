@@ -3,19 +3,26 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"os"
 	"os/exec"
 	"regexp"
 	"strings"
 
 	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v3"
 )
 
 var (
 	platformListPattern = regexp.MustCompile(`\w+\s+\w+\s+\w+\s+(.*)`) // name/node driver/endpoint status (platforms)
 )
 
+const (
+	defaultPlatform = "linux/amd64"
+)
+
 type DockerBuildx struct {
 	supportedPlatforms map[string]Platform
+	customDockerfiles  map[string]Dockerfile
 }
 
 type Platform struct {
@@ -31,6 +38,13 @@ func (p Platform) String() string {
 	return fmt.Sprintf("%s/%s/%s", p.System, p.Architecture, p.Variant)
 }
 
+func (p Platform) ArchitectureAndVariant() string {
+	if p.Variant == "" {
+		return p.Architecture
+	}
+	return fmt.Sprintf("%s/%s", p.Architecture, p.Variant)
+}
+
 func NewPlatform(name string) Platform {
 	p := Platform{}
 	elems := strings.Split(name, "/")
@@ -42,6 +56,13 @@ func NewPlatform(name string) Platform {
 	return p
 }
 
+type Dockerfile struct {
+	Image          string `yaml:"image"`
+	TagPattern     string `yaml:"tag_pattern"`
+	DockerfilePath string `yaml:"dockerfile_path"`
+	AddTagSuffix   string `yaml:"add_tag_suffix,omitempty"`
+}
+
 func NewDockerBuildx() (*DockerBuildx, error) {
 	stdout := &bytes.Buffer{}
 	stderr := &bytes.Buffer{}
@@ -51,31 +72,50 @@ func NewDockerBuildx() (*DockerBuildx, error) {
 	if err := c.Run(); err != nil {
 		return nil, fmt.Errorf("error running %q: %w\nstderr:\n%s", c.String(), err, stderr.String())
 	}
-	// extract supported platforms
-	// Example:
-	// NAME/NODE DRIVER/ENDPOINT STATUS  PLATFORMS
-	// default * docker
-	//   default default         running linux/amd64, linux/386, linux/arm64, linux/riscv64, linux/ppc64le, linux/s390x, linux/arm/v7, linux/arm/v6
-	matches := platformListPattern.FindAllStringSubmatch(stdout.String(), -1)
-	if matches == nil || len(matches) < 2 {
-		return nil, fmt.Errorf("could not extract supported platforms using 'docker buildx ls'")
-	}
 	dbx := &DockerBuildx{
 		supportedPlatforms: map[string]Platform{},
+		customDockerfiles:  map[string]Dockerfile{},
 	}
-	platformStrings := strings.Split(matches[1][1], ", ")
-	for _, platformString := range platformStrings {
-		dbx.supportedPlatforms[platformString] = NewPlatform(platformString)
+	// extract supported platforms
+	{
+		// Example:
+		// NAME/NODE DRIVER/ENDPOINT STATUS  PLATFORMS
+		// default * docker
+		//   default default         running linux/amd64, linux/386, linux/arm64, linux/riscv64, linux/ppc64le, linux/s390x, linux/arm/v7, linux/arm/v6
+		matches := platformListPattern.FindAllStringSubmatch(stdout.String(), -1)
+		if matches == nil || len(matches) < 2 {
+			return nil, fmt.Errorf("could not extract supported platforms using 'docker buildx ls'")
+		}
+		platformStrings := strings.Split(matches[1][1], ", ")
+		for _, platformString := range platformStrings {
+			dbx.supportedPlatforms[platformString] = NewPlatform(platformString)
+		}
 	}
-	fmt.Printf("%+v", dbx.supportedPlatforms)
+	// load custom dockerfile specs
+	{
+		b, err := os.ReadFile("customized-dockerfiles.yaml")
+		if err != nil {
+			return nil, fmt.Errorf("error reading customized-dockerfiles.yaml: %w", err)
+		}
+		dockerfiles := []Dockerfile{}
+		if err := yaml.Unmarshal(b, &dockerfiles); err != nil {
+			return nil, fmt.Errorf("error unmarshaling customized-dockerfiles.yaml: %w", err)
+		}
+		for _, df := range dockerfiles {
+			dbx.customDockerfiles[df.DockerfilePath] = df
+		}
+	}
+
 	return dbx, nil
 }
 
 func main() {
 	l := logrus.New()
 	l.Warnf("hello")
-	_, err := NewDockerBuildx()
+	dbx, err := NewDockerBuildx()
 	if err != nil {
 		l.Fatal(err)
 	}
+	l.Warnf("%+v", dbx.supportedPlatforms)
+	l.Warnf("%+v", dbx.customDockerfiles)
 }

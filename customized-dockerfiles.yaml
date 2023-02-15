@@ -1,0 +1,4 @@
+- image: "alpine"
+  tag_pattern: "3.16.2"
+  dockerfile_path: "silly"
+  add_tag_suffix: "yq"
