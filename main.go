@@ -14,7 +14,6 @@ import (
 )
 
 var (
-	platformListPattern = regexp.MustCompile(`\w+\s+\w+\s+\w+\s+(.*)`) // name/node driver/endpoint status (platforms)
 	temporaryWorkingDir = path.Join(os.TempDir(), "retagger")
 )
 
@@ -25,14 +24,10 @@ const (
 	aliyunURL       = "giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm"
 )
 
-type Retagger struct {
-	customDockerfiles []Dockerfile
-}
-
-type Dockerfile struct {
+type CustomImage struct {
 	Image            string   `yaml:"image"`
 	TagPattern       string   `yaml:"tag_pattern"`
-	DockerfileExtras []string `yaml:"dockerfile_extras,omitempty"`
+	ImageExtras      []string `yaml:"dockerfile_extras,omitempty"`
 	AddTagSuffix     string   `yaml:"add_tag_suffix,omitempty"`
 	OverrideRepoName string   `yaml:"override_repo_name,omitempty"`
 }
@@ -41,13 +36,13 @@ type skopeoTagList struct {
 	Tags []string `yaml:"Tags"`
 }
 
-func (d *Dockerfile) BuildAndTag() error {
+func (img *CustomImage) BuildAndTag() error {
 	// (code) List tags and find the ones that match
 	var tags []string
 	{
-		c, stdout, stderr := command("skopeo", "list-tags", dockerTransport+d.Image)
+		c, stdout, stderr := command("skopeo", "list-tags", dockerTransport+img.Image)
 		if err := c.Run(); err != nil {
-			return fmt.Errorf("error listing tags for %q: %w\n%s", d.Image, err, stderr.String())
+			return fmt.Errorf("error listing tags for %q: %w\n%s", img.Image, err, stderr.String())
 		}
 		stl := skopeoTagList{
 			Tags: []string{},
@@ -58,9 +53,9 @@ func (d *Dockerfile) BuildAndTag() error {
 		tags = stl.Tags
 	}
 
-	pattern, err := regexp.Compile(d.TagPattern)
+	pattern, err := regexp.Compile(img.TagPattern)
 	if err != nil {
-		return fmt.Errorf("error compiling regexp pattern %q: %w", d.TagPattern, err)
+		return fmt.Errorf("error compiling regexp pattern %q: %w", img.TagPattern, err)
 	}
 tagLoop:
 	for _, tag := range tags {
@@ -68,20 +63,20 @@ tagLoop:
 			continue
 		}
 
-		destinationName := d.Image
-		if d.OverrideRepoName != "" {
-			destinationName = d.OverrideRepoName
+		destinationName := img.Image
+		if img.OverrideRepoName != "" {
+			destinationName = img.OverrideRepoName
 		}
 		destinationTag := tag
-		if d.AddTagSuffix != "" {
-			destinationTag = tag + "-" + d.AddTagSuffix
+		if img.AddTagSuffix != "" {
+			destinationTag = tag + "-" + img.AddTagSuffix
 		}
 
 		// (code) Prepare temporary dockerfile by generating 'FROM X:Y, buildplatform' and appending dockerfile_path
 		// (docker buildx binary) Rebuild image with temporary dockerfile for each tag
 		// (skopeo binary) Push the images to QUAY and ALIYUN
-		if len(d.DockerfileExtras) == 0 {
-			source := fmt.Sprintf("%s%s:%s", dockerTransport, d.Image, tag)
+		if len(img.ImageExtras) == 0 {
+			source := fmt.Sprintf("%s%s:%s", dockerTransport, img.Image, tag)
 			wg := sync.WaitGroup{}
 			wg.Add(2)
 			// Quay
@@ -97,21 +92,21 @@ tagLoop:
 		// build temporary dockerfile
 		var dockerfile string
 		{
-			// generate the Dockerfile
-			tmp, err := os.CreateTemp(temporaryWorkingDir, "Dockerfile.*")
+			// generate the Image
+			tmp, err := os.CreateTemp(temporaryWorkingDir, "Image.*")
 			if err != nil {
-				logrus.Errorf("error creating temporary Dockerfile: %v", err)
+				logrus.Errorf("error creating temporary Image: %v", err)
 				continue tagLoop
 			}
 			dockerfile = tmp.Name()
 			defer func() {
 				os.Remove(dockerfile)
 			}()
-			fmt.Fprintf(tmp, "FROM --platform=%s %s:%s\n", defaultPlatform, d.Image, tag)
-			for _, line := range d.DockerfileExtras {
+			fmt.Fprintf(tmp, "FROM --platform=%s %s:%s\n", defaultPlatform, img.Image, tag)
+			for _, line := range img.ImageExtras {
 				_, err := tmp.WriteString(line + "\n")
 				if err != nil {
-					logrus.Errorf("error writing temporary Dockerfile: %v", err)
+					logrus.Errorf("error writing temporary Image: %v", err)
 					continue tagLoop
 				}
 			}
@@ -120,11 +115,11 @@ tagLoop:
 		name := fmt.Sprintf("%s:%s", destinationName, destinationTag)
 		quayName := fmt.Sprintf("%s/%s", quayURL, name)
 		aliyunName := fmt.Sprintf("%s/%s", aliyunURL, name)
-		// build Docker image from the Dockerfile
+		// build Docker image from the Image
 		{
 			c, stdout, stderr := command("docker", "build", "-t", quayName, "-f", dockerfile, temporaryWorkingDir)
 			if err := c.Run(); err != nil {
-				logrus.Errorf("error building custom image for %s:%s: %v\n%s", d.Image, tag, err, stderr.String())
+				logrus.Errorf("error building custom image for %s:%s: %v\n%s", img.Image, tag, err, stderr.String())
 				continue tagLoop
 			}
 			logrus.Debugf(stdout.String())
@@ -133,7 +128,7 @@ tagLoop:
 		{
 			c, _, stderr := command("docker", "tag", quayName, aliyunName)
 			if err := c.Run(); err != nil {
-				logrus.Errorf("error tagging custom image for %s:%s: %v\n%s", d.Image, tag, err, stderr.String())
+				logrus.Errorf("error tagging custom image for %s:%s: %v\n%s", img.Image, tag, err, stderr.String())
 				continue tagLoop
 			}
 		}
@@ -168,36 +163,6 @@ func pushImage(wg *sync.WaitGroup, nameAndTag string) {
 	logrus.Debugf("pushed %q", nameAndTag)
 }
 
-func (r *Retagger) BuildAndTagAll() {
-	errors := 0
-	for i, job := range r.customDockerfiles {
-		logrus.Printf("[%d/%d] Retagging %s", i+1, len(r.customDockerfiles), job.Image)
-		if err := job.BuildAndTag(); err != nil {
-			logrus.Errorf("got error: %v", err)
-			errors++
-		}
-	}
-	if errors > 0 {
-		logrus.Fatal("Retagging ended with %d errors", errors)
-	}
-}
-
-func NewRetagger() (*Retagger, error) {
-	r := &Retagger{
-		customDockerfiles: []Dockerfile{},
-	}
-	// load custom dockerfile specs
-	b, err := os.ReadFile("customized-dockerfiles.yaml")
-	if err != nil {
-		return nil, fmt.Errorf("error reading customized-dockerfiles.yaml: %w", err)
-	}
-	if err := yaml.Unmarshal(b, &r.customDockerfiles); err != nil {
-		return nil, fmt.Errorf("error unmarshaling customized-dockerfiles.yaml: %w", err)
-	}
-
-	return r, nil
-}
-
 func command(name string, args ...string) (*exec.Cmd, *bytes.Buffer, *bytes.Buffer) {
 	stdout := &bytes.Buffer{}
 	stderr := &bytes.Buffer{}
@@ -216,10 +181,30 @@ func main() {
 	if err := os.MkdirAll(temporaryWorkingDir, 0777); err != nil {
 		logrus.Fatal(err)
 	}
-	r, err := NewRetagger()
-	if err != nil {
-		logrus.Fatal(err)
+	// load custom dockerfile specs
+	customizedImages := []CustomImage{}
+	{
+		b, err := os.ReadFile("customized-images.yaml")
+		if err != nil {
+			logrus.Fatalf("error reading customized-images.yaml: %s", err)
+		}
+		if err := yaml.Unmarshal(b, &customizedImages); err != nil {
+			logrus.Fatalf("error unmarshaling customized-images.yaml: %s", err)
+		}
 	}
-	logrus.Infof("Found %d custom Dockerfiles to build", len(r.customDockerfiles))
-	r.BuildAndTagAll()
+
+	logrus.Infof("Found %d custom Images to build", len(customizedImages))
+
+	errors := 0
+	for i, image := range customizedImages {
+		logrus.Printf("[%d/%d] Retagging %s", i+1, len(customizedImages), image.Image)
+		if err := image.BuildAndTag(); err != nil {
+			logrus.Errorf("got error: %v", err)
+			errors++
+		}
+	}
+	if errors > 0 {
+		logrus.Fatal("Retagging ended with %d errors", errors)
+	}
+	logrus.Infof("Done retagging %d images with no errors", len(customizedImages))
 }
