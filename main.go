@@ -22,6 +22,7 @@ const (
 )
 
 type DockerBuildx struct {
+	logger             *logrus.Logger
 	supportedPlatforms map[string]Platform
 	customDockerfiles  []Dockerfile
 }
@@ -58,32 +59,64 @@ func NewPlatform(name string) Platform {
 }
 
 type Dockerfile struct {
-	Image            string `yaml:"image"`
-	TagPattern       string `yaml:"tag_pattern"`
-	SHA              string `yaml:"sha,omitempty"`
-	DockerfileExtras string `yaml:"dockerfile_extras"`
-	AddTagSuffix     string `yaml:"add_tag_suffix,omitempty"`
+	Image            string   `yaml:"image"`
+	TagPattern       string   `yaml:"tag_pattern"`
+	DockerfileExtras []string `yaml:"dockerfile_extras,omitempty"`
+	AddTagSuffix     string   `yaml:"add_tag_suffix,omitempty"`
+	OverrideRepoName string   `yaml:"override_repo_name,omitempty"`
+}
+
+type skopeoTagList struct {
+	Tags []string `yaml:"Tags"`
 }
 
 func (d *Dockerfile) BuildAndTag() error {
-	// (code) Check if dockerfile_path exists
 	// (code) List tags and find the ones that match
-	// (code) Prepare temporary dockerfile by generating 'FROM X:Y, buildplatform' and appending dockerfile_path
-	// (docker buildx binary) Rebuild image with temporary dockerfile for each tag
-	// (skopeo binary) Push the images to QUAY and ALIYUN
+	var tags []string
+	{
+		c, stdout, stderr := command("skopeo", "list-tags", dockerTransport+d.Image)
+		if err := c.Run(); err != nil {
+			return fmt.Errorf("error listing tags for %q: %w\n%s", d.Image, err, stderr.String())
+		}
+		stl := skopeoTagList{
+			Tags: []string{},
+		}
+		if err := yaml.Unmarshal(stdout.Bytes(), &stl); err != nil {
+			return fmt.Errorf("error unmarshaling tags: %w", err)
+		}
+		tags = stl.Tags
+	}
+
+	pattern, err := regexp.Compile(d.TagPattern)
+	if err != nil {
+		return fmt.Errorf("error compiling regexp pattern %q: %w", d.TagPattern, err)
+	}
+	for _, tag := range tags {
+		if !pattern.MatchString(tag) {
+			continue
+		}
+		// (code) Prepare temporary dockerfile by generating 'FROM X:Y, buildplatform' and appending dockerfile_path
+		// (docker buildx binary) Rebuild image with temporary dockerfile for each tag
+		// (skopeo binary) Push the images to QUAY and ALIYUN
+		if len(d.DockerfileExtras) == 0 {
+			// no customization, just sync
+			c, _, stderr := command("skopeo", "list-tags", dockerTransport+d.Image)
+			if err := c.Run(); err != nil {
+				return fmt.Errorf("error listing tags for %q: %w\n%s", d.Image, err, stderr.String())
+			}
+		}
+	}
+
 	return nil
 }
 
-func NewDockerBuildx() (*DockerBuildx, error) {
-	stdout := &bytes.Buffer{}
-	stderr := &bytes.Buffer{}
-	c := exec.Command("docker", "buildx", "ls")
-	c.Stdout = stdout
-	c.Stderr = stderr
+func NewDockerBuildx(logger *logrus.Logger) (*DockerBuildx, error) {
+	c, stdout, stderr := command("docker", "buildx", "ls")
 	if err := c.Run(); err != nil {
 		return nil, fmt.Errorf("error running %q: %w\nstderr:\n%s", c.String(), err, stderr.String())
 	}
 	dbx := &DockerBuildx{
+		logger:             logger,
 		supportedPlatforms: map[string]Platform{},
 		customDockerfiles:  []Dockerfile{},
 	}
@@ -116,10 +149,19 @@ func NewDockerBuildx() (*DockerBuildx, error) {
 	return dbx, nil
 }
 
+func command(name string, args ...string) (*exec.Cmd, *bytes.Buffer, *bytes.Buffer) {
+	stdout := &bytes.Buffer{}
+	stderr := &bytes.Buffer{}
+	c := exec.Command(name, args...)
+	c.Stdout = stdout
+	c.Stderr = stderr
+	return c, stdout, stderr
+}
+
 func main() {
 	l := logrus.New()
 	l.Warnf("hello")
-	dbx, err := NewDockerBuildx()
+	dbx, err := NewDockerBuildx(l)
 	if err != nil {
 		l.Fatal(err)
 	}
