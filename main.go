@@ -8,6 +8,7 @@ import (
 	"path"
 	"regexp"
 	"sync"
+	"sync/atomic"
 
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
@@ -80,6 +81,7 @@ func (img *CustomImage) BuildAndTag() error {
 		tags = stl.Tags
 	}
 
+	errorCounter := &atomic.Int64{}
 tagLoop:
 	// Iterate through all found tags and retag ones matching the pattern
 	for _, tag := range tags {
@@ -106,10 +108,10 @@ tagLoop:
 			wg.Add(2)
 			// Quay
 			destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, quayURL, destinationName, destinationTag)
-			go copyImage(&wg, source, destination)
+			go copyImage(&wg, errorCounter, source, destination)
 			// Aliyun
 			destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, aliyunURL, destinationName, destinationTag)
-			go copyImage(&wg, source, destination)
+			go copyImage(&wg, errorCounter, source, destination)
 			wg.Wait()
 
 			// We'll skip to the next tag
@@ -123,6 +125,7 @@ tagLoop:
 			tmp, err := os.CreateTemp(temporaryWorkingDir, "Dockerfile.*")
 			if err != nil {
 				logrus.Errorf("error creating temporary Image: %v", err)
+				errorCounter.Add(1)
 				continue tagLoop
 			}
 			dockerfile = tmp.Name()
@@ -134,6 +137,7 @@ tagLoop:
 				_, err := tmp.WriteString(line + "\n")
 				if err != nil {
 					logrus.Errorf("error writing temporary Image: %v", err)
+					errorCounter.Add(1)
 					continue tagLoop
 				}
 			}
@@ -149,13 +153,14 @@ tagLoop:
 			c, stdout, stderr := command("docker", "build", "-t", quayName, "-f", dockerfile, temporaryWorkingDir)
 			if err := c.Run(); err != nil {
 				logrus.Errorf("error building custom image for %s:%s: %v\n%s", img.Image, tag, err, stderr.String())
+				errorCounter.Add(1)
 				continue tagLoop
 			}
 			logrus.Tracef(stdout.String())
 		}
 
 		// Start pushing to Quay immediately
-		go pushImage(&wg, quayName)
+		go pushImage(&wg, errorCounter, quayName)
 
 		// Tag the image we've just built for Aliyun as well...
 		{
@@ -166,18 +171,21 @@ tagLoop:
 			}
 		}
 		// and push to Aliyun
-		go pushImage(&wg, aliyunName)
+		go pushImage(&wg, errorCounter, aliyunName)
 
 		wg.Wait()
 	}
 
+	if errorCount := errorCounter.Load(); errorCount > 0 {
+		return fmt.Errorf("finished %q with %d errors", img.Image, errorCount)
+	}
 	return nil
 }
 
 // copyImage is a helper function used to invoke `skopeo copy`. Please note the
 // `--all`, which makes skopeo include ALL SHAs included in the tag's digest,
 // ensuring builds for all available platforms.
-func copyImage(wg *sync.WaitGroup, source, destination string) {
+func copyImage(wg *sync.WaitGroup, errorCounter *atomic.Int64, source, destination string) {
 	defer wg.Done()
 	c, _, stderr := command("skopeo", "copy", "--all", source, destination)
 	logrus.Debugf("copying %q to %q", source, destination)
@@ -188,7 +196,7 @@ func copyImage(wg *sync.WaitGroup, source, destination string) {
 }
 
 // pushImage is a helper function used to invoke `docker push`.
-func pushImage(wg *sync.WaitGroup, nameAndTag string) {
+func pushImage(wg *sync.WaitGroup, errorCounter *atomic.Int64, nameAndTag string) {
 	defer wg.Done()
 	c, _, stderr := command("docker", "push", nameAndTag)
 	logrus.Debugf("pushing %q", nameAndTag)
@@ -234,17 +242,17 @@ func main() {
 	logrus.Infof("Found %d custom Images to build", len(customizedImages))
 
 	// Iterate over every image x tag and retag/rebuild it
-	errors := 0
+	errorCounter := 0
 	for i, image := range customizedImages {
 		logrus.Printf("[%d/%d] Retagging %s", i+1, len(customizedImages), image.Image)
 		if err := image.BuildAndTag(); err != nil {
 			logrus.Errorf("got error: %v", err)
-			errors++
+			errorCounter++
 		}
 	}
 
-	if errors > 0 {
-		logrus.Fatal("Retagging ended with %d errors", errors)
+	if errorCounter > 0 {
+		logrus.Fatal("Retagging ended with %d errors", errorCounter)
 	}
 	logrus.Infof("Done retagging %d images with no errors", len(customizedImages))
 }
