@@ -97,6 +97,7 @@ jobs:
     docker:
       - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
     steps:
+      - setup_remote_docker: {}
       - attach_workspace:
           at: .
       - run:
