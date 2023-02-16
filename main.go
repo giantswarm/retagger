@@ -7,7 +7,6 @@ import (
 	"os/exec"
 	"path"
 	"regexp"
-	"strings"
 	"sync"
 
 	"github.com/sirupsen/logrus"
@@ -26,40 +25,8 @@ const (
 	aliyunURL       = "giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm"
 )
 
-type DockerBuildx struct {
-	supportedPlatforms map[string]Platform
-	customDockerfiles  []Dockerfile
-}
-
-type Platform struct {
-	System       string
-	Architecture string
-	Variant      string
-}
-
-func (p Platform) String() string {
-	if p.Variant == "" {
-		return fmt.Sprintf("%s/%s", p.System, p.Architecture)
-	}
-	return fmt.Sprintf("%s/%s/%s", p.System, p.Architecture, p.Variant)
-}
-
-func (p Platform) ArchitectureAndVariant() string {
-	if p.Variant == "" {
-		return p.Architecture
-	}
-	return fmt.Sprintf("%s/%s", p.Architecture, p.Variant)
-}
-
-func NewPlatform(name string) Platform {
-	p := Platform{}
-	elems := strings.Split(name, "/")
-	p.System = elems[0]
-	p.Architecture = elems[1]
-	if len(elems) == 3 {
-		p.Variant = elems[2]
-	}
-	return p
+type Retagger struct {
+	customDockerfiles []Dockerfile
 }
 
 type Dockerfile struct {
@@ -201,10 +168,10 @@ func pushImage(wg *sync.WaitGroup, nameAndTag string) {
 	logrus.Debugf("pushed %q", nameAndTag)
 }
 
-func (dbx *DockerBuildx) BuildAndTagAll() {
+func (r *Retagger) BuildAndTagAll() {
 	errors := 0
-	for i, job := range dbx.customDockerfiles {
-		logrus.Printf("[%d/%d] Retagging %s", i+1, len(dbx.customDockerfiles), job.Image)
+	for i, job := range r.customDockerfiles {
+		logrus.Printf("[%d/%d] Retagging %s", i+1, len(r.customDockerfiles), job.Image)
 		if err := job.BuildAndTag(); err != nil {
 			logrus.Errorf("got error: %v", err)
 			errors++
@@ -215,42 +182,20 @@ func (dbx *DockerBuildx) BuildAndTagAll() {
 	}
 }
 
-func NewDockerBuildx() (*DockerBuildx, error) {
-	c, stdout, stderr := command("docker", "buildx", "ls")
-	if err := c.Run(); err != nil {
-		return nil, fmt.Errorf("error running %q: %v\nstderr:\n%s", c.String(), err, stderr.String())
-	}
-	dbx := &DockerBuildx{
-		supportedPlatforms: map[string]Platform{},
-		customDockerfiles:  []Dockerfile{},
-	}
-	// extract supported platforms
-	{
-		// Example:
-		// NAME/NODE DRIVER/ENDPOINT STATUS  PLATFORMS
-		// default * docker
-		//   default default         running linux/amd64, linux/386, linux/arm64, linux/riscv64, linux/ppc64le, linux/s390x, linux/arm/v7, linux/arm/v6
-		matches := platformListPattern.FindAllStringSubmatch(stdout.String(), -1)
-		if matches == nil || len(matches) < 2 {
-			return nil, fmt.Errorf("could not extract supported platforms using 'docker buildx ls'")
-		}
-		platformStrings := strings.Split(matches[1][1], ", ")
-		for _, platformString := range platformStrings {
-			dbx.supportedPlatforms[platformString] = NewPlatform(platformString)
-		}
+func NewRetagger() (*Retagger, error) {
+	r := &Retagger{
+		customDockerfiles: []Dockerfile{},
 	}
 	// load custom dockerfile specs
-	{
-		b, err := os.ReadFile("customized-dockerfiles.yaml")
-		if err != nil {
-			return nil, fmt.Errorf("error reading customized-dockerfiles.yaml: %w", err)
-		}
-		if err := yaml.Unmarshal(b, &dbx.customDockerfiles); err != nil {
-			return nil, fmt.Errorf("error unmarshaling customized-dockerfiles.yaml: %w", err)
-		}
+	b, err := os.ReadFile("customized-dockerfiles.yaml")
+	if err != nil {
+		return nil, fmt.Errorf("error reading customized-dockerfiles.yaml: %w", err)
+	}
+	if err := yaml.Unmarshal(b, &r.customDockerfiles); err != nil {
+		return nil, fmt.Errorf("error unmarshaling customized-dockerfiles.yaml: %w", err)
 	}
 
-	return dbx, nil
+	return r, nil
 }
 
 func command(name string, args ...string) (*exec.Cmd, *bytes.Buffer, *bytes.Buffer) {
@@ -271,10 +216,10 @@ func main() {
 	if err := os.MkdirAll(temporaryWorkingDir, 0777); err != nil {
 		logrus.Fatal(err)
 	}
-	dbx, err := NewDockerBuildx()
+	r, err := NewRetagger()
 	if err != nil {
 		logrus.Fatal(err)
 	}
-	logrus.Infof("Found %d custom Dockerfiles to build", len(dbx.customDockerfiles))
-	dbx.BuildAndTagAll()
+	logrus.Infof("Found %d custom Dockerfiles to build", len(r.customDockerfiles))
+	r.BuildAndTagAll()
 }
