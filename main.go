@@ -252,7 +252,7 @@ func main() {
 	}
 
 	if errorCounter > 0 {
-		logrus.Fatal("Retagging ended with %d errors", errorCounter)
+		logrus.Fatalf("Retagging ended with %d errors", errorCounter)
 	}
 	logrus.Infof("Done retagging %d images with no errors", len(customizedImages))
 }
