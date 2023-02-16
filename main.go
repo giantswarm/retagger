@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"regexp"
 	"strings"
+	"sync"
 
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
@@ -20,7 +21,7 @@ const (
 	defaultPlatform = "linux/amd64"
 	dockerTransport = "docker://"
 	quayURL         = "quay.io/giantswarm"
-	aliyunURL       = ""
+	aliyunURL       = "giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm"
 )
 
 type DockerBuildx struct {
@@ -109,13 +110,16 @@ func (d *Dockerfile) BuildAndTag() error {
 			if d.AddTagSuffix != "" {
 				destinationTag = tag + "-" + d.AddTagSuffix
 			}
-			// Quay
-			destination := fmt.Sprintf("%s%s%s:%s", dockerTransport, quayURL, destinationName, destinationTag)
-			go copyImage(source, destination)
-			// Aliyun
-			destination = fmt.Sprintf("%s%s%s:%s", dockerTransport, aliyunURL, destinationName, destinationTag)
-			go copyImage(source, destination)
 
+			wg := sync.WaitGroup{}
+			wg.Add(2)
+			// Quay
+			destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, quayURL, destinationName, destinationTag)
+			go copyImage(&wg, source, destination)
+			// Aliyun
+			destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, aliyunURL, destinationName, destinationTag)
+			go copyImage(&wg, source, destination)
+			wg.Wait()
 			continue
 		}
 	}
@@ -123,18 +127,34 @@ func (d *Dockerfile) BuildAndTag() error {
 	return nil
 }
 
-func copyImage(source, destination string) {
+func copyImage(wg *sync.WaitGroup, source, destination string) {
+	defer wg.Done()
 	c, _, stderr := command("skopeo", "copy", "--all", source, destination)
+	logrus.Debugf("copying %q to %q", source, destination)
 	if err := c.Run(); err != nil {
-		logrus.Errorf("error copying %q to %q: %w\n%s", source, destination, err, stderr.String())
+		logrus.Errorf("error copying %q to %q: %v\n%s", source, destination, err, stderr.String())
 	}
 	logrus.Debugf("copied %q to %q", source, destination)
+}
+
+func (dbx *DockerBuildx) BuildAndTagAll() {
+	errors := 0
+	for i, job := range dbx.customDockerfiles {
+		logrus.Printf("[%d/%d] Retagging %s", i+1, len(dbx.customDockerfiles), job.Image)
+		if err := job.BuildAndTag(); err != nil {
+			logrus.Errorf("got error: %v", err)
+			errors++
+		}
+	}
+	if errors > 0 {
+		logrus.Fatal("Retagging ended with %d errors", errors)
+	}
 }
 
 func NewDockerBuildx() (*DockerBuildx, error) {
 	c, stdout, stderr := command("docker", "buildx", "ls")
 	if err := c.Run(); err != nil {
-		return nil, fmt.Errorf("error running %q: %w\nstderr:\n%s", c.String(), err, stderr.String())
+		return nil, fmt.Errorf("error running %q: %v\nstderr:\n%s", c.String(), err, stderr.String())
 	}
 	dbx := &DockerBuildx{
 		supportedPlatforms: map[string]Platform{},
@@ -178,13 +198,17 @@ func command(name string, args ...string) (*exec.Cmd, *bytes.Buffer, *bytes.Buff
 	return c, stdout, stderr
 }
 
+func init() {
+	logrus.SetFormatter(&logrus.TextFormatter{})
+	logrus.SetLevel(logrus.DebugLevel)
+}
+
 func main() {
-	l := logrus.New()
-	l.Warnf("hello")
-	dbx, err := NewDockerBuildx(l)
+	dbx, err := NewDockerBuildx()
 	if err != nil {
-		l.Fatal(err)
+		logrus.Fatal(err)
 	}
-	l.Warnf("%+v", dbx.supportedPlatforms)
-	l.Warnf("%+v", dbx.customDockerfiles)
+	logrus.Warnf("%+v", dbx.supportedPlatforms)
+	logrus.Warnf("%+v", dbx.customDockerfiles)
+	dbx.BuildAndTagAll()
 }

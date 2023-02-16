@@ -1,4 +1,4 @@
 - image: "alpine"
-  tag_pattern: "3.16.2"
+  tag_pattern: "3.10.0"
   dockerfile_path: "customized-dockerfiles/Dockerfile.alpine-yq"
   add_tag_suffix: "yq"
