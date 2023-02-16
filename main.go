@@ -19,10 +19,11 @@ var (
 const (
 	defaultPlatform = "linux/amd64"
 	dockerTransport = "docker://"
+	quayURL         = "quay.io/giantswarm"
+	aliyunURL       = ""
 )
 
 type DockerBuildx struct {
-	logger             *logrus.Logger
 	supportedPlatforms map[string]Platform
 	customDockerfiles  []Dockerfile
 }
@@ -99,24 +100,43 @@ func (d *Dockerfile) BuildAndTag() error {
 		// (docker buildx binary) Rebuild image with temporary dockerfile for each tag
 		// (skopeo binary) Push the images to QUAY and ALIYUN
 		if len(d.DockerfileExtras) == 0 {
-			// no customization, just sync
-			c, _, stderr := command("skopeo", "list-tags", dockerTransport+d.Image)
-			if err := c.Run(); err != nil {
-				return fmt.Errorf("error listing tags for %q: %w\n%s", d.Image, err, stderr.String())
+			source := fmt.Sprintf("%s%s:%s", dockerTransport, d.Image, tag)
+			destinationName := d.Image
+			if d.OverrideRepoName != "" {
+				destinationName = d.OverrideRepoName
 			}
+			destinationTag := tag
+			if d.AddTagSuffix != "" {
+				destinationTag = tag + "-" + d.AddTagSuffix
+			}
+			// Quay
+			destination := fmt.Sprintf("%s%s%s:%s", dockerTransport, quayURL, destinationName, destinationTag)
+			go copyImage(source, destination)
+			// Aliyun
+			destination = fmt.Sprintf("%s%s%s:%s", dockerTransport, aliyunURL, destinationName, destinationTag)
+			go copyImage(source, destination)
+
+			continue
 		}
 	}
 
 	return nil
 }
 
-func NewDockerBuildx(logger *logrus.Logger) (*DockerBuildx, error) {
+func copyImage(source, destination string) {
+	c, _, stderr := command("skopeo", "copy", "--all", source, destination)
+	if err := c.Run(); err != nil {
+		logrus.Errorf("error copying %q to %q: %w\n%s", source, destination, err, stderr.String())
+	}
+	logrus.Debugf("copied %q to %q", source, destination)
+}
+
+func NewDockerBuildx() (*DockerBuildx, error) {
 	c, stdout, stderr := command("docker", "buildx", "ls")
 	if err := c.Run(); err != nil {
 		return nil, fmt.Errorf("error running %q: %w\nstderr:\n%s", c.String(), err, stderr.String())
 	}
 	dbx := &DockerBuildx{
-		logger:             logger,
 		supportedPlatforms: map[string]Platform{},
 		customDockerfiles:  []Dockerfile{},
 	}
