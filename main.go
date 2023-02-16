@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path"
 	"regexp"
 	"strings"
 	"sync"
@@ -15,6 +16,7 @@ import (
 
 var (
 	platformListPattern = regexp.MustCompile(`\w+\s+\w+\s+\w+\s+(.*)`) // name/node driver/endpoint status (platforms)
+	temporaryWorkingDir = path.Join(os.TempDir(), "retagger")
 )
 
 const (
@@ -129,9 +131,9 @@ tagLoop:
 		var dockerfile string
 		{
 			// generate the Dockerfile
-			tmp, err := os.CreateTemp(os.TempDir(), "Dockerfile.*")
+			tmp, err := os.CreateTemp(temporaryWorkingDir, "Dockerfile.*")
 			if err != nil {
-				logrus.Error("error creating temporary Dockerfile: %v", err)
+				logrus.Errorf("error creating temporary Dockerfile: %v", err)
 				continue tagLoop
 			}
 			dockerfile = tmp.Name()
@@ -142,38 +144,38 @@ tagLoop:
 			for _, line := range d.DockerfileExtras {
 				_, err := tmp.WriteString(line + "\n")
 				if err != nil {
-					logrus.Error("error writing temporary Dockerfile: %v", err)
+					logrus.Errorf("error writing temporary Dockerfile: %v", err)
 					continue tagLoop
 				}
 			}
 		}
 
 		name := fmt.Sprintf("%s:%s", destinationName, destinationTag)
-		aliyunName := fmt.Sprintf("%s/giantswarm/%s", aliyunURL, name)
+		quayName := fmt.Sprintf("%s/%s", quayURL, name)
+		aliyunName := fmt.Sprintf("%s/%s", aliyunURL, name)
 		// build Docker image from the Dockerfile
 		{
-			c, stdout, stderr := command("docker", "build", name, "-f", dockerfile, "/tmp")
+			c, stdout, stderr := command("docker", "build", "-t", quayName, "-f", dockerfile, temporaryWorkingDir)
 			if err := c.Run(); err != nil {
-				logrus.Error("error building custom image for %s:%s: %v\n%s", d.Image, tag, err, stderr.String())
+				logrus.Errorf("error building custom image for %s:%s: %v\n%s", d.Image, tag, err, stderr.String())
 				continue tagLoop
 			}
-			logrus.Debug(stdout.String())
+			logrus.Debugf(stdout.String())
 		}
 		// retag for Aliyun
 		{
-			c, _, stderr := command("docker", "tag", name, aliyunName)
+			c, _, stderr := command("docker", "tag", quayName, aliyunName)
 			if err := c.Run(); err != nil {
-				logrus.Error("error tagging custom image for %s:%s: %v\n%s", d.Image, tag, err, stderr.String())
+				logrus.Errorf("error tagging custom image for %s:%s: %v\n%s", d.Image, tag, err, stderr.String())
 				continue tagLoop
 			}
 		}
 
 		wg := sync.WaitGroup{}
 		wg.Add(2)
-		go pushImage(&wg, name)
+		go pushImage(&wg, quayName)
 		go pushImage(&wg, aliyunName)
 		wg.Wait()
-
 	}
 
 	return nil
@@ -182,29 +184,29 @@ tagLoop:
 func copyImage(wg *sync.WaitGroup, source, destination string) {
 	defer wg.Done()
 	c, _, stderr := command("skopeo", "copy", "--all", source, destination)
-	logrus.Debug("copying %q to %q", source, destination)
+	logrus.Debugf("copying %q to %q", source, destination)
 	if err := c.Run(); err != nil {
-		logrus.Error("error copying %q to %q: %v\n%s", source, destination, err, stderr.String())
+		logrus.Errorf("error copying %q to %q: %v\n%s", source, destination, err, stderr.String())
 	}
-	logrus.Debug("copied %q to %q", source, destination)
+	logrus.Debugf("copied %q to %q", source, destination)
 }
 
 func pushImage(wg *sync.WaitGroup, nameAndTag string) {
 	defer wg.Done()
 	c, _, stderr := command("docker", "push", nameAndTag)
-	logrus.Debug("pushing %q", nameAndTag)
+	logrus.Debugf("pushing %q", nameAndTag)
 	if err := c.Run(); err != nil {
-		logrus.Error("error pushing %q: %v\n%s", nameAndTag, err, stderr.String())
+		logrus.Errorf("error pushing %q: %v\n%s", nameAndTag, err, stderr.String())
 	}
-	logrus.Debug("pushed %q", nameAndTag)
+	logrus.Debugf("pushed %q", nameAndTag)
 }
 
 func (dbx *DockerBuildx) BuildAndTagAll() {
 	errors := 0
 	for i, job := range dbx.customDockerfiles {
-		logrus.Print("[%d/%d] Retagging %s", i+1, len(dbx.customDockerfiles), job.Image)
+		logrus.Printf("[%d/%d] Retagging %s", i+1, len(dbx.customDockerfiles), job.Image)
 		if err := job.BuildAndTag(); err != nil {
-			logrus.Error("got error: %v", err)
+			logrus.Errorf("got error: %v", err)
 			errors++
 		}
 	}
@@ -266,11 +268,13 @@ func init() {
 }
 
 func main() {
+	if err := os.MkdirAll(temporaryWorkingDir, 0777); err != nil {
+		logrus.Fatal(err)
+	}
 	dbx, err := NewDockerBuildx()
 	if err != nil {
 		logrus.Fatal(err)
 	}
-	logrus.Warn("%+v", dbx.supportedPlatforms)
-	logrus.Warn("%+v", dbx.customDockerfiles)
+	logrus.Infof("Found %d custom Dockerfiles to build", len(dbx.customDockerfiles))
 	dbx.BuildAndTagAll()
 }
