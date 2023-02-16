@@ -23,7 +23,7 @@ const (
 
 type DockerBuildx struct {
 	supportedPlatforms map[string]Platform
-	customDockerfiles  map[string]Dockerfile
+	customDockerfiles  []Dockerfile
 }
 
 type Platform struct {
@@ -58,10 +58,11 @@ func NewPlatform(name string) Platform {
 }
 
 type Dockerfile struct {
-	Image          string `yaml:"image"`
-	TagPattern     string `yaml:"tag_pattern"`
-	DockerfilePath string `yaml:"dockerfile_path"`
-	AddTagSuffix   string `yaml:"add_tag_suffix,omitempty"`
+	Image            string `yaml:"image"`
+	TagPattern       string `yaml:"tag_pattern"`
+	SHA              string `yaml:"sha,omitempty"`
+	DockerfileExtras string `yaml:"dockerfile_extras"`
+	AddTagSuffix     string `yaml:"add_tag_suffix,omitempty"`
 }
 
 func (d *Dockerfile) BuildAndTag() error {
@@ -84,7 +85,7 @@ func NewDockerBuildx() (*DockerBuildx, error) {
 	}
 	dbx := &DockerBuildx{
 		supportedPlatforms: map[string]Platform{},
-		customDockerfiles:  map[string]Dockerfile{},
+		customDockerfiles:  []Dockerfile{},
 	}
 	// extract supported platforms
 	{
@@ -107,12 +108,8 @@ func NewDockerBuildx() (*DockerBuildx, error) {
 		if err != nil {
 			return nil, fmt.Errorf("error reading customized-dockerfiles.yaml: %w", err)
 		}
-		dockerfiles := []Dockerfile{}
-		if err := yaml.Unmarshal(b, &dockerfiles); err != nil {
+		if err := yaml.Unmarshal(b, &dbx.customDockerfiles); err != nil {
 			return nil, fmt.Errorf("error unmarshaling customized-dockerfiles.yaml: %w", err)
-		}
-		for _, df := range dockerfiles {
-			dbx.customDockerfiles[df.DockerfilePath] = df
 		}
 	}
 
