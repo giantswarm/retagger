@@ -1,0 +1,1308 @@
+- name: alpine
+  tags:
+  - sha: 234cb88d3020898631af0ccbbcca9a66ae7306ecd30c9720690858c1b007d2a0
+    tag: 3.14
+  - sha: 1304f174557314a7ed9eddb4eab12fed12cb0cd9809e4c28f29af86979a3c870
+    tag: 3.16.2
+    customImages:
+    - tagSuffix: envsubst
+      dockerfileOptions:
+      - RUN apk add --no-cache gettext
+    - tagSuffix: yq
+      dockerfileOptions:
+      - RUN apk add --no-cache yq bash
+  patterns:
+  - pattern: '>= 3.13'
+  - pattern: '>= 3.11'
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - RUN apk add --no-cache ca-certificates
+      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+      - USER giantswarm
+    - tagSuffix: giantswarm-sysctl
+      dockerfileOptions:
+      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+      - 'RUN apk add --no-cache sudo && echo "giantswarm  ALL = NOPASSWD: /sbin/sysctl" >> /etc/sudoers'
+      - USER giantswarm
+    - tagSuffix: python3
+      dockerfileOptions:
+      - RUN apk add --no-cache python3 py3-yaml
+- name: alpine/git
+  overrideRepoName: alpinegit
+  tags:
+  - sha: 7b94cd6038bf3f5ddd7b1d99b9591f243e6484417bc5fb8fa7fdbc076e904794
+    tag: v2.26.2
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - RUN apk add --no-cache ca-certificates
+      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+      - USER giantswarm
+- name: alpine/helm
+  overrideRepoName: alpine-helm
+  patterns:
+  - pattern: '>= 3.9.3'
+- name: amazon/amazon-eks-pod-identity-webhook
+  patterns:
+  - pattern: '>= v0.3.0'
+- name: amazon/aws-alb-ingress-controller
+  patterns:
+  - pattern: '>= 2.3'
+- name: amazon/aws-cli
+  overrideRepoName: awscli
+  tags:
+  - sha: e5988c45f13ec9c9500e9fb6742e19de642a5bdc2750f2cc0482a857f13c30ea
+    tag: 2.7.35
+- name: amazon/aws-cli
+  overrideRepoName: awscli-tar
+  tags:
+  - sha: e5988c45f13ec9c9500e9fb6742e19de642a5bdc2750f2cc0482a857f13c30ea
+    tag: 2.7.35
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - RUN yum -y install tar
+- name: amazon/aws-efs-csi-driver
+  patterns:
+  - pattern: '>= 1.0.0'
+- name: amazon/opendistro-for-elasticsearch
+  patterns:
+  - pattern: '>= 1.3.0'
+- name: amazon/opendistro-for-elasticsearch-kibana
+  patterns:
+  - pattern: '>= 1.3.0'
+- name: aquasec/kube-bench
+  patterns:
+  - pattern: '>= 0.2'
+- name: aquasec/scanner
+  patterns:
+  - pattern: '>= 5.3'
+- name: aquasec/starboard-operator
+  patterns:
+  - pattern: '>= 0.11.0'
+- name: aquasec/trivy
+  patterns:
+  - pattern: '>= 0.19.2'
+- name: aquasec/trivy-operator
+  patterns:
+  - pattern: '>= 0.0.5'
+- name: bash
+  patterns:
+  - pattern: '>= 5'
+- name: bats/bats
+  patterns:
+  - pattern: '>= 1.2.1'
+- name: bitnami/kubectl
+  patterns:
+  - pattern: '>= 1.16'
+- name: bitnami/redis
+  overrideRepoName: bitnami-redis
+  tags:
+  - sha: 1b56b1c2c5d737bd8029f2e2e80852c0c1ef342e36ca0940dd313d4d8a786311
+    tag: 4.0.9
+- name: bobrik/curator
+  overrideRepoName: bobrik-curator
+  patterns:
+  - pattern: '>= 5.8.1'
+- name: busybox
+  patterns:
+  - pattern: '>= 1.31.0'
+# Used in caicloud-event-exporter-app
+- name: caicloud/event-exporter
+  overrideRepoName: caicloud-event-exporter
+  patterns:
+  - pattern: '>= v1.0.0'
+- name: centos
+  tags:
+  - sha: fe8d824220415eed5477b63addf40fb06c3b049404242b31982106ac204f6700
+    tag: 8.1.1911
+- name: cibuilds/github
+  tags:
+  - sha: 9029b2f52ecd28aacec2fd8a86a321dc9f77a46df251de5e3f157dd6e80baea0
+    tag: 0.12
+- name: cloudflare/cloudflared
+  patterns:
+  - pattern: '>= 2022.8.0'
+    filter: '^(?P<version>.*)-amd64'
+- name: coredns/coredns
+  tags:
+  - sha: 8e352a029d304ca7431c6507b56800636c321cb52289686a581ab70aaa8a2e2a
+    tag: 1.9.3
+  - sha: 58508c172b14716350dc5185baefd78265a703514281d309d1d54aa1b721ad68
+    tag: 1.8.7
+  - sha: 5b6ec0d6de9baaf3e92d0f66cd96a25b9edbce8716f5f15dcd1a616b3abd590e
+    tag: 1.8.6
+  - sha: 642ff9910da6ea9a8624b0234eef52af9ca75ecbec474c5507cb096bdfbae4e5
+    tag: 1.8.3
+  patterns:
+  - pattern: '>= 1.6.5'
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - EXPOSE 1053
+- name: cr.l5d.io/linkerd/cni-plugin
+  overrideRepoName: linkerd2-cni-plugin
+  patterns:
+  - pattern: '>= 2.11.4'
+    filter: '^stable-(?P<version>.*)'
+- name: cr.l5d.io/linkerd/controller
+  overrideRepoName: linkerd2-controller
+  patterns:
+  - pattern: '>= 2.11.4'
+    filter: '^stable-(?P<version>.*)'
+- name: cr.l5d.io/linkerd/debug
+  overrideRepoName: linkerd2-debug
+  patterns:
+  - pattern: '>= 2.11.4'
+    filter: '^stable-(?P<version>.*)'
+- name: cr.l5d.io/linkerd/metrics-api
+  overrideRepoName: linkerd-metrics-api
+  patterns:
+  - pattern: '>= 2.11.4'
+    filter: '^stable-(?P<version>.*)'
+- name: cr.l5d.io/linkerd/policy-controller
+  overrideRepoName: linkerd2-policy-controller
+  patterns:
+  - pattern: '>= 2.11.4'
+    filter: '^stable-(?P<version>.*)'
+- name: cr.l5d.io/linkerd/proxy
+  overrideRepoName: linkerd2-proxy
+  patterns:
+  - pattern: '>= 2.11.4'
+    filter: '^stable-(?P<version>.*)'
+- name: cr.l5d.io/linkerd/proxy-init
+  overrideRepoName: linkerd2-proxy-init
+  patterns:
+  - pattern: '>= 2.11.4'
+    filter: '^stable-(?P<version>.*)'
+- name: cr.l5d.io/linkerd/tap
+  overrideRepoName: linkerd-tap
+  patterns:
+  - pattern: '>= 2.11.4'
+    filter: '^stable-(?P<version>.*)'
+- name: cr.l5d.io/linkerd/web
+  overrideRepoName: linkerd2-web
+  patterns:
+  - pattern: '>= 2.11.4'
+    filter: '^stable-(?P<version>.*)'
+# Momentarily disable due failing OCI index
+# Seeh ttps://gigantic.slack.com/archives/C3C7ZQXC1/p1674735852349169
+# - name: crossplane/crossplane
+#   overrideRepoName: crossplane
+#   patterns:
+#   - pattern: '>= v1.9.1'
+- name: curlimages/curl
+  patterns:
+  - pattern: '>= 7.67.0'
+- name: cytopia/yamllint
+  patterns:
+  - pattern: '>= 1.9'
+- name: dduportal/bats
+  # See `name: bats/bats` for newer releases
+  tags:
+  - sha: b2d533b27109f7c9ea1e270e23f212c47906346f9cffaa4da6da48ed9d8031da
+    tag: 0.4.0
+- name: directxman12/k8s-prometheus-adapter-amd64
+  patterns:
+  - pattern: '>=v0.6.0'
+- name: docker
+  tags:
+  - sha: e8e0f19612fef7fc1e190ec7ed6fb4c1f4e0c0f34424214dc44e9e94f8a1281d
+    tag: 18.09.1
+- name: docker.elastic.co/elasticsearch/elasticsearch-oss
+  tags:
+  - sha: 4f2bd6a008c41d83aeb8e5ac95412d47b667d21d4df7c67c41b9baec15a78164
+    tag: 6.1.4
+- name: docker.elastic.co/kibana/kibana-oss
+  comment: via https://www.elastic.co/guide/en/kibana/7.6/docker.html#pull-image
+  patterns:
+  - pattern: '>= 7.6.1'
+  tags:
+  - sha: 72d816c99cc86b117baf04385020121f71015d7f5f9eba2a59e72532d645d38f
+    tag: 7.6.1
+- name: docker.io/bitnami/postgresql
+  overrideRepoName: postgresql-bitnami
+  tags:
+  - sha: 9f32478fdb19fb3a392999e7bc89cec54c2e74aa3313dc7667cdd750bb9b03e0
+    tag: 13.6.0-debian-10-r52
+  - sha: c9d75b4521dbb75747d936504cb16031a087ae51755868c6b4e7fad0e2b8615d
+    tag: 15.1.0-debian-11-r20
+- name: docker.io/envoyproxy/envoy
+  patterns:
+  - pattern: '>= 1.18.4'
+- name: docker.io/fluxcd/flux-cli
+  tags:
+  - sha: 60ec02342a2770f44d4afe78ae38bc195b4e3f21d4620dad02a3037b9c3721da
+    tag: v0.27.0
+- name: ealen/echo-server
+  patterns:
+  - pattern: '>=0.5.0'
+- name: elasticsearch
+  tags:
+  - tag: 6.8.13
+    sha: 8d4e29332dc159e7c256efa131453bd62a35b6e90f32aa9ab3f76632e29372c3
+- name: eu.gcr.io/k8s-artifacts-prod/autoscaling/cluster-autoscaler
+  tags:
+  - tag: v1.23.1
+    sha: cd2101ba67f3d6ec719f7792d4bdaa3a50e1b716f3a9ccee8931086496c655b7
+  - tag: v1.23.0
+    sha: f46687231c2c1bfa139f2b18275b123222c8cf6a288bb9c8145932bd14ac3deb
+  - tag: v1.22.2
+    sha: 23d18aa556222f62a2d6baefa0de8757a5fe4ac3f218ba685106429333aea820
+  - tag: v1.22.1
+    sha: 3e8ccc06acea8f9c90636e7cb0a288b46fbf35070b562e9ba337c417af9d19be
+  - tag: v1.22.0
+    sha: 07ab8c89cd0ad296ddb6347febe196d8fe0e1c757656a98f71199860d87cf1a5
+  - tag: v1.21.2
+    sha: 69e980d32052fa6c38e8744f1db9b176f11a2a2eb0d5a1db8990139dd29ded4b
+  - tag: v1.21.1
+    sha: 9494f34a5dcf7202bc08a33a617062cd29b4b57a6914a89bdde2c6a219b0b942
+  - tag: v1.21.0
+    sha: 7a8123595b4878dff6eeef2b8f47d1903f6adcd930a420006ea1af95c98c62f4
+  - tag: v1.20.0
+    sha: 1c19fa17b29db548d0304e9444adf84e8a6f38ee4c0a12d2ecaf262cb10c0e50
+  - tag: v1.19.1
+    sha: 06969498d858f456929b5715b82c7eae23788729763590ffa4e622c1c6b8c1c6
+  - tag: v1.18.3
+    sha: ad77e9587aff8cdaa90fb371cfff4458205ef63a4783734b5dd667872d1e91e1
+  - tag: v1.18.2
+    sha: 069e12b64d6134732b36b9557194ea927f3132a1ebe6cb6fa1ee1d1e7e8f000c
+  - tag: v1.18.1
+    sha: 1f5b11617389b8e4ce15eb45fdbbfd4321daeb63c234d46533449ab780b6ca9a
+  - tag: v1.17.3
+    sha: 94b2cb0238f6e24d8a7253418f89dd5bcc7dd5d24244f30a55c994cc1883fb59
+  - tag: v1.17.2
+    sha: bd3714e294dcef2855e7c10f57c754b280fa2e7a1d470a511bbe6ac78150ff0f
+  - tag: v1.16.5
+    sha: aacbfd75b5cbbae9d9a663447e7b9ac42923136cc2487f93ea89e590f25c77a3
+  - tag: v1.15.6
+    sha: a367cb89efbc2eafcb6df98ce6cfaf8d098928ae23ca2da56a7d2e95fc825c44
+  - tag: v1.14.8
+    sha: 60a75bd24a4121adf5de16cdad76a52295d33aa8aa7c2945b4a9a1a8d2ac17f0
+
+# falco-app images
+- name: falcosecurity/falco
+  patterns:
+  - pattern: '>= 0.33.0'
+- name: falcosecurity/falco-driver-loader
+  patterns:
+  - pattern: '>= 0.32.0'
+- name: falcosecurity/falco-exporter
+  patterns:
+  - pattern: '>= v0.5.0'
+- name: falcosecurity/falco-no-driver
+  patterns:
+  - pattern: '>= 0.33.0'
+- name: falcosecurity/falcosidekick
+  patterns:
+  - pattern: '>= 2.22.0'
+# fluent-bit images
+- name: fluent/fluent-bit
+  patterns:
+  - pattern: '>= 1.x.x'
+  tags:
+  - sha: 137669ee97787c930ec00a8babff46ecc76988d128cc9e7fa581d1b05ef8fb3d
+    tag: 1.9.8
+    customImages:
+    - tagSuffix: aws-plugins
+      dockerfileOptions:
+      - |
+        FROM fluent/fluent-bit:1.9.8
+        COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/kinesis.so /fluent-bit/kinesis.so
+        COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/firehose.so /fluent-bit/firehose.so
+        COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/cloudwatch.so /fluent-bit/cloudwatch.so
+        CMD ["/fluent-bit/bin/fluent-bit", "-e", "/fluent-bit/firehose.so", "-e", "/fluent-bit/cloudwatch.so", "-e", "/fluent-bit/kinesis.so", "-c", "/fluent-bit/etc/fluent-bit.conf"]
+  - sha: 8e3fdc011d3ff98502143650dfa3261860b11f1f289dbb3184c630f71236a366
+    tag: 1.7.9
+    customImages:
+    - tagSuffix: systemd247-aws-plugins
+      dockerfileOptions:
+      - |
+        FROM amd64/debian:buster-slim as builder
+        RUN echo "deb http://deb.debian.org/debian buster-backports main" > /etc/apt/sources.list.d/backports.list && \
+            apt-get update && \
+            apt-get install -y --no-install-recommends \
+            libsystemd-dev/buster-backports
+        FROM fluent/fluent-bit:1.7.9
+        COPY --from=builder /usr/lib/x86_64-linux-gnu/libsystemd* /lib/x86_64-linux-gnu/
+        COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/kinesis.so /fluent-bit/kinesis.so
+        COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/firehose.so /fluent-bit/firehose.so
+        COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/cloudwatch.so /fluent-bit/cloudwatch.so
+        CMD ["/fluent-bit/bin/fluent-bit", "-e", "/fluent-bit/firehose.so", "-e", "/fluent-bit/cloudwatch.so", "-e", "/fluent-bit/kinesis.so", "-c", "/fluent-bit/etc/fluent-bit.conf"]
+# Momentarily disable due failing OCI index
+# Seeh ttps://gigantic.slack.com/archives/C3C7ZQXC1/p1674735852349169
+# - name: fluxcd/helm-controller
+#   overrideRepoName: fluxcd-helm-controller
+#   patterns:
+#   - pattern: '>= v0.12.0'
+- name: fluxcd/image-automation-controller
+  overrideRepoName: fluxcd-image-automation-controller
+  patterns:
+  - pattern: '>= v0.16.0'
+# Momentarily disable due failing OCI index
+# Seeh ttps://gigantic.slack.com/archives/C3C7ZQXC1/p1674735852349169
+# - name: fluxcd/image-reflector-controller
+#   overrideRepoName: fluxcd-image-reflector-controller
+#   patterns:
+#   - pattern: '>= v0.13.0'
+# - name: fluxcd/kustomize-controller
+#   overrideRepoName: fluxcd-kustomize-controller
+#   patterns:
+#   - pattern: '>= v0.16.0'
+- name: fluxcd/notification-controller
+  overrideRepoName: fluxcd-notification-controller
+  patterns:
+  - pattern: '>= v0.18.0'
+# Momentarily disable due failing OCI index
+# Seeh ttps://gigantic.slack.com/archives/C3C7ZQXC1/p1674735852349169
+# - name: fluxcd/source-controller
+#   overrideRepoName: fluxcd-source-controller
+#   patterns:
+#   - pattern: '>= v0.17.0'
+- name: gcr.io/cadvisor/cadvisor
+  patterns:
+  - pattern: '>= v0.44.0'
+- name: gcr.io/cloud-provider-vsphere/cpi/release/manager
+  overrideRepoName: cloud-provider-vsphere
+  patterns:
+  - pattern: '>= v1.22.6'
+- name: gcr.io/cluster-api-provider-vsphere/release/manager
+  overrideRepoName: cluster-api-vsphere-controller
+  patterns:
+  - pattern: '>= v0.8.1'
+- name: gcr.io/google-containers/startup-script
+  tags:
+  - sha: 9d0006c93668388b3616235bf87954a5e4d9aac16721a237761f0ff3ce61a58b
+    tag: v2
+- name: gcr.io/google_containers/defaultbackend
+  tags:
+  - sha: ee3aa1187023d0197e3277833f19d9ef7df26cee805fef32663e06c7412239f9
+    tag: "1.0"
+  - sha: a64c8ed5df00c9f238ecdeb28eb4ed226faace573695e290a99d92d503593e87
+    tag: "1.2"
+- name: gcr.io/heptio-images/eventrouter
+  tags:
+  - sha: dba60a88600d2d94fcd4c365e2931e54ae9aa495e94a924f80814e019b7ea046
+    tag: v0.3
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - USER root
+      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+      - USER giantswarm
+- name: gcr.io/heptio-images/gangway
+  tags:
+  - sha: dd6030630fa2c826e9d2ff1a8e447554d12c1d59e15ae24dd2370115e1121369
+    tag: v3.1.0
+- name: gcr.io/heptio-images/kube-conformance
+  tags:
+  - sha: 4b63b91265ed0e4a986db9ce4bab22f590d773108713f806180990bd0e0c0806
+    tag: v1.11
+- name: gcr.io/k8s-staging-cloud-provider-gcp/gcp-compute-persistent-disk-csi-driver
+  patterns:
+  - pattern: '>= 1.7.0'
+- name: gcr.io/kubebuilder/kube-rbac-proxy
+  patterns:
+  - pattern: '>= v0.4.1'
+- name: gcr.io/kubernetes-helm/tiller
+  tags:
+  - sha: 59b6200a822ddb18577ca7120fb644a3297635f47d92db521836b39b74ad19e8
+    tag: v2.16.8
+- name: gcr.io/spark-operator/spark-operator
+  tags:
+  - sha: deb7bb731c8354d15d5afe857016a79d81355e967ecd3aa8a95e7c7df916171a
+    tag: v2.4.0-v1beta1-latest
+- name: gfkse/oauth2_proxy
+  tags:
+  - sha: 4bba1afcd3af85b550b42647e92b3fab36448c75e1af611a65644f77f4dde314
+    tag: kubernetes-3-ca-certs
+- name: ghcr.io/external-secrets/external-secrets
+  patterns:
+  - pattern: '>= v0.7.0'
+- name: ghcr.io/inlets/inlets-operator
+  tags:
+  - sha: e60e6528ff10b650de8614bc1e30fd516dc559ab603f54d0dae2cd3b2d319884
+    tag: v0.14.1
+- name: ghcr.io/inlets/inlets-pro
+  tags:
+  - sha: 6688f52e2cab25a4952616f9f4f1569daf288d09142a1692d144c208935edefe
+    tag: v0.8.8
+- name: ghcr.io/k8snetworkplumbingwg/multus-cni
+  tags:
+  - sha: ab94a03c7b8d25cc6b2c70878f95b26e3b6ebbb569119acb5ee988711bb139c1
+    tag: v3.9-thick-amd64
+  - sha: ce4c3a421b0ca97540af911f34858bdd9b06fa5817ba7fa2b3bbb906f9237b46
+    tag: v3.9-amd64
+- name: ghcr.io/kyverno/kyverno
+  tags:
+  - sha: 0b65e9f07df7073bf055339fea2c3f42ad799b7cc350314e469dcd9809140911
+    tag: v1.8.4
+  - sha: 99b5ada2cd047e99377c45b2a9a363890bc631301a2b53f1ee07308e123d39d6
+    tag: v1.9.0
+- name: ghcr.io/kyverno/kyvernopre
+  tags:
+  - sha: 0447e825c733a887a27160c71ee93fc78273794c960153d9aaf987c8a3f92fd0
+    tag: v1.8.4
+  - sha: c0afa540192d3c5bcd62234ef558bafa01df98859c8230dc51b1c70835cfc9cc
+    tag: v1.9.0
+- name: ghcr.io/kyverno/policy-reporter
+  tags:
+  - sha: 6babf7ebfe5d2c4395cceba14c1b5e31b39fa3e5a7e6416e1defbf0c25ec7b6a
+    tag: '2.12.0'
+- name: ghcr.io/kyverno/policy-reporter-kyverno-plugin
+  patterns:
+  - pattern: '>= 0.3.2'
+- name: ghcr.io/kyverno/policy-reporter-ui
+  tags:
+  - sha: 6085d283ac401a1ef8d70682af855054c77bc8611ca66ada137f7f37b9ca9076
+    tag: '1.7.2'
+- name: ghcr.io/opsgenie/kubernetes-event-exporter
+  comment: used for https://github.com/giantswarm/event-exporter-app
+  patterns:
+  - pattern: '>= v0.9'
+- name: ghcr.io/prymitive/karma
+  patterns:
+  - pattern: '>= 0.74'
+- name: goharbor/chartmuseum-photon
+  tags:
+  - sha: e7115a56a8482930bab8f72bd3dac49954e2116e0ad9ab640a936278cb776f19
+    tag: v0.7.1-v1.6.0
+- name: goharbor/clair-photon
+  tags:
+  - sha: 91ca0032d89b4946848f44e1fce2d142b6a8587f3e4b9bc1f7a94ae84b1479ed
+    tag: v2.0.5-v1.6.0
+- name: goharbor/harbor-adminserver
+  tags:
+  - sha: c3ca012c2d69099ba4e3bbedc58ffe146fd10aa5129d44cc7d735edf6167959e
+    tag: v1.6.0
+- name: goharbor/harbor-db
+  tags:
+  - sha: ee65d512c93860bd4872be296de80c079842a64e2a4002360e720222a87ec346
+    tag: v1.6.0
+- name: goharbor/harbor-jobservice
+  tags:
+  - sha: 51d2bf14cd9d1bbf082793a0556ff949937655c67569a86424210a1455f60057
+    tag: v1.6.0
+- name: goharbor/harbor-ui
+  tags:
+  - sha: de332db437b8df6ce05203247cbf97ac9f4953672a8c22be8858aee47a0f435f
+    tag: v1.6.0
+- name: goharbor/notary-server-photon
+  tags:
+  - sha: 57ac34699c3119a9c7d5334a2f8fce8bca35591281917913955672347e601814
+    tag: v0.5.1-v1.6.0
+- name: goharbor/notary-signer-photon
+  tags:
+  - sha: d5c32fd75aff3d6e436ccf37e3172fc526900ef281324cc5904eab3fe4bb4b92
+    tag: v0.5.1-v1.6.0
+- name: goharbor/registry-photon
+  tags:
+  - sha: 070dcc29fb5b34cdcc982394ead57f598160fd61bd8daee4b2a5f39ea37bd7a0
+    tag: v2.6.2-v1.6.0
+- name: golang
+  patterns:
+  - pattern: '>= 1.13.1'
+  tags:
+  - sha: 244a736db4a1d2611d257e7403c729663ce2eb08d4628868f9d9ef2735496659
+    tag: 1.14.1-alpine3.11
+  - sha: 4d8abd16b03209b30b48f69a2e10347aacf7ce65d8f9f685e8c3e20a512234d9
+    tag: 1.15.2-alpine3.12
+  - sha: 11f6b517bccb82779dbddfe57564a7e32c7d76d58ee032122967d0d9fc5edca1
+    tag: 1.16-alpine3.12
+  - sha: 3e6a2def9a57f23344a75bd71d9cd79726f0fbaf4b75330be5669773df0e9d4c
+    tag: 1.16.7-alpine3.14
+  - sha: 55f55d3232f63391e0797acaf145ade8f6fca2ff36795dd5ae446de360724dec
+    tag: 1.17.1-alpine3.14
+  - sha: 31d0f68e6b1207775713e6ad3fe291bbe6061a8d49540343f4c5b69e800580f7
+    tag: 1.17.7-alpine3.14
+  - sha: d45bdb73eb0e1c4629e3e42082f2541cb0b997ca2ad9c60b86b33e8a71340681
+    tag: 1.17.8-alpine3.14
+  - sha: 42d35674864fbb577594b60b84ddfba1be52b4d4298c961b46ba95e9fb4712e8
+    tag: 1.18.1-alpine3.15
+  - sha: ca4f0513119dfbdc65ae7b76b69688f0723ed00d9ecf9de68abbf6ed01ef11bf
+    tag: 1.19.1-alpine3.16
+- name: golangci/golangci-lint
+  tags:
+  - sha: 05764fbd373c2b2c44186b0a98774b37499cbe71d41854def5487ead8b9861b5
+    tag: v1.23.8
+- name: grafana/grafana
+  patterns:
+  - pattern: '>= 6.0.0'
+- name: grafana/grafana-image-renderer
+  patterns:
+  - pattern: '>= 2.0.0'
+- name: grafana/loki
+  patterns:
+  - pattern: '>= v1.2.0'
+- name: grafana/loki-canary
+  patterns:
+  - pattern: '>= v2.1.0'
+- name: grafana/promtail
+  patterns:
+  - pattern: '>= v1.2.0'
+- name: instrumenta/conftest
+  tags:
+  - sha: 5edb74aecebc29967ecc694c89c87ad9fda33e6e72c1459dee697e2a55ac2bba
+    tag: v0.18.1
+  - sha: 7da62b227612d5cf50d6de80db740b77bcfb7fd52b2e1aa679dd9edd692fec21
+    tag: v0.21.0
+- name: jaegertracing/all-in-one
+  overrideRepoName: jaeger-all-in-one
+  patterns:
+  - pattern: '>= 1.17.0'
+# Used in prometheus-operator-app
+- name: jettech/kube-webhook-certgen
+  patterns:
+  - pattern: '>= v1.2.0'
+- name: jgsqware/fluentd-loki-plugin
+  tags:
+  - sha: 7dbe2ccfbf2eb7b29367f6a3ee7c0976c3b45e4e21d6363cb43b156c17488259
+    tag: 9ee2ce8
+- name: jimmidyson/configmap-reload
+  patterns:
+  - pattern: '>= v0.2.0'
+- name: jimschubert/swagger-codegen-cli
+  tags:
+  - sha: 1d929c3de13d97fa351b2a76e48f306be6080d697cbbc4c1b6b6fb407f5d9a5e
+    tag: 2.2.3
+- name: jollinshead/journald-cloudwatch-logs
+  tags:
+  - sha: eea825329e678c5e259ffde8e07ffc1223e851f0018fbbb50b607f3fb5beefdb
+    tag: 0.1
+- name: justwatch/elasticsearch_exporter
+  patterns:
+  - pattern: '>= v1.1.0'
+- name: k8s.gcr.io/autoscaling/cluster-autoscaler
+  patterns:
+  - pattern: '>= 1.24.0'
+- name: k8scloudprovider/cinder-csi-plugin
+  patterns:
+  - pattern: '>= 1.20.0'
+- name: k8scloudprovider/octavia-ingress-controller
+  patterns:
+  - pattern: '>= 1.20.0'
+- name: k8scloudprovider/openstack-cloud-controller-manager
+  patterns:
+  - pattern: '>= 1.20.0'
+- name: k8spin/loki-multi-tenant-proxy
+  tags:
+  - sha: 4819d2319477d1c5daf0321a97770d71cfb4aa2ec395662769909a7a1b3ae32c
+    tag: v1.0.0
+- name: kedacore/keda
+  overrideRepoName: kedacore-keda
+  tags:
+  - sha: b4932b7c763d57e97bd3165749cfd994196b20575e21a3b4cfc3097067f3fd67
+    tag: 2.1.0
+- name: kedacore/keda-metrics-apiserver
+  overrideRepoName: kedacore-keda-metrics-apiserver
+  tags:
+  - sha: 8b315d56586ed4b658e0540fa80d395bf6ce0698693d07177aa4c13ce2c452f9
+    tag: 2.1.0
+- name: kindest/node
+  overrideRepoName: kind-node
+  patterns:
+  - pattern: '>= v1.16'
+- name: koalaman/shellcheck-alpine
+  tags:
+  - sha: 7d4d712a2686da99d37580b4e2f45eb658b74e4b01caf67c1099adc294b96b52
+    tag: v0.6.0
+- name: kong
+  patterns:
+  - pattern: '>= 1.4.3'
+- name: kong/kong-gateway
+  tags:
+  - sha: 97eef523687765cee839588b8390474bde36efb66c3e11befc7f0a0bc65ba990
+    tag: '2.3.3.2-alpine'
+  - sha: dede21952cb80fc55b5b36653e0c8e340a72ee29141d92d0af9e330da67b4d4f
+    tag: '2.5.1.2-alpine'
+  - sha: f74c2be09e6acadadb95f3c4f585ee5f9c74c5a8232705990f290ce682def5f0
+    tag: '2.7.1.1-alpine'
+  - sha: 8bf1758957199904b8fd5694caacfa8ff31ca764e4391c52804a7a6ff070c9f2
+    tag: '2.8.0.0-alpine'
+  - sha: 865f4446b8d8b19b9fd13d391e56f31577cc52460d10547f8d45472b7b53411d
+    tag: '2.8.1.0-alpine'
+  - sha: 1b621dc44056b7ae3ab60c0aa2eaa2dc22961566390b56084b6d6f8d428edd45
+    tag: '2.8.1.2-alpine'
+  - sha: e0c12d980bd18a857e174d12d273cea0c1aa75bb743572abea03582f93a721be
+    tag: '2.8.1.3-alpine'
+  - sha: 2dc8774cd71a4344963934c6ec51e88cb143feff47cdae81d29b20ec52b19f76
+    tag: '2.8.1.4-alpine'
+  - sha: c25655e3ffb93d503fbb1ea117bec381de6910c9f31607d1f08bef2e4ab65320
+    tag: '2.8.2.0-alpine'
+  - sha: 3148c18d95b30a931455ffefb4d391e50a545b48c97afc51792a989b74242c1b
+    tag: '2.8.2.1-alpine'
+  - sha: 3e3808c20a50305ac148d187a3bc6c7ee3a0b7e67b6de732d84cbc901e2ad92f
+    tag: '2.8.2.2-alpine'
+  - sha: f111f0e906abd5f4cffeb1e06ee2df46b165d34f45ed8d561468d37987baacbd
+    tag: '3.0.0.0-alpine'
+  - sha: cc4808ce896d1d2e3fcedccb52a0d09adf9c90c88748eb4ac90db40ae42538ca
+    tag: '3.0.1.0-alpine'
+  - sha: 6be8640d368927ff1cc6b08edaf5817bb0134f5644060b825debe329f4be8d5f
+    tag: '2.8.2.3-alpine'
+  - sha: 17ee621199bae5227567c14d451daac0b47fd3012224ba54c938d73e96ecce92
+    tag: '2.8.2.3-debian'
+  - sha: ad345462fe02a5acec549ad0e6d6f56d1e479ca41f5fcdb5366f971bb8bdfa9f
+    tag: '3.1.0.0-debian'
+  - sha: d666353114fb4947543d0f45e7bb5f5bf35502c5e16a9c0ee7611c5f778e6a04
+    tag: '3.1.1.1-debian'
+  - sha: 684970a659b0dd3638701b89b0247b646ccfb7fc7ac16161e7843950aae20cb1
+    tag: '3.1.1.2-debian'
+  - sha: 63548882c75f719d32120ef3817950b0791ea58504edf7304490a4de4ee5ff64
+    tag: '3.1.1.3-debian'
+- name: kong/kubernetes-ingress-controller
+  overrideRepoName: kong-ingress-controller
+  patterns:
+  - pattern: '>= 1.1.1'
+- name: looztra/kubesplit
+  tags:
+  - sha: 21bf896bb17dc1a9563c05a4a3edfad9690ea52bb0f33f12fe300d5c48e70e6d
+    tag: 0.3.2-dd13538
+- name: macropower/analytics-panel-server
+  overrideRepoName: macropower-analytics-panel-server
+  patterns:
+  - pattern: '>= 0.0.1'
+- name: madnight/alpine-wkhtmltopdf-builder
+  tags:
+  - sha: 009bc5a3e8823b92568473f075e157b59488d0ddf3209865a7aa39108323bfad
+    tag: '0.12.5-alpine3.10-606718795'
+- name: mcr.microsoft.com/azuremonitor/containerinsights/ciprod
+  tags:
+  - sha: 46ebe46d7d5284455b256c6d0ebaa396cd38b2618cd292e607c447ab5a833311
+    tag: 'ciprod06112021'
+- name: mcr.microsoft.com/oss/azure/aad-pod-identity/mic
+  patterns:
+  - pattern: '>= 1.7.0'
+- name: mcr.microsoft.com/oss/azure/aad-pod-identity/nmi
+  patterns:
+  - pattern: '>= 1.7.0'
+- name: mcr.microsoft.com/oss/kubernetes-csi/azuredisk-csi
+  patterns:
+  - pattern: '>= v1.12.0'
+- name: mcr.microsoft.com/oss/kubernetes-csi/azurefile-csi
+  patterns:
+  - pattern: '>= v1.12.0'
+- name: mcr.microsoft.com/oss/kubernetes/azure-cloud-controller-manager
+  patterns:
+  - pattern: '>= v1.1.8'
+- name: mcr.microsoft.com/oss/kubernetes/azure-cloud-node-manager
+  patterns:
+  - pattern: '>= v1.1.8'
+- name: mintel/dex-k8s-authenticator
+  patterns:
+  - pattern: '>= 1.4.0'
+- name: mysql
+  tags:
+  - sha: c8f03238ca1783d25af320877f063a36dbfce0daa56a7b4955e6c6e05ab5c70b
+    tag: 5.7.14
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - USER mysql
+- name: nginx
+  tags:
+  - tag: 1.23-alpine
+    sha: 2452715dd322b3273419652b7721b64aa60305f606ef7a674ae28b6f12d155a3
+- name: nginxinc/nginx-unprivileged
+  tags:
+  - sha: bea513e7cca17da4fd24733bbb21c5693c305bda75d40ccddb77717a56a5fb4b
+    tag: 1.23-alpine
+- name: ns1labs/flame
+  tags:
+  - sha: a86c25be95c8e568b2e604a6958e6e0899a2c7f870c9cee4728662ec4899a317
+    tag: 0.11.0
+- name: omnition/opencensus-collector
+  patterns:
+  - pattern: '>= 0.1.11'
+- name: openpolicyagent/conftest
+  patterns:
+  - pattern: '>= v0.25.0'
+- name: opensearchproject/opensearch
+  patterns:
+  - pattern: '>= v2.0.0'
+- name: opensearchproject/opensearch-dashboards
+  patterns:
+  - pattern: '>= v2.0.0'
+- name: peaceiris/hugo
+  tags:
+  - tag: v0.104.3
+    sha: 5d2d12f4780da9d43395e4f9958fb1f1c18ae8a1ea758c896115c5c504b3d1c6
+- name: projects.registry.vmware.com/vmware-cloud-director/cloud-director-named-disk-csi-driver
+  overrideRepoName: csi-cloud-director
+  tags:
+  - tag: 1.2.0.latest
+    sha: e281f711687e29a4c94ab2de12096a5d020515941d2d935ca1ee8f10b575c3e7
+- name: projects.registry.vmware.com/vmware-cloud-director/cloud-provider-for-cloud-director
+  overrideRepoName: cpi-cloud-director
+  patterns:
+  - pattern: '>= 1.2.0'
+- name: prom/cloudwatch-exporter
+  tags:
+  - sha: 7ce6d17ad3360ed5d5dddc57ebf13dc7d676900c40a22b3144a8a17af352c399
+    tag: "0.4"
+- name: prom/prometheus
+  tags:
+  - sha: acd95556f589764b00bf0eb46048ab1cdedc95b4fa380c29e911f61dab7ecc51
+    tag: v2.6.1
+  - sha: e02bb3dec47631b4d31cede2d35ff901d892b57f33144406ee7994e8c94fb2d7
+    tag: v2.9.1
+  - sha: 0a8caa2e9f19907608915db6e62a67383fe44b9876a467b297ee6f64e51dd58a
+    tag: v2.13.1
+  - sha: 914525123cf76a15a6aaeac069fcb445ce8fb125113d1bc5b15854bc1e8b6353
+    tag: v2.15.2
+  patterns:
+  - pattern: '>= 2.17.0'
+- name: prom/pushgateway
+  patterns:
+  - pattern: '>= v1.0.0'
+- name: public.ecr.aws/aws-ec2/aws-node-termination-handler
+  tags:
+  - sha: 18b6fb49fdb506dd62f26bee6f1076414ea1e044ad8d922692dcd676163d9062
+    tag: v1.17.2
+  - sha: 9b75919ea935031f47f607d72c22411ad6502c6485191fe06176035342a2a697
+    tag: v1.16.5
+  - sha: 09ddd27b8a0d3108bb282309058740f0136ccad4dc9da847e3efa58ea0c958ea
+    tag: v1.15.0
+- name: python
+  tags:
+  - sha: 50e21e0bac13e1dfa37626d1c05433cc29e0f1d15fa390e2ecbae32221c6646d
+    tag: 3.8.12-slim
+  - sha: db35c8d2e810559d90af0a126dac55cf93601202061d3f61f94ac3c460d4a211
+    tag: 3.9-alpine3.13
+  - sha: d1657b8c38e1c4003b44c2c39c205374bfbf53b3a0fa4b24e7d2d2671594aa41
+    tag: 3.10.3-slim
+- name: quay.io/argoproj/argocd
+  patterns:
+  - pattern: '>= v2.0.1'
+- name: quay.io/calico/cni
+  patterns:
+  - pattern: '>= v3.9.5'
+- name: quay.io/calico/ctl
+  overrideRepoName: calicoctl
+  patterns:
+  - pattern: '>= v3.19.0'
+    customImages:
+    - dockerfileOptions:
+      - |
+        FROM quay.io/giantswarm/alpine:3.13.5
+        COPY --from=0 /calicoctl /calicoctl
+        ENV PATH=$PATH:/
+        ENTRYPOINT ["calicoctl"]
+- name: quay.io/calico/kube-controllers
+  patterns:
+  - pattern: '>= v3.9.5'
+- name: quay.io/calico/kube-controllers
+  overrideRepoName: calico-crd-installer
+  patterns:
+  - pattern: '>= v3.21.3'
+    customImages:
+    - dockerfileOptions:
+      - |
+        FROM quay.io/giantswarm/crd-installer:0.1.2 AS installer
+        FROM quay.io/giantswarm/alpine:3.15.0 AS downloader
+        WORKDIR /tmp/crd-installer
+        COPY --from=0 /usr/bin/kube-controllers /crd-installer/kube-controllers
+        COPY --from=0 /lib64/ /lib64
+        COPY --from=installer /scripts /scripts
+        RUN CALICO_VERSION=$(/crd-installer/kube-controllers -version) && \
+            /scripts/download-calico-crds.sh $CALICO_VERSION
+        FROM scratch
+        COPY --from=downloader /tmp/crd-installer/crds /crds
+        COPY --from=installer /usr/local/bin/crd-installer /usr/local/bin/crd-installer
+        CMD ["/usr/local/bin/crd-installer", "-dir", "/crds"]
+- name: quay.io/calico/node
+  patterns:
+  - pattern: '>= v3.9.5'
+- name: quay.io/calico/pod2daemon-flexvol
+  patterns:
+  - pattern: '>= v3.9.5'
+- name: quay.io/calico/typha
+  patterns:
+  - pattern: '>= v3.10.1'
+- name: quay.io/ceph/ceph
+  patterns:
+  - pattern: '>= v16.2.5-20210708'
+- name: quay.io/cephcsi/cephcsi
+  patterns:
+  - pattern: '>= v3.1.1'
+- name: quay.io/cilium/certgen
+  overrideRepoName: cilium-certgen
+  patterns:
+  - pattern: '>= v0.1.5'
+- name: quay.io/cilium/cilium
+  patterns:
+  - pattern: '>= v1.11.2'
+- name: quay.io/cilium/cilium-etcd-operator
+  patterns:
+  - pattern: '>= v2.0.7'
+- name: quay.io/cilium/clustermesh-apiserver
+  overrideRepoName: cilium-clustermesh-apiserver
+  patterns:
+  - pattern: '>= v1.11.2'
+- name: quay.io/cilium/hubble-relay
+  patterns:
+  - pattern: '>= v1.11.2'
+- name: quay.io/cilium/hubble-ui
+  patterns:
+  - pattern: '>= v0.8.5'
+- name: quay.io/cilium/hubble-ui-backend
+  patterns:
+  - pattern: '>= v0.8.5'
+- name: quay.io/cilium/operator
+  overrideRepoName: cilium-operator
+  patterns:
+  - pattern: '>= v1.11.2'
+- name: quay.io/cilium/operator-generic
+  overrideRepoName: cilium-operator-generic
+  patterns:
+  - pattern: '>= v1.11.2'
+- name: quay.io/cilium/startup-script
+  overrideRepoName: cilium-startup-script
+  tags:
+  - sha: 72db9d6d9b319e36d68ad3a4cd9c43e3f8ded80694972dc458afacd34e73eb46
+    tag: 62bfbe88c17778aad7bef9fa57ff9e2d4a9ba0d8
+- name: quay.io/coreos/configmap-reload
+  patterns:
+  - pattern: '>= v0.0.1'
+- name: quay.io/coreos/etcd
+  patterns:
+  - pattern: '>= v3.3'
+- name: quay.io/coreos/etcd-operator
+  tags:
+  - sha: 2a1ff56062861e3eaf216899e6e73fdff311e5842d2446223924a9cc69f2cc69
+    tag: v0.3.2
+- name: quay.io/coreos/flannel
+  tags:
+  - sha: 7806805c93b20a168d0bbbd25c6a213f00ac58a511c47e8fa6409543528a204e
+    tag: v0.11.0-amd64
+- name: quay.io/coreos/prometheus-config-reloader
+  patterns:
+  - pattern: '>= v0.38.1'
+- name: quay.io/coreos/prometheus-operator
+  tags:
+  - sha: 97697df680ea4c7e70c4cb4af5bdc44f7a70b25be7afde70bd921a658e4c62ec
+    tag: v0.30.1
+  patterns:
+  - pattern: '>= 0.38.1'
+- name: quay.io/dexidp/dex
+  patterns:
+  - pattern: '>=v2.24.0'
+- name: quay.io/fairwinds/goldilocks
+  patterns:
+  - pattern: '>= v2.2.0'
+- name: quay.io/fairwinds/polaris
+  patterns:
+  - pattern: '>= 4.0'
+- name: quay.io/giantswarm/amazon-k8s-cni
+  patterns:
+  - pattern: '>= v1.6.0'
+- name: quay.io/giantswarm/docker-strongswan
+  tags:
+  - sha: 0deee46507d8d9c354b9e924f969dfb370083539a7130531b575e05a09603a31
+    tag: d432793577e07bfe6856d3739e6bca3d91db71e4
+  comment: push docker-strongswan also to china registry
+- name: quay.io/giantswarm/k8s-api-healthz
+  tags:
+  - sha: 9a4f991725c0bfbc8a3b8b5a0d7fb4ea76136c65b5924d5f2c37a12f66a9b2d1
+    tag: 1c0cdf1ed5ee18fdf59063ecdd84bf3787f80fac
+- name: quay.io/giantswarm/k8s-setup-network-environment
+  tags:
+  - sha: e337d03e569e53b246f4dea91359efbabe7b3ddc78878e1875d0c7aaf0e17fd5
+    tag: 1f4ffc52095ac368847ce3428ea99b257003d9b9
+- name: quay.io/google-cloud-tools/kube-eagle
+  patterns:
+  - pattern: '>= v1.1.4'
+- name: quay.io/helmpack/chart-testing
+  overrideRepoName: helm-chart-testing
+  patterns:
+  - pattern: '>= v3.4.0'
+- name: quay.io/jacksontj/promxy
+  patterns:
+  - pattern: '>= v0.0.60'
+- name: quay.io/jetstack/cert-manager-acmesolver
+  patterns:
+  - pattern: '>= v1.6.1'
+- name: quay.io/jetstack/cert-manager-cainjector
+  patterns:
+  - pattern: '>= v0.14.2'
+- name: quay.io/jetstack/cert-manager-controller
+  patterns:
+  - pattern: '>= v0.14.2'
+- name: quay.io/jetstack/cert-manager-ctl
+  patterns:
+  - pattern: '>= v1.5.3'
+- name: quay.io/jetstack/cert-manager-ingress-shim
+  tags:
+  - sha: 544b8602ee566d7ca22aa9e76a92dde4c2ca8dab642f75ea3a4b0a577193632a
+    tag: v0.2.5
+- name: quay.io/jetstack/cert-manager-webhook
+  patterns:
+  - pattern: '>= v0.14.2'
+- name: quay.io/jiralert/jiralert-linux-amd64
+  overrideRepoName: jiralert
+  patterns:
+  - pattern: '>= 1.0'
+- name: quay.io/oauth2-proxy/oauth2-proxy
+  patterns:
+  - pattern: '>= v7.1.3'
+- name: quay.io/open-policy-agent/gatekeeper
+  patterns:
+  - pattern: '>= v3.1.0-beta.5'
+- name: quay.io/prometheus-operator/prometheus-config-reloader
+  patterns:
+  - pattern: '>= v0.43.0'
+- name: quay.io/prometheus-operator/prometheus-operator
+  patterns:
+  - pattern: '>= 0.43.0'
+- name: quay.io/prometheus/alertmanager
+  patterns:
+  - pattern: '>= v0.19.0'
+- name: quay.io/prometheus/haproxy-exporter
+  tags:
+  - sha: d8da0790760c279d961e63aa711fac3fd6a3db237eccea3c8a21239dca64805c
+    tag: v0.9.0
+# node-exporter-app < 1.14.0 relies on custom node-exporter images
+- name: quay.io/prometheus/node-exporter
+  tags:
+  - sha: fc004c4a3d1096d5a0f144b1093daa9257a573ce1fde5a9b8511e59a7080a1bb
+    tag: v0.15.1
+  - sha: 1b129a3801a0440f9c5b2afb20082dfdb31bf6092b561f5f249531130000cb83
+    tag: v0.17.0
+  - sha: b2dd31b0d23fda63588674e40fd8d05010d07c5d4ac37163fc596ba9065ce38d
+    tag: v0.18.0
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+      - USER giantswarm
+  - sha: a2f29256e53cc3e0b64d7a472512600b2e9410347d53cdc85b49f659c17e02ee
+    tag: v0.18.1
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - USER root
+      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+      - USER giantswarm
+  - sha: cf66a6bbd573fd819ea09c72e21b528e9252d58d01ae13564a29749de1e48e0f
+    tag: v1.0.1
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - USER root
+      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+      - USER giantswarm
+  - sha: f2269e73124dd0f60a7d19a2ce1264d33d08a985aed0ee6b0b89d0be470592cd
+    tag: v1.3.1
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - USER root
+      - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+      - USER giantswarm
+# node-exporter-app >= 1.14.0 just uses vanilla images
+- name: quay.io/prometheus/node-exporter
+  patterns:
+  - pattern: '>= v1.3.0'
+- name: quay.io/pusher/oauth2_proxy
+  tags:
+  - sha: 1fad3f247a8edeceead03230d833fcb4c3935a3a57b83787690f15f7daa6b59b
+    tag: v5.1.0
+- name: quay.io/reactiveops/ci-images
+  overrideRepoName: vpa-certgen-ci-images
+  patterns:
+  - pattern: '>= v11'
+    filter: '^(?P<version>.*)-alpine'
+    customImages:
+    - tagSuffix: openssl
+      dockerfileOptions:
+      - RUN apk add --no-cache openssl
+# Used in strimzi-kafka-operator-app
+- name: quay.io/strimzi/jmxtrans
+  overrideRepoName: strimzi-jmxtrans
+  patterns:
+  - pattern: '>= 0.18.0-0'
+- name: quay.io/strimzi/kafka
+  overrideRepoName: strimzi-kafka
+  patterns:
+  - pattern: '>= 0.18.0-0'
+- name: quay.io/strimzi/kafka-bridge
+  overrideRepoName: strimzi-kafka-bridge
+  patterns:
+  - pattern: '>= 0.18.0-0'
+- name: quay.io/strimzi/operator
+  overrideRepoName: strimzi-operator
+  patterns:
+  - pattern: '>= 0.18.0-0'
+- name: quay.io/thanos/thanos
+  patterns:
+  - pattern: '>= v0.17.2'
+
+- name: quay.io/uswitch/kiam
+  patterns:
+  - pattern: '>= v4.0'
+- name: redis
+  tags:
+  - sha: 002a1870fa2ffd11dbd7438527a2c17f794f6962f5d3a4f048f848963ab954a8
+    tag: 3.2.11-alpine
+  - sha: 87275ecd3017cdacd3e93eaf07e26f4a91d7f4d7c311b2305fccb50ec3a1a8cd
+    tag: 4.0.9
+  - sha: cd68f7db2caeff01a62bab0cdb5630e86e2a608b0aba3b988b1d13dcf3cfdedb
+    tag: 6.2.1-alpine
+  - sha: 0039796b887fd30e460353f14e46ba1004152aa97f5f59094cc21eac445fc89b
+    tag: 6.2.4-alpine
+- name: registry.k8s.io/addon-resizer
+  patterns:
+  - pattern: '>= 1.8.7'
+- name: registry.k8s.io/autoscaling/vpa-admission-controller
+  patterns:
+  - pattern: '>= 0.8.0'
+- name: registry.k8s.io/autoscaling/vpa-recommender
+  patterns:
+  - pattern: '>= 0.8.0'
+- name: registry.k8s.io/autoscaling/vpa-updater
+  patterns:
+  - pattern: '>= 0.8.0'
+- name: registry.k8s.io/capi-openstack/capi-openstack-controller
+  patterns:
+  - pattern: '>= 0.4.0'
+- name: registry.k8s.io/cluster-api-aws/cluster-api-aws-controller
+  patterns:
+  - pattern: '>= v0.6.7'
+- name: registry.k8s.io/cluster-api-aws/eks-bootstrap-controller
+  patterns:
+  - pattern: '>= v0.6.7'
+- name: registry.k8s.io/cluster-api-aws/eks-controlplane-controller
+  patterns:
+  - pattern: '>= v0.6.7'
+- name: registry.k8s.io/cluster-api-azure/cluster-api-azure-controller
+  patterns:
+  - pattern: '>= v0.5.0'
+- name: registry.k8s.io/cluster-api-gcp/cluster-api-gcp-controller
+  patterns:
+  - pattern: '>= v1.0.2'
+- name: registry.k8s.io/cluster-api/cluster-api-controller
+  patterns:
+  - pattern: '>= v0.4.0'
+- name: registry.k8s.io/cluster-api/kubeadm-bootstrap-controller
+  patterns:
+  - pattern: '>= v0.4.0'
+- name: registry.k8s.io/cluster-api/kubeadm-control-plane-controller
+  patterns:
+  - pattern: '>= v0.4.0'
+- name: registry.k8s.io/cluster-proportional-autoscaler-amd64
+  patterns:
+  - pattern: '>= 1.6.0'
+
+# We have to ensure that etcd is available to CAPI clusters - we set
+# `clusterConfiguration.imageRepository=docker.io/giantswarm` (e.g. in cluster-aws:
+# https://github.com/giantswarm/cluster-aws/search?q=imageRepository%3A) and that means `kubeadm join` will use
+# the images from our Docker Hub repo. Kubernetes does not support tag suffixes, so we must publish images as
+# `docker.io/giantswarm/coredns:v1.10.0`. And those must not conflict with the `coreos/coreos` tags - since those
+# use a suffix, we're fine here.
+#
+# Once https://github.com/kubernetes/kubeadm/issues/2603 (kubeadm shouldn't pull the coredns image at all since
+# we skip the coredns addon and instead install it using our app platform) is fixed, we can remove this:
+- name: registry.k8s.io/coredns/coredns
+  patterns:
+  - pattern: '>= v1.8.0'
+
+- name: registry.k8s.io/descheduler/descheduler
+  patterns:
+  - pattern: '>= v0.20.0'
+- name: registry.k8s.io/dns/k8s-dns-node-cache
+  patterns:
+  - pattern: '>= 1.21.1'
+- name: registry.k8s.io/etcd
+  patterns:
+  - pattern: '>= v3.5.4-0'
+    customImages:
+    - tagSuffix: k8s
+
+    # There's also `quay.io/coreos/etcd` which is a different image (content and available binaries).
+    # `quay.io/coreos/etcd` has tags such as `v3.4.7`, while `registry.k8s.io/etcd` has tags such as `3.4.7-0`
+    # (but also `3.4.7` which could be the same content as `3.4.7-0`). We have to ensure that etcd is available to
+    # CAPI clusters - we set `clusterConfiguration.imageRepository=docker.io/giantswarm` (e.g. in cluster-aws:
+    # https://github.com/giantswarm/cluster-aws/search?q=imageRepository%3A) and that means `kubeadm join` will use
+    # the images from our Docker Hub repo. Kubernetes does not support suffixes such as the `-k8s` that we already had
+    # here, so we must publish images as `docker.io/giantswarm/etcd:3.5.6-0`. And those must not conflict with the
+    # `quay.io/coreos/etcd` tags. Since those have the `v` in front, we believe to be fine here.
+    - tagSuffix: ""
+- name: registry.k8s.io/external-dns/external-dns
+  patterns:
+  - pattern: '>= v0.10.1'
+- name: registry.k8s.io/hyperkube
+  patterns:
+  - pattern: '>= v1.15 < 1.24'
+- name: registry.k8s.io/ingress-nginx/controller
+  overrideRepoName: ingress-nginx-controller
+  tags:
+  - sha: 54f7fe2c6c5a9db9a0ebf1131797109bb7a4d91f56b9b362bde2abd237dd1974
+    tag: v1.3.1
+  - sha: 34ee929b111ffc7aa426ffd409af44da48e5a0eea1eb2207994d9e0c0882d143
+    tag: v1.4.0
+- name: registry.k8s.io/ingress-nginx/kube-webhook-certgen
+  overrideRepoName: ingress-nginx-kube-webhook-certgen
+  tags:
+  - sha: 549e71a6ca248c5abd51cdb73dbc3083df62cf92ed5e6147c780e30f7e007a47
+    tag: v1.3.0
+  - sha: 39c5b2e3310dc4264d638ad28d9d1d96c4cbb2b2dcfb52368fe4e3c63f61e10f
+    tag: v20220916-gd32f8c343
+- name: registry.k8s.io/kube-apiserver
+  patterns:
+  - pattern: '>= v1.19.0 || >= v1.20.0-0'
+  - pattern: '>= v1.16.8 < v1.19'
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+- name: registry.k8s.io/kube-apiserver
+  tagTrimVersionPrefix: true
+  overrideRepoName: hyperkube
+  patterns:
+  - pattern: '>= v1.19.8 || >= v1.20.0-0'
+    customImages:
+    - dockerfileOptions:
+      - |
+        FROM quay.io/giantswarm/alpine:3.12.1 AS downloader
+        WORKDIR /tmp/hyperkube
+        COPY --from=0 /usr/local/bin/kube-apiserver /tmp/hyperkube/kube-apiserver
+        RUN KUBERNETES_VERSION=$(/tmp/hyperkube/kube-apiserver --version | grep Kubernetes | cut -d ' ' -f 2) && \
+        wget -t 5 https://storage.googleapis.com/kubernetes-release/release/$KUBERNETES_VERSION/bin/linux/amd64/kubelet && \
+        wget -t 5 https://storage.googleapis.com/kubernetes-release/release/$KUBERNETES_VERSION/bin/linux/amd64/kubectl && \
+        chmod +x /tmp/hyperkube/kubelet /tmp/hyperkube/kubectl
+        FROM scratch
+        COPY --from=downloader /tmp/hyperkube/kubelet /kubelet
+        COPY --from=downloader /tmp/hyperkube/kubectl /kubectl
+- name: registry.k8s.io/kube-controller-manager
+  patterns:
+  - pattern: '>= v1.16.8 || >= v1.20.0-0'
+- name: registry.k8s.io/kube-proxy
+  patterns:
+  - pattern: '>= v1.16.8 || >= v1.20.0-0'
+- name: registry.k8s.io/kube-scheduler
+  patterns:
+  - pattern: '>= v1.16.8 || >= v1.20.0-0'
+- name: registry.k8s.io/kube-state-metrics/kube-state-metrics
+  patterns:
+  - pattern: '> v1.9.8'
+- name: registry.k8s.io/metrics-server/metrics-server
+  patterns:
+  - pattern: '>= v0.4.2'
+- name: registry.k8s.io/nvidia-gpu-device-plugin
+  tags:
+  - sha: 4b036e8844920336fa48f36edeb7d4398f426d6a934ba022848deed2edbf09aa
+    tag: 1.0.0
+- name: registry.k8s.io/pause
+  patterns:
+  - pattern: '>= 3.1'
+- name: registry.k8s.io/pause-amd64
+  patterns:
+  - pattern: '>= 3.1'
+- name: registry.k8s.io/provider-aws/aws-ebs-csi-driver
+  patterns:
+  - pattern: '>= 0.7.0'
+- name: registry.k8s.io/provider-aws/cloud-controller-manager
+  overrideRepoName: aws-cloud-controller-manager
+  patterns:
+  - pattern: '>= v1.21.0-alpha.0'
+- name: registry.k8s.io/sig-storage/csi-attacher
+  patterns:
+  - pattern: '>= v1.2.0'
+- name: registry.k8s.io/sig-storage/csi-node-driver-registrar
+  patterns:
+  - pattern: '>= v1.1.0'
+- name: registry.k8s.io/sig-storage/csi-provisioner
+  patterns:
+  - pattern: '>= v1.6.0'
+- name: registry.k8s.io/sig-storage/csi-resizer
+  patterns:
+  - pattern: '>= v0.3.0'
+- name: registry.k8s.io/sig-storage/csi-snapshotter
+  patterns:
+  - pattern: '>= v2.1.1'
+- name: registry.k8s.io/sig-storage/livenessprobe
+  patterns:
+  - pattern: '>= v1.1.0'
+- name: registry.k8s.io/sig-storage/snapshot-controller
+  patterns:
+  - pattern: '>= v3.0.0'
+- name: rook/ceph
+  overrideRepoName: rook-ceph
+  patterns:
+  - pattern: '>= v1.7.0'
+- name: sonobuoy/sonobuoy
+  patterns:
+  - pattern: '>= v0.52.0'
+    customImages:
+    - tagSuffix: alpine-giantswarm
+      dockerfileOptions:
+      - |
+        FROM quay.io/giantswarm/alpine:3.14.0-giantswarm
+        COPY --from=0 /sonobuoy /sonobuoy
+        WORKDIR /
+        CMD ["/sonobuoy", "aggregator", "--no-exit", "-v", "3", "--logtostderr"]
+
+# Used in akv2k8s
+- name: spvest/azure-keyvault-controller
+  patterns:
+  - pattern: '>= 1.3.0'
+- name: spvest/azure-keyvault-webhook
+  patterns:
+  - pattern: '>= 1.3.0'
+# Used in prometheus-operator-app
+- name: squareup/ghostunnel
+  patterns:
+  - pattern: '>= v1.5.2'
+- name: toniblyx/prowler
+  tags:
+  - sha: 017a8fdecbb0aecd6af3446b1357ed36ef92533dd8a19c2283ad29f41b264bc3
+    tag: 2.2.0
+- name: ubuntu/squid
+  tags:
+  - sha: a3df22307c1eb5a7b470f980e0141e97fa98beeaaeb9932743604b121835f3c8
+    tag: 5.2-22.04_beta
+    customImages:
+    - tagSuffix: giantswarm
+      dockerfileOptions:
+      - RUN sed -i 's/http_access deny CONNECT/#http_access deny CONNECT/g' /etc/squid/squid.conf
+# used by efk-stack-app
+- name: untergeek/curator
+  overrideRepoName: elasticsearch-untergeek-curator
+  patterns:
+  - pattern: '>= 5.7.6'
+- name: vault
+  patterns:
+  - pattern: '>= v1.2.0'
+- name: velero/velero
+  patterns:
+  - pattern: '>= v1.4.3'
+- name: weaveworks/watch
+  tags:
+  - sha: bb113953e19fff158de017c447be337aa7a3709c3223aeeab4a5bae50ee6f159
+    tag: master-5b2a6e5
+- name: xpkg.upbound.io/crossplane-contrib/provider-aws
+  overrideRepoName: crossplane-provider-aws
+  patterns:
+  - pattern: '>= v0.33.0'
+- name: xpkg.upbound.io/upbound/provider-aws
+  overrideRepoName: upbound-provider-aws
+  patterns:
+  - pattern: '>= v0.27.0'
+- name: xpkg.upbound.io/upbound/provider-azure
+  overrideRepoName: upbound-provider-azure
+  patterns:
+  - pattern: '>= v0.26.0'
+- name: xpkg.upbound.io/upbound/provider-gcp
+  overrideRepoName: upbound-provider-gcp
+  patterns:
+  - pattern: '>= v0.26.0'
+- name: xpkg.upbound.io/upbound/provider-terraform
+  overrideRepoName: upbound-provider-terraform
+  patterns:
+  - pattern: '>= v0.4.0'
+- name: zricethezav/gitleaks
+  tags:
+  - sha: 548f474c56f6cbf94959f48e66ee99f9b63d949c9c657b105d1e4a3c0a66c985
+    tag: v3.3.0
+  - sha: 237ba8547763ff8a147a420280f97c80e8605eea60312613f7e33d3968d99a0a
+    tag: v6.0.0

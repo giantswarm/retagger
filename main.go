@@ -32,10 +32,14 @@ type CustomImage struct {
 	// Example: "alpine", "docker.io/giantswarm/app-operator", or
 	// "ghcr.io/fluxcd/kustomize-controller"
 	Image string `yaml:"image"`
-	// TagPattern is used to filter image tags. All tags matching the pattern
+	// TagOrPattern is used to filter image tags. All tags matching the pattern
 	// will be retagged.
 	// Example: "v1.[234].*" or ".+-stable"
-	TagPattern string `yaml:"tag_pattern"`
+	TagOrPattern string `yaml:"tag_or_pattern,omitempty"`
+	// SHA is used to filter image tags. If SHA is specified, it will take
+	// precedence over TagOrPattern. However TagOrPattern is still required!
+	// Example: 234cb88d3020898631af0ccbbcca9a66ae7306ecd30c9720690858c1b007d2a0
+	SHA string `yaml:"sha,omitempty"`
 	// DockerfileExtras is a list of additional Dockerfile statements you want to
 	// append to the upstream Dockerfile. (optional)
 	// Example: ["RUN apk add -y bash"]
@@ -50,19 +54,61 @@ type CustomImage struct {
 	OverrideRepoName string `yaml:"override_repo_name,omitempty"`
 }
 
-// skopeoTagList is used to unmarshal `skopeo list-tags` command output.
-type skopeoTagList struct {
-	Tags []string `yaml:"Tags"`
+func (img *CustomImage) Validate() error {
+	if img.TagOrPattern == "" && img.SHA == "" {
+		return fmt.Errorf("neither \"tag_or_pattern\", nor \"sha\" specified")
+	}
+	if img.SHA != "" && img.TagOrPattern == "" {
+		fmt.Errorf("\"tag_or_pattern\" has to be specified when using \"sha\"")
+	}
+	return nil
 }
 
-// BuildAndTag find all tags matching the img.TagPattern, retags, and pushes
+// RetagUsingSHA pulls an image matching the SHA, retags, and pushes it to Quay and Aliyun.
+// Any optional parameters configured will be applied as well, e.g. tag suffix.
+// The pushed image will be tagged with the value of image.TagOrPattern.
+func (img *CustomImage) RetagUsingSHA() error {
+
+	// Overwrite image name if applicable
+	destinationName := img.Image
+	if img.OverrideRepoName != "" {
+		destinationName = img.OverrideRepoName
+	}
+	// Add tag suffix if applicable
+	destinationTag := img.TagOrPattern
+	if img.AddTagSuffix != "" {
+		destinationTag = img.TagOrPattern + "-" + img.AddTagSuffix
+	}
+
+	// If no DockerfileExtras were defined, we can simply copy the upstream
+	// image. We'll use skopeo for this, because it's awesome.
+	if len(img.DockerfileExtras) == 0 {
+		source := fmt.Sprintf("%s%s:%s", dockerTransport, img.Image, tag)
+		wg := sync.WaitGroup{}
+		wg.Add(2)
+		// Quay
+		destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, quayURL, destinationName, destinationTag)
+		go copyImage(&wg, errorCounter, source, destination)
+		// Aliyun
+		destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, aliyunURL, destinationName, destinationTag)
+		go copyImage(&wg, errorCounter, source, destination)
+		wg.Wait()
+
+		// We'll skip to the next tag
+		continue
+	}
+
+	return nil
+}
+
+// RetagUsingTagOrPattern finds all tags matching the img.TagOrPattern, retags, and pushes
 // them to Quay and Aliyun container registries. Any optional parameters
 // configured will be applied as well, e.g. tag suffix.
-func (img *CustomImage) BuildAndTag() error {
+func (img *CustomImage) RetagUsingTagOrPattern() error {
 	// Compile pattern first, so we can exit early if it fails.
-	pattern, err := regexp.Compile(img.TagPattern)
+	pattern, err := regexp.Compile(img.TagOrPattern)
 	if err != nil {
-		return fmt.Errorf("error compiling regexp pattern %q: %w", img.TagPattern, err)
+		return fmt.Errorf("error compiling regexp pattern %q: %w", img.TagOrPattern, err)
 	}
 
 	// List available image tags
@@ -182,6 +228,11 @@ tagLoop:
 	return nil
 }
 
+// skopeoTagList is used to unmarshal `skopeo list-tags` command output.
+type skopeoTagList struct {
+	Tags []string `yaml:"Tags"`
+}
+
 // copyImage is a helper function used to invoke `skopeo copy`. Please note the
 // `--all`, which makes skopeo include ALL SHAs included in the tag's digest,
 // ensuring builds for all available platforms.
@@ -244,10 +295,22 @@ func main() {
 	// Iterate over every image x tag and retag/rebuild it
 	errorCounter := 0
 	for i, image := range customizedImages {
-		logrus.Printf("[%d/%d] Retagging %s", i+1, len(customizedImages), image.Image)
-		if err := image.BuildAndTag(); err != nil {
-			logrus.Errorf("got error: %v", err)
+		if err := image.Validate(); err != nil {
+			logrus.Errorf("[%d/%d] %q error: %s", i+1, len(customizedImages), image.Image, err)
 			errorCounter++
+			continue
+		}
+		logrus.Printf("[%d/%d] Retagging %q", i+1, len(customizedImages), image.Image)
+		if image.SHA != "" {
+			if err := image.RetagUsingSHA(); err != nil {
+				logrus.Errorf("got error: %v", err)
+				errorCounter++
+			}
+		} else {
+			if err := image.RetagUsingTagOrPattern(); err != nil {
+				logrus.Errorf("got error: %v", err)
+				errorCounter++
+			}
 		}
 	}
 
