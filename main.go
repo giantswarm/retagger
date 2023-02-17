@@ -59,7 +59,7 @@ func (img *CustomImage) Validate() error {
 		return fmt.Errorf("neither \"tag_or_pattern\", nor \"sha\" specified")
 	}
 	if img.SHA != "" && img.TagOrPattern == "" {
-		fmt.Errorf("\"tag_or_pattern\" has to be specified when using \"sha\"")
+		return fmt.Errorf("\"tag_or_pattern\" has to be specified when using \"sha\"")
 	}
 	return nil
 }
@@ -68,7 +68,6 @@ func (img *CustomImage) Validate() error {
 // Any optional parameters configured will be applied as well, e.g. tag suffix.
 // The pushed image will be tagged with the value of image.TagOrPattern.
 func (img *CustomImage) RetagUsingSHA() error {
-
 	// Overwrite image name if applicable
 	destinationName := img.Image
 	if img.OverrideRepoName != "" {
@@ -80,10 +79,12 @@ func (img *CustomImage) RetagUsingSHA() error {
 		destinationTag = img.TagOrPattern + "-" + img.AddTagSuffix
 	}
 
+	errorCounter := &atomic.Int64{}
+
 	// If no DockerfileExtras were defined, we can simply copy the upstream
 	// image. We'll use skopeo for this, because it's awesome.
 	if len(img.DockerfileExtras) == 0 {
-		source := fmt.Sprintf("%s%s:%s", dockerTransport, img.Image, tag)
+		source := fmt.Sprintf("%s%s@sha256:%s", dockerTransport, img.Image, img.SHA)
 		wg := sync.WaitGroup{}
 		wg.Add(2)
 		// Quay
@@ -94,10 +95,65 @@ func (img *CustomImage) RetagUsingSHA() error {
 		go copyImage(&wg, errorCounter, source, destination)
 		wg.Wait()
 
-		// We'll skip to the next tag
-		continue
+		if errorCount := errorCounter.Load(); errorCount > 0 {
+			return fmt.Errorf("finished %q with %d errors", img.Image, errorCount)
+		}
+		return nil
 	}
 
+	// DockerfileExtras were defined. We'll create a Dockefile which
+	// references the upstream image and write our changes to it.
+	var dockerfile string
+	{
+		tmp, err := os.CreateTemp(temporaryWorkingDir, "Dockerfile.*")
+		if err != nil {
+			return fmt.Errorf("error creating temporary Image: %w", err)
+		}
+		dockerfile = tmp.Name()
+		defer func() {
+			os.Remove(dockerfile)
+		}()
+		fmt.Fprintf(tmp, "FROM %s@sha256%s\n", img.Image, img.SHA)
+		for _, line := range img.DockerfileExtras {
+			_, err := tmp.WriteString(line + "\n")
+			if err != nil {
+				return fmt.Errorf("error writing temporary Image: %w", err)
+			}
+		}
+	}
+
+	wg := sync.WaitGroup{}
+	wg.Add(2)
+	name := fmt.Sprintf("%s:%s", destinationName, destinationTag)
+	quayName := fmt.Sprintf("%s/%s", quayURL, name)
+	aliyunName := fmt.Sprintf("%s/%s", aliyunURL, name)
+	// Build the generated Dockerfile, tagging it for Quay
+	{
+		c, stdout, stderr := command("docker", "build", "-t", quayName, "-f", dockerfile, temporaryWorkingDir)
+		if err := c.Run(); err != nil {
+			return fmt.Errorf("error building custom image for %s@sha256%s: %w\n%s", img.Image, img.SHA, err, stderr.String())
+		}
+		logrus.Tracef(stdout.String())
+	}
+
+	// Start pushing to Quay immediately
+	go pushImage(&wg, errorCounter, quayName)
+
+	// Tag the image we've just built for Aliyun as well...
+	{
+		c, _, stderr := command("docker", "tag", quayName, aliyunName)
+		if err := c.Run(); err != nil {
+			return fmt.Errorf("error tagging custom image for %s@sha256%s: %w\n%s", img.Image, img.SHA, err, stderr.String())
+		}
+	}
+	// and push to Aliyun
+	go pushImage(&wg, errorCounter, aliyunName)
+
+	wg.Wait()
+
+	if errorCount := errorCounter.Load(); errorCount > 0 {
+		return fmt.Errorf("finished %q with %d errors", img.Image, errorCount)
+	}
 	return nil
 }
 
