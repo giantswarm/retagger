@@ -40,6 +40,9 @@ type CustomImage struct {
 	// precedence over TagOrPattern. However TagOrPattern is still required!
 	// Example: 234cb88d3020898631af0ccbbcca9a66ae7306ecd30c9720690858c1b007d2a0
 	SHA string `yaml:"sha,omitempty"`
+	// Semver is used to filter image tags by semantic version constraints. All
+	// tags satisfying the constraint will be retagged.
+	Semver string `yaml:"semver,omitempty"`
 	// DockerfileExtras is a list of additional Dockerfile statements you want to
 	// append to the upstream Dockerfile. (optional)
 	// Example: ["RUN apk add -y bash"]
@@ -56,10 +59,13 @@ type CustomImage struct {
 
 func (img *CustomImage) Validate() error {
 	if img.TagOrPattern == "" && img.SHA == "" {
-		return fmt.Errorf("neither \"tag_or_pattern\", nor \"sha\" specified")
+		return fmt.Errorf("neither %q, %q, nor %q specified", "tag_or_pattern", "semver", "sha")
 	}
 	if img.SHA != "" && img.TagOrPattern == "" {
-		return fmt.Errorf("\"tag_or_pattern\" has to be specified when using \"sha\"")
+		return fmt.Errorf("%q has to be specified when using %q", "tag_or_pattern", "sha")
+	}
+	if img.Semver != "" && (img.TagOrPattern != "" || img.SHA != "") {
+		return fmt.Errorf("pick either %q or %q/%q", "semver", "tag_or_pattern", "sha")
 	}
 	return nil
 }

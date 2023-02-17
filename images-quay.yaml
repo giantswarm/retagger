@@ -1,5 +1,5 @@
 docker.io:
-  images:
-    busybox:
-      - "1.35"
-  images-by-tag-regex: {}
+  images: {}
+  images-by-tag-regex:
+    - alpine: '^3\.\d[3-9].*$'
+    - alpine: 'g'

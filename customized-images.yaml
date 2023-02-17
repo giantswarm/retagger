@@ -1,4 +1,13 @@
 - image: "alpine"
+  tag_or_pattern: "3.14"
+  sha: 234cb88d3020898631af0ccbbcca9a66ae7306ecd30c9720690858c1b007d2a0
+- image: "alpine"
+  tag_or_pattern: "3.16.2"
+  sha: "1304f174557314a7ed9eddb4eab12fed12cb0cd9809e4c28f29af86979a3c870"
+  add_tag_suffix: "envsubst"
+  dockerfile_extras:
+    - RUN apk add --no-cache gettext
+- image: "alpine"
   tag_or_pattern: "3.16.2"
   sha: "1304f174557314a7ed9eddb4eab12fed12cb0cd9809e4c28f29af86979a3c870"
   add_tag_suffix: "yq"
