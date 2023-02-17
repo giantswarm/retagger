@@ -113,7 +113,7 @@ func (img *CustomImage) RetagUsingSHA() error {
 		defer func() {
 			os.Remove(dockerfile)
 		}()
-		fmt.Fprintf(tmp, "FROM %s@sha256%s\n", img.Image, img.SHA)
+		fmt.Fprintf(tmp, "FROM %s@sha256:%s\n", img.Image, img.SHA)
 		for _, line := range img.DockerfileExtras {
 			_, err := tmp.WriteString(line + "\n")
 			if err != nil {
@@ -131,7 +131,7 @@ func (img *CustomImage) RetagUsingSHA() error {
 	{
 		c, stdout, stderr := command("docker", "build", "-t", quayName, "-f", dockerfile, temporaryWorkingDir)
 		if err := c.Run(); err != nil {
-			return fmt.Errorf("error building custom image for %s@sha256%s: %w\n%s", img.Image, img.SHA, err, stderr.String())
+			return fmt.Errorf("error building custom image for \"%s@sha256:%s\": %w\n%s", img.Image, img.SHA, err, stderr.String())
 		}
 		logrus.Tracef(stdout.String())
 	}
@@ -143,7 +143,7 @@ func (img *CustomImage) RetagUsingSHA() error {
 	{
 		c, _, stderr := command("docker", "tag", quayName, aliyunName)
 		if err := c.Run(); err != nil {
-			return fmt.Errorf("error tagging custom image for %s@sha256%s: %w\n%s", img.Image, img.SHA, err, stderr.String())
+			return fmt.Errorf("error tagging custom image for \"%s@sha256:%s\": %w\n%s", img.Image, img.SHA, err, stderr.String())
 		}
 	}
 	// and push to Aliyun
