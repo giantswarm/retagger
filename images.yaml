@@ -147,51 +147,6 @@
     - tagSuffix: giantswarm
       dockerfileOptions:
       - EXPOSE 1053
-- name: cr.l5d.io/linkerd/cni-plugin
-  overrideRepoName: linkerd2-cni-plugin
-  patterns:
-  - pattern: '>= 2.11.4'
-    filter: '^stable-(?P<version>.*)'
-- name: cr.l5d.io/linkerd/controller
-  overrideRepoName: linkerd2-controller
-  patterns:
-  - pattern: '>= 2.11.4'
-    filter: '^stable-(?P<version>.*)'
-- name: cr.l5d.io/linkerd/debug
-  overrideRepoName: linkerd2-debug
-  patterns:
-  - pattern: '>= 2.11.4'
-    filter: '^stable-(?P<version>.*)'
-- name: cr.l5d.io/linkerd/metrics-api
-  overrideRepoName: linkerd-metrics-api
-  patterns:
-  - pattern: '>= 2.11.4'
-    filter: '^stable-(?P<version>.*)'
-- name: cr.l5d.io/linkerd/policy-controller
-  overrideRepoName: linkerd2-policy-controller
-  patterns:
-  - pattern: '>= 2.11.4'
-    filter: '^stable-(?P<version>.*)'
-- name: cr.l5d.io/linkerd/proxy
-  overrideRepoName: linkerd2-proxy
-  patterns:
-  - pattern: '>= 2.11.4'
-    filter: '^stable-(?P<version>.*)'
-- name: cr.l5d.io/linkerd/proxy-init
-  overrideRepoName: linkerd2-proxy-init
-  patterns:
-  - pattern: '>= 2.11.4'
-    filter: '^stable-(?P<version>.*)'
-- name: cr.l5d.io/linkerd/tap
-  overrideRepoName: linkerd-tap
-  patterns:
-  - pattern: '>= 2.11.4'
-    filter: '^stable-(?P<version>.*)'
-- name: cr.l5d.io/linkerd/web
-  overrideRepoName: linkerd2-web
-  patterns:
-  - pattern: '>= 2.11.4'
-    filter: '^stable-(?P<version>.*)'
 # Momentarily disable due failing OCI index
 # Seeh ttps://gigantic.slack.com/archives/C3C7ZQXC1/p1674735852349169
 # - name: crossplane/crossplane
@@ -463,6 +418,51 @@
   tags:
   - sha: 6085d283ac401a1ef8d70682af855054c77bc8611ca66ada137f7f37b9ca9076
     tag: '1.7.2'
+- name: ghcr.io/linkerd/cni-plugin
+  overrideRepoName: linkerd2-cni-plugin
+  patterns:
+  - pattern: '>= 2.11.4'
+    filter: '^stable-(?P<version>.*)'
+- name: ghcr.io/linkerd/controller
+  overrideRepoName: linkerd2-controller
+  patterns:
+  - pattern: '>= 2.11.4'
+    filter: '^stable-(?P<version>.*)'
+- name: ghcr.io/linkerd/debug
+  overrideRepoName: linkerd2-debug
+  patterns:
+  - pattern: '>= 2.11.4'
+    filter: '^stable-(?P<version>.*)'
+- name: ghcr.io/linkerd/metrics-api
+  overrideRepoName: linkerd-metrics-api
+  patterns:
+  - pattern: '>= 2.11.4'
+    filter: '^stable-(?P<version>.*)'
+- name: ghcr.io/linkerd/policy-controller
+  overrideRepoName: linkerd2-policy-controller
+  patterns:
+  - pattern: '>= 2.11.4'
+    filter: '^stable-(?P<version>.*)'
+- name: ghcr.io/linkerd/proxy
+  overrideRepoName: linkerd2-proxy
+  patterns:
+  - pattern: '>= 2.11.4'
+    filter: '^stable-(?P<version>.*)'
+- name: ghcr.io/linkerd/proxy-init
+  overrideRepoName: linkerd2-proxy-init
+  patterns:
+  - pattern: '>= 2.11.4'
+    filter: '^stable-(?P<version>.*)'
+- name: ghcr.io/linkerd/tap
+  overrideRepoName: linkerd-tap
+  patterns:
+  - pattern: '>= 2.11.4'
+    filter: '^stable-(?P<version>.*)'
+- name: ghcr.io/linkerd/web
+  overrideRepoName: linkerd2-web
+  patterns:
+  - pattern: '>= 2.11.4'
+    filter: '^stable-(?P<version>.*)'
 - name: ghcr.io/opsgenie/kubernetes-event-exporter
   comment: used for https://github.com/giantswarm/event-exporter-app
   patterns:
