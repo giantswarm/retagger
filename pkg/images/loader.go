@@ -1,7 +1,7 @@
 package images
 
 import (
-	"io/ioutil"
+	"os"
 
 	"github.com/giantswarm/microerror"
 	"gopkg.in/yaml.v2"
@@ -12,7 +12,7 @@ func FromFile(filePath string) (Images, error) {
 
 	var yamlFile []byte
 	{
-		yamlFile, err = ioutil.ReadFile(filePath)
+		yamlFile, err = os.ReadFile(filePath)
 		if err != nil {
 			return nil, microerror.Maskf(executionFailedError, "failed to read file %#q with error %#q", filePath, err)
 		}
