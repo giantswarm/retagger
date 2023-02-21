@@ -192,9 +192,12 @@
     tag: 13.6.0-debian-10-r52
   - sha: c9d75b4521dbb75747d936504cb16031a087ae51755868c6b4e7fad0e2b8615d
     tag: 15.1.0-debian-11-r20
-- name: docker.io/envoyproxy/envoy
-  patterns:
-  - pattern: '>= 1.18.4'
+# Disabled possibliy due same issue as
+# failing OCI index
+# See https://gigantic.slack.com/archives/C3C7ZQXC1/p1674735852349169
+#- name: docker.io/envoyproxy/envoy
+#  patterns:
+#  - pattern: '>= 1.18.4'
 - name: docker.io/fluxcd/flux-cli
   tags:
   - sha: 60ec02342a2770f44d4afe78ae38bc195b4e3f21d4620dad02a3037b9c3721da
