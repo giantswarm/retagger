@@ -153,9 +153,12 @@
 #   overrideRepoName: crossplane
 #   patterns:
 #   - pattern: '>= v1.9.1'
-- name: curlimages/curl
-  patterns:
-  - pattern: '>= 7.67.0'
+# Disabled possibliy due same issue as
+# failing OCI index
+# See https://gigantic.slack.com/archives/C3C7ZQXC1/p1674735852349169
+#- name: curlimages/curl
+#  patterns:
+#  - pattern: '>= 7.67.0'
 - name: cytopia/yamllint
   patterns:
   - pattern: '>= 1.9'
