@@ -93,9 +93,12 @@
 - name: bash
   patterns:
   - pattern: '>= 5'
-- name: bats/bats
-  patterns:
-  - pattern: '>= 1.2.1'
+# Disabled possibliy due same issue as
+# failing OCI index
+# See https://gigantic.slack.com/archives/C3C7ZQXC1/p1674735852349169
+#- name: bats/bats
+#  patterns:
+#  - pattern: '>= 1.2.1'
 - name: bitnami/kubectl
   patterns:
   - pattern: '>= 1.16'
