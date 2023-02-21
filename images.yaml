@@ -303,10 +303,10 @@
 #   overrideRepoName: fluxcd-helm-controller
 #   patterns:
 #   - pattern: '>= v0.12.0'
-- name: fluxcd/image-automation-controller
-  overrideRepoName: fluxcd-image-automation-controller
-  patterns:
-  - pattern: '>= v0.16.0'
+#- name: fluxcd/image-automation-controller
+#  overrideRepoName: fluxcd-image-automation-controller
+#  patterns:
+#  - pattern: '>= v0.16.0'
 # Momentarily disable due failing OCI index
 # Seeh ttps://gigantic.slack.com/archives/C3C7ZQXC1/p1674735852349169
 # - name: fluxcd/image-reflector-controller
@@ -317,10 +317,10 @@
 #   overrideRepoName: fluxcd-kustomize-controller
 #   patterns:
 #   - pattern: '>= v0.16.0'
-- name: fluxcd/notification-controller
-  overrideRepoName: fluxcd-notification-controller
-  patterns:
-  - pattern: '>= v0.18.0'
+#- name: fluxcd/notification-controller
+#  overrideRepoName: fluxcd-notification-controller
+#  patterns:
+#  - pattern: '>= v0.18.0'
 # Momentarily disable due failing OCI index
 # Seeh ttps://gigantic.slack.com/archives/C3C7ZQXC1/p1674735852349169
 # - name: fluxcd/source-controller
