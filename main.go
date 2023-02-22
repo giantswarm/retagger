@@ -10,6 +10,7 @@ import (
 	"sync"
 	"sync/atomic"
 
+	"github.com/Masterminds/semver/v3"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
@@ -58,7 +59,7 @@ type CustomImage struct {
 }
 
 func (img *CustomImage) Validate() error {
-	if img.TagOrPattern == "" && img.SHA == "" {
+	if img.TagOrPattern == "" && img.SHA == "" && img.Semver == "" {
 		return fmt.Errorf("neither %q, %q, nor %q specified", "tag_or_pattern", "semver", "sha")
 	}
 	if img.SHA != "" && img.TagOrPattern == "" {
@@ -163,14 +164,27 @@ func (img *CustomImage) RetagUsingSHA() error {
 	return nil
 }
 
-// RetagUsingTagOrPattern finds all tags matching the img.TagOrPattern, retags, and pushes
-// them to Quay and Aliyun container registries. Any optional parameters
-// configured will be applied as well, e.g. tag suffix.
-func (img *CustomImage) RetagUsingTagOrPattern() error {
+// RetagUsingTags finds all tags matching the img.TagOrPattern or
+// img.Semver, retags, and pushes them to Quay and Aliyun container registries.
+// Any optional parameters configured will be applied as well, e.g. tag suffix.
+func (img *CustomImage) RetagUsingTags() error {
 	// Compile pattern first, so we can exit early if it fails.
-	pattern, err := regexp.Compile(img.TagOrPattern)
-	if err != nil {
-		return fmt.Errorf("error compiling regexp pattern %q: %w", img.TagOrPattern, err)
+	var pattern *regexp.Regexp
+	if img.TagOrPattern != "" {
+		compiled, err := regexp.Compile(img.TagOrPattern)
+		if err != nil {
+			return fmt.Errorf("error compiling regexp pattern %q: %w", img.TagOrPattern, err)
+		}
+		pattern = compiled
+	}
+	// Compile semver constraint
+	var constraint *semver.Constraints
+	if img.Semver != "" {
+		compiled, err := semver.NewConstraint(img.Semver)
+		if err != nil {
+			return fmt.Errorf("error compiling semver constraint %q: %w", img.Semver, err)
+		}
+		constraint = compiled
 	}
 
 	// List available image tags
@@ -191,9 +205,18 @@ func (img *CustomImage) RetagUsingTagOrPattern() error {
 
 	errorCounter := &atomic.Int64{}
 tagLoop:
-	// Iterate through all found tags and retag ones matching the pattern
+	// Iterate through all found tags and retag ones matching the semver/pattern
 	for _, tag := range tags {
-		if !pattern.MatchString(tag) {
+		if constraint != nil {
+			version, err := semver.NewVersion(tag)
+			if err != nil {
+				logrus.Debugf("image %q's tag %q is not a semantic version", img.Image, tag)
+				continue
+			}
+			if !constraint.Check(version) {
+				continue
+			}
+		} else if pattern != nil && !pattern.MatchString(tag) {
 			continue
 		}
 
@@ -369,7 +392,7 @@ func main() {
 				errorCounter++
 			}
 		} else {
-			if err := image.RetagUsingTagOrPattern(); err != nil {
+			if err := image.RetagUsingTags(); err != nil {
 				logrus.Errorf("got error: %v", err)
 				errorCounter++
 			}
