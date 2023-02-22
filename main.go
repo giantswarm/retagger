@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"path"
 	"regexp"
+	"strings"
 	"sync"
 	"sync/atomic"
 
@@ -34,7 +35,8 @@ type CustomImage struct {
 	// "ghcr.io/fluxcd/kustomize-controller"
 	Image string `yaml:"image"`
 	// TagOrPattern is used to filter image tags. All tags matching the pattern
-	// will be retagged.
+	// will be retagged. If Semver is defined, TagOrPattern will act as a
+	// filter.
 	// Example: "v1.[234].*" or ".+-stable"
 	TagOrPattern string `yaml:"tag_or_pattern,omitempty"`
 	// SHA is used to filter image tags. If SHA is specified, it will take
@@ -56,6 +58,9 @@ type CustomImage struct {
 	// Example: "alpinegit", so "alpine" would become
 	// "quay.io/giantswarm/alpinegit"
 	OverrideRepoName string `yaml:"override_repo_name,omitempty"`
+	// StripSemverPrefix removes the initial 'v' in 'v1.2.3' if enabled. Works
+	// only when Semver is defined.
+	StripSemverPrefix bool `yaml:"strip_semver_prefix,omitempty"`
 }
 
 func (img *CustomImage) Validate() error {
@@ -65,8 +70,11 @@ func (img *CustomImage) Validate() error {
 	if img.SHA != "" && img.TagOrPattern == "" {
 		return fmt.Errorf("%q has to be specified when using %q", "tag_or_pattern", "sha")
 	}
-	if img.Semver != "" && (img.TagOrPattern != "" || img.SHA != "") {
-		return fmt.Errorf("pick either %q or %q/%q", "semver", "tag_or_pattern", "sha")
+	if img.Semver != "" && img.SHA != "" {
+		return fmt.Errorf("%q acts as a filter for %q, %q is redundant", "tag_or_pattern", "semver", "sha")
+	}
+	if img.Semver == "" && img.StripSemverPrefix {
+		return fmt.Errorf("cannot strip semver prefix when %q is not defined", "semver")
 	}
 	return nil
 }
@@ -216,7 +224,9 @@ tagLoop:
 			if !constraint.Check(version) {
 				continue
 			}
-		} else if pattern != nil && !pattern.MatchString(tag) {
+		}
+		// pattern can be either a sole filter, or used in tandem with semver
+		if pattern != nil && !pattern.MatchString(tag) {
 			continue
 		}
 
@@ -229,6 +239,9 @@ tagLoop:
 		destinationTag := tag
 		if img.AddTagSuffix != "" {
 			destinationTag = tag + "-" + img.AddTagSuffix
+		}
+		if constraint != nil && img.StripSemverPrefix {
+			destinationTag = strings.TrimPrefix(destinationTag, "v")
 		}
 
 		// If no DockerfileExtras were defined, we can simply copy the upstream
