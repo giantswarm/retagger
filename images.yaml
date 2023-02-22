@@ -1,3 +1,4 @@
+# TODO
 - name: alpine
   tags:
   - sha: 234cb88d3020898631af0ccbbcca9a66ae7306ecd30c9720690858c1b007d2a0
@@ -12,7 +13,9 @@
       dockerfileOptions:
       - RUN apk add --no-cache yq bash
   patterns:
+    # TODO
   - pattern: '>= 3.13'
+    # TODO
   - pattern: '>= 3.11'
     customImages:
     - tagSuffix: giantswarm
@@ -43,9 +46,11 @@
   overrideRepoName: alpine-helm
   patterns:
   - pattern: '>= 3.9.3'
+# TODO
 - name: amazon/amazon-eks-pod-identity-webhook
   patterns:
   - pattern: '>= v0.3.0'
+# TODO
 - name: amazon/aws-alb-ingress-controller
   patterns:
   - pattern: '>= 2.3'
@@ -63,6 +68,7 @@
     - tagSuffix: giantswarm
       dockerfileOptions:
       - RUN yum -y install tar
+# TODO WALL
 - name: amazon/aws-efs-csi-driver
   patterns:
   - pattern: '>= 1.0.0'
@@ -105,6 +111,7 @@
   overrideRepoName: bobrik-curator
   patterns:
   - pattern: '>= 5.8.1'
+# TODO
 - name: busybox
   patterns:
   - pattern: '>= 1.31.0'
@@ -113,18 +120,22 @@
   overrideRepoName: caicloud-event-exporter
   patterns:
   - pattern: '>= v1.0.0'
+# TODO
 - name: centos
   tags:
   - sha: fe8d824220415eed5477b63addf40fb06c3b049404242b31982106ac204f6700
     tag: 8.1.1911
+# TODO
 - name: cibuilds/github
   tags:
   - sha: 9029b2f52ecd28aacec2fd8a86a321dc9f77a46df251de5e3f157dd6e80baea0
     tag: 0.12
+# TODO
 - name: cloudflare/cloudflared
   patterns:
   - pattern: '>= 2022.8.0'
     filter: '^(?P<version>.*)-amd64'
+# TODO
 - name: coredns/coredns
   tags:
   - sha: 8e352a029d304ca7431c6507b56800636c321cb52289686a581ab70aaa8a2e2a
@@ -186,34 +197,42 @@
   patterns:
   - pattern: '>= 2.11.4'
     filter: '^stable-(?P<version>.*)'
+# TODO
 # Momentarily disable due failing OCI index
 # Seeh ttps://gigantic.slack.com/archives/C3C7ZQXC1/p1674735852349169
 # - name: crossplane/crossplane
 #   overrideRepoName: crossplane
 #   patterns:
 #   - pattern: '>= v1.9.1'
+# TODO
 - name: curlimages/curl
   patterns:
-  - pattern: '>= 7.67.0'
+  - pattern: '>= 7.67.0'# TODO
+# TODO
 - name: cytopia/yamllint
   patterns:
   - pattern: '>= 1.9'
+# TODO
 - name: dduportal/bats
   # See `name: bats/bats` for newer releases
   tags:
   - sha: b2d533b27109f7c9ea1e270e23f212c47906346f9cffaa4da6da48ed9d8031da
     tag: 0.4.0
+  # TODO
 - name: directxman12/k8s-prometheus-adapter-amd64
   patterns:
   - pattern: '>=v0.6.0'
+# TODO
 - name: docker
   tags:
   - sha: e8e0f19612fef7fc1e190ec7ed6fb4c1f4e0c0f34424214dc44e9e94f8a1281d
     tag: 18.09.1
+  # TODO
 - name: docker.elastic.co/elasticsearch/elasticsearch-oss
   tags:
   - sha: 4f2bd6a008c41d83aeb8e5ac95412d47b667d21d4df7c67c41b9baec15a78164
     tag: 6.1.4
+  # TODO
 - name: docker.elastic.co/kibana/kibana-oss
   comment: via https://www.elastic.co/guide/en/kibana/7.6/docker.html#pull-image
   patterns:
@@ -221,6 +240,7 @@
   tags:
   - sha: 72d816c99cc86b117baf04385020121f71015d7f5f9eba2a59e72532d645d38f
     tag: 7.6.1
+  # TODO
 - name: docker.io/bitnami/postgresql
   overrideRepoName: postgresql-bitnami
   tags:
@@ -228,20 +248,25 @@
     tag: 13.6.0-debian-10-r52
   - sha: c9d75b4521dbb75747d936504cb16031a087ae51755868c6b4e7fad0e2b8615d
     tag: 15.1.0-debian-11-r20
+  # TODO
 - name: docker.io/envoyproxy/envoy
   patterns:
   - pattern: '>= 1.18.4'
+# TODO
 - name: docker.io/fluxcd/flux-cli
   tags:
   - sha: 60ec02342a2770f44d4afe78ae38bc195b4e3f21d4620dad02a3037b9c3721da
     tag: v0.27.0
+  # TODO
 - name: ealen/echo-server
   patterns:
   - pattern: '>=0.5.0'
+# TODO
 - name: elasticsearch
   tags:
   - tag: 6.8.13
     sha: 8d4e29332dc159e7c256efa131453bd62a35b6e90f32aa9ab3f76632e29372c3
+  # TODO
 - name: eu.gcr.io/k8s-artifacts-prod/autoscaling/cluster-autoscaler
   tags:
   - tag: v1.23.1
@@ -282,6 +307,7 @@
     sha: 60a75bd24a4121adf5de16cdad76a52295d33aa8aa7c2945b4a9a1a8d2ac17f0
 
 # falco-app images
+  # TODO
 - name: falcosecurity/falco
   patterns:
   - pattern: '>= 0.33.0'
@@ -298,6 +324,7 @@
   patterns:
   - pattern: '>= 2.22.0'
 # fluent-bit images
+# TODO
 - name: fluent/fluent-bit
   patterns:
   - pattern: '>= 1.x.x'
@@ -360,6 +387,7 @@
 #   overrideRepoName: fluxcd-source-controller
 #   patterns:
 #   - pattern: '>= v0.17.0'
+# TODO
 - name: gcr.io/cadvisor/cadvisor
   patterns:
   - pattern: '>= v0.44.0'
@@ -371,6 +399,7 @@
   overrideRepoName: cluster-api-vsphere-controller
   patterns:
   - pattern: '>= v0.8.1'
+# TODO
 - name: gcr.io/google-containers/startup-script
   tags:
   - sha: 9d0006c93668388b3616235bf87954a5e4d9aac16721a237761f0ff3ce61a58b
@@ -391,6 +420,7 @@
       - USER root
       - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
       - USER giantswarm
+# TODO WALL
 - name: gcr.io/heptio-images/gangway
   tags:
   - sha: dd6030630fa2c826e9d2ff1a8e447554d12c1d59e15ae24dd2370115e1121369
@@ -589,11 +619,13 @@
   tags:
   - sha: 4819d2319477d1c5daf0321a97770d71cfb4aa2ec395662769909a7a1b3ae32c
     tag: v1.0.0
+
 - name: kedacore/keda
   overrideRepoName: kedacore-keda
   tags:
   - sha: b4932b7c763d57e97bd3165749cfd994196b20575e21a3b4cfc3097067f3fd67
     tag: 2.1.0
+
 - name: kedacore/keda-metrics-apiserver
   overrideRepoName: kedacore-keda-metrics-apiserver
   tags:
@@ -603,6 +635,7 @@
   overrideRepoName: kind-node
   patterns:
   - pattern: '>= v1.16'
+# TODO WALL
 - name: koalaman/shellcheck-alpine
   tags:
   - sha: 7d4d712a2686da99d37580b4e2f45eb658b74e4b01caf67c1099adc294b96b52
@@ -654,6 +687,7 @@
   overrideRepoName: kong-ingress-controller
   patterns:
   - pattern: '>= 1.1.1'
+# TODO
 - name: looztra/kubesplit
   tags:
   - sha: 21bf896bb17dc1a9563c05a4a3edfad9690ea52bb0f33f12fe300d5c48e70e6d
@@ -662,6 +696,7 @@
   overrideRepoName: macropower-analytics-panel-server
   patterns:
   - pattern: '>= 0.0.1'
+# TODO
 - name: madnight/alpine-wkhtmltopdf-builder
   tags:
   - sha: 009bc5a3e8823b92568473f075e157b59488d0ddf3209865a7aa39108323bfad
@@ -699,6 +734,7 @@
     - tagSuffix: giantswarm
       dockerfileOptions:
       - USER mysql
+# TODO
 - name: nginx
   tags:
   - tag: 1.23-alpine
@@ -736,6 +772,7 @@
   overrideRepoName: cpi-cloud-director
   patterns:
   - pattern: '>= 1.2.0'
+# TODO
 - name: prom/cloudwatch-exporter
   tags:
   - sha: 7ce6d17ad3360ed5d5dddc57ebf13dc7d676900c40a22b3144a8a17af352c399
@@ -810,6 +847,7 @@
         COPY --from=downloader /tmp/crd-installer/crds /crds
         COPY --from=installer /usr/local/bin/crd-installer /usr/local/bin/crd-installer
         CMD ["/usr/local/bin/crd-installer", "-dir", "/crds"]
+# TODO
 - name: quay.io/calico/node
   patterns:
   - pattern: '>= v3.9.5'
@@ -962,6 +1000,7 @@
   - sha: d8da0790760c279d961e63aa711fac3fd6a3db237eccea3c8a21239dca64805c
     tag: v0.9.0
 # node-exporter-app < 1.14.0 relies on custom node-exporter images
+# TODO
 - name: quay.io/prometheus/node-exporter
   tags:
   - sha: fc004c4a3d1096d5a0f144b1093daa9257a573ce1fde5a9b8511e59a7080a1bb
