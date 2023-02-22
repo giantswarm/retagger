@@ -1,0 +1,150 @@
+#!/usr/bin/env bash
+#
+# man-page-checker - validate and cross-reference man page names
+#
+# This is the script that cross-checks BETWEEN MAN PAGES. It is not the
+# script that cross-checks that each option in skopeo foo --help is listed
+# in skopeo-foo.1.md and vice-versa; that one is xref-helpmsgs-manpages.
+#
+
+verbose=
+for i; do
+    case "$i" in
+        -v|--verbose)   verbose=verbose ;;
+    esac
+done
+
+
+die() {
+    echo "$(basename $0): $*" >&2
+    exit 1
+}
+
+cd $(dirname $0)/../docs || die "Please run me from top-level skopeo dir"
+
+rc=0
+
+# Pass 1: cross-check file names with NAME section
+#
+# for a given skopeo-foo.1.md, the NAME should be 'skopeo-foo'
+for md in *.1.md;do
+    # Read the first line after '## NAME'
+    name=$(egrep -A1 '^## NAME' $md|tail -1|awk '{print $1}' | tr -d \\\\)
+
+    expect=$(basename $md .1.md)
+    if [ "$name" != "$expect" ]; then
+        echo
+        printf "Inconsistent program NAME in %s:\n" $md
+        printf "  NAME= %s  (expected: %s)\n" $name $expect
+        rc=1
+    fi
+done
+
+# Pass 2: compare descriptions.
+#
+# Make sure the descriptive text in skopeo-foo.1.md matches the one
+# in the table in skopeo.1.md.
+for md in $(ls -1 *-*.1.md);do
+    desc=$(egrep -A1 '^## NAME' $md|tail -1|sed -E -e 's/^skopeo[^[:space:]]+ - //')
+
+    # Find the descriptive text in the main skopeo man page.
+    parent=skopeo.1.md
+    parent_desc=$(grep $md $parent | awk -F'|' '{print $3}' | sed -E -e 's/^[[:space:]]+//' -e 's/[[:space:]]+$//')
+
+    if [ "$desc" != "$parent_desc" ]; then
+        echo
+        printf "Inconsistent subcommand descriptions:\n"
+        printf "  %-32s = '%s'\n" $md "$desc"
+        printf "  %-32s = '%s'\n" $parent "$parent_desc"
+        printf "Please ensure that the NAME section of $md\n"
+        printf "matches the subcommand description in $parent\n"
+        rc=1
+    fi
+done
+
+# Helper function: compares man page synopsis vs --help usage message
+function compare_usage() {
+    local cmd="$1"
+    local from_man="$2"
+
+    # Run 'cmd --help', grab the line immediately after 'Usage:'
+    local help_output=$(../bin/$cmd --help)
+    local from_help=$(echo "$help_output" | grep -A1 '^Usage:' | tail -1)
+
+    # strip off command name from both
+    from_man=$(sed -E -e "s/\*\*$cmd\*\*[[:space:]]*//" <<<"$from_man")
+    from_help=$(sed -E -e "s/^[[:space:]]*$cmd[[:space:]]*//" <<<"$from_help")
+
+    # man page lists 'foo [*options*]', help msg shows 'foo [command options]'.
+    # Make sure if one has it, the other does too.
+    if expr "$from_man" : "\[\*options\*\]" >/dev/null; then
+        if expr "$from_help" : "\[command options\]" >/dev/null; then
+            :
+        else
+            echo "WARNING: $cmd: man page shows '[*options*]', help does not show [command options]"
+            rc=1
+       fi
+    elif expr "$from_help" : "\[command options\]" >/dev/null; then
+        echo "WARNING: $cmd: --help shows [command options], man page does not show [*options*]"
+        rc=1
+    fi
+
+    # Strip off options and flags; start comparing arguments
+    from_man=$(sed  -E -e 's/^\[\*options\*\][[:space:]]*//' <<<"$from_man")
+    from_help=$(sed -E -e 's/^\[command options\][[:space:]]*//'      <<<"$from_help")
+
+    # Constant strings in man page are '**foo**', in --help are 'foo'.
+    from_man=$(sed -E -e 's/\*\*([^*]+)\*\*/\1/g' <<<"$from_man")
+
+    # Args in man page are '_foo_', in --help are 'FOO'. Convert all to
+    # UPCASE simply because it stands out better to the eye.
+    from_man=$(sed -E -e 's/_([a-z-]+)_/\U\1/g' <<<"$from_man")
+
+    # Compare man-page and --help usage strings. Skip 'skopeo' itself,
+    # because the man page includes '[global options]' which we don't grok.
+    if [[ "$from_man" != "$from_help" && "$cmd" != "skopeo" ]]; then
+        printf "%-25s man='%s' help='%s'\n" "$cmd:" "$from_man" "$from_help"
+        rc=1
+    fi
+}
+
+# Pass 3: compare synopses.
+#
+# Make sure the SYNOPSIS line in skopeo-foo.1.md reads '**skopeo foo** ...'
+for md in *.1.md;do
+    synopsis=$(egrep -A1 '^#* SYNOPSIS' $md|tail -1)
+
+    # Command name must be bracketed by double asterisks; options and
+    # arguments are bracketed by single ones.
+    #   E.g. '**skopeo copy** [*options*] _..._'
+    # Get the command name, and confirm that it matches the md file name.
+    cmd=$(echo "$synopsis" | sed -E -e 's/^\*\*([^*]+)\*\*.*/\1/' | tr -d \*)
+    # Use sed, not tr, so we only replace the first dash: we want
+    # skopeo-list-tags -> "skopeo list-tags", not "skopeo list tags"
+    md_nodash=$(basename "$md" .1.md | sed -e 's/-/ /')
+    if [ "$cmd" != "$md_nodash" ]; then
+        echo
+        printf "Inconsistent program name in SYNOPSIS in %s:\n" $md
+        printf "  SYNOPSIS = %s (expected: '%s')\n" "$cmd" "$md_nodash"
+        rc=1
+    fi
+
+    # The convention is to use UPPER CASE in 'skopeo foo --help',
+    # but *lower case bracketed by asterisks* in the man page
+    if expr "$synopsis" : ".*[A-Z]" >/dev/null; then
+        echo
+        printf "Inconsistent capitalization in SYNOPSIS in %s\n" $md
+        printf "  '%s' should not contain upper-case characters\n" "$synopsis"
+        rc=1
+    fi
+
+    # (for debugging, and getting a sense of standard conventions)
+    #printf "  %-32s ------ '%s'\n" $md "$synopsis"
+
+    # If bin/skopeo is available, run "cmd --help" and compare Usage
+    # messages. This is complicated, so do it in a helper function.
+    compare_usage "$md_nodash" "$synopsis"
+done
+
+
+exit $rc
