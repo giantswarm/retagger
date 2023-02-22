@@ -401,16 +401,16 @@
     tag: v3.9-thick-amd64
   - sha: ce4c3a421b0ca97540af911f34858bdd9b06fa5817ba7fa2b3bbb906f9237b46
     tag: v3.9-amd64
+- name: ghcr.io/kyverno/cleanup-controller
+  tags:
+  - sha: 34227b33ca904a7945039481b65fb87a2eec28eb79adb766d6ba3e6a6050639d
+    tag: v1.9.0
 - name: ghcr.io/kyverno/kyverno
   tags:
-  - sha: 0b65e9f07df7073bf055339fea2c3f42ad799b7cc350314e469dcd9809140911
-    tag: v1.8.4
   - sha: 99b5ada2cd047e99377c45b2a9a363890bc631301a2b53f1ee07308e123d39d6
     tag: v1.9.0
 - name: ghcr.io/kyverno/kyvernopre
   tags:
-  - sha: 0447e825c733a887a27160c71ee93fc78273794c960153d9aaf987c8a3f92fd0
-    tag: v1.8.4
   - sha: c0afa540192d3c5bcd62234ef558bafa01df98859c8230dc51b1c70835cfc9cc
     tag: v1.9.0
 - name: ghcr.io/kyverno/policy-reporter
