@@ -148,11 +148,15 @@
       dockerfileOptions:
       - EXPOSE 1053
 # Momentarily disable due failing OCI index
-# Seeh ttps://gigantic.slack.com/archives/C3C7ZQXC1/p1674735852349169
-# - name: crossplane/crossplane
-#   overrideRepoName: crossplane
-#   patterns:
-#   - pattern: '>= v1.9.1'
+# See https://gigantic.slack.com/archives/C3C7ZQXC1/p1674735852349169
+- name: crossplane/crossplane
+  overrideRepoName: crossplane
+  patterns:
+  - pattern: '>= v1.9.1'
+- name: crossplane/xfn
+  overrideRepoName: crossplane
+  patterns:
+  - pattern: '>= v1.11.0'
 # Disabled possibliy due same issue as
 # failing OCI index
 # See https://gigantic.slack.com/archives/C3C7ZQXC1/p1674735852349169
