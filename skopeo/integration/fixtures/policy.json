@@ -1,0 +1,136 @@
+{
+    "default": [
+        {
+            "type": "reject"
+        }
+    ],
+    "transports": {
+        "docker": {
+            "localhost:5555": [
+                {
+                    "type": "signedBy",
+                    "keyType": "GPGKeys",
+                    "keyPath": "@keydir@/personal-pubkey.gpg"
+                }
+            ],
+            "localhost:5000/myns/extension": [
+                {
+                    "type": "signedBy",
+                    "keyType": "GPGKeys",
+                    "keyPath": "@keydir@/personal-pubkey.gpg"
+                }
+            ],
+            "localhost:5006/myns/mirroring-primary": [
+                {
+                    "type": "signedBy",
+                    "keyType": "GPGKeys",
+                    "keyPath": "@keydir@/personal-pubkey.gpg"
+                }
+            ],
+            "localhost:5006/myns/mirroring-mirror": [
+                {
+                    "type": "signedBy",
+                    "keyType": "GPGKeys",
+                    "keyPath": "@keydir@/personal-pubkey.gpg"
+                }
+            ],
+            "localhost:5006/myns/mirroring-remap": [
+                {
+                    "type": "signedBy",
+                    "keyType": "GPGKeys",
+                    "keyPath": "@keydir@/personal-pubkey.gpg",
+                    "signedIdentity": {
+                        "type": "remapIdentity",
+                        "prefix": "localhost:5006/myns/mirroring-remap",
+                        "signedPrefix": "localhost:5006/myns/mirroring-primary"
+                    }
+                }
+            ],
+            "docker.io/openshift": [
+                {
+                    "type": "insecureAcceptAnything"
+                }
+            ],
+            "quay.io/openshift": [
+                {
+                    "type": "insecureAcceptAnything"
+                }
+            ]
+        },
+        "dir": {
+            "/@dirpath@": [
+                {
+                    "type": "signedBy",
+                    "keyType": "GPGKeys",
+                    "keyPath": "@keydir@/official-pubkey.gpg",
+                    "signedIdentity": {
+                        "type": "exactRepository",
+                        "dockerRepository": "localhost:5000/myns/official"
+                    }
+                }
+            ],
+            "": [
+                {
+                    "type": "insecureAcceptAnything"
+                }
+            ]
+        },
+        "atomic": {
+            "localhost:5006/myns/personal": [
+                {
+                    "type": "signedBy",
+                    "keyType": "GPGKeys",
+                    "keyPath": "@keydir@/personal-pubkey.gpg"
+                }
+            ],
+            "localhost:5006/myns/official": [
+                {
+                    "type": "signedBy",
+                    "keyType": "GPGKeys",
+                    "keyPath": "@keydir@/official-pubkey.gpg"
+                }
+            ],
+            "localhost:5006/myns/naming:test1": [
+                {
+                    "type": "signedBy",
+                    "keyType": "GPGKeys",
+                    "keyPath": "@keydir@/official-pubkey.gpg"
+                }
+            ],
+            "localhost:5006/myns/naming:naming": [
+                {
+                    "type": "signedBy",
+                    "keyType": "GPGKeys",
+                    "keyPath": "@keydir@/official-pubkey.gpg",
+                    "signedIdentity": {
+                        "type": "exactRepository",
+                        "dockerRepository": "localhost:5006/myns/official"
+                    }
+                }
+            ],
+            "localhost:5006/myns/cosigned:cosigned": [
+                {
+                    "type": "signedBy",
+                    "keyType": "GPGKeys",
+                    "keyPath": "@keydir@/official-pubkey.gpg",
+                    "signedIdentity": {
+                        "type": "exactRepository",
+                        "dockerRepository": "localhost:5006/myns/official"
+                    }
+                },
+                {
+                    "type": "signedBy",
+                    "keyType": "GPGKeys",
+                    "keyPath": "@keydir@/personal-pubkey.gpg"
+                }
+            ],
+            "localhost:5000/myns/extension": [
+                {
+                    "type": "signedBy",
+                    "keyType": "GPGKeys",
+                    "keyPath": "@keydir@/personal-pubkey.gpg"
+                }
+            ]
+        }
+    }
+}
