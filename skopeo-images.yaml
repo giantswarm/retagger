@@ -118,6 +118,9 @@ docker.io:
       - "2.2.0"
     weaveworks/watch:
       - "master-5b2a6e5"
+    zricethezav/gitleaks:
+      - "v3.3.0"
+      - "v6.0.0"
   images-by-semver:
     alpine:
       - ">= 3.13"
@@ -526,5 +529,4 @@ registry.k8s.io:
       - ">= v1.1.0"
     sig-storage/snapshot-controller:
       - ">= v3.0.0"
-
 
