@@ -114,6 +114,10 @@ docker.io:
       - "4.0.9"
       - "6.2.1-alpine"
       - "6.2.4-alpine"
+    toniblyx/prowler:
+      - "2.2.0"
+    weaveworks/watch:
+      - "master-5b2a6e5"
   images-by-semver:
     alpine:
       - ">= 3.13"
@@ -211,6 +215,18 @@ docker.io:
       - ">= 2.17.0"
     prom/pushgateway:
       - ">= v1.0.0"
+# Used in akv2k8s
+    spvest/azure-keyvault-controller:
+      - ">= 1.3.0"
+    spvest/azure-keyvault-webhook:
+      - ">= 1.3.0"
+# Used in prometheus-operator-app
+    squareup/ghostunnel:
+      - ">= v1.5.2"
+    vault:
+      - ">= v1.2.0"
+    velero/velero:
+      - ">= v1.4.3"
 
 docker.elastic.co:
   images:
@@ -419,6 +435,9 @@ quay.io:
       - ">= v4.0"
 
 registry.k8s.io:
+  images:
+    nvidia-gpu-device-plugin:
+      - "1.0.0"
   images-by-semver:
     addon-resizer:
       - ">= 1.8.7"
@@ -450,3 +469,62 @@ registry.k8s.io:
       - ">= v0.4.0"
     cluster-proportional-autoscaler-amd64:
       - ">= 1.6.0"
+# We have to ensure that etcd is available to CAPI clusters - we set
+# `clusterConfiguration.imageRepository=docker.io/giantswarm` (e.g. in
+# cluster-aws:
+# https://github.com/giantswarm/cluster-aws/search?q=imageRepository%3A) and
+# that means `kubeadm join` will use the images from our Docker Hub repo.
+# Kubernetes does not support tag suffixes, so we must publish images as
+# `docker.io/giantswarm/coredns:v1.10.0`. And those must not conflict with the
+# `coreos/coreos` tags - since those use a suffix, we're fine here.
+#
+# Once https://github.com/kubernetes/kubeadm/issues/2603 (kubeadm shouldn't
+# pull the coredns image at all since we skip the coredns addon and instead
+# install it using our app platform) is fixed, we can remove this:
+    coredns/coredns:
+      - ">= v1.8.0"
+    descheduler/descheduler:
+      - ">= v0.20.0"
+    dns/k8s-dns-node-cache:
+      - ">= 1.21.1"
+    etcd:
+      - ">= v3.5.4-0"
+    external-dns/external-dns:
+      - ">= v0.10.1"
+    hyperkube:
+      - ">= v1.15 < 1.24"
+    kube-apiserver:
+      - ">= v1.19.0 || >= v1.20.0-0"
+      - ">= v1.16.8 < v1.19"
+    kube-controller-manager:
+      - ">= v1.16.8 || >= v1.20.0-0"
+    kube-proxy:
+      - ">= v1.16.8 || >= v1.20.0-0"
+    kube-scheduler:
+      - ">= v1.16.8 || >= v1.20.0-0"
+    kube-state-metrics/kube-state-metrics:
+      - "> v1.9.8"
+    metrics-server/metrics-server:
+      - ">= v0.4.2"
+    pause:
+      - ">= 3.1"
+    pause-amd64:
+      - ">= 3.1"
+    provider-aws/aws-ebs-csi-driver:
+      - ">= 0.7.0"
+    sig-storage/csi-attacher:
+      - ">= v1.2.0"
+    sig-storage/csi-node-driver-registrar:
+      - ">= v1.1.0"
+    sig-storage/csi-provisioner:
+      - ">= v1.6.0"
+    sig-storage/csi-resizer:
+      - ">= v0.3.0"
+    sig-storage/csi-snapshotter:
+      - ">= v2.1.1"
+    sig-storage/livenessprobe:
+      - ">= v1.1.0"
+    sig-storage/snapshot-controller:
+      - ">= v3.0.0"
+
+
