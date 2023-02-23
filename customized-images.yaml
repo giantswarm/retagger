@@ -56,12 +56,23 @@
   override_repo_name: "bitnami-redis"
   tag_or_pattern: "4.0.9"
   sha: "1b56b1c2c5d737bd8029f2e2e80852c0c1ef342e36ca0940dd313d4d8a786311"
+- image: "bitnami/postgresql"
+  override_repo_name: "postgresql-bitnami"
+  tag_or_pattern: "13.6.0-debian-10-r52"
+  sha: "9f32478fdb19fb3a392999e7bc89cec54c2e74aa3313dc7667cdd750bb9b03e0"
+- image: "bitnami/postgresql"
+  override_repo_name: "postgresql-bitnami"
+  tag_or_pattern: "15.1.0-debian-11-r20"
+  sha: "c9d75b4521dbb75747d936504cb16031a087ae51755868c6b4e7fad0e2b8615d"
 - image: "bobrik/curator"
   override_repo_name: "bobrik-curator"
   semver: ">= 5.8.1"
 - image: "caicloud/event-exporter"
   override_repo_name: "caicloud-event-exporter"
   semver: ">= v1.0.0"
+- image: "cloudflare/cloudflared"
+  semver: ">= 2022.8.0"
+  tag_or_pattern: ".+-amd64"
 - image: "coredns/coredns"
   semver: ">= 1.6.5"
   add_tag_suffix: "giantswarm"
@@ -158,7 +169,7 @@
   override_repo_name: kedacore-keda
   tag_or_pattern: 2.1.0
   sha: b4932b7c763d57e97bd3165749cfd994196b20575e21a3b4cfc3097067f3fd67
-- name: kedacore/keda-metrics-apiserver
+- image: kedacore/keda-metrics-apiserver
   overrideRepoName: kedacore-keda-metrics-apiserver
   tags:
   - sha: 8b315d56586ed4b658e0540fa80d395bf6ce0698693d07177aa4c13ce2c452f9
@@ -166,7 +177,7 @@
 - image: kindest/node
   override_repo_name: kind-node
   semver: ">= v1.16"
-- name: kong/kubernetes-ingress-controller
+- image: kong/kubernetes-ingress-controller
   override_repo_name: kong-ingress-controller
   semver: ">= 1.1.1"
 - image: macropower/analytics-panel-server
@@ -271,16 +282,16 @@
   add_tag_suffix: "openssl"
   dockerfile_extras:
     - RUN apk add --no-cache openssl
-- images: quay.io/strimzi/jmxtrans
+- image: quay.io/strimzi/jmxtrans
   override_repo_name: strimzi-jmxtrans
   semver: ">= 0.18.0-0"
-- images: quay.io/strimzi/kafka
+- image: quay.io/strimzi/kafka
   override_repo_name: strimzi-kafka
   semver: ">= 0.18.0-0"
-- images: quay.io/strimzi/kafka-bridge
+- image: quay.io/strimzi/kafka-bridge
   override_repo_name: strimzi-kafka-bridge
   semver: ">= 0.18.0-0"
-- images: quay.io/strimzi/operator
+- image: quay.io/strimzi/operator
   override_repo_name: strimzi-operator
   semver: ">= 0.18.0-0"
 - image: registry.k8s.io/etcd
