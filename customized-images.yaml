@@ -330,7 +330,6 @@
 - image: untergeek/curator
   override_repo_name: elasticsearch-untergeek-curator
   semver: ">= 5.7.6"
-
 - image: xpkg.upbound.io/crossplane-contrib/provider-aws
   override_repo_name: crossplane-provider-aws
   semver: ">= v0.33.0"
