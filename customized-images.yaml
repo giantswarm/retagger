@@ -165,6 +165,9 @@
     - USER root
     - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
     - USER giantswarm
+- image: jaegertracing/all-in-one
+  override_repo_name: jaeger-all-in-one
+  semver: ">= 1.17.0"
 - image: kedacore/keda
   override_repo_name: kedacore-keda
   tag_or_pattern: 2.1.0
@@ -297,6 +300,22 @@
 - image: registry.k8s.io/etcd
   semver: ">= v3.5.4-0"
   add_tag_suffix: k8s
+- image: registry.k8s.io/ingress-nginx/controller
+  override_repo_name: ingress-nginx-controller
+  sha: 54f7fe2c6c5a9db9a0ebf1131797109bb7a4d91f56b9b362bde2abd237dd1974
+  tag_or_pattern: v1.3.1
+- image: registry.k8s.io/ingress-nginx/controller
+  override_repo_name: ingress-nginx-controller
+  sha: 34ee929b111ffc7aa426ffd409af44da48e5a0eea1eb2207994d9e0c0882d143
+  tag_or_pattern: v1.4.0
+- image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
+  override_repo_name: ingress-nginx-kube-webhook-certgen
+  sha: 549e71a6ca248c5abd51cdb73dbc3083df62cf92ed5e6147c780e30f7e007a47
+  tag_or_pattern: v1.3.0
+- image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
+  override_repo_name: ingress-nginx-kube-webhook-certgen
+  sha: 39c5b2e3310dc4264d638ad28d9d1d96c4cbb2b2dcfb52368fe4e3c63f61e10f
+  tag_or_pattern: v20220916-gd32f8c343
 - image: registry.k8s.io/kube-apiserver
   semver: ">= v1.19.0 || >= v1.20.0-0"
   add_tag_suffix: giantswarm
@@ -323,6 +342,9 @@
       FROM scratch
       COPY --from=downloader /tmp/hyperkube/kubelet /kubelet
       COPY --from=downloader /tmp/hyperkube/kubectl /kubectl
+- image: registry.k8s.io/provider-aws/cloud-controller-manager
+  override_repo_name: aws-cloud-controller-manager
+  semver: ">= v1.21.0-alpha.0"
 - image: sonobuoy/sonobuoy
   semver: ">= v0.52.0"
   add_tag_suffix: alpine-giantswarm
@@ -332,6 +354,9 @@
       COPY --from=0 /sonobuoy /sonobuoy
       WORKDIR /
       CMD ["/sonobuoy", "aggregator", "--no-exit", "-v", "3", "--logtostderr"]
+- image: rook/ceph
+  override_repo_name: rook-ceph
+  semver: ">= v1.7.0"
 - image: ubuntu/squid
   sha: a3df22307c1eb5a7b470f980e0141e97fa98beeaaeb9932743604b121835f3c8
   tag_or_pattern: 5.2-22.04_beta
