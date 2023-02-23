@@ -273,15 +273,20 @@ gcr.io:
       - "v3.1.0"
     heptio-images/kube-conformance:
       - "v1.11"
-    inlets/inlets-operator:
-      - "v0.14.1"
-    inlets/inlets-pro:
-      - "v0.8.8"
-    k8snetworkplumbingwg/multus-cni:
-      - "v3.9-thick-amd64"
-      - "v3.9-amd64"
     kubernetes-helm/tiller:
       - "v2.16.8"
+    spark-operator/spark-operator:
+      - "v2.4.0-v1beta1-latest"
+  images-by-semver:
+    cadvisor/cadvisor:
+      - ">= v0.44.0"
+    k8s-staging-cloud-provider-gcp/gcp-compute-persistent-disk-csi-driver:
+      - ">= 1.7.0"
+    kubebuilder/kube-rbac-proxy:
+      - ">= v0.4.1"
+
+ghcr.io:
+  images:
     kyverno/kyverno:
       - "v1.8.4"
       - "v1.9.0"
@@ -292,17 +297,16 @@ gcr.io:
       - "2.12.0"
     kyverno/policy-reporter-ui:
       - "1.7.2"
-    spark-operator/spark-operator:
-      - "v2.4.0-v1beta1-latest"
   images-by-semver:
-    cadvisor/cadvisor:
-      - ">= v0.44.0"
     external-secrets/external-secrets:
       - ">= v0.7.0"
-    k8s-staging-cloud-provider-gcp/gcp-compute-persistent-disk-csi-driver:
-      - ">= 1.7.0"
-    kubebuilder/kube-rbac-proxy:
-      - ">= v0.4.1"
+    inlets/inlets-operator:
+      - "v0.14.1"
+    inlets/inlets-pro:
+      - "v0.8.8"
+    k8snetworkplumbingwg/multus-cni:
+      - "v3.9-thick-amd64"
+      - "v3.9-amd64"
     kyverno/policy-reporter-kyverno-plugin:
       - ">= 0.3.2"
     opsgenie/kubernetes-event-exporter:
