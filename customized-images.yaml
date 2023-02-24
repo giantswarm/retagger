@@ -72,7 +72,7 @@
   semver: ">= v1.0.0"
 - image: "cloudflare/cloudflared"
   semver: ">= 2022.8.0"
-  tag_or_pattern: ".+-amd64"
+  tag_or_pattern: "^(.+)-amd64$"
 - image: "coredns/coredns"
   semver: ">= 1.6.5"
   add_tag_suffix: "giantswarm"
@@ -264,6 +264,13 @@
     - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
     - USER giantswarm
 - image: quay.io/prometheus/node-exporter
+  tag_or_pattern: v0.18.0
+  sha: b2dd31b0d23fda63588674e40fd8d05010d07c5d4ac37163fc596ba9065ce38d
+  add_tag_suffix: "giantswarm"
+  dockerfile_extras:
+    - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+    - USER giantswarm
+- image: quay.io/prometheus/node-exporter
   tag_or_pattern: v1.0.1
   sha: cf66a6bbd573fd819ea09c72e21b528e9252d58d01ae13564a29749de1e48e0f
   add_tag_suffix: "giantswarm"
@@ -290,6 +297,7 @@
 - image: quay.io/reactiveops/ci-images
   override_repo_name: vpa-certgen-ci-images
   semver: ">= v11"
+  tag_or_pattern: "^(.*)-alpine$"
   add_tag_suffix: "openssl"
   dockerfile_extras:
     - RUN apk add --no-cache openssl
