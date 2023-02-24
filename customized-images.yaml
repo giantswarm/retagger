@@ -182,10 +182,9 @@
   tag_or_pattern: 2.1.0
   sha: b4932b7c763d57e97bd3165749cfd994196b20575e21a3b4cfc3097067f3fd67
 - image: kedacore/keda-metrics-apiserver
-  overrideRepoName: kedacore-keda-metrics-apiserver
-  tags:
-  - sha: 8b315d56586ed4b658e0540fa80d395bf6ce0698693d07177aa4c13ce2c452f9
-    tag: 2.1.0
+  override_repo_name: kedacore-keda-metrics-apiserver
+  tag_or_pattern: 2.1.0
+  sha: 8b315d56586ed4b658e0540fa80d395bf6ce0698693d07177aa4c13ce2c452f9
 - image: kindest/node
   override_repo_name: kind-node
   semver: ">= v1.16"
@@ -242,7 +241,7 @@
   semver: ">= v1.11.2"
 - image: quay.io/cilium/operator
   override_repo_name: cilium-operator
-  patterns: ">= v1.11.2"
+  semver: ">= v1.11.2"
 - image: quay.io/cilium/operator-generic
   override_repo_name: cilium-operator-generic
   semver: ">= v1.11.2"

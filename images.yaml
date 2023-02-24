@@ -237,9 +237,6 @@
   comment: via https://www.elastic.co/guide/en/kibana/7.6/docker.html#pull-image
   patterns:
   - pattern: '>= 7.6.1'
-  tags:
-  - sha: 72d816c99cc86b117baf04385020121f71015d7f5f9eba2a59e72532d645d38f
-    tag: 7.6.1
   # TODO
 - name: docker.io/bitnami/postgresql
   overrideRepoName: postgresql-bitnami
