@@ -1,122 +1,122 @@
-- image: "alpine"
+- image: alpine
   tag_or_pattern: "3.16.2"
-  sha: "1304f174557314a7ed9eddb4eab12fed12cb0cd9809e4c28f29af86979a3c870"
+  sha: 1304f174557314a7ed9eddb4eab12fed12cb0cd9809e4c28f29af86979a3c870
   add_tag_suffix: "envsubst"
   dockerfile_extras:
     - RUN apk add --no-cache gettext
-- image: "alpine"
+- image: alpine
   tag_or_pattern: "3.16.2"
-  sha: "1304f174557314a7ed9eddb4eab12fed12cb0cd9809e4c28f29af86979a3c870"
+  sha: 1304f174557314a7ed9eddb4eab12fed12cb0cd9809e4c28f29af86979a3c870
   add_tag_suffix: "yq"
   dockerfile_extras:
     - RUN apk add --no-cache yq bash
-- image: "alpine"
+- image: alpine
   semver: ">= 3.11"
   add_tag_suffix: "giantswarm"
   dockerfile_extras:
     - RUN apk add --no-cache ca-certificates
     - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
     - USER giantswarm
-- image: "alpine"
+- image: alpine
   semver: ">= 3.11"
   add_tag_suffix: "giantswarm-sysctl"
   dockerfile_extras:
     - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
     - 'RUN apk add --no-cache sudo && echo "giantswarm  ALL = NOPASSWD: /sbin/sysctl" >> /etc/sudoers'
     - USER giantswarm
-- image: "alpine"
+- image: alpine
   semver: ">= 3.11"
   add_tag_suffix: "python3"
   dockerfile_extras:
       - RUN apk add --no-cache python3 py3-yaml
-- image: "alpine/git"
-  override_repo_name: "alpinegit"
+- image: alpine/git
+  override_repo_name: alpinegit
   tag_or_pattern: "v2.26.2"
-  sha: "7b94cd6038bf3f5ddd7b1d99b9591f243e6484417bc5fb8fa7fdbc076e904794"
+  sha: 7b94cd6038bf3f5ddd7b1d99b9591f243e6484417bc5fb8fa7fdbc076e904794
   add_tag_suffix: "giantswarm"
   dockerfile_extras:
     - RUN apk add --no-cache ca-certificates
     - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
     - USER giantswarm
-- image: "alpine/helm"
-  override_repo_name: "alpine-helm"
+- image: alpine/helm
+  override_repo_name: alpine-helm
   semver: ">= 3.9.3"
-- image: "amazon/aws-cli"
-  override_repo_name: "awscli"
+- image: amazon/aws-cli
+  override_repo_name: awscli
   tag_or_pattern: "2.7.35"
-  sha: "e5988c45f13ec9c9500e9fb6742e19de642a5bdc2750f2cc0482a857f13c30ea"
-- image: "amazon/aws-cli"
-  override_repo_name: "awscli-tar"
+  sha: e5988c45f13ec9c9500e9fb6742e19de642a5bdc2750f2cc0482a857f13c30ea
+- image: amazon/aws-cli
+  override_repo_name: awscli-tar
   tag_or_pattern: "2.7.35"
-  sha: "e5988c45f13ec9c9500e9fb6742e19de642a5bdc2750f2cc0482a857f13c30ea"
+  sha: e5988c45f13ec9c9500e9fb6742e19de642a5bdc2750f2cc0482a857f13c30ea
   add_tag_suffix: "giantswarm"
   dockerfile_extras:
     - RUN yum -y install tar
-- image: "bitnami/redis"
-  override_repo_name: "bitnami-redis"
+- image: bitnami/redis
+  override_repo_name: bitnami-redis
   tag_or_pattern: "4.0.9"
-  sha: "1b56b1c2c5d737bd8029f2e2e80852c0c1ef342e36ca0940dd313d4d8a786311"
-- image: "bitnami/postgresql"
-  override_repo_name: "postgresql-bitnami"
+  sha: 1b56b1c2c5d737bd8029f2e2e80852c0c1ef342e36ca0940dd313d4d8a786311
+- image: bitnami/postgresql
+  override_repo_name: postgresql-bitnami
   tag_or_pattern: "13.6.0-debian-10-r52"
-  sha: "9f32478fdb19fb3a392999e7bc89cec54c2e74aa3313dc7667cdd750bb9b03e0"
-- image: "bitnami/postgresql"
-  override_repo_name: "postgresql-bitnami"
+  sha: 9f32478fdb19fb3a392999e7bc89cec54c2e74aa3313dc7667cdd750bb9b03e0
+- image: bitnami/postgresql
+  override_repo_name: postgresql-bitnami
   tag_or_pattern: "15.1.0-debian-11-r20"
-  sha: "c9d75b4521dbb75747d936504cb16031a087ae51755868c6b4e7fad0e2b8615d"
-- image: "bobrik/curator"
-  override_repo_name: "bobrik-curator"
+  sha: c9d75b4521dbb75747d936504cb16031a087ae51755868c6b4e7fad0e2b8615d
+- image: bobrik/curator
+  override_repo_name: bobrik-curator
   semver: ">= 5.8.1"
-- image: "caicloud/event-exporter"
-  override_repo_name: "caicloud-event-exporter"
+- image: caicloud/event-exporter
+  override_repo_name: caicloud-event-exporter
   semver: ">= v1.0.0"
-- image: "cloudflare/cloudflared"
+- image: cloudflare/cloudflared
   semver: ">= 2022.8.0"
   tag_or_pattern: "^(.+)-amd64$"
-- image: "coredns/coredns"
+- image: coredns/coredns
   semver: ">= 1.6.5"
   add_tag_suffix: "giantswarm"
   dockerfile_extras:
     - EXPOSE 1053
-- image: "cr.l5d.io/linkerd/cni-plugin"
-  override_repo_name: "linkerd2-cni-plugin"
+- image: cr.l5d.io/linkerd/cni-plugin
+  override_repo_name: linkerd2-cni-plugin
   semver: ">= 2.11.4"
   tag_or_pattern: "^stable-(.*)$"
-- image: "cr.l5d.io/linkerd/controller"
-  override_repo_name: "linkerd2-controller"
+- image: cr.l5d.io/linkerd/controller
+  override_repo_name: linkerd2-controller
   semver: ">= 2.11.4"
   tag_or_pattern: "^stable-(.*)$"
-- image: "cr.l5d.io/linkerd/debug"
-  override_repo_name: "linkerd2-debug"
+- image: cr.l5d.io/linkerd/debug
+  override_repo_name: linkerd2-debug
   semver: ">= 2.11.4"
   tag_or_pattern: "^stable-(.*)$"
-- image: "cr.l5d.io/linkerd/metrics-api"
-  override_repo_name: "linkerd-metrics-api"
+- image: cr.l5d.io/linkerd/metrics-api
+  override_repo_name: linkerd-metrics-api
   semver: ">= 2.11.4"
   tag_or_pattern: "^stable-(.*)$"
-- image: "cr.l5d.io/linkerd/policy-controller"
-  override_repo_name: "linkerd2-policy-controller"
+- image: cr.l5d.io/linkerd/policy-controller
+  override_repo_name: linkerd2-policy-controller
   semver: ">= 2.11.4"
   tag_or_pattern: "^stable-(.*)$"
-- image: "cr.l5d.io/linkerd/proxy"
-  override_repo_name: "linkerd2-proxy"
+- image: cr.l5d.io/linkerd/proxy
+  override_repo_name: linkerd2-proxy
   semver: ">= 2.11.4"
   tag_or_pattern: "^stable-(.*)$"
-- image: "cr.l5d.io/linkerd/proxy-init"
-  override_repo_name: "linkerd2-proxy-init"
+- image: cr.l5d.io/linkerd/proxy-init
+  override_repo_name: linkerd2-proxy-init
   semver: ">= 2.11.4"
   tag_or_pattern: "^stable-(.*)$"
-- image: "cr.l5d.io/linkerd/tap"
-  override_repo_name: "linkerd-tap"
+- image: cr.l5d.io/linkerd/tap
+  override_repo_name: linkerd-tap
   semver: ">= 2.11.4"
   tag_or_pattern: "^stable-(.*)$"
-- image: "cr.l5d.io/linkerd/web"
-  override_repo_name: "linkerd2-web"
+- image: cr.l5d.io/linkerd/web
+  override_repo_name: linkerd2-web
   semver: ">= 2.11.4"
   tag_or_pattern: "^stable-(.*)$"
-- image: "fluent/fluent-bit"
-  tag_or_pattern: 1.9.8
-  sha: "137669ee97787c930ec00a8babff46ecc76988d128cc9e7fa581d1b05ef8fb3d"
+- image: fluent/fluent-bit
+  tag_or_pattern: "1.9.8"
+  sha: 137669ee97787c930ec00a8babff46ecc76988d128cc9e7fa581d1b05ef8fb3d
   add_tag_suffix: aws-plugins
   dockerfile_extras:
     - |
@@ -125,9 +125,9 @@
       COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/firehose.so /fluent-bit/firehose.so
       COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/cloudwatch.so /fluent-bit/cloudwatch.so
       CMD ["/fluent-bit/bin/fluent-bit", "-e", "/fluent-bit/firehose.so", "-e", "/fluent-bit/cloudwatch.so", "-e", "/fluent-bit/kinesis.so", "-c", "/fluent-bit/etc/fluent-bit.conf"]
-- image: "fluent/fluent-bit"
-  tag_or_pattern: 1.7.9
-  sha: "8e3fdc011d3ff98502143650dfa3261860b11f1f289dbb3184c630f71236a366"
+- image: fluent/fluent-bit
+  tag_or_pattern: "1.7.9"
+  sha: 8e3fdc011d3ff98502143650dfa3261860b11f1f289dbb3184c630f71236a366
   add_tag_suffix: systemd247-aws-plugins
   dockerfile_extras:
     - |
@@ -168,7 +168,7 @@
   semver: ">= v0.8.1"
 - image: gcr.io/heptio-images/eventrouter
   tag_or_pattern: "v0.3"
-  sha: "dba60a88600d2d94fcd4c365e2931e54ae9aa495e94a924f80814e019b7ea046"
+  sha: dba60a88600d2d94fcd4c365e2931e54ae9aa495e94a924f80814e019b7ea046
   add_tag_suffix: "giantswarm"
   dockerfile_extras:
     - USER root
@@ -179,11 +179,11 @@
   semver: ">= 1.17.0"
 - image: kedacore/keda
   override_repo_name: kedacore-keda
-  tag_or_pattern: 2.1.0
+  tag_or_pattern: "2.1.0"
   sha: b4932b7c763d57e97bd3165749cfd994196b20575e21a3b4cfc3097067f3fd67
 - image: kedacore/keda-metrics-apiserver
   override_repo_name: kedacore-keda-metrics-apiserver
-  tag_or_pattern: 2.1.0
+  tag_or_pattern: "2.1.0"
   sha: 8b315d56586ed4b658e0540fa80d395bf6ce0698693d07177aa4c13ce2c452f9
 - image: kindest/node
   override_repo_name: kind-node
@@ -195,14 +195,14 @@
   override_repo_name: macropower-analytics-panel-server
   semver: ">= 0.0.1"
 - image: mysql
-  tag_or_pattern: 5.7.14
-  sha: "c8f03238ca1783d25af320877f063a36dbfce0daa56a7b4955e6c6e05ab5c70b"
+  tag_or_pattern: "5.7.14"
+  sha: c8f03238ca1783d25af320877f063a36dbfce0daa56a7b4955e6c6e05ab5c70b
   add_tag_suffix: "giantswarm"
   dockerfile_extras:
     - USER mysql
 - image: projects.registry.vmware.com/vmware-cloud-director/cloud-director-named-disk-csi-driver
   override_repo_name: csi-cloud-director
-  tag_or_pattern: 1.2.0.latest
+  tag_or_pattern: "1.2.0.latest"
   sha: e281f711687e29a4c94ab2de12096a5d020515941d2d935ca1ee8f10b575c3e7
 - image: projects.registry.vmware.com/vmware-cloud-director/cloud-provider-for-cloud-director
   override_repo_name: cpi-cloud-director
@@ -247,7 +247,7 @@
   semver: ">= v1.11.2"
 - image: quay.io/cilium/startup-script
   override_repo_name: cilium-startup-script
-  sha: "72db9d6d9b319e36d68ad3a4cd9c43e3f8ded80694972dc458afacd34e73eb46"
+  sha: 72db9d6d9b319e36d68ad3a4cd9c43e3f8ded80694972dc458afacd34e73eb46
   tag_or_pattern: "62bfbe88c17778aad7bef9fa57ff9e2d4a9ba0d8"
 - image: quay.io/helmpack/chart-testing
   override_repo_name: helm-chart-testing
@@ -256,7 +256,7 @@
   override_repo_name: jiralert
   semver: ">= 1.0"
 - image: quay.io/prometheus/node-exporter
-  tag_or_pattern: v0.18.1
+  tag_or_pattern: "v0.18.1"
   sha: a2f29256e53cc3e0b64d7a472512600b2e9410347d53cdc85b49f659c17e02ee
   add_tag_suffix: "giantswarm"
   dockerfile_extras:
@@ -264,14 +264,14 @@
     - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
     - USER giantswarm
 - image: quay.io/prometheus/node-exporter
-  tag_or_pattern: v0.18.0
+  tag_or_pattern: "v0.18.0"
   sha: b2dd31b0d23fda63588674e40fd8d05010d07c5d4ac37163fc596ba9065ce38d
   add_tag_suffix: "giantswarm"
   dockerfile_extras:
     - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
     - USER giantswarm
 - image: quay.io/prometheus/node-exporter
-  tag_or_pattern: v1.0.1
+  tag_or_pattern: "v1.0.1"
   sha: cf66a6bbd573fd819ea09c72e21b528e9252d58d01ae13564a29749de1e48e0f
   add_tag_suffix: "giantswarm"
   dockerfile_extras:
@@ -279,7 +279,7 @@
     - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
     - USER giantswarm
 - image: quay.io/prometheus/node-exporter
-  tag_or_pattern: v1.0.1
+  tag_or_pattern: "v1.0.1"
   sha: cf66a6bbd573fd819ea09c72e21b528e9252d58d01ae13564a29749de1e48e0f
   add_tag_suffix: "giantswarm"
   dockerfile_extras:
@@ -287,7 +287,7 @@
     - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
     - USER giantswarm
 - image: quay.io/prometheus/node-exporter
-  tag_or_pattern: v1.3.1
+  tag_or_pattern: "v1.3.1"
   sha: f2269e73124dd0f60a7d19a2ce1264d33d08a985aed0ee6b0b89d0be470592cd
   add_tag_suffix: "giantswarm"
   dockerfile_extras:
@@ -319,19 +319,19 @@
 - image: registry.k8s.io/ingress-nginx/controller
   override_repo_name: ingress-nginx-controller
   sha: 54f7fe2c6c5a9db9a0ebf1131797109bb7a4d91f56b9b362bde2abd237dd1974
-  tag_or_pattern: v1.3.1
+  tag_or_pattern: "v1.3.1"
 - image: registry.k8s.io/ingress-nginx/controller
   override_repo_name: ingress-nginx-controller
   sha: 34ee929b111ffc7aa426ffd409af44da48e5a0eea1eb2207994d9e0c0882d143
-  tag_or_pattern: v1.4.0
+  tag_or_pattern: "v1.4.0"
 - image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
   override_repo_name: ingress-nginx-kube-webhook-certgen
   sha: 549e71a6ca248c5abd51cdb73dbc3083df62cf92ed5e6147c780e30f7e007a47
-  tag_or_pattern: v1.3.0
+  tag_or_pattern: "v1.3.0"
 - image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
   override_repo_name: ingress-nginx-kube-webhook-certgen
   sha: 39c5b2e3310dc4264d638ad28d9d1d96c4cbb2b2dcfb52368fe4e3c63f61e10f
-  tag_or_pattern: v20220916-gd32f8c343
+  tag_or_pattern: "v20220916-gd32f8c343"
 - image: registry.k8s.io/kube-apiserver
   semver: ">= v1.19.0 || >= v1.20.0-0"
   add_tag_suffix: giantswarm
@@ -375,7 +375,7 @@
   semver: ">= v1.7.0"
 - image: ubuntu/squid
   sha: a3df22307c1eb5a7b470f980e0141e97fa98beeaaeb9932743604b121835f3c8
-  tag_or_pattern: 5.2-22.04_beta
+  tag_or_pattern: "5.2-22.04_beta"
   add_tag_suffix: giantswarm
   dockerfile_extras:
     - RUN sed -i 's/http_access deny CONNECT/#http_access deny CONNECT/g' /etc/squid/squid.conf
