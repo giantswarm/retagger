@@ -1,0 +1,17 @@
+approvers:
+  - mtrmac
+  - lsm5
+  - TomSweeneyRedHat
+  - rhatdan
+  - vrothberg
+reviewers:
+  - ashley-cui
+  - giuseppe
+  - containers/image-maintainers
+  - lsm5
+  - mtrmac
+  - QiWang19
+  - rhatdan
+  - runcom
+  - TomSweeneyRedHat
+  - vrothberg

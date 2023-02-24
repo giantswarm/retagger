@@ -1,0 +1,32 @@
+{
+   "schemaVersion": 1,
+   "name": "nonempty",
+   "tag": "nonempty",
+   "architecture": "amd64",
+   "fsLayers": [
+      {
+         "blobSum": "sha256:160d823fdc48e62f97ba62df31e55424f8f5eb6b679c865eec6e59adfe304710"
+      }
+   ],
+   "history": [
+      {
+         "v1Compatibility": "{\"architecture\":\"amd64\",\"config\":{\"Hostname\":\"59c20544b2f4\",\"Domainname\":\"\",\"User\":\"\",\"AttachStdin\":false,\"AttachStdout\":false,\"AttachStderr\":false,\"Tty\":false,\"OpenStdin\":false,\"StdinOnce\":false,\"Env\":[\"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\"],\"Cmd\":null,\"Image\":\"\",\"Volumes\":null,\"WorkingDir\":\"\",\"Entrypoint\":null,\"OnBuild\":null,\"Labels\":null},\"container\":\"59c20544b2f4ad7a8639433bacb1ec215b7dad4a7bf1a83b5ab4679329a46c1d\",\"container_config\":{\"Hostname\":\"59c20544b2f4\",\"Domainname\":\"\",\"User\":\"\",\"AttachStdin\":false,\"AttachStdout\":false,\"AttachStderr\":false,\"Tty\":false,\"OpenStdin\":false,\"StdinOnce\":false,\"Env\":[\"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\"],\"Cmd\":[\"/bin/sh\",\"-c\",\"#(nop) ADD file:14f49faade3db5e596826746d9ed3dfd658490c16c4d61d4886726153ad0591a in /\"],\"Image\":\"\",\"Volumes\":null,\"WorkingDir\":\"\",\"Entrypoint\":null,\"OnBuild\":null,\"Labels\":null},\"created\":\"2016-09-19T18:23:54.9949213Z\",\"docker_version\":\"1.10.3\",\"id\":\"4c224eac5061bb85f523ca4e3316618fd7921a80fe94286979667b1edb8e1bdd\",\"os\":\"linux\"}"
+      }
+   ],
+   "signatures": [
+      {
+         "header": {
+            "jwk": {
+               "crv": "P-256",
+               "kid": "DGWZ:GAUM:WCOC:IMDL:D67M:CEI6:YTVH:M2CM:5HX4:FYDD:77OD:D3F7",
+               "kty": "EC",
+               "x": "eprZNqLO9mHZ4Z4GxefucEgov_1gwEi9lehpJR2suRo",
+               "y": "wIr2ucNg32ROfVCkR_8A5VbBJ-mFmsoIUVa6vt8lIxM"
+            },
+            "alg": "ES256"
+         },
+         "signature": "bvTLWW4YVFRjAanN1EJqwQw60fWSWJPxcGO3UZGFI_gyV6ucGdW4x7jyYL6g06sg925s9cy0wN1lw91CCFv4BA",
+         "protected": "eyJmb3JtYXRMZW5ndGgiOjE0ODcsImZvcm1hdFRhaWwiOiJDbjBLIiwidGltZSI6IjIwMTYtMDktMTlUMTg6NDM6MzNaIn0"
+      }
+   ]
+}

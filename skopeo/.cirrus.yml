@@ -1,0 +1,296 @@
+---
+
+# Main collection of env. vars to set for all tasks and scripts.
+env:
+    ####
+    #### Global variables used for all tasks
+    ####
+    # Name of the ultimate destination branch for this CI run, PR or post-merge.
+    DEST_BRANCH: "main"
+    # Overrides default location (/tmp/cirrus) for repo clone
+    GOPATH: &gopath "/var/tmp/go"
+    GOBIN: "${GOPATH}/bin"
+    GOCACHE: "${GOPATH}/cache"
+    GOSRC: &gosrc "/var/tmp/go/src/github.com/containers/skopeo"
+    # Required for consistency with containers/image CI
+    SKOPEO_PATH: *gosrc
+    CIRRUS_WORKING_DIR: *gosrc
+    # The default is 'sh' if unspecified
+    CIRRUS_SHELL: "/bin/bash"
+    # Save a little typing (path relative to $CIRRUS_WORKING_DIR)
+    SCRIPT_BASE: "./contrib/cirrus"
+
+    ####
+    #### Cache-image names to test with (double-quotes around names are critical)
+    ####
+    FEDORA_NAME: "fedora-37" ### c20230120t152650z-f37f36u2204
+
+    # Google-cloud VM Images
+    IMAGE_SUFFIX: "c20230120t152650z-f37f36u2204"
+    FEDORA_CACHE_IMAGE_NAME: "fedora-${IMAGE_SUFFIX}"
+
+    # Container FQIN's
+    FEDORA_CONTAINER_FQIN: "quay.io/libpod/fedora_podman:${IMAGE_SUFFIX}"
+
+    # Built along with the standard PR-based workflow in c/automation_images
+    SKOPEO_CIDEV_CONTAINER_FQIN: "quay.io/libpod/skopeo_cidev:${IMAGE_SUFFIX}"
+
+
+# Default timeout for each task
+timeout_in: 45m
+
+
+gcp_credentials: ENCRYPTED[52d9e807b531b37ab14e958cb5a72499460663f04c8d73e22ad608c027a31118420f1c80f0be0882fbdf96f49d8f9ac0]
+
+
+validate_task:
+    # The git-validation tool doesn't work well on branch or tag push,
+    # under Cirrus-CI, due to challenges obtaining the starting commit ID.
+    # Only do validation for PRs.
+    only_if: &is_pr $CIRRUS_PR != ''
+    container:
+        image: '${SKOPEO_CIDEV_CONTAINER_FQIN}'
+        cpu: 4
+        memory: 8
+    script: |
+        make validate-local
+        make vendor && hack/tree_status.sh
+
+doccheck_task:
+    only_if: *is_pr
+    depends_on:
+      - validate
+    container:
+        image: "${FEDORA_CONTAINER_FQIN}"
+        cpu: 4
+        memory: 8
+    env:
+        BUILDTAGS: &withopengpg 'btrfs_noversion libdm_no_deferred_remove containers_image_openpgp'
+    script: |
+      # TODO: Can't use 'runner.sh setup' inside container.  However,
+      # removing the pre-installed package is the only necessary step
+      # at the time of this comment.
+      dnf erase -y skopeo  # Guarantee non-interference
+      "${SKOPEO_PATH}/${SCRIPT_BASE}/runner.sh" build
+      "${SKOPEO_PATH}/${SCRIPT_BASE}/runner.sh" doccheck
+
+osx_task:
+    # Don't run for docs-only or multi-arch image builds.
+    # Also don't run on release-branches or their PRs,
+    # since base container-image is not version-constrained.
+    only_if: &not_docs_or_release_branch >-
+        ($CIRRUS_BASE_BRANCH == $CIRRUS_DEFAULT_BRANCH ||
+         $CIRRUS_BRANCH == $CIRRUS_DEFAULT_BRANCH ) &&
+        $CIRRUS_CHANGE_TITLE !=~ '.*CI:DOCS.*' &&
+        $CIRRUS_CRON != 'multiarch'
+    depends_on:
+        - validate
+    macos_instance:
+        image: ghcr.io/cirruslabs/macos-ventura-base:latest
+    setup_script: |
+        export PATH=$GOPATH/bin:$PATH
+        brew update
+        brew install gpgme go go-md2man
+        go install golang.org/x/lint/golint@latest
+    test_script: |
+        export PATH=$GOPATH/bin:$PATH
+        go version
+        go env
+        make validate-local test-unit-local bin/skopeo
+        sudo make install
+        /usr/local/bin/skopeo -v
+
+
+cross_task:
+    alias: cross
+    only_if: >-
+        $CIRRUS_CHANGE_TITLE !=~ '.*CI:DOCS.*' &&
+        $CIRRUS_CRON != 'multiarch'
+    depends_on:
+        - validate
+    gce_instance: &standardvm
+        image_project: libpod-218412
+        zone: "us-central1-f"
+        cpu: 2
+        memory: "4Gb"
+        # Required to be 200gig, do not modify - has i/o performance impact
+        # according to gcloud CLI tool warning messages.
+        disk: 200
+        image_name: ${FEDORA_CACHE_IMAGE_NAME}
+    env:
+        BUILDTAGS: *withopengpg
+    setup_script: >-
+        "${GOSRC}/${SCRIPT_BASE}/runner.sh" setup
+    cross_script: >-
+        "${GOSRC}/${SCRIPT_BASE}/runner.sh" cross
+
+
+ostree-rs-ext_task:
+    alias: proxy_ostree_ext
+    only_if: *not_docs_or_release_branch
+    # WARNING: This task potentially performs a container image
+    # build (on change) with runtime package installs.  Therefore,
+    # its behavior can be unpredictable and potentially flake-prone.
+    # In case of emergency, uncomment the next statement to bypass.
+    #
+    # skip: $CI == "true"
+    #
+    depends_on:
+        - validate
+    # Ref: https://cirrus-ci.org/guide/docker-builder-vm/#dockerfile-as-a-ci-environment
+    container:
+        # The runtime image will be rebuilt on change
+        dockerfile: contrib/cirrus/ostree_ext.dockerfile
+        docker_arguments:  # required build-args
+            BASE_FQIN: quay.io/coreos-assembler/fcos-buildroot:testing-devel
+            CIRRUS_IMAGE_VERSION: 1
+    env:
+        EXT_REPO_NAME: ostree-rs-ext
+        EXT_REPO_HOME: $CIRRUS_WORKING_DIR/../$EXT_REPO_NAME
+        EXT_REPO: https://github.com/ostreedev/${EXT_REPO_NAME}.git
+    skopeo_build_script:
+        - dnf builddep -y skopeo
+        - make
+        - make install
+    proxy_ostree_ext_build_script:
+        - git clone --depth 1 $EXT_REPO $EXT_REPO_HOME
+        - cd $EXT_REPO_HOME
+        - cargo test --no-run
+    proxy_ostree_ext_test_script:
+        - cd $EXT_REPO_HOME
+        - cargo test -- --nocapture --quiet
+
+
+#####
+##### NOTE: This task is subtantially duplicated in the containers/image
+##### repository's `.cirrus.yml`.  Changes made here should be fully merged
+##### prior to being manually duplicated and maintained in containers/image.
+#####
+test_skopeo_task:
+    alias: test_skopeo
+    # Don't test for [CI:DOCS], [CI:BUILD], or 'multiarch' cron.
+    only_if: >-
+        $CIRRUS_CHANGE_TITLE !=~ '.*CI:BUILD.*' &&
+        $CIRRUS_CHANGE_TITLE !=~ '.*CI:DOCS.*' &&
+        $CIRRUS_CRON != 'multiarch'
+    depends_on:
+        - validate
+    gce_instance:
+        image_project: libpod-218412
+        zone: "us-central1-f"
+        cpu: 2
+        memory: "4Gb"
+        # Required to be 200gig, do not modify - has i/o performance impact
+        # according to gcloud CLI tool warning messages.
+        disk: 200
+        image_name: ${FEDORA_CACHE_IMAGE_NAME}
+    matrix:
+        - name: "Skopeo Test"  # N/B: Name ref. by hack/get_fqin.sh
+          env:
+              BUILDTAGS: 'btrfs_noversion libdm_no_deferred_remove'
+        - name: "Skopeo Test w/ opengpg"
+          env:
+              BUILDTAGS: *withopengpg
+    setup_script: >-
+        "${GOSRC}/${SCRIPT_BASE}/runner.sh" setup
+    vendor_script: >-
+        "${SKOPEO_PATH}/${SCRIPT_BASE}/runner.sh" vendor
+    build_script: >-
+        "${SKOPEO_PATH}/${SCRIPT_BASE}/runner.sh" build
+    unit_script: >-
+        "${SKOPEO_PATH}/${SCRIPT_BASE}/runner.sh" unit
+    integration_script: >-
+        "${SKOPEO_PATH}/${SCRIPT_BASE}/runner.sh" integration
+    system_script: >
+        "${SKOPEO_PATH}/${SCRIPT_BASE}/runner.sh" system
+
+
+image_build_task: &image-build
+    name: "Build multi-arch $CTXDIR"
+    alias: image_build
+    # Some of these container images take > 1h to build, limit
+    # this task to a specific Cirrus-Cron entry with this name.
+    only_if: $CIRRUS_CRON == 'multiarch'
+    timeout_in: 120m  # emulation is sssllllooooowwww
+    gce_instance:
+        <<: *standardvm
+        image_name: build-push-${IMAGE_SUFFIX}
+        # More muscle required for parallel multi-arch build
+        type: "n2-standard-4"
+    matrix:
+        - env:
+            CTXDIR: contrib/skopeoimage/upstream
+        - env:
+            CTXDIR: contrib/skopeoimage/testing
+        - env:
+            CTXDIR: contrib/skopeoimage/stable
+    env:
+        SKOPEO_USERNAME: ENCRYPTED[4195884d23b154553f2ddb26a63fc9fbca50ba77b3e447e4da685d8639ed9bc94b9a86a9c77272c8c80d32ead9ca48da]
+        SKOPEO_PASSWORD: ENCRYPTED[36e06f9befd17e5da2d60260edb9ef0d40e6312e2bba4cf881d383f1b8b5a18c8e5a553aea2fdebf39cebc6bd3b3f9de]
+        CONTAINERS_USERNAME: ENCRYPTED[dd722c734641f103b394a3a834d51ca5415347e378637cf98ee1f99e64aad2ec3dbd4664c0d94cb0e06b83d89e9bbe91]
+        CONTAINERS_PASSWORD: ENCRYPTED[d8b0fac87fe251cedd26c864ba800480f9e0570440b9eb264265b67411b253a626fb69d519e188e6c9a7f525860ddb26]
+    main_script:
+        - source /etc/automation_environment
+        - main.sh $CIRRUS_REPO_CLONE_URL $CTXDIR
+
+
+test_image_build_task:
+    <<: *image-build
+    alias: test_image_build
+    # Allow this to run inside a PR w/ [CI:BUILD] only.
+    only_if: $CIRRUS_PR != '' && $CIRRUS_CHANGE_TITLE =~ '.*CI:BUILD.*'
+    # This takes a LONG time, only run when requested.  N/B: Any task
+    # made to depend on this one will block FOREVER unless triggered.
+    # DO NOT ADD THIS TASK AS DEPENDENCY FOR `success_task`.
+    trigger_type: manual
+    # Overwrite all 'env', don't push anything, just do the build.
+    env:
+        DRYRUN: 1
+
+
+# This task is critical.  It updates the "last-used by" timestamp stored
+# in metadata for all VM images.  This mechanism functions in tandem with
+# an out-of-band pruning operation to remove disused VM images.
+meta_task:
+    name: "VM img. keepalive"
+    alias: meta
+    container: &smallcontainer
+        cpu: 2
+        memory: 2
+        image: quay.io/libpod/imgts:latest
+    env:
+        # Space-separated list of images used by this repository state
+        IMGNAMES: |
+            ${FEDORA_CACHE_IMAGE_NAME}
+            build-push-${IMAGE_SUFFIX}
+        BUILDID: "${CIRRUS_BUILD_ID}"
+        REPOREF: "${CIRRUS_REPO_NAME}"
+        GCPJSON: ENCRYPTED[6867b5a83e960e7c159a98fe6c8360064567a071c6f4b5e7d532283ecd870aa65c94ccd74bdaa9bf7aadac9d42e20a67]
+        GCPNAME: ENCRYPTED[1cf558ae125e3c39ec401e443ad76452b25d790c45eb73d77c83eb059a0f7fd5085ef7e2f7e410b04ea6e83b0aab2eb1]
+        GCPPROJECT: libpod-218412
+    clone_script: &noop mkdir -p "$CIRRUS_WORKING_DIR"
+    script: /usr/local/bin/entrypoint.sh
+
+
+# Status aggregator for all tests.  This task simply ensures a defined
+# set of tasks all passed, and allows confirming that based on the status
+# of this task.
+success_task:
+    name: "Total Success"
+    alias: success
+    # N/B: ALL tasks must be listed here, minus their '_task' suffix.
+    depends_on:
+        - validate
+        - doccheck
+        - osx
+        - cross
+        - proxy_ostree_ext
+        - test_skopeo
+        - image_build
+        - meta
+    container: *smallcontainer
+    env:
+        CTR_FQIN: ${FEDORA_CONTAINER_FQIN}
+        TEST_ENVIRON: container
+    clone_script: *noop
+    script: /bin/true
