@@ -176,7 +176,7 @@ docker.io:
     falcosecurity/falcosidekick:
       - ">= 2.22.0"
     fluent/fluent-bit:
-      - ">= 1.0.0"
+      - ">= 1.x.x"
     golang:
       - ">= 1.13.1"
     grafana/grafana:
@@ -287,6 +287,13 @@ gcr.io:
 
 ghcr.io:
   images:
+    inlets/inlets-operator:
+      - "v0.14.1"
+    inlets/inlets-pro:
+      - "v0.8.8"
+    k8snetworkplumbingwg/multus-cni:
+      - "v3.9-thick-amd64"
+      - "v3.9-amd64"
     kyverno/kyverno:
       - "v1.8.4"
       - "v1.9.0"
@@ -300,13 +307,6 @@ ghcr.io:
   images-by-semver:
     external-secrets/external-secrets:
       - ">= v0.7.0"
-    inlets/inlets-operator:
-      - "v0.14.1"
-    inlets/inlets-pro:
-      - "v0.8.8"
-    k8snetworkplumbingwg/multus-cni:
-      - "v3.9-thick-amd64"
-      - "v3.9-amd64"
     kyverno/policy-reporter-kyverno-plugin:
       - ">= 0.3.2"
     opsgenie/kubernetes-event-exporter:
@@ -401,7 +401,7 @@ quay.io:
     coreos/prometheus-config-reloader:
       - ">= v0.38.1"
     coreos/prometheus-operator:
-      - ">= v0.38.1"
+      - ">= 0.38.1"
     dexidp/dex:
       - ">=v2.24.0"
     fairwinds/goldilocks:
