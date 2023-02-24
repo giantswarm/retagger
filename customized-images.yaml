@@ -81,30 +81,39 @@
 - image: "cr.l5d.io/linkerd/cni-plugin"
   override_repo_name: "linkerd2-cni-plugin"
   semver: ">= 2.11.4"
+  tag_or_pattern: "^stable-(.*)$"
 - image: "cr.l5d.io/linkerd/controller"
   override_repo_name: "linkerd2-controller"
   semver: ">= 2.11.4"
+  tag_or_pattern: "^stable-(.*)$"
 - image: "cr.l5d.io/linkerd/debug"
   override_repo_name: "linkerd2-debug"
   semver: ">= 2.11.4"
+  tag_or_pattern: "^stable-(.*)$"
 - image: "cr.l5d.io/linkerd/metrics-api"
   override_repo_name: "linkerd-metrics-api"
   semver: ">= 2.11.4"
+  tag_or_pattern: "^stable-(.*)$"
 - image: "cr.l5d.io/linkerd/policy-controller"
   override_repo_name: "linkerd2-policy-controller"
   semver: ">= 2.11.4"
+  tag_or_pattern: "^stable-(.*)$"
 - image: "cr.l5d.io/linkerd/proxy"
   override_repo_name: "linkerd2-proxy"
   semver: ">= 2.11.4"
+  tag_or_pattern: "^stable-(.*)$"
 - image: "cr.l5d.io/linkerd/proxy-init"
   override_repo_name: "linkerd2-proxy-init"
   semver: ">= 2.11.4"
+  tag_or_pattern: "^stable-(.*)$"
 - image: "cr.l5d.io/linkerd/tap"
   override_repo_name: "linkerd-tap"
   semver: ">= 2.11.4"
+  tag_or_pattern: "^stable-(.*)$"
 - image: "cr.l5d.io/linkerd/web"
   override_repo_name: "linkerd2-web"
   semver: ">= 2.11.4"
+  tag_or_pattern: "^stable-(.*)$"
 - image: "fluent/fluent-bit"
   tag_or_pattern: 1.9.8
   sha: "137669ee97787c930ec00a8babff46ecc76988d128cc9e7fa581d1b05ef8fb3d"
@@ -252,7 +261,7 @@
   sha: a2f29256e53cc3e0b64d7a472512600b2e9410347d53cdc85b49f659c17e02ee
   add_tag_suffix: "giantswarm"
   dockerfile_extras:
-    - USer root
+    - USER root
     - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
     - USER giantswarm
 - image: quay.io/prometheus/node-exporter
@@ -260,7 +269,7 @@
   sha: cf66a6bbd573fd819ea09c72e21b528e9252d58d01ae13564a29749de1e48e0f
   add_tag_suffix: "giantswarm"
   dockerfile_extras:
-    - USer root
+    - USER root
     - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
     - USER giantswarm
 - image: quay.io/prometheus/node-exporter
@@ -268,7 +277,7 @@
   sha: cf66a6bbd573fd819ea09c72e21b528e9252d58d01ae13564a29749de1e48e0f
   add_tag_suffix: "giantswarm"
   dockerfile_extras:
-    - USer root
+    - USER root
     - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
     - USER giantswarm
 - image: quay.io/prometheus/node-exporter
@@ -276,7 +285,7 @@
   sha: f2269e73124dd0f60a7d19a2ce1264d33d08a985aed0ee6b0b89d0be470592cd
   add_tag_suffix: "giantswarm"
   dockerfile_extras:
-    - USer root
+    - USER root
     - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
     - USER giantswarm
 - image: quay.io/reactiveops/ci-images
