@@ -36,8 +36,9 @@ type CustomImage struct {
 	Image string `yaml:"image"`
 	// TagOrPattern is used to filter image tags. All tags matching the pattern
 	// will be retagged. If Semver is defined, TagOrPattern will act as a
-	// filter.
-	// Example: "v1.[234].*" or ".+-stable"
+	// filter and the first regexp group will be supplied compared to Semver
+	// instead. (e.g. "alpine-(.*)" + "alpine-3.0" -> "3.0".
+	// Example: "v1.[234].*" or "(.+)-stable"
 	TagOrPattern string `yaml:"tag_or_pattern,omitempty"`
 	// SHA is used to filter image tags. If SHA is specified, it will take
 	// precedence over TagOrPattern. However TagOrPattern is still required!
@@ -215,19 +216,40 @@ func (img *CustomImage) RetagUsingTags() error {
 tagLoop:
 	// Iterate through all found tags and retag ones matching the semver/pattern
 	for _, tag := range tags {
-		if constraint != nil {
-			version, err := semver.NewVersion(tag)
-			if err != nil {
-				logrus.Debugf("image %q's tag %q is not a semantic version", img.Image, tag)
+		// Skip tags that do not match defined constraints.
+		// If a pattern has been defined, the tag has to match it.
+		{
+			if pattern != nil && !pattern.MatchString(tag) {
 				continue
 			}
-			if !constraint.Check(version) {
-				continue
+			// If semver constraint has been defiend, the tag has to match it.
+			if constraint != nil {
+				semverToCompare := tag
+				// If both a pattern & a semver are defined, pattern is used to
+				// "extract" portion of the tag for semver comparison.
+				if pattern != nil {
+					matches := pattern.FindAllStringSubmatch(tag, 1)
+					if len(matches) == 0 {
+						// This shouldn't happen, since we already matched the
+						// pattern to the tag earlier.
+						logrus.Errorf("inconsistent pattern matching: %q vs. %q", pattern, tag)
+						continue
+					}
+					if len(matches[0]) < 2 {
+						// The version subgroup not found :(
+						continue
+					}
+					semverToCompare = matches[0][1]
+				}
+				version, err := semver.NewVersion(semverToCompare)
+				if err != nil {
+					logrus.Debugf("image %q's tag (or its portion) %q is not a semantic version", img.Image, semverToCompare)
+					continue
+				}
+				if !constraint.Check(version) {
+					continue
+				}
 			}
-		}
-		// pattern can be either a sole filter, or used in tandem with semver
-		if pattern != nil && !pattern.MatchString(tag) {
-			continue
 		}
 
 		// Overwrite image name if applicable
