@@ -35,10 +35,8 @@ type CustomImage struct {
 	// "ghcr.io/fluxcd/kustomize-controller"
 	Image string `yaml:"image"`
 	// TagOrPattern is used to filter image tags. All tags matching the pattern
-	// will be retagged. If Semver is defined, TagOrPattern will act as a
-	// filter and the first regexp group will be supplied compared to Semver
-	// instead. (e.g. "alpine-(.*)" + "alpine-3.0" -> "3.0".
-	// Example: "v1.[234].*" or "(.+)-stable"
+	// will be retagged. Required if SHA is specified.
+	// Example: "v1.[234].*" or ".*-stable"
 	TagOrPattern string `yaml:"tag_or_pattern,omitempty"`
 	// SHA is used to filter image tags. If SHA is specified, it will take
 	// precedence over TagOrPattern. However TagOrPattern is still required!
@@ -47,15 +45,20 @@ type CustomImage struct {
 	// Semver is used to filter image tags by semantic version constraints. All
 	// tags satisfying the constraint will be retagged.
 	Semver string `yaml:"semver,omitempty"`
+	// Filter is a regexp pattern used to extract a part of the tag for Semver
+	// comparison. First matched group will be supplied for semver comparison.
+	// Example:
+	//   Filter: "(.+)-alpine"  ->  Image tag: "3.12-alpine" -> Comparison: "3.12>=3.10"
+	//   Semver: ">= 3.10"          Extracted group: "3.12"
+	Filter string `yaml:"filter,omitempty"`
 	// DockerfileExtras is a list of additional Dockerfile statements you want to
 	// append to the upstream Dockerfile. (optional)
 	// Example: ["RUN apk add -y bash"]
 	DockerfileExtras []string `yaml:"dockerfile_extras,omitempty"`
-	// AddTagSuffix is an extra string to append to the tag. (optional)
+	// AddTagSuffix is an extra string to append to the tag.
 	// Example: "giantswarm", the tag would become "<tag>-giantswarm"
 	AddTagSuffix string `yaml:"add_tag_suffix,omitempty"`
 	// OverrideRepoName allows user to rewrite the name of the image entirely.
-	// (optional)
 	// Example: "alpinegit", so "alpine" would become
 	// "quay.io/giantswarm/alpinegit"
 	OverrideRepoName string `yaml:"override_repo_name,omitempty"`
@@ -71,8 +74,11 @@ func (img *CustomImage) Validate() error {
 	if img.SHA != "" && img.TagOrPattern == "" {
 		return fmt.Errorf("%q has to be specified when using %q", "tag_or_pattern", "sha")
 	}
-	if img.Semver != "" && img.SHA != "" {
-		return fmt.Errorf("%q acts as a filter for %q, %q is redundant", "tag_or_pattern", "semver", "sha")
+	if img.Semver != "" && (img.SHA != "" || img.TagOrPattern != "") {
+		return fmt.Errorf("%q defined, %q and %q are redundant and will not be used", "semver", "tag_or_pattern", "sha")
+	}
+	if img.Filter != "" && img.Semver == "" {
+		return fmt.Errorf("cannot use %q without a defined %q", "filter", "semver")
 	}
 	if img.Semver == "" && img.StripSemverPrefix {
 		return fmt.Errorf("cannot strip semver prefix when %q is not defined", "semver")
@@ -177,25 +183,6 @@ func (img *CustomImage) RetagUsingSHA() error {
 // img.Semver, retags, and pushes them to Quay and Aliyun container registries.
 // Any optional parameters configured will be applied as well, e.g. tag suffix.
 func (img *CustomImage) RetagUsingTags() error {
-	// Compile pattern first, so we can exit early if it fails.
-	var pattern *regexp.Regexp
-	if img.TagOrPattern != "" {
-		compiled, err := regexp.Compile(img.TagOrPattern)
-		if err != nil {
-			return fmt.Errorf("error compiling regexp pattern %q: %w", img.TagOrPattern, err)
-		}
-		pattern = compiled
-	}
-	// Compile semver constraint
-	var constraint *semver.Constraints
-	if img.Semver != "" {
-		compiled, err := semver.NewConstraint(img.Semver)
-		if err != nil {
-			return fmt.Errorf("error compiling semver constraint %q: %w", img.Semver, err)
-		}
-		constraint = compiled
-	}
-
 	// List available image tags
 	var tags []string
 	{
@@ -212,46 +199,16 @@ func (img *CustomImage) RetagUsingTags() error {
 		tags = stl.Tags
 	}
 
+	// Filter the tags using TagOrPattern or Semver+Filter.
+	tags, err := img.FilterTags(tags)
+	if err != nil {
+		return fmt.Errorf("error filtering tags: %w", err)
+	}
+
 	errorCounter := &atomic.Int64{}
 tagLoop:
 	// Iterate through all found tags and retag ones matching the semver/pattern
 	for _, tag := range tags {
-		// Skip tags that do not match defined constraints.
-		// If a pattern has been defined, the tag has to match it.
-		{
-			if pattern != nil && !pattern.MatchString(tag) {
-				continue
-			}
-			// If semver constraint has been defiend, the tag has to match it.
-			if constraint != nil {
-				semverToCompare := tag
-				// If both a pattern & a semver are defined, pattern is used to
-				// "extract" portion of the tag for semver comparison.
-				if pattern != nil {
-					matches := pattern.FindAllStringSubmatch(tag, 1)
-					if len(matches) == 0 {
-						// This shouldn't happen, since we already matched the
-						// pattern to the tag earlier.
-						logrus.Errorf("inconsistent pattern matching: %q vs. %q", pattern, tag)
-						continue
-					}
-					if len(matches[0]) < 2 {
-						// The version subgroup not found :(
-						continue
-					}
-					semverToCompare = matches[0][1]
-				}
-				version, err := semver.NewVersion(semverToCompare)
-				if err != nil {
-					logrus.Debugf("image %q's tag (or its portion) %q is not a semantic version", img.Image, semverToCompare)
-					continue
-				}
-				if !constraint.Check(version) {
-					continue
-				}
-			}
-		}
-
 		// Overwrite image name if applicable
 		destinationName := img.Image
 		if img.OverrideRepoName != "" {
@@ -262,7 +219,7 @@ tagLoop:
 		if img.AddTagSuffix != "" {
 			destinationTag = tag + "-" + img.AddTagSuffix
 		}
-		if constraint != nil && img.StripSemverPrefix {
+		if img.Semver != "" && img.StripSemverPrefix {
 			destinationTag = strings.TrimPrefix(destinationTag, "v")
 		}
 
@@ -346,6 +303,76 @@ tagLoop:
 		return fmt.Errorf("finished %q with %d errors", img.Image, errorCount)
 	}
 	return nil
+}
+
+// FilterTags returns a trimmed down list of tags, based on defined rules. It
+// uses either a TagOrPattern, or Semver+Filter fields, whichever are defined.
+// Validate() function guarantees that only one method can be available at any
+// given time.
+func (img *CustomImage) FilterTags(tags []string) ([]string, error) {
+	var filteredTags []string
+
+	// Filter by TagOrPattern...
+	if img.TagOrPattern != "" {
+		pattern, err := regexp.Compile(img.TagOrPattern)
+		if err != nil {
+			return filteredTags, fmt.Errorf("error compiling regexp pattern %q: %w", img.TagOrPattern, err)
+		}
+
+		for _, tag := range tags {
+			if pattern.MatchString(tag) {
+				filteredTags = append(filteredTags, tag)
+			}
+		}
+
+		return filteredTags, nil
+	}
+
+	// or by Semver (with Filter, if defined)
+	constraint, err := semver.NewConstraint(img.Semver)
+	if err != nil {
+		return filteredTags, fmt.Errorf("error compiling semver constraint %q: %w", img.Semver, err)
+	}
+	var filter *regexp.Regexp
+	if img.Filter != "" {
+		f, err := regexp.Compile(img.Filter)
+		if err != nil {
+			return filteredTags, fmt.Errorf("error compiling semver filter %q: %w", img.Filter, err)
+		}
+		filter = f
+	}
+
+	for _, tag := range tags {
+		semverToCompare := tag
+		if filter != nil {
+			matches := filter.FindAllStringSubmatch(tag, 1)
+			// Tag does not match filter at all. This happens in repos/images
+			// with multiple tagging formats.
+			if len(matches) == 0 {
+				continue
+			}
+			// Version subgroup not found. This may be concerning if the filter
+			// is defined, but without any subgroups, hence the error message.
+			if len(matches[0]) < 2 {
+				logrus.Warnf("tag %q matched the pattern %q, but no groups were found", tag, filter.String())
+				continue
+			}
+			// Always select the first subgroup
+			semverToCompare = matches[0][1]
+		}
+
+		version, err := semver.NewVersion(semverToCompare)
+		if err != nil {
+			logrus.Debugf("image %q's tag (or its portion) %q is not a semantic version", img.Image, semverToCompare)
+			continue
+		}
+
+		if constraint.Check(version) {
+			filteredTags = append(filteredTags, tag)
+		}
+	}
+
+	return filteredTags, nil
 }
 
 // skopeoTagList is used to unmarshal `skopeo list-tags` command output.
