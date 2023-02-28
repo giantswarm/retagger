@@ -219,12 +219,12 @@ docker.io:
       - ">= 2.17.0"
     prom/pushgateway:
       - ">= v1.0.0"
-# Used in akv2k8s
+    # Used in akv2k8s
     spvest/azure-keyvault-controller:
       - ">= 1.3.0"
     spvest/azure-keyvault-webhook:
       - ">= 1.3.0"
-# Used in prometheus-operator-app
+    # Used in prometheus-operator-app
     squareup/ghostunnel:
       - ">= v1.5.2"
     vault:
@@ -479,18 +479,18 @@ registry.k8s.io:
       - ">= v0.4.0"
     cluster-proportional-autoscaler-amd64:
       - ">= 1.6.0"
-# We have to ensure that etcd is available to CAPI clusters - we set
-# `clusterConfiguration.imageRepository=docker.io/giantswarm` (e.g. in
-# cluster-aws:
-# https://github.com/giantswarm/cluster-aws/search?q=imageRepository%3A) and
-# that means `kubeadm join` will use the images from our Docker Hub repo.
-# Kubernetes does not support tag suffixes, so we must publish images as
-# `docker.io/giantswarm/coredns:v1.10.0`. And those must not conflict with the
-# `coreos/coreos` tags - since those use a suffix, we're fine here.
-#
-# Once https://github.com/kubernetes/kubeadm/issues/2603 (kubeadm shouldn't
-# pull the coredns image at all since we skip the coredns addon and instead
-# install it using our app platform) is fixed, we can remove this:
+    # We have to ensure that etcd is available to CAPI clusters - we set
+    # `clusterConfiguration.imageRepository=docker.io/giantswarm` (e.g. in
+    # cluster-aws:
+    # https://github.com/giantswarm/cluster-aws/search?q=imageRepository%3A) and
+    # that means `kubeadm join` will use the images from our Docker Hub repo.
+    # Kubernetes does not support tag suffixes, so we must publish images as
+    # `docker.io/giantswarm/coredns:v1.10.0`. And those must not conflict with the
+    # `coreos/coreos` tags - since those use a suffix, we're fine here.
+    #
+    # Once https://github.com/kubernetes/kubeadm/issues/2603 (kubeadm shouldn't
+    # pull the coredns image at all since we skip the coredns addon and instead
+    # install it using our app platform) is fixed, we can remove this:
     coredns/coredns:
       - ">= v1.8.0"
     descheduler/descheduler:
@@ -536,4 +536,3 @@ registry.k8s.io:
       - ">= v1.1.0"
     sig-storage/snapshot-controller:
       - ">= v3.0.0"
-

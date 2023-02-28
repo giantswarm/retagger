@@ -28,7 +28,7 @@
   semver: ">= 3.11"
   add_tag_suffix: "python3"
   dockerfile_extras:
-      - RUN apk add --no-cache python3 py3-yaml
+    - RUN apk add --no-cache python3 py3-yaml
 - image: alpine/git
   override_repo_name: alpinegit
   tag_or_pattern: "v2.26.2"
