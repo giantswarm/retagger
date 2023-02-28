@@ -78,42 +78,45 @@
   add_tag_suffix: "giantswarm"
   dockerfile_extras:
     - EXPOSE 1053
-- image: cr.l5d.io/linkerd/cni-plugin
+- image: ghcr.io/linkerd/cni-plugin
   override_repo_name: linkerd2-cni-plugin
   semver: ">= 2.11.4"
   filter: "^stable-(.*)$"
-- image: cr.l5d.io/linkerd/controller
+- image: ghcr.io/linkerd/controller
   override_repo_name: linkerd2-controller
   semver: ">= 2.11.4"
   filter: "^stable-(.*)$"
-- image: cr.l5d.io/linkerd/debug
+- image: ghcr.io/linkerd/debug
   override_repo_name: linkerd2-debug
   semver: ">= 2.11.4"
   filter: "^stable-(.*)$"
-- image: cr.l5d.io/linkerd/metrics-api
+- image: ghcr.io/linkerd/metrics-api
   override_repo_name: linkerd-metrics-api
   semver: ">= 2.11.4"
   filter: "^stable-(.*)$"
-- image: cr.l5d.io/linkerd/policy-controller
+- image: ghcr.io/linkerd/policy-controller
   override_repo_name: linkerd2-policy-controller
   semver: ">= 2.11.4"
   filter: "^stable-(.*)$"
-- image: cr.l5d.io/linkerd/proxy
+- image: ghcr.io/linkerd/proxy
   override_repo_name: linkerd2-proxy
   semver: ">= 2.11.4"
   filter: "^stable-(.*)$"
-- image: cr.l5d.io/linkerd/proxy-init
+- image: ghcr.io/linkerd/proxy-init
   override_repo_name: linkerd2-proxy-init
   semver: ">= 2.11.4"
   filter: "^stable-(.*)$"
-- image: cr.l5d.io/linkerd/tap
+- image: ghcr.io/linkerd/tap
   override_repo_name: linkerd-tap
   semver: ">= 2.11.4"
   filter: "^stable-(.*)$"
-- image: cr.l5d.io/linkerd/web
+- image: ghcr.io/linkerd/web
   override_repo_name: linkerd2-web
   semver: ">= 2.11.4"
   filter: "^stable-(.*)$"
+- image: crossplane/xfn
+  override_repo_name: crossplane
+  semver: ">= v.1.11.0"
 - image: fluent/fluent-bit
   tag_or_pattern: "1.9.8"
   sha: 137669ee97787c930ec00a8babff46ecc76988d128cc9e7fa581d1b05ef8fb3d
