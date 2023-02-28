@@ -385,7 +385,7 @@ type skopeoTagList struct {
 // ensuring builds for all available platforms.
 func copyImage(wg *sync.WaitGroup, errorCounter *atomic.Int64, source, destination string) {
 	defer wg.Done()
-	c, _, stderr := command("skopeo", "copy", "--all", "--multi-arch", "all", source, destination)
+	c, _, stderr := command("skopeo", "copy", "--all", source, destination)
 	logrus.Debugf("copying %q to %q", source, destination)
 	if err := c.Run(); err != nil {
 		logrus.Errorf("error copying %q to %q: %v\n%s", source, destination, err, stderr.String())
