@@ -7,7 +7,6 @@ ENV CGO_ENABLED=0
 RUN DISABLE_DOCS=1 make BUILDTAGS=containers_image_openpgp GO_DYN_FLAGS=''
 
 FROM quay.io/skopeo/stable:v1 AS skopeo-upstream
-# RUN find / -name 'containers'
 
 FROM cimg/go:${GOLANG_VERSION}
 USER root
