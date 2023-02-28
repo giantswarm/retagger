@@ -146,7 +146,7 @@ build_and_retag: &build_and_retag
         username: ${QUAY_USERNAME}
         password: ${QUAY_PASSWORD}
         registry: "quay.io"
-        images_file: images-quay.yaml
+        images_file: skopeo-images.yaml
         requires:
           - hold-for-approval
     - retag-registry:
@@ -155,7 +155,7 @@ build_and_retag: &build_and_retag
         username: ${ALIYUN_USERNAME}
         password: ${ALIYUN_PASSWORD}
         registry: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com"
-        images_file: images-aliyun.yaml
+        images_file: skopeo-images.yaml
         requires:
           - hold-for-approval
     - retag-customized-images:
