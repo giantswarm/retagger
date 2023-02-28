@@ -87,8 +87,7 @@ jobs:
           name: Retag images
           command: |
             skopeo sync --all --keep-going --src yaml --dest docker \
-              --append-suffix=kuba \
-              "<<parameters.images_file>>" "<<parameters.registry>>/giantswarm" > /tmp/skopeo.log
+              "<<parameters.images_file>>" "<<parameters.registry>>/giantswarm" | tee /tmp/skopeo.log
       - store_artifacts:
           path: /tmp/skopeo.log
           destination: "<<parameters.registry>>.log"
