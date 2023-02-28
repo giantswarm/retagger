@@ -72,7 +72,7 @@
   semver: ">= v1.0.0"
 - image: cloudflare/cloudflared
   semver: ">= 2022.8.0"
-  tag_or_pattern: "^(.+)-amd64$"
+  filter: "^(.+)-amd64$"
 - image: coredns/coredns
   semver: ">= 1.6.5"
   add_tag_suffix: "giantswarm"
@@ -81,39 +81,39 @@
 - image: cr.l5d.io/linkerd/cni-plugin
   override_repo_name: linkerd2-cni-plugin
   semver: ">= 2.11.4"
-  tag_or_pattern: "^stable-(.*)$"
+  filter: "^stable-(.*)$"
 - image: cr.l5d.io/linkerd/controller
   override_repo_name: linkerd2-controller
   semver: ">= 2.11.4"
-  tag_or_pattern: "^stable-(.*)$"
+  filter: "^stable-(.*)$"
 - image: cr.l5d.io/linkerd/debug
   override_repo_name: linkerd2-debug
   semver: ">= 2.11.4"
-  tag_or_pattern: "^stable-(.*)$"
+  filter: "^stable-(.*)$"
 - image: cr.l5d.io/linkerd/metrics-api
   override_repo_name: linkerd-metrics-api
   semver: ">= 2.11.4"
-  tag_or_pattern: "^stable-(.*)$"
+  filter: "^stable-(.*)$"
 - image: cr.l5d.io/linkerd/policy-controller
   override_repo_name: linkerd2-policy-controller
   semver: ">= 2.11.4"
-  tag_or_pattern: "^stable-(.*)$"
+  filter: "^stable-(.*)$"
 - image: cr.l5d.io/linkerd/proxy
   override_repo_name: linkerd2-proxy
   semver: ">= 2.11.4"
-  tag_or_pattern: "^stable-(.*)$"
+  filter: "^stable-(.*)$"
 - image: cr.l5d.io/linkerd/proxy-init
   override_repo_name: linkerd2-proxy-init
   semver: ">= 2.11.4"
-  tag_or_pattern: "^stable-(.*)$"
+  filter: "^stable-(.*)$"
 - image: cr.l5d.io/linkerd/tap
   override_repo_name: linkerd-tap
   semver: ">= 2.11.4"
-  tag_or_pattern: "^stable-(.*)$"
+  filter: "^stable-(.*)$"
 - image: cr.l5d.io/linkerd/web
   override_repo_name: linkerd2-web
   semver: ">= 2.11.4"
-  tag_or_pattern: "^stable-(.*)$"
+  filter: "^stable-(.*)$"
 - image: fluent/fluent-bit
   tag_or_pattern: "1.9.8"
   sha: 137669ee97787c930ec00a8babff46ecc76988d128cc9e7fa581d1b05ef8fb3d
@@ -297,7 +297,7 @@
 - image: quay.io/reactiveops/ci-images
   override_repo_name: vpa-certgen-ci-images
   semver: ">= v11"
-  tag_or_pattern: "^(.*)-alpine$"
+  filter: "^(.*)-alpine$"
   add_tag_suffix: "openssl"
   dockerfile_extras:
     - RUN apk add --no-cache openssl
