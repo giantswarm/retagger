@@ -13,11 +13,16 @@ import (
 
 	"github.com/Masterminds/semver/v3"
 	"github.com/sirupsen/logrus"
+	flag "github.com/spf13/pflag"
 	"gopkg.in/yaml.v3"
 )
 
 var (
 	temporaryWorkingDir = path.Join(os.TempDir(), "retagger")
+
+	flagLogLevel      string
+	flagExecutorCount int
+	flagExecutorID    int
 )
 
 const (
@@ -416,8 +421,30 @@ func command(name string, args ...string) (*exec.Cmd, *bytes.Buffer, *bytes.Buff
 }
 
 func init() {
+	flag.StringVar(&flagLogLevel, "log-level", "debug", "Sets log level")
+	flag.IntVar(&flagExecutorCount, "executor-count", 1, "Number of executors in a parallelized run")
+	flag.IntVar(&flagExecutorID, "executor-id", 0, "ID of the executor in a parallelized run")
+	flag.Parse()
+
 	logrus.SetFormatter(&logrus.TextFormatter{})
 	logrus.SetLevel(logrus.DebugLevel)
+
+	lvl, err := logrus.ParseLevel(flagLogLevel)
+	if err != nil {
+		logrus.Warnf("could not parse log level %q, defaulting to %q", flagLogLevel, logrus.DebugLevel.String())
+	} else {
+		logrus.SetLevel(lvl)
+	}
+
+	if flagExecutorID < 0 || flagExecutorID >= flagExecutorCount {
+		logrus.Fatalf("%q flag has to be greater than 0 and lower than %q", "executor-id", "executor-count")
+	}
+	if flagExecutorCount < 1 {
+		logrus.Fatal("%q cannot be lower than 1", "executor-count")
+	}
+	if flagExecutorCount > 10 {
+		logrus.Warnf("%q is set to %d, are you sure that's on purpose?", "executor-count", flagExecutorCount)
+	}
 }
 
 func main() {
@@ -425,44 +452,50 @@ func main() {
 		logrus.Fatal(err)
 	}
 
+	logger := logrus.WithField("executor", flagExecutorID)
+
 	// Load custom dockerfile definitions from a file
 	customizedImages := []CustomImage{}
 	{
 		b, err := os.ReadFile("customized-images.yaml")
 		if err != nil {
-			logrus.Fatalf("error reading customized-images.yaml: %s", err)
+			logger.Fatalf("error reading customized-images.yaml: %s", err)
 		}
 		if err := yaml.Unmarshal(b, &customizedImages); err != nil {
-			logrus.Fatalf("error unmarshaling customized-images.yaml: %s", err)
+			logger.Fatalf("error unmarshaling customized-images.yaml: %s", err)
 		}
 	}
 
-	logrus.Infof("Found %d custom Images to build", len(customizedImages))
+	logger.Infof("Found %d custom Images to build", len(customizedImages))
 
 	// Iterate over every image x tag and retag/rebuild it
 	errorCounter := 0
 	for i, image := range customizedImages {
+		// Skip images meant for other executors
+		if i%flagExecutorCount != flagExecutorID {
+			continue
+		}
 		if err := image.Validate(); err != nil {
-			logrus.Errorf("[%d/%d] %q error: %s", i+1, len(customizedImages), image.Image, err)
+			logger.Errorf("[%d/%d] %q error: %s", i+1, len(customizedImages), image.Image, err)
 			errorCounter++
 			continue
 		}
-		logrus.Printf("[%d/%d] Retagging %q", i+1, len(customizedImages), image.Image)
+		logger.Printf("[%d/%d] Retagging %q", i+1, len(customizedImages), image.Image)
 		if image.SHA != "" {
 			if err := image.RetagUsingSHA(); err != nil {
-				logrus.Errorf("got error: %v", err)
+				logger.Errorf("got error: %v", err)
 				errorCounter++
 			}
 		} else {
 			if err := image.RetagUsingTags(); err != nil {
-				logrus.Errorf("got error: %v", err)
+				logger.Errorf("got error: %v", err)
 				errorCounter++
 			}
 		}
 	}
 
 	if errorCounter > 0 {
-		logrus.Fatalf("Retagging ended with %d errors", errorCounter)
+		logger.Fatalf("Retagging ended with %d errors", errorCounter)
 	}
-	logrus.Infof("Done retagging %d images with no errors", len(customizedImages))
+	logger.Infof("Done retagging %d images with no errors", len(customizedImages))
 }
