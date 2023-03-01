@@ -1,0 +1,9 @@
+# Docs: https://github.com/kubasobon/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
+docker.elastic.co:
+  images:
+    elasticsearch/elasticsearch-oss:
+      - "6.1.4"
+  images-by-semver:
+    kibana/kibana-oss:
+      # via https://www.elastic.co/guide/en/kibana/7.6/docker.html#pull-image
+      - ">= 7.6.1"

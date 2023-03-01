@@ -1,0 +1,32 @@
+# Docs: https://github.com/kubasobon/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
+ghcr.io:
+  images:
+    inlets/inlets-operator:
+      - "v0.14.1"
+    inlets/inlets-pro:
+      - "v0.8.8"
+    k8snetworkplumbingwg/multus-cni:
+      - "v3.9-thick-amd64"
+      - "v3.9-amd64"
+    kyverno/cleanup-controller:
+      - "v1.9.0"
+    kyverno/kyverno:
+      - "v1.8.4"
+      - "v1.9.0"
+    kyverno/kyvernopre:
+      - "v1.8.4"
+      - "v1.9.0"
+    kyverno/policy-reporter:
+      - "2.12.0"
+    kyverno/policy-reporter-ui:
+      - "1.7.2"
+  images-by-semver:
+    external-secrets/external-secrets:
+      - ">= v0.7.0"
+    kyverno/policy-reporter-kyverno-plugin:
+      - ">= 0.3.2"
+    opsgenie/kubernetes-event-exporter:
+      # used for https://github.com/giantswarm/event-exporter-app
+      - ">= v0.9"
+    prymitive/karma:
+      - ">= 0.74"

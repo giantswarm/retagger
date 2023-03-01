@@ -1,0 +1,90 @@
+# Docs: https://github.com/kubasobon/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
+registry.k8s.io:
+  images-by-semver:
+    addon-resizer:
+      - ">= 1.8.7"
+    autoscaling/cluster-autoscaler:
+      - ">= 1.24.0"
+    autoscaling/vpa-admission-controller:
+      - ">= 0.8.0"
+    autoscaling/vpa-recommender:
+      - ">= 0.8.0"
+    autoscaling/vpa-updater:
+      - ">= 0.8.0"
+    capi-openstack/capi-openstack-controller:
+      - ">= 0.4.0"
+    cluster-api-aws/cluster-api-aws-controller:
+      - ">= v0.6.7"
+    cluster-api-aws/eks-bootstrap-controller:
+      - ">= v0.6.7"
+    cluster-api-aws/eks-controlplane-controller:
+      - ">= v0.6.7"
+    cluster-api-azure/cluster-api-azure-controller:
+      - ">= v0.5.0"
+    cluster-api-gcp/cluster-api-gcp-controller:
+      - ">= v1.0.2"
+    cluster-api/cluster-api-controller:
+      - ">= v0.4.0"
+    cluster-api/kubeadm-bootstrap-controller:
+      - ">= v0.4.0"
+    cluster-api/kubeadm-control-plane-controller:
+      - ">= v0.4.0"
+    cluster-proportional-autoscaler-amd64:
+      - ">= 1.6.0"
+    # We have to ensure that etcd is available to CAPI clusters - we set
+    # `clusterConfiguration.imageRepository=docker.io/giantswarm` (e.g. in
+    # cluster-aws:
+    # https://github.com/giantswarm/cluster-aws/search?q=imageRepository%3A) and
+    # that means `kubeadm join` will use the images from our Docker Hub repo.
+    # Kubernetes does not support tag suffixes, so we must publish images as
+    # `docker.io/giantswarm/coredns:v1.10.0`. And those must not conflict with the
+    # `coreos/coreos` tags - since those use a suffix, we're fine here.
+    #
+    # Once https://github.com/kubernetes/kubeadm/issues/2603 (kubeadm shouldn't
+    # pull the coredns image at all since we skip the coredns addon and instead
+    # install it using our app platform) is fixed, we can remove this:
+    coredns/coredns:
+      - ">= v1.8.0"
+    descheduler/descheduler:
+      - ">= v0.20.0"
+    dns/k8s-dns-node-cache:
+      - ">= 1.21.1"
+    etcd:
+      - ">= v3.5.4-0"
+    external-dns/external-dns:
+      - ">= v0.10.1"
+    hyperkube:
+      - ">= v1.15 < 1.24"
+    kube-apiserver:
+      - ">= v1.19.0 || >= v1.20.0-0"
+      - ">= v1.16.8 < v1.19"
+    kube-controller-manager:
+      - ">= v1.16.8 || >= v1.20.0-0"
+    kube-proxy:
+      - ">= v1.16.8 || >= v1.20.0-0"
+    kube-scheduler:
+      - ">= v1.16.8 || >= v1.20.0-0"
+    kube-state-metrics/kube-state-metrics:
+      - "> v1.9.8"
+    metrics-server/metrics-server:
+      - ">= v0.4.2"
+    pause:
+      - ">= 3.1"
+    pause-amd64:
+      - ">= 3.1"
+    provider-aws/aws-ebs-csi-driver:
+      - ">= 0.7.0"
+    sig-storage/csi-attacher:
+      - ">= v1.2.0"
+    sig-storage/csi-node-driver-registrar:
+      - ">= v1.1.0"
+    sig-storage/csi-provisioner:
+      - ">= v1.6.0"
+    sig-storage/csi-resizer:
+      - ">= v0.3.0"
+    sig-storage/csi-snapshotter:
+      - ">= v2.1.1"
+    sig-storage/livenessprobe:
+      - ">= v1.1.0"
+    sig-storage/snapshot-controller:
+      - ">= v3.0.0"

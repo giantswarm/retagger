@@ -1,0 +1,21 @@
+# Docs: https://github.com/kubasobon/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
+gcr.io:
+  images:
+    google_containers/defaultbackend:
+      - "1.0"
+      - "1.2"
+    google-containers/startup-script:
+      - "v2"
+    heptio-images/gangway:
+      - "v3.1.0"
+    heptio-images/kube-conformance:
+      - "v1.11"
+    spark-operator/spark-operator:
+      - "v2.4.0-v1beta1-latest"
+  images-by-semver:
+    cadvisor/cadvisor:
+      - ">= v0.44.0"
+    k8s-staging-cloud-provider-gcp/gcp-compute-persistent-disk-csi-driver:
+      - ">= 1.7.0"
+    kubebuilder/kube-rbac-proxy:
+      - ">= v0.4.1"

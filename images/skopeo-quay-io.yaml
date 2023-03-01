@@ -1,0 +1,101 @@
+# Docs: https://github.com/kubasobon/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
+quay.io:
+  images:
+    coreos/etcd-operator:
+      - "v0.3.2"
+    coreos/flannel:
+      - "v0.11.0-amd64"
+    coreos/prometheus-operator:
+      - "v0.30.1"
+    giantswarm/docker-strongswan:
+      - "d432793577e07bfe6856d3739e6bca3d91db71e4"
+    giantswarm/k8s-api-healthz:
+      - "1c0cdf1ed5ee18fdf59063ecdd84bf3787f80fac"
+    giantswarm/k8s-setup-network-environment:
+      - "1f4ffc52095ac368847ce3428ea99b257003d9b9"
+    jetstack/cert-manager-ingress-shim:
+      - "v0.2.5"
+    prometheus/haproxy-exporter:
+      - "v0.9.0"
+    prometheus/node-exporter:
+      - "v1.0.1"
+      - "v1.3.1"
+      - "v0.15.1"
+      - "v0.17.0"
+      - "v0.18.0"
+      - "v0.18.1"
+    pusher/oauth2_proxy:
+      - "v5.1.0"
+  images-by-semver:
+    argoproj/argocd:
+      - ">= v2.0.1"
+    calico/cni:
+      - ">= v3.9.5"
+    calico/kube-controllers:
+      - ">= v3.9.5"
+    calico/node:
+      - ">= v3.9.5"
+    calico/pod2daemon-flexvol:
+      - ">= v3.9.5"
+    calico/typha:
+      - ">= v3.10.1"
+    ceph/ceph:
+      - ">= v16.2.5-20210708"
+    cephcsi/cephcsi:
+      - ">= v3.1.1"
+    cilium/cilium:
+      - ">= v1.11.2"
+    cilium/cilium-etcd-operator:
+      - ">= v2.0.7"
+    cilium/hubble-relay:
+      - ">= v1.11.2"
+    cilium/hubble-ui:
+      - ">= v0.8.5"
+    cilium/hubble-ui-backend:
+      - ">= v0.8.5"
+    coreos/configmap-reload:
+      - ">= v0.0.1"
+    coreos/etcd:
+      - ">= v3.3"
+    coreos/prometheus-config-reloader:
+      - ">= v0.38.1"
+    coreos/prometheus-operator:
+      - ">= 0.38.1"
+    dexidp/dex:
+      - ">=v2.24.0"
+    fairwinds/goldilocks:
+      - ">= v2.2.0"
+    fairwinds/polaris:
+      - ">= 4.0"
+    giantswarm/amazon-k8s-cni:
+      - ">= v1.6.0"
+    google-cloud-tools/kube-eagle:
+      - ">= v1.1.4"
+    jacksontj/promxy:
+      - ">= v0.0.60"
+    jetstack/cert-manager-acmesolver:
+      - ">= v1.6.1"
+    jetstack/cert-manager-cainjector:
+      - ">= v0.14.2"
+    jetstack/cert-manager-controller:
+      - ">= v0.14.2"
+    jetstack/cert-manager-ctl:
+      - ">= v1.5.3"
+    jetstack/cert-manager-webhook:
+      - ">= v0.14.2"
+    oauth2-proxy/oauth2-proxy:
+      - ">= v7.1.3"
+    open-policy-agent/gatekeeper:
+      - ">= v3.1.0-beta.5"
+    prometheus-operator/prometheus-config-reloader:
+      - ">= v0.43.0"
+    prometheus-operator/prometheus-operator:
+      - ">= 0.43.0"
+    prometheus/alertmanager:
+      - ">= v0.19.0"
+    prometheus/node-exporter:
+      - ">= v1.3.0"
+    thanos/thanos:
+      - ">= v0.17.2"
+    uswitch/kiam:
+      - ">= v4.0"
