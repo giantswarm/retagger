@@ -2,9 +2,9 @@
 ghcr.io:
   images:
     inlets/inlets-operator:
-      - "v0.14.1"
+      - "0.14.1"
     inlets/inlets-pro:
-      - "v0.8.8"
+      - "0.8.8"
     k8snetworkplumbingwg/multus-cni:
       - "v3.9-thick-amd64"
       - "v3.9-amd64"
