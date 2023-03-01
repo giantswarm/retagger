@@ -26,10 +26,11 @@ var (
 )
 
 const (
-	defaultPlatform = "linux/amd64"
-	dockerTransport = "docker://"
-	quayURL         = "quay.io/giantswarm"
-	aliyunURL       = "giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm"
+	customizedImagesFile = "images/customized-images.yaml"
+	defaultPlatform      = "linux/amd64"
+	dockerTransport      = "docker://"
+	quayURL              = "quay.io/giantswarm"
+	aliyunURL            = "giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm"
 )
 
 // CustomImage represents a set of rules used to rebuild/retag multiple tags of
@@ -468,12 +469,12 @@ func main() {
 	// Load custom dockerfile definitions from a file
 	customizedImages := []CustomImage{}
 	{
-		b, err := os.ReadFile("customized-images.yaml")
+		b, err := os.ReadFile(customizedImagesFile)
 		if err != nil {
-			logger.Fatalf("error reading customized-images.yaml: %s", err)
+			logger.Fatalf("error reading %q: %s", customizedImagesFile, err)
 		}
 		if err := yaml.Unmarshal(b, &customizedImages); err != nil {
-			logger.Fatalf("error unmarshaling customized-images.yaml: %s", err)
+			logger.Fatalf("error unmarshaling %q: %s", customizedImagesFile, err)
 		}
 	}
 
