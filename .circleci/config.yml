@@ -100,10 +100,10 @@ jobs:
         type: string
         default: "debug"
       executor_count:
-        type: int
+        type: integer
         default: 1
       executor_id:
-        type: int
+        type: integer
         default: 0
     steps:
       - setup_remote_docker: {}
@@ -194,10 +194,9 @@ build_and_retag: &build_and_retag
     - retag-customized-images:
         context: architect
         name: retag-customized-images
-        parameters:
-          executor_count: 4
         requires:
           - hold-for-approval
+        executor_count: 4
         matrix:
           parameters:
             # i in range(executor_count)
