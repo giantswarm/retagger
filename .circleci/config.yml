@@ -17,9 +17,9 @@ jobs:
              -c .yamllint \
              images/*.yaml
       - persist_to_workspace:
-          root: "images/"
+          root: .
           paths:
-            - "images/*.yaml"
+            - "images/"
   build-go:
     machine:
       image: ubuntu-2004:current
