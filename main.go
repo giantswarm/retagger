@@ -370,7 +370,7 @@ func (img *CustomImage) FilterTags(tags []string) ([]string, error) {
 
 		version, err := semver.NewVersion(semverToCompare)
 		if err != nil {
-			logrus.Debugf("image %q's tag (or its portion) %q is not a semantic version", img.Image, semverToCompare)
+			logrus.Tracef("image %q's tag (or its portion) %q is not a semantic version", img.Image, semverToCompare)
 			continue
 		}
 
