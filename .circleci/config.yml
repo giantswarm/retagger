@@ -15,11 +15,11 @@ jobs:
              -v $PWD:/workdir \
              giantswarm/yamllint \
              -c .yamllint \
-             *.yaml
+             images/*.yaml
       - persist_to_workspace:
-          root: .
+          root: "images/"
           paths:
-            - "*.yaml"
+            - "images/*.yaml"
   build-go:
     machine:
       image: ubuntu-2004:current
@@ -95,6 +95,16 @@ jobs:
   retag-customized-images:
     docker:
       - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
+    parameters:
+      log_level:
+        type: string
+        default: "debug"
+      executor_count:
+        type: int
+        default: 1
+      executor_id:
+        type: int
+        default: 0
     steps:
       - setup_remote_docker: {}
       - attach_workspace:
@@ -112,7 +122,8 @@ jobs:
       - run:
           name: "Run retagger"
           command: |
-            ./retagger
+            ./retagger --log-level "<<parameters.log_level>>" \
+              --executor-count <<parameters.executor_count>> --executor_id <<parameters.executor_id>>
 
 # Define 'build_and_retag' workflow steps, so we can reuse it.
 build_and_retag: &build_and_retag
@@ -146,23 +157,51 @@ build_and_retag: &build_and_retag
         username: ${QUAY_USERNAME}
         password: ${QUAY_PASSWORD}
         registry: "quay.io"
-        images_file: skopeo-images.yaml
         requires:
           - hold-for-approval
+        matrix:
+          parameters:
+            images_file:
+              - images/skopeo-docker-elastic-co.yaml
+              - images/skopeo-docker-io.yaml
+              - images/skopeo-eu-gcr-io.yaml
+              - images/skopeo-gcr-io.yaml
+              - images/skopeo-ghcr-io.yaml
+              - images/skopeo-mcr-microsoft-com.yaml
+              - images/skopeo-public-ecr-aws.yaml
+              - images/skopeo-quay-io.yaml
+              - images/skopeo-registry-k8s-io.yaml
     - retag-registry:
         context: architect
         name: retag-aliyun
         username: ${ALIYUN_USERNAME}
         password: ${ALIYUN_PASSWORD}
         registry: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com"
-        images_file: skopeo-images.yaml
         requires:
           - hold-for-approval
+        matrix:
+          parameters:
+            images_file:
+              - images/skopeo-docker-elastic-co.yaml
+              - images/skopeo-docker-io.yaml
+              - images/skopeo-eu-gcr-io.yaml
+              - images/skopeo-gcr-io.yaml
+              - images/skopeo-ghcr-io.yaml
+              - images/skopeo-mcr-microsoft-com.yaml
+              - images/skopeo-public-ecr-aws.yaml
+              - images/skopeo-quay-io.yaml
+              - images/skopeo-registry-k8s-io.yaml
     - retag-customized-images:
         context: architect
         name: retag-customized-images
+        parameters:
+          executor_count: 4
         requires:
           - hold-for-approval
+        matrix:
+          parameters:
+            # i in range(executor_count)
+            executor_id: [0, 1, 2, 3]
 
 workflows:
   version: 2
