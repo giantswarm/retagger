@@ -445,9 +445,6 @@ quay.io:
       - ">= v4.0"
 
 registry.k8s.io:
-  images:
-    nvidia-gpu-device-plugin:
-      - "1.0.0"
   images-by-semver:
     addon-resizer:
       - ">= 1.8.7"
