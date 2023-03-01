@@ -96,7 +96,7 @@ func (img *CustomImage) Validate() error {
 // The pushed image will be tagged with the value of image.TagOrPattern.
 func (img *CustomImage) RetagUsingSHA() error {
 	// Overwrite image name if applicable
-	destinationName := img.Image
+	destinationName := imageBaseName(img.Image)
 	if img.OverrideRepoName != "" {
 		destinationName = img.OverrideRepoName
 	}
@@ -210,15 +210,16 @@ func (img *CustomImage) RetagUsingTags() error {
 		return fmt.Errorf("error filtering tags: %w", err)
 	}
 
+	// Overwrite image name if applicable
+	destinationName := imageBaseName(img.Image)
+	if img.OverrideRepoName != "" {
+		destinationName = img.OverrideRepoName
+	}
+
 	errorCounter := &atomic.Int64{}
 tagLoop:
 	// Iterate through all found tags and retag ones matching the semver/pattern
 	for _, tag := range tags {
-		// Overwrite image name if applicable
-		destinationName := img.Image
-		if img.OverrideRepoName != "" {
-			destinationName = img.OverrideRepoName
-		}
 		// Add tag suffix if applicable
 		destinationTag := tag
 		if img.AddTagSuffix != "" {
@@ -383,6 +384,16 @@ func (img *CustomImage) FilterTags(tags []string) ([]string, error) {
 // skopeoTagList is used to unmarshal `skopeo list-tags` command output.
 type skopeoTagList struct {
 	Tags []string `yaml:"Tags"`
+}
+
+// imageBaseName is a helper function extracting base image name.
+// Example: "registry.k8s.io/kube-apiserver" -> "kube-apiserver"
+func imageBaseName(name string) string {
+	if !strings.ContainsRune(name, '/') {
+		return name
+	}
+	elems := strings.Split(name, "/")
+	return elems[len(elems)-1]
 }
 
 // copyImage is a helper function used to invoke `skopeo copy`. Please note the
