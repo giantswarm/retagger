@@ -196,11 +196,11 @@ build_and_retag: &build_and_retag
         name: retag-customized-images
         requires:
           - hold-for-approval
-        executor_count: 4
+        executor_count: 6
         matrix:
           parameters:
             # i in range(executor_count)
-            executor_id: [0, 1, 2, 3]
+            executor_id: [0, 1, 2, 3, 4, 5]
 
 workflows:
   version: 2
