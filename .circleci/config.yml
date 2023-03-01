@@ -86,7 +86,7 @@ jobs:
       - run:
           name: Retag images
           command: |
-            skopeo sync --all --keep-going --src yaml --dest docker \
+            skopeo sync --all --keep-going --retry-times 3 --src yaml --dest docker \
               "<<parameters.images_file>>" "<<parameters.registry>>/giantswarm" | tee /tmp/skopeo.log
       - store_artifacts:
           path: /tmp/skopeo.log
