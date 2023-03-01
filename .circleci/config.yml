@@ -123,7 +123,7 @@ jobs:
           name: "Run retagger"
           command: |
             ./retagger --log-level "<<parameters.log_level>>" \
-              --executor-count <<parameters.executor_count>> --executor_id <<parameters.executor_id>>
+              --executor-count <<parameters.executor_count>> --executor-id <<parameters.executor_id>>
 
 # Define 'build_and_retag' workflow steps, so we can reuse it.
 build_and_retag: &build_and_retag
@@ -153,7 +153,7 @@ build_and_retag: &build_and_retag
           - build-and-push-docker
     - retag-registry:
         context: architect
-        name: retag-quay
+        name: retag-quay-<<matrix.images_file>>
         username: ${QUAY_USERNAME}
         password: ${QUAY_PASSWORD}
         registry: "quay.io"
@@ -173,7 +173,7 @@ build_and_retag: &build_and_retag
               - images/skopeo-registry-k8s-io.yaml
     - retag-registry:
         context: architect
-        name: retag-aliyun
+        name: retag-aliyun-<<matrix.images_file>>
         username: ${ALIYUN_USERNAME}
         password: ${ALIYUN_PASSWORD}
         registry: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com"
