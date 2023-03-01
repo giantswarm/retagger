@@ -274,8 +274,6 @@ gcr.io:
       - "v3.1.0"
     heptio-images/kube-conformance:
       - "v1.11"
-    kubernetes-helm/tiller:
-      - "v2.16.8"
     spark-operator/spark-operator:
       - "v2.4.0-v1beta1-latest"
   images-by-semver:
