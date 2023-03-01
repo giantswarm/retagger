@@ -85,6 +85,7 @@ jobs:
             skopeo login -u "<<parameters.username>>" -p "<<parameters.password>>" "<<parameters.registry>>"
       - run:
           name: Retag images
+          no_output_timeout: 1h
           command: |
             skopeo sync --all --keep-going --retry-times 3 --src yaml --dest docker \
               "<<parameters.images_file>>" "<<parameters.registry>>/giantswarm" | tee /tmp/skopeo.log
@@ -121,6 +122,7 @@ jobs:
             skopeo login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
       - run:
           name: "Run retagger"
+          no_output_timeout: 1h
           command: |
             ./retagger --log-level "<<parameters.log_level>>" \
               --executor-count <<parameters.executor_count>> --executor-id <<parameters.executor_id>>
