@@ -82,6 +82,7 @@ jobs:
       - run:
           name: Log in to Docker registry
           command: |
+            skopeo login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
             skopeo login -u "<<parameters.username>>" -p "<<parameters.password>>" "<<parameters.registry>>"
       - run:
           name: Retag images
@@ -113,11 +114,13 @@ jobs:
       - run:
           name: "Log in to registries: docker"
           command: |
+            docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
             docker login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
             docker login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
       - run:
           name: "Log in to registries: skopeo"
           command: |
+            skopeo login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
             skopeo login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
             skopeo login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
       - run:
