@@ -314,6 +314,7 @@
 - image: quay.io/strimzi/kafka
   override_repo_name: strimzi-kafka
   semver: ">= 0.18.0-0"
+  filter: '([\d\.]+)-(0|kafka).*'
 - image: quay.io/strimzi/kafka-bridge
   override_repo_name: strimzi-kafka-bridge
   semver: ">= 0.18.0-0"
@@ -341,17 +342,20 @@
   tag_or_pattern: "v20220916-gd32f8c343"
 - image: registry.k8s.io/kube-apiserver
   semver: ">= v1.19.0 || >= v1.20.0-0"
+  filter: '^(v\d+\.\d+\.\d+)$'
   add_tag_suffix: giantswarm
   dockerfile_extras:
     - RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 - image: registry.k8s.io/kube-apiserver
   semver: '>= v1.16.8 < v1.19'
   add_tag_suffix: giantswarm
+  filter: '^(v\d+\.\d+\.\d+)$'
   dockerfile_extras:
     - RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 - image: registry.k8s.io/kube-apiserver
   override_repo_name: hyperkube
   semver: ">= v1.19.8 || >= v1.20.0-0"
+  filter: '^(v\d+\.\d+\.\d+)$'
   strip_semver_prefix: true
   dockerfile_extras:
     - |
