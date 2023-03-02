@@ -83,7 +83,15 @@ jobs:
           name: Log in to Docker registry
           command: |
             skopeo login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
-            skopeo login -u "<<parameters.username>>" -p "<<parameters.password>>" "<<parameters.registry>>"
+            max_retry=5
+            counter=1
+            until skopeo login -u "<<parameters.username>>" -p "<<parameters.password>>" "<<parameters.registry>>"
+            do
+                sleep 3
+                [[ counter -eq $max_retry ]] && echo "Failed by exhausting $max_retry retries" && exit 1
+                echo "Attempt $counter: trying again..."
+                ((counter++))
+            done
       - run:
           name: Retag images
           no_output_timeout: 1h
@@ -116,13 +124,29 @@ jobs:
           command: |
             docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
             docker login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
-            docker login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
+            max_retry=5
+            counter=1
+            until docker login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
+            do
+                sleep 3
+                [[ counter -eq $max_retry ]] && echo "Failed by exhausting $max_retry retries" && exit 1
+                echo "Attempt $counter: trying again..."
+                ((counter++))
+            done
       - run:
           name: "Log in to registries: skopeo"
           command: |
             skopeo login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
             skopeo login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
-            skopeo login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
+            max_retry=5
+            counter=1
+            until skopeo login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
+            do
+                sleep 3
+                [[ counter -eq $max_retry ]] && echo "Failed by exhausting $max_retry retries" && exit 1
+                echo "Attempt $counter: trying again..."
+                ((counter++))
+            done
       - run:
           name: "Run retagger"
           no_output_timeout: 1h
