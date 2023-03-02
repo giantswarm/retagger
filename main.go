@@ -406,6 +406,7 @@ func copyImage(wg *sync.WaitGroup, errorCounter *atomic.Int64, source, destinati
 	logrus.Debugf("copying %q to %q", source, destination)
 	if err := c.Run(); err != nil {
 		logrus.Errorf("error copying %q to %q: %v\n%s", source, destination, err, stderr.String())
+		return
 	}
 	logrus.Debugf("copied %q to %q", source, destination)
 }
@@ -417,8 +418,14 @@ func pushImage(wg *sync.WaitGroup, errorCounter *atomic.Int64, nameAndTag string
 	logrus.Debugf("pushing %q", nameAndTag)
 	if err := c.Run(); err != nil {
 		logrus.Errorf("error pushing %q: %v\n%s", nameAndTag, err, stderr.String())
+		return
 	}
 	logrus.Debugf("pushed %q", nameAndTag)
+	// try to free up docker space
+	c = exec.Command("docker", "images", "rm", nameAndTag)
+	if err := c.Run(); err != nil {
+		logrus.Tracef("error running 'docker images rm %s'", nameAndTag)
+	}
 }
 
 // command is a helper function so I don't have to manually plug bytes.Buffer
