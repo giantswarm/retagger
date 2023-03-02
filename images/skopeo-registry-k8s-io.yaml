@@ -56,14 +56,13 @@ registry.k8s.io:
     hyperkube:
       - ">= v1.15 < 1.24"
     kube-apiserver:
-      - ">= v1.19.0 || >= v1.20.0-0"
-      - ">= v1.16.8 < v1.19"
+      - ">= v1.19.0"
     kube-controller-manager:
-      - ">= v1.16.8 || >= v1.20.0-0"
+      - ">= v1.16.8"
     kube-proxy:
-      - ">= v1.16.8 || >= v1.20.0-0"
+      - ">= v1.16.8"
     kube-scheduler:
-      - ">= v1.16.8 || >= v1.20.0-0"
+      - ">= v1.16.8"
     kube-state-metrics/kube-state-metrics:
       - "> v1.9.8"
     metrics-server/metrics-server:
