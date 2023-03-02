@@ -12,7 +12,7 @@
     - RUN apk add --no-cache yq bash
 - image: alpine
   semver: ">= 3.11"
-  filter: "(\d+\..*)"
+  filter: '(\d+\..*)'
   add_tag_suffix: "giantswarm"
   dockerfile_extras:
     - RUN apk add --no-cache ca-certificates
@@ -20,7 +20,7 @@
     - USER giantswarm
 - image: alpine
   semver: ">= 3.11"
-  filter: "(\d+\..*)"
+  filter: '(\d+\..*)'
   add_tag_suffix: "giantswarm-sysctl"
   dockerfile_extras:
     - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
@@ -28,7 +28,7 @@
     - USER giantswarm
 - image: alpine
   semver: ">= 3.11"
-  filter: "(\d+\..*)"
+  filter: '(\d+\..*)'
   add_tag_suffix: "python3"
   dockerfile_extras:
     - RUN apk add --no-cache python3 py3-yaml
@@ -44,7 +44,7 @@
 - image: alpine/helm
   override_repo_name: alpine-helm
   semver: ">= 3.9.3"
-  filter: "(\d+\..*)"
+  filter: '(\d+\..*)'
 - image: amazon/aws-cli
   override_repo_name: awscli
   tag_or_pattern: "2.7.35"
