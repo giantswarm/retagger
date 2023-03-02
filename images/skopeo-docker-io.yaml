@@ -96,7 +96,7 @@ docker.io:
     peaceiris/hugo:
       - "v0.104.3"
     prom/cloudwatch-exporter:
-      - "0.4"
+      - "cloudwatch_exporter-0.4"
     prom/prometheus:
       - "v2.6.1"
       - "v2.9.1"
