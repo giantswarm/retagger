@@ -341,12 +341,6 @@
   sha: 39c5b2e3310dc4264d638ad28d9d1d96c4cbb2b2dcfb52368fe4e3c63f61e10f
   tag_or_pattern: "v20220916-gd32f8c343"
 - image: registry.k8s.io/kube-apiserver
-  semver: ">= v1.19.0"
-  filter: '^(v\d+\.\d+\.\d+)$'
-  add_tag_suffix: giantswarm
-  dockerfile_extras:
-    - RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
-- image: registry.k8s.io/kube-apiserver
   semver: '>= v1.16.8 < v1.19'
   add_tag_suffix: giantswarm
   filter: '^(v\d+\.\d+\.\d+)$'
