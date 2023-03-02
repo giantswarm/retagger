@@ -308,19 +308,6 @@
   add_tag_suffix: "openssl"
   dockerfile_extras:
     - RUN apk add --no-cache openssl
-- image: quay.io/strimzi/jmxtrans
-  override_repo_name: strimzi-jmxtrans
-  semver: ">= 0.18.0-0"
-- image: quay.io/strimzi/kafka
-  override_repo_name: strimzi-kafka
-  semver: ">= 0.18.0-0"
-  filter: '([\d\.]+)-(0|kafka).*'
-- image: quay.io/strimzi/kafka-bridge
-  override_repo_name: strimzi-kafka-bridge
-  semver: ">= 0.18.0-0"
-- image: quay.io/strimzi/operator
-  override_repo_name: strimzi-operator
-  semver: ">= 0.18.0-0"
 - image: registry.k8s.io/etcd
   semver: ">= v3.5.4-0"
   add_tag_suffix: k8s
