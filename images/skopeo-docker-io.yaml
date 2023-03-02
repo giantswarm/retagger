@@ -21,8 +21,6 @@ docker.io:
       - "6.8.13"
     fluxcd/flux-cli:
       - "v0.27.0"
-    gfkse/oauth2_proxy:
-      - "kubernetes-3-ca-certs"
     goharbor/chartmuseum-photon:
       - "v0.7.1-v1.6.0"
     goharbor/clair-photon:
