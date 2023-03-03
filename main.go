@@ -14,15 +14,17 @@ import (
 	"github.com/Masterminds/semver/v3"
 	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
+	"golang.org/x/exp/slices"
 	"gopkg.in/yaml.v3"
 )
 
 var (
 	temporaryWorkingDir = path.Join(os.TempDir(), "retagger")
 
-	flagLogLevel      string
-	flagExecutorCount int
-	flagExecutorID    int
+	flagLogLevel         string
+	flagExecutorCount    int
+	flagExecutorID       int
+	flagSkipExistingTags bool
 )
 
 const (
@@ -190,31 +192,35 @@ func (img *CustomImage) RetagUsingSHA() error {
 // Any optional parameters configured will be applied as well, e.g. tag suffix.
 func (img *CustomImage) RetagUsingTags() error {
 	// List available image tags
-	var tags []string
-	{
-		c, stdout, stderr := command("skopeo", "list-tags", dockerTransport+img.Image)
-		if err := c.Run(); err != nil {
-			return fmt.Errorf("error listing tags for %q: %w\n%s", img.Image, err, stderr.String())
-		}
-		stl := skopeoTagList{
-			Tags: []string{},
-		}
-		if err := yaml.Unmarshal(stdout.Bytes(), &stl); err != nil {
-			return fmt.Errorf("error unmarshaling tags: %w", err)
-		}
-		tags = stl.Tags
-	}
-
-	// Filter the tags using TagOrPattern or Semver+Filter.
-	tags, err := img.FilterTags(tags)
+	tags, err := listTags(img.Image)
 	if err != nil {
-		return fmt.Errorf("error filtering tags: %w", err)
+		return err
 	}
 
 	// Overwrite image name if applicable
 	destinationName := imageBaseName(img.Image)
 	if img.OverrideRepoName != "" {
 		destinationName = img.OverrideRepoName
+	}
+
+	// Filter the tags using TagOrPattern or Semver+Filter.
+	tags, err = img.FilterTags(tags)
+	if err != nil {
+		return fmt.Errorf("error filtering tags: %w", err)
+	}
+
+	// Exclude tags existing in both quay and aliyun
+	if flagSkipExistingTags {
+		quayTags, err := listTags(fmt.Sprintf("%s/%s", quayURL, destinationName))
+		if err != nil {
+			return fmt.Errorf("error getting Quay.io tags: %w", err)
+		}
+		aliyunTags, err := listTags(fmt.Sprintf("%s/%s", aliyunURL, destinationName))
+		if err != nil {
+			return fmt.Errorf("error getting Aliyun tags: %w", err)
+		}
+		tags = img.FindMissingTags(tags, quayTags, aliyunTags)
+		logrus.Infof("Found %d missing tags for image %q", len(tags), img.Image)
 	}
 
 	errorCounter := &atomic.Int64{}
@@ -382,9 +388,75 @@ func (img *CustomImage) FilterTags(tags []string) ([]string, error) {
 	return filteredTags, nil
 }
 
+// findMissingTags returns a list of items of the 'tags' slice that are missing
+// from at least one of the 'present' slices.
+func (img *CustomImage) FindMissingTags(tags []string, present ...[]string) []string {
+	var filteredTags []string
+	for _, tag := range tags {
+		tagIsMissing := false
+
+		destinationTag := tag
+		if img.AddTagSuffix != "" {
+			destinationTag = tag + "-" + img.AddTagSuffix
+		}
+		if img.Semver != "" && img.StripSemverPrefix {
+			destinationTag = strings.TrimPrefix(destinationTag, "v")
+		}
+
+		for _, existingTags := range present {
+			if !slices.Contains(existingTags, destinationTag) {
+				tagIsMissing = true
+				break
+			}
+		}
+
+		if tagIsMissing {
+			filteredTags = append(filteredTags, tag)
+		}
+	}
+	return filteredTags
+}
+
 // skopeoTagList is used to unmarshal `skopeo list-tags` command output.
 type skopeoTagList struct {
 	Tags []string `yaml:"Tags"`
+}
+
+// listTags gets a list of available tags for a given registry+image, for
+// example 'quay.io/giantswarm/curl'.
+func listTags(image string) ([]string, error) {
+	var tags []string
+	var err error
+
+	for attempt := 0; attempt < 3; attempt++ {
+		attemptLogger := logrus.WithField("attempt", attempt+1)
+
+		c, stdout, stderr := command("skopeo", "list-tags", dockerTransport+image)
+		err = c.Run()
+		if err != nil {
+			err = fmt.Errorf("error listing tags for %q: %w\n%s", image, err, stderr.String())
+			attemptLogger.Warn(err)
+			continue
+		}
+
+		stl := skopeoTagList{
+			Tags: []string{},
+		}
+		err = yaml.Unmarshal(stdout.Bytes(), &stl)
+		if err != nil {
+			err = fmt.Errorf("error listing tags for %q: %w\n%s", image, err, stderr.String())
+			attemptLogger.Warn(err)
+			continue
+		}
+
+		tags = stl.Tags
+		break
+	}
+
+	if err != nil {
+		return []string{}, err
+	}
+	return tags, nil
 }
 
 // imageBaseName is a helper function extracting base image name.
@@ -443,6 +515,7 @@ func init() {
 	flag.StringVar(&flagLogLevel, "log-level", "debug", "Sets log level")
 	flag.IntVar(&flagExecutorCount, "executor-count", 1, "Number of executors in a parallelized run")
 	flag.IntVar(&flagExecutorID, "executor-id", 0, "ID of the executor in a parallelized run")
+	flag.BoolVar(&flagSkipExistingTags, "skip-existing-tags", true, "Skip tags which are already present in the target container registry")
 	flag.Parse()
 
 	logrus.SetFormatter(&logrus.TextFormatter{})
