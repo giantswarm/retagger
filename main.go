@@ -494,9 +494,9 @@ func pushImage(wg *sync.WaitGroup, errorCounter *atomic.Int64, nameAndTag string
 	}
 	logrus.Debugf("pushed %q", nameAndTag)
 	// try to free up docker space
-	c = exec.Command("docker", "images", "rm", nameAndTag)
+	c = exec.Command("docker", "image", "rm", nameAndTag)
 	if err := c.Run(); err != nil {
-		logrus.Tracef("error running 'docker images rm %s'", nameAndTag)
+		logrus.Tracef("error running %q", c.String())
 	}
 }
 
