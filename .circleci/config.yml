@@ -204,6 +204,7 @@ build_and_retag: &build_and_retag
               - images/skopeo-public-ecr-aws.yaml
               - images/skopeo-quay-io.yaml
               - images/skopeo-registry-k8s-io.yaml
+              - images/skopeo-registry-k8s-io-kubernetes.yaml
     - retag-registry:
         context: architect
         name: retag-aliyun-<<matrix.images_file>>
@@ -224,6 +225,7 @@ build_and_retag: &build_and_retag
               - images/skopeo-public-ecr-aws.yaml
               - images/skopeo-quay-io.yaml
               - images/skopeo-registry-k8s-io.yaml
+              - images/skopeo-registry-k8s-io-kubernetes.yaml
     - retag-customized-images:
         context: architect
         name: retag-customized-images
