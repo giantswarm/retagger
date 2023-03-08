@@ -30,7 +30,7 @@ func init() {
 
 	pflag.UintVar(&flagParts, "parts", 1, "Number of slices to produce out of source file")
 	pflag.StringVar(&flagSrc, "src", "", "skopeo sync file to split")
-	pflag.StringVar(&flagSrc, "dest", "", "Directory to write file parts to")
+	pflag.StringVar(&flagDst, "dest", "", "Directory to write file parts to")
 	pflag.Parse()
 
 	if flagParts == 0 {
