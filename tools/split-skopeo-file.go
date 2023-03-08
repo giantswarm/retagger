@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/pflag"
@@ -90,14 +89,13 @@ func main() {
 		}
 	}
 
-	filenameBase := strings.TrimSuffix(flagSrc, ".yaml")
 	for i, part := range parts {
 		data, err := yaml.Marshal(part)
 		if err != nil {
 			logrus.Fatalf("error marshaling part %d: %s", i+1, err)
 		}
 		err = os.WriteFile(
-			fmt.Sprintf("%s-%d.yaml", filenameBase, i),
+			fmt.Sprintf("%s.%d", flagSrc, i),
 			data, 0644,
 		)
 		if err != nil {
