@@ -111,7 +111,7 @@ jobs:
           name: Log in to Docker registry
           command: |
             skopeo login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
-            max_retry=5
+            max_retry=30
             counter=1
             until skopeo login -u "<<parameters.username>>" -p "<<parameters.password>>" "<<parameters.registry>>"
             do
