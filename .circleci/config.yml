@@ -199,6 +199,38 @@ build_and_retag: &build_and_retag
         filters:
           tags:
             only: /^v.*/
+    - split-skopeo-file:
+        context: architect
+        name: split-docker-io
+        filepath: images/skopeo-docker-io.yaml
+        destination_dir: skopeo-docker-io
+        parts: 16
+        requires:
+          - build-go
+    - split-skopeo-file:
+        context: architect
+        name: split-quay-io
+        filepath: images/skopeo-quay-io.yaml
+        destination_dir: skopeo-quay-io
+        parts: 16
+        requires:
+          - build-go
+    - split-skopeo-file:
+        context: architect
+        name: split-k8s-io
+        filepath: images/skopeo-registry-k8s-io.yaml
+        destination_dir: skopeo-registry-k8s-io
+        parts: 8
+        requires:
+          - build-go
+    - split-skopeo-file:
+        context: architect
+        name: split-k8s-io-kubernetes
+        filepath: images/skopeo-registry-k8s-io-kubernetes.yaml
+        destination_dir: skopeo-registry-k8s-io-kubernetes
+        parts: 5
+        requires:
+          - build-go
     - build-and-push-docker:
         context: architect
         name: build-and-push-docker
@@ -207,39 +239,10 @@ build_and_retag: &build_and_retag
         registry: "quay.io"
         tag: ${CIRCLE_TAG:-$CIRCLE_SHA1}
         requires:
-          - build-go
-    - split-skopeo-file:
-        context: architect
-        name: split-docker-io
-        filepath: images/skopeo-docker-io.yaml
-        destination_dir: skopeo-docker-io
-        parts: 16
-        requires:
-          - build-and-push-docker
-    - split-skopeo-file:
-        context: architect
-        name: split-quay-io
-        filepath: images/skopeo-quay-io.yaml
-        destination_dir: skopeo-quay-io
-        parts: 16
-        requires:
-          - build-and-push-docker
-    - split-skopeo-file:
-        context: architect
-        name: split-k8s-io
-        filepath: images/skopeo-registry-k8s-io.yaml
-        destination_dir: skopeo-registry-k8s-io
-        parts: 8
-        requires:
-          - build-and-push-docker
-    - split-skopeo-file:
-        context: architect
-        name: split-k8s-io-kubernetes
-        filepath: images/skopeo-registry-k8s-io-kubernetes.yaml
-        destination_dir: skopeo-registry-k8s-io-kubernetes
-        parts: 5
-        requires:
-          - build-and-push-docker
+          - split-docker-io
+          - split-quay-io
+          - split-k8s-io
+          - split-k8s-io-kubernetes
     - retag-registry:
         context: architect
         name: retag-quay-<<matrix.images_file>>
@@ -248,10 +251,6 @@ build_and_retag: &build_and_retag
         registry: "quay.io"
         requires:
           - build-and-push-docker
-          - split-docker-io
-          - split-quay-io
-          - split-k8s-io
-          - split-k8s-io-kubernetes
         matrix:
           parameters:
             images_file:
@@ -314,10 +313,6 @@ build_and_retag: &build_and_retag
         registry: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com"
         requires:
           - build-and-push-docker
-          - split-docker-io
-          - split-quay-io
-          - split-k8s-io
-          - split-k8s-io-kubernetes
         matrix:
           parameters:
             images_file:
