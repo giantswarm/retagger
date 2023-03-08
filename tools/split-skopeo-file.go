@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/pflag"
@@ -20,6 +21,7 @@ type skopeoStruct struct {
 var (
 	flagParts uint
 	flagSrc   string
+	flagDst   string
 )
 
 func init() {
@@ -28,6 +30,7 @@ func init() {
 
 	pflag.UintVar(&flagParts, "parts", 1, "Number of slices to produce out of source file")
 	pflag.StringVar(&flagSrc, "src", "", "skopeo sync file to split")
+	pflag.StringVar(&flagSrc, "dest", "", "Directory to write file parts to")
 	pflag.Parse()
 
 	if flagParts == 0 {
@@ -38,6 +41,9 @@ func init() {
 	}
 	if flagSrc == "" {
 		logrus.Fatalf("%q flag has to be set", "src")
+	}
+	if flagDst == "" {
+		logrus.Fatalf("%q flag has to be set", "dest")
 	}
 }
 
@@ -89,13 +95,17 @@ func main() {
 		}
 	}
 
+	if err := os.MkdirAll(flagDst, 0777); err != nil {
+		logrus.Fatalf("error creating directory %q: %s", flagDst, err)
+	}
+
 	for i, part := range parts {
 		data, err := yaml.Marshal(part)
 		if err != nil {
 			logrus.Fatalf("error marshaling part %d: %s", i+1, err)
 		}
 		err = os.WriteFile(
-			fmt.Sprintf("%s.%d", flagSrc, i),
+			path.Join(flagDst, fmt.Sprintf("part-%d.yaml", i)),
 			data, 0644,
 		)
 		if err != nil {

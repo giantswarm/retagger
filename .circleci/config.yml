@@ -75,6 +75,8 @@ jobs:
     parameters:
       filepath:
         type: string
+      destination_dir:
+        type: string
       parts:
         type: integer
     steps:
@@ -84,11 +86,11 @@ jobs:
       - run :
           name: Split skopeo YAML
           command: |
-            ./split-skopeo-file --src "<<parameters.filepath>>" --parts "<<parameters.parts>>"
+            ./split-skopeo-file --src "<<parameters.filepath>>" --parts "<<parameters.parts>>" --dest "images/<<parameters.destination_dir>>"
       - persist_to_workspace:
           root: .
           paths:
-            - "images/<<parameters.filepath>>.*"
+            - "images/<<parameters.destination_dir>>"
 
   retag-registry:
     docker:
@@ -210,6 +212,7 @@ build_and_retag: &build_and_retag
         context: architect
         name: split-docker-io
         filepath: images/skopeo-docker-io.yaml
+        destination_dir: skopeo-docker-io
         parts: 8
         requires:
           - build-go
@@ -217,6 +220,7 @@ build_and_retag: &build_and_retag
         context: architect
         name: split-quay-io
         filepath: images/skopeo-quay-io.yaml
+        destination_dir: skopeo-quay-io
         parts: 8
         requires:
           - build-go
@@ -224,6 +228,7 @@ build_and_retag: &build_and_retag
         context: architect
         name: split-k8s-io
         filepath: images/skopeo-registry-k8s-io.yaml
+        destination_dir: skopeo-registry-k8s-io
         parts: 8
         requires:
           - build-go
@@ -231,6 +236,7 @@ build_and_retag: &build_and_retag
         context: architect
         name: split-k8s-io-kubernetes
         filepath: images/skopeo-registry-k8s-io-kubernetes.yaml
+        destination_dir: skopeo-registry-k8s-io-kubernetes
         parts: 5
         requires:
           - build-go
@@ -254,39 +260,40 @@ build_and_retag: &build_and_retag
           parameters:
             images_file:
               - images/skopeo-docker-elastic-co.yaml
-              - images/skopeo-docker-io.yaml.0
-              - images/skopeo-docker-io.yaml.1
-              - images/skopeo-docker-io.yaml.2
-              - images/skopeo-docker-io.yaml.3
-              - images/skopeo-docker-io.yaml.4
-              - images/skopeo-docker-io.yaml.5
-              - images/skopeo-docker-io.yaml.6
-              - images/skopeo-eu-gcr-io.yaml.7
+              - images/skopeo-docker-io/part-0.yaml
+              - images/skopeo-docker-io/part-1.yaml
+              - images/skopeo-docker-io/part-2.yaml
+              - images/skopeo-docker-io/part-3.yaml
+              - images/skopeo-docker-io/part-4.yaml
+              - images/skopeo-docker-io/part-5.yaml
+              - images/skopeo-docker-io/part-6.yaml
+              - images/skopeo-docker-io/part-7.yaml
+              - images/skopeo-eu-gcr-io.yaml
               - images/skopeo-gcr-io.yaml
               - images/skopeo-ghcr-io.yaml
               - images/skopeo-mcr-microsoft-com.yaml
               - images/skopeo-public-ecr-aws.yaml
-              - images/skopeo-quay-io.yaml.0
-              - images/skopeo-quay-io.yaml.1
-              - images/skopeo-quay-io.yaml.2
-              - images/skopeo-quay-io.yaml.3
-              - images/skopeo-quay-io.yaml.4
-              - images/skopeo-quay-io.yaml.5
-              - images/skopeo-quay-io.yaml.6
-              - images/skopeo-quay-io.yaml.7
-              - images/skopeo-registry-k8s-io.yaml.0
-              - images/skopeo-registry-k8s-io.yaml.1
-              - images/skopeo-registry-k8s-io.yaml.2
-              - images/skopeo-registry-k8s-io.yaml.3
-              - images/skopeo-registry-k8s-io.yaml.4
-              - images/skopeo-registry-k8s-io.yaml.5
-              - images/skopeo-registry-k8s-io.yaml.6
-              - images/skopeo-registry-k8s-io.yaml.7
-              - images/skopeo-registry-k8s-io-kubernetes.yaml.0
-              - images/skopeo-registry-k8s-io-kubernetes.yaml.1
-              - images/skopeo-registry-k8s-io-kubernetes.yaml.2
-              - images/skopeo-registry-k8s-io-kubernetes.yaml.3
-              - images/skopeo-registry-k8s-io-kubernetes.yaml.4
+              - images/skopeo-quay-io/part-0.yaml
+              - images/skopeo-quay-io/part-1.yaml
+              - images/skopeo-quay-io/part-2.yaml
+              - images/skopeo-quay-io/part-3.yaml
+              - images/skopeo-quay-io/part-4.yaml
+              - images/skopeo-quay-io/part-5.yaml
+              - images/skopeo-quay-io/part-6.yaml
+              - images/skopeo-quay-io/part-7.yaml
+              - images/skopeo-registry-k8s-io/part-0.yaml
+              - images/skopeo-registry-k8s-io/part-1.yaml
+              - images/skopeo-registry-k8s-io/part-2.yaml
+              - images/skopeo-registry-k8s-io/part-3.yaml
+              - images/skopeo-registry-k8s-io/part-4.yaml
+              - images/skopeo-registry-k8s-io/part-5.yaml
+              - images/skopeo-registry-k8s-io/part-6.yaml
+              - images/skopeo-registry-k8s-io/part-7.yaml
+              - images/skopeo-registry-k8s-io-kubernetes/part-0.yaml
+              - images/skopeo-registry-k8s-io-kubernetes/part-1.yaml
+              - images/skopeo-registry-k8s-io-kubernetes/part-2.yaml
+              - images/skopeo-registry-k8s-io-kubernetes/part-3.yaml
+              - images/skopeo-registry-k8s-io-kubernetes/part-4.yaml
     - retag-registry:
         context: architect
         name: retag-aliyun-<<matrix.images_file>>
@@ -299,39 +306,39 @@ build_and_retag: &build_and_retag
           parameters:
             images_file:
               - images/skopeo-docker-elastic-co.yaml
-              - images/skopeo-docker-io.yaml.0
-              - images/skopeo-docker-io.yaml.1
-              - images/skopeo-docker-io.yaml.2
-              - images/skopeo-docker-io.yaml.3
-              - images/skopeo-docker-io.yaml.4
-              - images/skopeo-docker-io.yaml.5
-              - images/skopeo-docker-io.yaml.6
-              - images/skopeo-eu-gcr-io.yaml.7
+              - images/skopeo-docker-io/part-0.yaml
+              - images/skopeo-docker-io/part-1.yaml
+              - images/skopeo-docker-io/part-2.yaml
+              - images/skopeo-docker-io/part-3.yaml
+              - images/skopeo-docker-io/part-4.yaml
+              - images/skopeo-docker-io/part-5.yaml
+              - images/skopeo-docker-io/part-6.yaml
+              - images/skopeo-eu-gcr-io/part-7.yaml
               - images/skopeo-gcr-io.yaml
               - images/skopeo-ghcr-io.yaml
               - images/skopeo-mcr-microsoft-com.yaml
               - images/skopeo-public-ecr-aws.yaml
-              - images/skopeo-quay-io.yaml.0
-              - images/skopeo-quay-io.yaml.1
-              - images/skopeo-quay-io.yaml.2
-              - images/skopeo-quay-io.yaml.3
-              - images/skopeo-quay-io.yaml.4
-              - images/skopeo-quay-io.yaml.5
-              - images/skopeo-quay-io.yaml.6
-              - images/skopeo-quay-io.yaml.7
-              - images/skopeo-registry-k8s-io.yaml.0
-              - images/skopeo-registry-k8s-io.yaml.1
-              - images/skopeo-registry-k8s-io.yaml.2
-              - images/skopeo-registry-k8s-io.yaml.3
-              - images/skopeo-registry-k8s-io.yaml.4
-              - images/skopeo-registry-k8s-io.yaml.5
-              - images/skopeo-registry-k8s-io.yaml.6
-              - images/skopeo-registry-k8s-io.yaml.7
-              - images/skopeo-registry-k8s-io-kubernetes.yaml.0
-              - images/skopeo-registry-k8s-io-kubernetes.yaml.1
-              - images/skopeo-registry-k8s-io-kubernetes.yaml.2
-              - images/skopeo-registry-k8s-io-kubernetes.yaml.3
-              - images/skopeo-registry-k8s-io-kubernetes.yaml.4
+              - images/skopeo-quay-io/part-0.yaml
+              - images/skopeo-quay-io/part-1.yaml
+              - images/skopeo-quay-io/part-2.yaml
+              - images/skopeo-quay-io/part-3.yaml
+              - images/skopeo-quay-io/part-4.yaml
+              - images/skopeo-quay-io/part-5.yaml
+              - images/skopeo-quay-io/part-6.yaml
+              - images/skopeo-quay-io/part-7.yaml
+              - images/skopeo-registry-k8s-io/part-0.yaml
+              - images/skopeo-registry-k8s-io/part-1.yaml
+              - images/skopeo-registry-k8s-io/part-2.yaml
+              - images/skopeo-registry-k8s-io/part-3.yaml
+              - images/skopeo-registry-k8s-io/part-4.yaml
+              - images/skopeo-registry-k8s-io/part-5.yaml
+              - images/skopeo-registry-k8s-io/part-6.yaml
+              - images/skopeo-registry-k8s-io/part-7.yaml
+              - images/skopeo-registry-k8s-io-kubernetes/part-0.yaml
+              - images/skopeo-registry-k8s-io-kubernetes/part-1.yaml
+              - images/skopeo-registry-k8s-io-kubernetes/part-2.yaml
+              - images/skopeo-registry-k8s-io-kubernetes/part-3.yaml
+              - images/skopeo-registry-k8s-io-kubernetes/part-4.yaml
     - retag-customized-images:
         context: architect
         name: retag-customized-images
