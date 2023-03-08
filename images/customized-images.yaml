@@ -275,6 +275,7 @@
   sha: b2dd31b0d23fda63588674e40fd8d05010d07c5d4ac37163fc596ba9065ce38d
   add_tag_suffix: "giantswarm"
   dockerfile_extras:
+    - USER root
     - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
     - USER giantswarm
 - image: quay.io/prometheus/node-exporter
