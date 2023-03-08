@@ -213,17 +213,17 @@ build_and_retag: &build_and_retag
         name: split-docker-io
         filepath: images/skopeo-docker-io.yaml
         destination_dir: skopeo-docker-io
-        parts: 8
+        parts: 16
         requires:
-          - build-go
+          - build-and-push-docker
     - split-skopeo-file:
         context: architect
         name: split-quay-io
         filepath: images/skopeo-quay-io.yaml
         destination_dir: skopeo-quay-io
-        parts: 8
+        parts: 16
         requires:
-          - build-go
+          - build-and-push-docker
     - split-skopeo-file:
         context: architect
         name: split-k8s-io
@@ -231,7 +231,7 @@ build_and_retag: &build_and_retag
         destination_dir: skopeo-registry-k8s-io
         parts: 8
         requires:
-          - build-go
+          - build-and-push-docker
     - split-skopeo-file:
         context: architect
         name: split-k8s-io-kubernetes
@@ -239,15 +239,7 @@ build_and_retag: &build_and_retag
         destination_dir: skopeo-registry-k8s-io-kubernetes
         parts: 5
         requires:
-          - build-go
-    - hold-for-approval:
-        type: approval
-        requires:
           - build-and-push-docker
-          - split-docker-io
-          - split-quay-io
-          - split-k8s-io
-          - split-k8s-io-kubernetes
     - retag-registry:
         context: architect
         name: retag-quay-<<matrix.images_file>>
@@ -255,7 +247,11 @@ build_and_retag: &build_and_retag
         password: ${QUAY_PASSWORD}
         registry: "quay.io"
         requires:
-          - hold-for-approval
+          - build-and-push-docker
+          - split-docker-io
+          - split-quay-io
+          - split-registry-k8s-io
+          - split-registry-k8s-io-kubernetes
         matrix:
           parameters:
             images_file:
@@ -268,6 +264,14 @@ build_and_retag: &build_and_retag
               - images/skopeo-docker-io/part-5.yaml
               - images/skopeo-docker-io/part-6.yaml
               - images/skopeo-docker-io/part-7.yaml
+              - images/skopeo-docker-io/part-8.yaml
+              - images/skopeo-docker-io/part-9.yaml
+              - images/skopeo-docker-io/part-10.yaml
+              - images/skopeo-docker-io/part-11.yaml
+              - images/skopeo-docker-io/part-12.yaml
+              - images/skopeo-docker-io/part-13.yaml
+              - images/skopeo-docker-io/part-14.yaml
+              - images/skopeo-docker-io/part-15.yaml
               - images/skopeo-eu-gcr-io.yaml
               - images/skopeo-gcr-io.yaml
               - images/skopeo-ghcr-io.yaml
@@ -281,6 +285,14 @@ build_and_retag: &build_and_retag
               - images/skopeo-quay-io/part-5.yaml
               - images/skopeo-quay-io/part-6.yaml
               - images/skopeo-quay-io/part-7.yaml
+              - images/skopeo-quay-io/part-8.yaml
+              - images/skopeo-quay-io/part-9.yaml
+              - images/skopeo-quay-io/part-10.yaml
+              - images/skopeo-quay-io/part-11.yaml
+              - images/skopeo-quay-io/part-12.yaml
+              - images/skopeo-quay-io/part-13.yaml
+              - images/skopeo-quay-io/part-14.yaml
+              - images/skopeo-quay-io/part-15.yaml
               - images/skopeo-registry-k8s-io/part-0.yaml
               - images/skopeo-registry-k8s-io/part-1.yaml
               - images/skopeo-registry-k8s-io/part-2.yaml
@@ -301,7 +313,11 @@ build_and_retag: &build_and_retag
         password: ${ALIYUN_PASSWORD}
         registry: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com"
         requires:
-          - hold-for-approval
+          - build-and-push-docker
+          - split-docker-io
+          - split-quay-io
+          - split-registry-k8s-io
+          - split-registry-k8s-io-kubernetes
         matrix:
           parameters:
             images_file:
@@ -313,6 +329,15 @@ build_and_retag: &build_and_retag
               - images/skopeo-docker-io/part-4.yaml
               - images/skopeo-docker-io/part-5.yaml
               - images/skopeo-docker-io/part-6.yaml
+              - images/skopeo-docker-io/part-7.yaml
+              - images/skopeo-docker-io/part-8.yaml
+              - images/skopeo-docker-io/part-9.yaml
+              - images/skopeo-docker-io/part-10.yaml
+              - images/skopeo-docker-io/part-11.yaml
+              - images/skopeo-docker-io/part-12.yaml
+              - images/skopeo-docker-io/part-13.yaml
+              - images/skopeo-docker-io/part-14.yaml
+              - images/skopeo-docker-io/part-15.yaml
               - images/skopeo-eu-gcr-io.yaml
               - images/skopeo-gcr-io.yaml
               - images/skopeo-ghcr-io.yaml
@@ -326,6 +351,14 @@ build_and_retag: &build_and_retag
               - images/skopeo-quay-io/part-5.yaml
               - images/skopeo-quay-io/part-6.yaml
               - images/skopeo-quay-io/part-7.yaml
+              - images/skopeo-quay-io/part-8.yaml
+              - images/skopeo-quay-io/part-9.yaml
+              - images/skopeo-quay-io/part-10.yaml
+              - images/skopeo-quay-io/part-11.yaml
+              - images/skopeo-quay-io/part-12.yaml
+              - images/skopeo-quay-io/part-13.yaml
+              - images/skopeo-quay-io/part-14.yaml
+              - images/skopeo-quay-io/part-15.yaml
               - images/skopeo-registry-k8s-io/part-0.yaml
               - images/skopeo-registry-k8s-io/part-1.yaml
               - images/skopeo-registry-k8s-io/part-2.yaml
@@ -343,12 +376,12 @@ build_and_retag: &build_and_retag
         context: architect
         name: retag-customized-images
         requires:
-          - hold-for-approval
-        executor_count: 3
+          - build-and-push-docker
+        executor_count: 5
         matrix:
           parameters:
             # i in range(executor_count)
-            executor_id: [0, 1, 2]
+            executor_id: [0, 1, 2, 3, 4]
 
 workflows:
   version: 2
