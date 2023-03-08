@@ -250,8 +250,8 @@ build_and_retag: &build_and_retag
           - build-and-push-docker
           - split-docker-io
           - split-quay-io
-          - split-registry-k8s-io
-          - split-registry-k8s-io-kubernetes
+          - split-k8s-io
+          - split-k8s-io-kubernetes
         matrix:
           parameters:
             images_file:
@@ -316,8 +316,8 @@ build_and_retag: &build_and_retag
           - build-and-push-docker
           - split-docker-io
           - split-quay-io
-          - split-registry-k8s-io
-          - split-registry-k8s-io-kubernetes
+          - split-k8s-io
+          - split-k8s-io-kubernetes
         matrix:
           parameters:
             images_file:
