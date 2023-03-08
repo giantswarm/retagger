@@ -175,7 +175,7 @@ docker.io:
     fluent/fluent-bit:
       - ">= 1.x.x"
     golang:
-      - ">= 1.13.1"
+      - ">= 1.19.0"
     grafana/grafana:
       - ">= 6.0.0"
     grafana/grafana-image-renderer:
