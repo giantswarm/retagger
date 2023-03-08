@@ -313,7 +313,7 @@ build_and_retag: &build_and_retag
               - images/skopeo-docker-io/part-4.yaml
               - images/skopeo-docker-io/part-5.yaml
               - images/skopeo-docker-io/part-6.yaml
-              - images/skopeo-eu-gcr-io/part-7.yaml
+              - images/skopeo-eu-gcr-io.yaml
               - images/skopeo-gcr-io.yaml
               - images/skopeo-ghcr-io.yaml
               - images/skopeo-mcr-microsoft-com.yaml
