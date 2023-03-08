@@ -26,13 +26,18 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Build Golang binary
+          name: Build Retagger binary
           command: |
             CGO_ENABLED=0 GOOS=linux go build -ldflags "$(cat .ldflags)" -o retagger .
+      - run:
+          name: Build tools
+          command: |
+            CGO_ENABLED=0 GOOS=linux go build -ldflags "$(cat .ldflags)" -o split-skopeo-file tools/split-skopeo-file.go
       - persist_to_workspace:
           root: .
           paths:
             - retagger
+            - split-skopeo-file
 
   build-and-push-docker:
     machine:
@@ -63,6 +68,27 @@ jobs:
           command: |
             echo "Pushing tag '<<parameters.tag>>' to <<parameters.registry>>..."
             docker push "<<parameters.registry>>/giantswarm/retagger:<<parameters.tag>>"
+
+  split-skopeo-file:
+    machine:
+      image: ubuntu-2004:current
+    parameters:
+      filepath:
+        type: string
+      parts:
+        type: integer
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run :
+          name: Split skopeo YAML
+          command: |
+            split-skopeo-file --src "<<parameters.filepath>>" --parts "<<parameters.parts>>"
+      - persist_to_workspace:
+          root: .
+          paths:
+            - "images/"
 
   retag-registry:
     docker:
