@@ -84,8 +84,7 @@ jobs:
       - run :
           name: Split skopeo YAML
           command: |
-            cd project/
-            split-skopeo-file --src "<<parameters.filepath>>" --parts "<<parameters.parts>>"
+            ./split-skopeo-file --src "<<parameters.filepath>>" --parts "<<parameters.parts>>"
       - persist_to_workspace:
           root: .
           paths:
