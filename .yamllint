@@ -1,0 +1,9 @@
+extends: default
+rules:
+  line-length: 
+    max: 200
+  document-start: disable
+  indentation: 
+    spaces: consistent
+  comments: 
+    level: warning

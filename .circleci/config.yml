@@ -1,180 +1,382 @@
+version: 2.1
 orbs:
   architect: giantswarm/architect@4.27.0
 
-version: 2.1
 jobs:
   validate:
     machine:
-      image: ubuntu-2004:2022.10.1
+      image: ubuntu-2004:current
     steps:
       - checkout
-
       - run:
           name: Validate YAML
           command: |
-            docker run --rm -ti \
-            -v $PWD:/workdir \
-            giantswarm/yamllint \
-            -d '{extends: default, rules: {line-length: {max: 200}, document-start: disable, indentation: {spaces: 0}}}' \
-            images.yaml
-
-  copy:
-    machine:
-      image: ubuntu-2004:2022.10.1
-    steps:
-      - checkout
-      - persist_to_workspace:
-          root: .
-          paths:
-            - ./images.yaml
-
-  unitTest:
-    machine:
-      image: ubuntu-2004:2022.10.1
-    steps:
-      - checkout
-      - run:
-          name: unit test
-          command: |
-            go test -v ./...
-
-  builde2e:
-    machine:
-      image: ubuntu-2004:2022.10.1
-    steps:
-      - checkout
-      - run:
-          name: compile e2e test
-          command: |
             docker run --rm -it \
-            -v $PWD:/go/src/github.com/giantswarm/retagger \
-            -w /go/src/github.com/giantswarm/retagger \
-            quay.io/giantswarm/golang:1.19.0 \
-            go test -c -tags e2e ./integration/test/e2e
-
+             -v $PWD:/workdir \
+             giantswarm/yamllint \
+             -c .yamllint \
+             images/*.yaml
       - persist_to_workspace:
           root: .
           paths:
-            - ./e2e.test
-            - ./images-e2e.yaml
-
-  e2eQuay:
-    environment:
-      REGISTRY: "quay.io"
-      REGISTRY_ORGANISATION: "giantswarm"
+            - "images/"
+  build-go:
     machine:
-      image: ubuntu-2004:2022.10.1
+      image: ubuntu-2004:current
+    steps:
+      - checkout
+      - run:
+          name: Build Retagger binary
+          command: |
+            CGO_ENABLED=0 GOOS=linux go build -ldflags "$(cat .ldflags)" -o retagger .
+      - run:
+          name: Build tools
+          command: |
+            CGO_ENABLED=0 GOOS=linux go build -ldflags "$(cat .ldflags)" -o split-skopeo-file tools/split-skopeo-file.go
+      - persist_to_workspace:
+          root: .
+          paths:
+            - retagger
+            - split-skopeo-file
+
+  build-and-push-docker:
+    machine:
+      image: ubuntu-2004:current
+    parameters:
+      username:
+        type: string
+      password:
+        type: string
+      registry:
+        type: string
+      tag:
+        type: string
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build Docker image
+          command: |
+            docker build -t "<<parameters.registry>>/giantswarm/retagger:<<parameters.tag>>" .
+      - run:
+          name: Authenticate to Docker registry
+          command: |
+            docker login -u "<<parameters.username>>" -p "<<parameters.password>>" "<<parameters.registry>>"
+      - run:
+          name: Push Docker image
+          command: |
+            echo "Pushing tag '<<parameters.tag>>' to <<parameters.registry>>..."
+            docker push "<<parameters.registry>>/giantswarm/retagger:<<parameters.tag>>"
+
+  split-skopeo-file:
+    machine:
+      image: ubuntu-2004:current
+    parameters:
+      filepath:
+        type: string
+      destination_dir:
+        type: string
+      parts:
+        type: integer
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run :
+          name: Split skopeo YAML
+          command: |
+            ./split-skopeo-file --src "<<parameters.filepath>>" --parts "<<parameters.parts>>" --dest "images/<<parameters.destination_dir>>"
+      - persist_to_workspace:
+          root: .
+          paths:
+            - "images/<<parameters.destination_dir>>"
+
+  retag-registry:
+    docker:
+      - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
+    parameters:
+      username:
+        type: string
+      password:
+        type: string
+      registry:
+        type: string
+      images_file:
+        type: string
     steps:
       - attach_workspace:
           at: .
       - run:
-          name: Set registry credentials
+          name: Log in to Docker registry
           command: |
-            echo 'export REGISTRY_USERNAME=${QUAY_USERNAME}' >> $BASH_ENV
-            echo 'export REGISTRY_PASSWORD=${QUAY_PASSWORD}' >> $BASH_ENV
-            source $BASH_ENV
+            skopeo login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
+            max_retry=30
+            counter=1
+            until skopeo login -u "<<parameters.username>>" -p "<<parameters.password>>" "<<parameters.registry>>"
+            do
+                sleep 3
+                [[ counter -eq $max_retry ]] && echo "Failed by exhausting $max_retry retries" && exit 1
+                echo "Attempt $counter: trying again..."
+                ((counter++))
+            done
       - run:
-          name: Run e2e test
+          name: Retag images
+          no_output_timeout: 1h
           command: |
-            ./e2e.test -test.run ".*E2e.*" -test.v
-
-  retagQuay:
-    environment:
-      REGISTRY: "quay.io"
-      REGISTRY_ORGANISATION: "giantswarm"
-    machine:
-      image: ubuntu-2004:2022.10.1
-    steps:
-      - attach_workspace:
-          at: .
-
-      - run:
-          name: Set registry credentials
-          command: |
-            echo 'export REGISTRY_USERNAME=${QUAY_USERNAME}' >> $BASH_ENV
-            echo 'export REGISTRY_PASSWORD=${QUAY_PASSWORD}' >> $BASH_ENV
-            source $BASH_ENV
-
-      - run:
-          name: Execute retagger
-          command: ./retagger -r ${REGISTRY} -o ${REGISTRY_ORGANISATION} -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD} > /tmp/quay.log
-
+            skopeo sync --all --keep-going --retry-times 3 --src yaml --dest docker \
+              "<<parameters.images_file>>" "<<parameters.registry>>/giantswarm" | tee /tmp/skopeo.log
       - store_artifacts:
-          path: /tmp/quay.log
-          destination: quay.log
+          path: /tmp/skopeo.log
+          destination: "<<parameters.registry>>-<<parameters.images_file>>.log"
 
-  retagAliyun:
-    environment:
-      REGISTRY: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com"
-      REGISTRY_ORGANISATION: "giantswarm"
-    machine:
-      image: ubuntu-2004:2022.10.1
+  retag-customized-images:
+    docker:
+      - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
+    parameters:
+      log_level:
+        type: string
+        default: "debug"
+      executor_count:
+        type: integer
+        default: 1
+      executor_id:
+        type: integer
+        default: 0
     steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
       - attach_workspace:
           at: .
-
       - run:
-          name: Set registry credentials
+          name: "Log in to registries: docker"
           command: |
-            echo 'export REGISTRY_USERNAME=${ALIYUN_USERNAME}' >> $BASH_ENV
-            echo 'export REGISTRY_PASSWORD=${ALIYUN_PASSWORD}' >> $BASH_ENV
-            source $BASH_ENV
-
+            docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
+            docker login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
+            max_retry=5
+            counter=1
+            until docker login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
+            do
+                sleep 3
+                [[ counter -eq $max_retry ]] && echo "Failed by exhausting $max_retry retries" && exit 1
+                echo "Attempt $counter: trying again..."
+                ((counter++))
+            done
       - run:
-          name: Execute retagger
-          command: ./retagger -r ${REGISTRY} -o ${REGISTRY_ORGANISATION} -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD} --access-key ${ALIYUN_ACCESS_KEY} --access-secret ${ALIYUN_ACCESS_SECRET} --aliyun-region ${ALIYUN_REGION} > /tmp/aliyun.log
-
+          name: "Log in to registries: skopeo"
+          command: |
+            skopeo login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
+            skopeo login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
+            max_retry=5
+            counter=1
+            until skopeo login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
+            do
+                sleep 3
+                [[ counter -eq $max_retry ]] && echo "Failed by exhausting $max_retry retries" && exit 1
+                echo "Attempt $counter: trying again..."
+                ((counter++))
+            done
+      - run:
+          name: "Run retagger"
+          no_output_timeout: 1h
+          command: |
+            ./retagger --log-level "<<parameters.log_level>>" \
+              --executor-count <<parameters.executor_count>> --executor-id <<parameters.executor_id>> | tee /tmp/retagger.log
       - store_artifacts:
-          path: /tmp/aliyun.log
-          destination: aliyun.log
+          path: /tmp/retagger.log
+          destination: "retagger-<<parameters.executor_id>>-of-<<parameters.executor_count>>.log"
 
+# Define 'build_and_retag' workflow steps, so we can reuse it.
 build_and_retag: &build_and_retag
   jobs:
-    - validate
-    - unitTest:
-        filters:
-          branches:
-            ignore: main
-    - builde2e:
-        filters:
-          branches:
-            ignore: main
-        requires:
-          - validate
-    - architect/go-build:
+    - validate:
+        name: validate-images-yaml
+    - build-go:
         context: architect
-        name: go-build
-        binary: retagger
+        name: build-go
         requires:
-          - validate
-          - unitTest
-    - e2eQuay:
+          - validate-images-yaml
         filters:
-          branches:
-            ignore: main
+          tags:
+            only: /^v.*/
+    - split-skopeo-file:
+        context: architect
+        name: split-docker-io
+        filepath: images/skopeo-docker-io.yaml
+        destination_dir: skopeo-docker-io
+        parts: 16
         requires:
-          - builde2e
-          - go-build
-    - copy:
-        filters:
-          branches:
-            only: main
+          - build-go
+    - split-skopeo-file:
+        context: architect
+        name: split-quay-io
+        filepath: images/skopeo-quay-io.yaml
+        destination_dir: skopeo-quay-io
+        parts: 16
         requires:
-          - validate
-    - retagQuay:
-        filters:
-          branches:
-            only: main
+          - build-go
+    - split-skopeo-file:
+        context: architect
+        name: split-k8s-io
+        filepath: images/skopeo-registry-k8s-io.yaml
+        destination_dir: skopeo-registry-k8s-io
+        parts: 8
         requires:
-          - copy
-          - go-build
-    - retagAliyun:
-        filters:
-          branches:
-            only: main
+          - build-go
+    - split-skopeo-file:
+        context: architect
+        name: split-k8s-io-kubernetes
+        filepath: images/skopeo-registry-k8s-io-kubernetes.yaml
+        destination_dir: skopeo-registry-k8s-io-kubernetes
+        parts: 5
         requires:
-          - copy
-          - go-build
+          - build-go
+    - build-and-push-docker:
+        context: architect
+        name: build-and-push-docker
+        username: ${QUAY_USERNAME}
+        password: ${QUAY_PASSWORD}
+        registry: "quay.io"
+        tag: ${CIRCLE_TAG:-$CIRCLE_SHA1}
+        requires:
+          - split-docker-io
+          - split-quay-io
+          - split-k8s-io
+          - split-k8s-io-kubernetes
+    - retag-registry:
+        context: architect
+        name: retag-quay-<<matrix.images_file>>
+        username: ${QUAY_USERNAME}
+        password: ${QUAY_PASSWORD}
+        registry: "quay.io"
+        requires:
+          - build-and-push-docker
+        matrix:
+          parameters:
+            images_file:
+              - images/skopeo-docker-elastic-co.yaml
+              - images/skopeo-docker-io/part-0.yaml
+              - images/skopeo-docker-io/part-1.yaml
+              - images/skopeo-docker-io/part-2.yaml
+              - images/skopeo-docker-io/part-3.yaml
+              - images/skopeo-docker-io/part-4.yaml
+              - images/skopeo-docker-io/part-5.yaml
+              - images/skopeo-docker-io/part-6.yaml
+              - images/skopeo-docker-io/part-7.yaml
+              - images/skopeo-docker-io/part-8.yaml
+              - images/skopeo-docker-io/part-9.yaml
+              - images/skopeo-docker-io/part-10.yaml
+              - images/skopeo-docker-io/part-11.yaml
+              - images/skopeo-docker-io/part-12.yaml
+              - images/skopeo-docker-io/part-13.yaml
+              - images/skopeo-docker-io/part-14.yaml
+              - images/skopeo-docker-io/part-15.yaml
+              - images/skopeo-eu-gcr-io.yaml
+              - images/skopeo-gcr-io.yaml
+              - images/skopeo-ghcr-io.yaml
+              - images/skopeo-mcr-microsoft-com.yaml
+              - images/skopeo-public-ecr-aws.yaml
+              - images/skopeo-quay-io/part-0.yaml
+              - images/skopeo-quay-io/part-1.yaml
+              - images/skopeo-quay-io/part-2.yaml
+              - images/skopeo-quay-io/part-3.yaml
+              - images/skopeo-quay-io/part-4.yaml
+              - images/skopeo-quay-io/part-5.yaml
+              - images/skopeo-quay-io/part-6.yaml
+              - images/skopeo-quay-io/part-7.yaml
+              - images/skopeo-quay-io/part-8.yaml
+              - images/skopeo-quay-io/part-9.yaml
+              - images/skopeo-quay-io/part-10.yaml
+              - images/skopeo-quay-io/part-11.yaml
+              - images/skopeo-quay-io/part-12.yaml
+              - images/skopeo-quay-io/part-13.yaml
+              - images/skopeo-quay-io/part-14.yaml
+              - images/skopeo-quay-io/part-15.yaml
+              - images/skopeo-registry-k8s-io/part-0.yaml
+              - images/skopeo-registry-k8s-io/part-1.yaml
+              - images/skopeo-registry-k8s-io/part-2.yaml
+              - images/skopeo-registry-k8s-io/part-3.yaml
+              - images/skopeo-registry-k8s-io/part-4.yaml
+              - images/skopeo-registry-k8s-io/part-5.yaml
+              - images/skopeo-registry-k8s-io/part-6.yaml
+              - images/skopeo-registry-k8s-io/part-7.yaml
+              - images/skopeo-registry-k8s-io-kubernetes/part-0.yaml
+              - images/skopeo-registry-k8s-io-kubernetes/part-1.yaml
+              - images/skopeo-registry-k8s-io-kubernetes/part-2.yaml
+              - images/skopeo-registry-k8s-io-kubernetes/part-3.yaml
+              - images/skopeo-registry-k8s-io-kubernetes/part-4.yaml
+    - retag-registry:
+        context: architect
+        name: retag-aliyun-<<matrix.images_file>>
+        username: ${ALIYUN_USERNAME}
+        password: ${ALIYUN_PASSWORD}
+        registry: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com"
+        requires:
+          - build-and-push-docker
+        matrix:
+          parameters:
+            images_file:
+              - images/skopeo-docker-elastic-co.yaml
+              - images/skopeo-docker-io/part-0.yaml
+              - images/skopeo-docker-io/part-1.yaml
+              - images/skopeo-docker-io/part-2.yaml
+              - images/skopeo-docker-io/part-3.yaml
+              - images/skopeo-docker-io/part-4.yaml
+              - images/skopeo-docker-io/part-5.yaml
+              - images/skopeo-docker-io/part-6.yaml
+              - images/skopeo-docker-io/part-7.yaml
+              - images/skopeo-docker-io/part-8.yaml
+              - images/skopeo-docker-io/part-9.yaml
+              - images/skopeo-docker-io/part-10.yaml
+              - images/skopeo-docker-io/part-11.yaml
+              - images/skopeo-docker-io/part-12.yaml
+              - images/skopeo-docker-io/part-13.yaml
+              - images/skopeo-docker-io/part-14.yaml
+              - images/skopeo-docker-io/part-15.yaml
+              - images/skopeo-eu-gcr-io.yaml
+              - images/skopeo-gcr-io.yaml
+              - images/skopeo-ghcr-io.yaml
+              - images/skopeo-mcr-microsoft-com.yaml
+              - images/skopeo-public-ecr-aws.yaml
+              - images/skopeo-quay-io/part-0.yaml
+              - images/skopeo-quay-io/part-1.yaml
+              - images/skopeo-quay-io/part-2.yaml
+              - images/skopeo-quay-io/part-3.yaml
+              - images/skopeo-quay-io/part-4.yaml
+              - images/skopeo-quay-io/part-5.yaml
+              - images/skopeo-quay-io/part-6.yaml
+              - images/skopeo-quay-io/part-7.yaml
+              - images/skopeo-quay-io/part-8.yaml
+              - images/skopeo-quay-io/part-9.yaml
+              - images/skopeo-quay-io/part-10.yaml
+              - images/skopeo-quay-io/part-11.yaml
+              - images/skopeo-quay-io/part-12.yaml
+              - images/skopeo-quay-io/part-13.yaml
+              - images/skopeo-quay-io/part-14.yaml
+              - images/skopeo-quay-io/part-15.yaml
+              - images/skopeo-registry-k8s-io/part-0.yaml
+              - images/skopeo-registry-k8s-io/part-1.yaml
+              - images/skopeo-registry-k8s-io/part-2.yaml
+              - images/skopeo-registry-k8s-io/part-3.yaml
+              - images/skopeo-registry-k8s-io/part-4.yaml
+              - images/skopeo-registry-k8s-io/part-5.yaml
+              - images/skopeo-registry-k8s-io/part-6.yaml
+              - images/skopeo-registry-k8s-io/part-7.yaml
+              - images/skopeo-registry-k8s-io-kubernetes/part-0.yaml
+              - images/skopeo-registry-k8s-io-kubernetes/part-1.yaml
+              - images/skopeo-registry-k8s-io-kubernetes/part-2.yaml
+              - images/skopeo-registry-k8s-io-kubernetes/part-3.yaml
+              - images/skopeo-registry-k8s-io-kubernetes/part-4.yaml
+    - retag-customized-images:
+        context: architect
+        name: retag-customized-images
+        requires:
+          - build-and-push-docker
+        executor_count: 5
+        matrix:
+          parameters:
+            # i in range(executor_count)
+            executor_id: [0, 1, 2, 3, 4]
 
 workflows:
   version: 2

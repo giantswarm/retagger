@@ -2,198 +2,367 @@
 
 # retagger
 
-A tool to handle the retagging of third party docker images and make them
-available in own registries.
+> A tool to handle the retagging of third party docker images and make them
+  available in own registries.
 
-Basically, this automates the following for a bunch of images and tags:
+## CAVEAT
 
-```nohighlight
+⚠️ Although development branch has been merged to `main`, the refactoring of
+`retagger` is still a work-in-progress ⚠️
 
-docker pull \
-  [[<registry>/]<namespace>/]<image>@sha256:<sha>
+Why? Mainly due to an increase in the number of images that need retagging. The
+new version handles multi-architecture images, which means instead of copying
+one image per tag, we copy between 3 and 10 images for multiple architectures.
+Also, connection to Aliyun is slow and unreliable, so we need a bunch of
+retries.
 
-docker tag \
-  <sha> \
-  <my_registry>/<my_organization>/<image>:<my_tag>
+At this point individual job fails are still expected. This does not mean your
+image won't be retagged at all - even if copying a single tag fails, the job
+carries on with all the other tags in the list.
 
-docker push \
-  <my_registry>/<my_organization>/<image>:<my_tag>
+In the following weeks, Team Honeybadger will be introducing ownership of jobs
+submitted for retagger and the files in `images/` will be split by team.
+
+<details>
+
+<summary>Table: number of tags to synchronize per image</summary>
+
+Bear in mind, the numbers are **not multiplied** by number of available
+architecture variants. The actual numbers are 3x to 10x higher.
+
+- Total: 4080 images
+- The percentages **in bold** add up to 50.39% of all images. These are **Top 21
+  Positions** taking up over **half** of the retagging time.
+
+
+| Name                                                             |   Count    | % of total |
+|------------------------------------------------------------------|------------|------------|
+|grafana/grafana                                                   |     189    | **4.63%**  |
+|registry.k8s.io/kube-controller-manager                           |     154    | **3.77%**  |
+|registry.k8s.io/kube-proxy                                        |     154    | **3.77%**  |
+|bitnami/kubectl                                                   |     152    | **3.73%**  |
+|fluent/fluent-bit                                                 |     109    | **2.67%**  |
+|registry.k8s.io/kube-apiserver                                    |     107    | **2.62%**  |
+|vault                                                             |     103    | **2.52%**  |
+|quay.io/argoproj/argocd                                           |     102    | **2.50%**  |
+|quay.io/calico/node                                               |      96    | **2.35%**  |
+|quay.io/calico/cni                                                |      94    | **2.30%**  |
+|quay.io/calico/kube-controllers                                   |      94    | **2.30%**  |
+|quay.io/calico/pod2daemon-flexvol                                 |      94    | **2.30%**  |
+|alpine                                                            |      93    | **2.28%**  |
+|quay.io/calico/typha                                              |      90    | **2.21%**  |
+|mcr.microsoft.com/oss/kubernetes/azure-cloud-controller-manager   |      81    | **1.99%**  |
+|mcr.microsoft.com/oss/kubernetes/azure-cloud-node-manager         |      81    | **1.99%**  |
+|prom/prometheus                                                   |      73    | **1.79%**  |
+|registry.k8s.io/hyperkube                                         |      68    | **1.67%**  |
+|quay.io/coreos/etcd                                               |      62    | **1.52%**  |
+|quay.io/ceph/ceph                                                 |      60    | **1.47%**  |
+|quay.io/jetstack/cert-manager-controller                          |      60    |   1.47%    |
+|quay.io/jetstack/cert-manager-webhook                             |      60    |   1.47%    |
+|quay.io/jetstack/cert-manager-cainjector                          |      57    |   1.40%    |
+|kong                                                              |      52    |   1.27%    |
+|aquasec/trivy                                                     |      51    |   1.25%    |
+|envoyproxy/envoy                                                  |      44    |   1.08%    |
+|quay.io/fairwinds/polaris                                         |      42    |   1.03%    |
+|registry.k8s.io/cluster-api/cluster-api-controller                |      40    |   0.98%    |
+|registry.k8s.io/cluster-api/kubeadm-bootstrap-controller          |      40    |   0.98%    |
+|registry.k8s.io/cluster-api/kubeadm-control-plane-controller      |      40    |   0.98%    |
+|ghcr.io/prymitive/karma                                           |      39    |   0.96%    |
+|quay.io/prometheus-operator/prometheus-config-reloader            |      38    |   0.93%    |
+|quay.io/prometheus-operator/prometheus-operator                   |      38    |   0.93%    |
+|amazon/aws-efs-csi-driver                                         |      36    |   0.88%    |
+|registry.k8s.io/cluster-api-azure/cluster-api-azure-controller    |      36    |   0.88%    |
+|quay.io/fairwinds/goldilocks                                      |      31    |   0.76%    |
+|aquasec/trivy-operator                                            |      29    |   0.71%    |
+|quay.io/jetstack/cert-manager-acmesolver                          |      29    |   0.71%    |
+|aquasec/kube-bench                                                |      27    |   0.66%    |
+|curlimages/curl                                                   |      26    |   0.64%    |
+|k8scloudprovider/openstack-cloud-controller-manager               |      26    |   0.64%    |
+|k8scloudprovider/cinder-csi-plugin                                |      25    |   0.61%    |
+|registry.k8s.io/dns/k8s-dns-node-cache                            |      25    |   0.61%    |
+|grafana/loki                                                      |      24    |   0.59%    |
+|grafana/promtail                                                  |      24    |   0.59%    |
+|k8scloudprovider/octavia-ingress-controller                       |      24    |   0.59%    |
+|openpolicyagent/conftest                                          |      24    |   0.59%    |
+|quay.io/thanos/thanos                                             |      24    |   0.59%    |
+|velero/velero                                                     |      24    |   0.59%    |
+|bash                                                              |      23    |   0.56%    |
+|quay.io/cilium/cilium                                             |      22    |   0.54%    |
+|quay.io/cilium/hubble-relay                                       |      22    |   0.54%    |
+|registry.k8s.io/sig-storage/csi-snapshotter                       |      22    |   0.54%    |
+|mcr.microsoft.com/oss/azure/aad-pod-identity/mic                  |      21    |   0.51%    |
+|mcr.microsoft.com/oss/azure/aad-pod-identity/nmi                  |      21    |   0.51%    |
+|quay.io/jetstack/cert-manager-ctl                                 |      21    |   0.51%    |
+|registry.k8s.io/sig-storage/csi-provisioner                       |      21    |   0.51%    |
+|kong/kong-gateway                                                 |      20    |   0.49%    |
+|aquasec/starboard-operator                                        |      19    |   0.47%    |
+|grafana/grafana-image-renderer                                    |      19    |   0.47%    |
+|registry.k8s.io/cluster-api-aws/cluster-api-aws-controller        |      19    |   0.47%    |
+|cytopia/yamllint                                                  |      18    |   0.44%    |
+|eu.gcr.io/k8s-artifacts-prod/autoscaling/cluster-autoscaler       |      18    |   0.44%    |
+|mcr.microsoft.com/oss/kubernetes-csi/azuredisk-csi                |      18    |   0.44%    |
+|mcr.microsoft.com/oss/kubernetes-csi/azurefile-csi                |      17    |   0.42%    |
+|quay.io/cephcsi/cephcsi                                           |      17    |   0.42%    |
+|registry.k8s.io/sig-storage/snapshot-controller                   |      17    |   0.42%    |
+|busybox                                                           |      16    |   0.39%    |
+|grafana/loki-canary                                               |      15    |   0.37%    |
+|registry.k8s.io/kube-state-metrics/kube-state-metrics             |      15    |   0.37%    |
+|registry.k8s.io/sig-storage/csi-attacher                          |      15    |   0.37%    |
+|registry.k8s.io/sig-storage/csi-node-driver-registrar             |      15    |   0.37%    |
+|bats/bats                                                         |      14    |   0.34%    |
+|quay.io/jacksontj/promxy                                          |      14    |   0.34%    |
+|amazon/opendistro-for-elasticsearch                               |      13    |   0.32%    |
+|docker.elastic.co/kibana/kibana-oss                               |      13    |   0.32%    |
+|ghcr.io/kyverno/policy-reporter-kyverno-plugin                    |      13    |   0.32%    |
+|golang                                                            |      13    |   0.32%    |
+|registry.k8s.io/descheduler/descheduler                           |      13    |   0.32%    |
+|amazon/opendistro-for-elasticsearch-kibana                        |      12    |   0.29%    |
+|gcr.io/k8s-staging-cloud-provider-gcp/gcp-compute-persistent-dis  |      12    |   0.29%    |
+|prom/pushgateway                                                  |      12    |   0.29%    |
+|registry.k8s.io/capi-openstack/capi-openstack-controller          |      12    |   0.29%    |
+|registry.k8s.io/sig-storage/csi-resizer                           |      12    |   0.29%    |
+|jimmidyson/configmap-reload                                       |      11    |   0.27%    |
+|opensearchproject/opensearch                                      |      11    |   0.27%    |
+|opensearchproject/opensearch-dashboards                           |      11    |   0.27%    |
+|gcr.io/kubebuilder/kube-rbac-proxy                                |      10    |   0.25%    |
+|registry.k8s.io/metrics-server/metrics-server                     |      10    |   0.25%    |
+|registry.k8s.io/sig-storage/livenessprobe                         |      10    |   0.25%    |
+|golang                                                            |       9    |   0.22%    |
+|quay.io/prometheus/alertmanager                                   |       9    |   0.22%    |
+|registry.k8s.io/coredns/coredns                                   |       9    |   0.22%    |
+|registry.k8s.io/pause                                             |       9    |   0.22%    |
+|amazon/aws-alb-ingress-controller                                 |       8    |   0.20%    |
+|falcosecurity/falcosidekick                                       |       8    |   0.20%    |
+|jettech/kube-webhook-certgen                                      |       8    |   0.20%    |
+|quay.io/coreos/prometheus-config-reloader                         |       8    |   0.20%    |
+|quay.io/coreos/prometheus-operator                                |       8    |   0.20%    |
+|registry.k8s.io/addon-resizer                                     |       8    |   0.20%    |
+|registry.k8s.io/autoscaling/vpa-admission-controller              |       8    |   0.20%    |
+|registry.k8s.io/autoscaling/vpa-recommender                       |       8    |   0.20%    |
+|registry.k8s.io/autoscaling/vpa-updater                           |       8    |   0.20%    |
+|directxman12/k8s-prometheus-adapter-amd64                         |       7    |   0.17%    |
+|falcosecurity/falco-driver-loader                                 |       7    |   0.17%    |
+|registry.k8s.io/external-dns/external-dns                         |       7    |   0.17%    |
+|crossplane/crossplane                                             |       6    |   0.15%    |
+|falcosecurity/falco-exporter                                      |       6    |   0.15%    |
+|quay.io/cilium/hubble-ui                                          |       6    |   0.15%    |
+|quay.io/cilium/hubble-ui-backend                                  |       6    |   0.15%    |
+|quay.io/prometheus/node-exporter                                  |       6    |   0.15%    |
+|registry.k8s.io/cluster-api-gcp/cluster-api-gcp-controller        |       6    |   0.15%    |
+|registry.k8s.io/etcd                                              |       6    |   0.15%    |
+|ealen/echo-server                                                 |       5    |   0.12%    |
+|gcr.io/cadvisor/cadvisor                                          |       5    |   0.12%    |
+|quay.io/dexidp/dex                                                |       5    |   0.12%    |
+|quay.io/oauth2-proxy/oauth2-proxy                                 |       5    |   0.12%    |
+|quay.io/open-policy-agent/gatekeeper                              |       5    |   0.12%    |
+|quay.io/prometheus/node-exporter                                  |       5    |   0.12%    |
+|registry.k8s.io/cluster-proportional-autoscaler-amd64             |       5    |   0.12%    |
+|spvest/azure-keyvault-controller                                  |       5    |   0.12%    |
+|coredns/coredns                                                   |       4    |   0.10%    |
+|falcosecurity/falco                                               |       4    |   0.10%    |
+|falcosecurity/falco-no-driver                                     |       4    |   0.10%    |
+|omnition/opencensus-collector                                     |       4    |   0.10%    |
+|prom/prometheus                                                   |       4    |   0.10%    |
+|redis                                                             |       4    |   0.10%    |
+|registry.k8s.io/autoscaling/cluster-autoscaler                    |       4    |   0.10%    |
+|spvest/azure-keyvault-webhook                                     |       4    |   0.10%    |
+|aquasec/scanner                                                   |       3    |   0.07%    |
+|ghcr.io/external-secrets/external-secrets                         |       3    |   0.07%    |
+|public.ecr.aws/aws-ec2/aws-node-termination-handler               |       3    |   0.07%    |
+|python                                                            |       3    |   0.07%    |
+|quay.io/uswitch/kiam                                              |       3    |   0.07%    |
+|registry.k8s.io/cluster-api-aws/eks-bootstrap-controller          |       3    |   0.07%    |
+|registry.k8s.io/cluster-api-aws/eks-controlplane-controller       |       3    |   0.07%    |
+|registry.k8s.io/pause-amd64                                       |       3    |   0.07%    |
+|alpine                                                            |       2    |   0.05%    |
+|amazon/amazon-eks-pod-identity-webhook                            |       2    |   0.05%    |
+|gcr.io/google_containers/defaultbackend                           |       2    |   0.05%    |
+|ghcr.io/k8snetworkplumbingwg/multus-cni                           |       2    |   0.05%    |
+|ghcr.io/kyverno/kyverno                                           |       2    |   0.05%    |
+|ghcr.io/kyverno/kyvernopre                                        |       2    |   0.05%    |
+|ghcr.io/opsgenie/kubernetes-event-exporter                        |       2    |   0.05%    |
+|instrumenta/conftest                                              |       2    |   0.05%    |
+|quay.io/giantswarm/amazon-k8s-cni                                 |       2    |   0.05%    |
+|zricethezav/gitleaks                                              |       2    |   0.05%    |
+|centos                                                            |       1    |   0.02%    |
+|cibuilds/github                                                   |       1    |   0.02%    |
+|docker                                                            |       1    |   0.02%    |
+|docker.elastic.co/elasticsearch/elasticsearch-oss                 |       1    |   0.02%    |
+|elasticsearch                                                     |       1    |   0.02%    |
+|fluxcd/flux-cli                                                   |       1    |   0.02%    |
+|gcr.io/google-containers/startup-script                           |       1    |   0.02%    |
+|gcr.io/heptio-images/gangway                                      |       1    |   0.02%    |
+|gcr.io/heptio-images/kube-conformance                             |       1    |   0.02%    |
+|gcr.io/spark-operator/spark-operator                              |       1    |   0.02%    |
+|ghcr.io/inlets/inlets-operator                                    |       1    |   0.02%    |
+|ghcr.io/inlets/inlets-pro                                         |       1    |   0.02%    |
+|ghcr.io/kyverno/cleanup-controller                                |       1    |   0.02%    |
+|ghcr.io/kyverno/policy-reporter                                   |       1    |   0.02%    |
+|ghcr.io/kyverno/policy-reporter-ui                                |       1    |   0.02%    |
+|goharbor/chartmuseum-photon                                       |       1    |   0.02%    |
+|goharbor/clair-photon                                             |       1    |   0.02%    |
+|goharbor/harbor-adminserver                                       |       1    |   0.02%    |
+|goharbor/harbor-db                                                |       1    |   0.02%    |
+|goharbor/harbor-jobservice                                        |       1    |   0.02%    |
+|goharbor/harbor-ui                                                |       1    |   0.02%    |
+|goharbor/notary-server-photon                                     |       1    |   0.02%    |
+|goharbor/notary-signer-photon                                     |       1    |   0.02%    |
+|goharbor/registry-photon                                          |       1    |   0.02%    |
+|golangci/golangci-lint                                            |       1    |   0.02%    |
+|jgsqware/fluentd-loki-plugin                                      |       1    |   0.02%    |
+|jimschubert/swagger-codegen-cli                                   |       1    |   0.02%    |
+|jollinshead/journald-cloudwatch-logs                              |       1    |   0.02%    |
+|justwatch/elasticsearch_exporter                                  |       1    |   0.02%    |
+|k8spin/loki-multi-tenant-proxy                                    |       1    |   0.02%    |
+|koalaman/shellcheck-alpine                                        |       1    |   0.02%    |
+|looztra/kubesplit                                                 |       1    |   0.02%    |
+|madnight/alpine-wkhtmltopdf-builder                               |       1    |   0.02%    |
+|mcr.microsoft.com/azuremonitor/containerinsights/ciprod           |       1    |   0.02%    |
+|mintel/dex-k8s-authenticator                                      |       1    |   0.02%    |
+|nginx                                                             |       1    |   0.02%    |
+|nginxinc/nginx-unprivileged                                       |       1    |   0.02%    |
+|ns1labs/flame                                                     |       1    |   0.02%    |
+|peaceiris/hugo                                                    |       1    |   0.02%    |
+|prom/cloudwatch-exporter                                          |       1    |   0.02%    |
+|quay.io/cilium/cilium-etcd-operator                               |       1    |   0.02%    |
+|quay.io/coreos/configmap-reload                                   |       1    |   0.02%    |
+|quay.io/coreos/etcd-operator                                      |       1    |   0.02%    |
+|quay.io/coreos/flannel                                            |       1    |   0.02%    |
+|quay.io/coreos/prometheus-operator                                |       1    |   0.02%    |
+|quay.io/giantswarm/docker-strongswan                              |       1    |   0.02%    |
+|quay.io/giantswarm/k8s-api-healthz                                |       1    |   0.02%    |
+|quay.io/giantswarm/k8s-setup-network-environment                  |       1    |   0.02%    |
+|quay.io/google-cloud-tools/kube-eagle                             |       1    |   0.02%    |
+|quay.io/jetstack/cert-manager-ingress-shim                        |       1    |   0.02%    |
+|quay.io/prometheus/haproxy-exporter                               |       1    |   0.02%    |
+|quay.io/pusher/oauth2_proxy                                       |       1    |   0.02%    |
+|squareup/ghostunnel                                               |       1    |   0.02%    |
+|toniblyx/prowler                                                  |       1    |   0.02%    |
+|weaveworks/watch                                                  |       1    |   0.02%    |
+
+</details>
+
+
+## What does retagger do, exactly?
+
+`retagger` is first and foremost a CircleCI worfklow that runs every day at 21:30
+UTC and on every merge to master branch. It utilizes [skopeo][skopeo] and
+[custom golang code](main.go) to take upstream docker images, customize them if
+necessary, and push them to Giant Swarm's container registries: `quay.io` and
+`giantswarm-registry.cn-shanghai.cr.aliyuncs.com`. It is capable of working
+with `v1`, `v2`, and `OCI` registries, as well as retagging multi-architecture
+images.
+
+> 💡Please note it **is not responsible** for pushing images to neither
+`docker.io/giantswarm`, nor `azurecr.io/giantswarm` container registries.
+
+## How to add your image to the job
+
+You've come to the right place. Pick one of the below methods.
+
+### Plain copy
+
+You do **not** need any customizations. Great!
+1. Find a `skopeo-*.yaml` file in [images](images/) matching your upstream
+   container registry's name. Create a new one, if necessary.
+2. Add a tag, SHA, or a semantic version constraint for your image. Refer to
+   [Skopeo](#skopeo) section or existing files for format definition.
+3. If you haven't created a new file, that's it. You're set. Otherwise continue
+   following the steps.
+4. Open [CircleCI config][ciconf] and add your file to both `retag-registry`
+   steps under `matrix.parameters.images_file`.
+
+### Modify upstream Dockerfile
+
+You need to modify the upstream image before it's pushed to Giant Swarm registries.
+1. Find the [customized-images.yaml][custom] and add your image to the list.
+   Please refer to [Customized Images](#customized-images) section to see the
+   options.
+
+### Manual copy
+
+You need to copy a few tags, it's a one-off situation. You can use `docker
+pull/docker tag/docker push` combination or the below `skopeo` snippet:
+
+```bash
+$ skopeo sync --src docker --dest docker --all --keep-going crossplane/crossplane:v1.11.0 docker.io/giantswarm/
 ```
 
-So, for example:
+## Image list formats
 
-    gcr.io/foo/bar:first-version
+### Skopeo
 
-will become
-
-    quay.io/giantswarm/bar:first-version
-    giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm/bar:first-version
-
-Images can be defined using their SHA or using a tag pattern.
-
-If using a SHA, the exact image version is pulled from the source repository, pushed to Quay, and tagged with the given
-tag.
-
-If using a pattern, all tags in the original repository are compared against the pattern.
-If a matching tag is found, the image at that tag is pulled and retagged in Quay with the same tag
-(e.g. `alpine:9.99` matches pattern `9.[0-9]*` --> retagged as `quay.io/giantswarm/alpine:9.99`).
-
-Besides avoiding manual work, we do this for accountability and reproducability.
-Changes in the image configuration are tracked in the repo. `retagger` execution
-happens in CI and logs are available.
-
-## Image configuration file
-
-In `images.yaml` you can see the image configuration used by Giant Swarm,
-with one entry for (almost) every third party image we rely on.
-An image entry has one or several sub-entries for the versions we need.
-Here is an example entry:
-
+The basic file format looks as follows:
+`images/skopeo-registry-example-com.yaml`
 ```yaml
-- name: fluent/fluent-bit
-  comment: see https://hub.docker.com/r/fluent/fluent-bit/ for details
-  tags:
-  - sha: 6861ee5ea81fbbacf8802c622d9305930b341acc0800bbf30205b4d74ce2b486
-    tag: "0.14.6"
-    customImages:
-    - tagSuffix: giantswarm
-      dockerfileOptions:
-      - EXPOSE 1053
-- name: registry.k8s.io/hyperkube
-  tags:
-  - sha: 29590ae7991517b214a9239349ee1cc803a22f2a36279612a52caa2bc8673ff0
-    tag: v1.16.3
-  patterns:
-    - pattern: '>= v1.17.0'       # Match any v1.17.x
+registry.example.com:
+    images:
+        redis:
+            - "1.0"
+            - "2.0"
+            - "sha256:0000000000000000000000000000000011111111111111111111111111111111"
+    images-by-semver:
+        alpine:
+            - "3.12 - 3.13"
+            - ">= 3.17"
 ```
 
-What the attributes mean:
+The full specification is available in [upstream skopeo-sync docs][skopeo-sync
+docs]. Semantic version constraint documentation is available in
+[Masterminds/semver docs][masterminds docs].
 
-- `name`: The image name to be used with `docker pull`, without a tag.
-- `comment` (optional): Allows adding helpful information to the entry.
-- `overrideRepoName` (optional): If set, use this repository name on Quay instead of the original repo name.
-- `tags`: List of image versions.
-- `tags[].sha`: The SHA describing the version to pull from the source registry.
-- `tags[].tag`: The image tag to apply in the target registry.
-- `tags[].customImages[]`: Custom images definition with original tag as base.
-- `tags[].customImages[].tagSuffix`: Tag suffix for custom image build.
-- `tags[].customImages[].dockerfileOptions[]`: The list of Dockerfile options, used to override base image
-- `patterns[]`: List of patterns. New tags matching one of these patterns will be automatically retagged.
-- `patterns[].pattern`: Valid semver condition to match tags.
-- `patterns[].filter`: Regex to filter tags before validating semver. If empty, filtering is not done. 
-- `patterns[].customImages[]`: Custom images as explained above.
+### Customized images
 
-An image may define both `tags` and `patterns`.
-A `pattern` may also include all optional features of a `tag`, such as a `tagSuffix` or `dockerfileOptions`.
-The `filter` MUST include the `<version>` capture group, e.g.: `(?P<version>.*)-alpine`. This way, the version is extracted from the tag and validated against SemVer as usual.
+Customized images are represented as an array of `CustomImage` objects. Please
+see the below definition:
 
-## Adding an image
-
-Images can be added by SHA or by pattern. It is preferable to use a SHA whenever possible as this avoids tagging
-unnecessary images and guarantees a certain known image. Patterns should be used when automation is in place to handle
-new images, and not simply used as a convenience.
-
-**Note:** Images in the `images.yaml` file need to be sorted alphabetically, otherwise CI will stay red!
-
-### By SHA
-
-To add an image to the configuration file `images.yaml`, find out the SHA of the
-image like this (where `image:tag` has to be replaced with the real image name
-and tag):
-
-```nohighlight
-$ docker pull image:tag | grep sha | awk -F ':' '{print $3}'
+```golang
+type CustomImage struct {
+	// Image is the full name of the image to pull.
+	// Example: "alpine", "docker.io/giantswarm/app-operator", or
+	// "ghcr.io/fluxcd/kustomize-controller"
+	Image string `yaml:"image"`
+	// TagOrPattern is used to filter image tags. All tags matching the pattern
+	// will be retagged. Required if SHA is specified.
+	// Example: "v1.[234].*" or ".*-stable"
+	TagOrPattern string `yaml:"tag_or_pattern,omitempty"`
+	// SHA is used to filter image tags. If SHA is specified, it will take
+	// precedence over TagOrPattern. However TagOrPattern is still required!
+	// Example: 234cb88d3020898631af0ccbbcca9a66ae7306ecd30c9720690858c1b007d2a0
+	SHA string `yaml:"sha,omitempty"`
+	// Semver is used to filter image tags by semantic version constraints. All
+	// tags satisfying the constraint will be retagged.
+	Semver string `yaml:"semver,omitempty"`
+	// Filter is a regexp pattern used to extract a part of the tag for Semver
+	// comparison. First matched group will be supplied for semver comparison.
+	// Example:
+	//   Filter: "(.+)-alpine"  ->  Image tag: "3.12-alpine" -> Comparison: "3.12>=3.10"
+	//   Semver: ">= 3.10"          Extracted group: "3.12"
+	Filter string `yaml:"filter,omitempty"`
+	// DockerfileExtras is a list of additional Dockerfile statements you want to
+	// append to the upstream Dockerfile. (optional)
+	// Example: ["RUN apk add -y bash"]
+	DockerfileExtras []string `yaml:"dockerfile_extras,omitempty"`
+	// AddTagSuffix is an extra string to append to the tag.
+	// Example: "giantswarm", the tag would become "<tag>-giantswarm"
+	AddTagSuffix string `yaml:"add_tag_suffix,omitempty"`
+	// OverrideRepoName allows user to rewrite the name of the image entirely.
+	// Example: "alpinegit", so "alpine" would become
+	// "quay.io/giantswarm/alpinegit"
+	OverrideRepoName string `yaml:"override_repo_name,omitempty"`
+	// StripSemverPrefix removes the initial 'v' in 'v1.2.3' if enabled. Works
+	// only when Semver is defined.
+	StripSemverPrefix bool `yaml:"strip_semver_prefix,omitempty"`
+}
 ```
 
-As a target tag, please use the original tag.
+## Contributing
 
-In cases where the original image has been updated but the tag stayed the same,
-add a version counter to the tag. For example, if the tag `v1.5.2` was updated,
-the target tag should be `v1.5.2-2`, `v1.5.2-3`, and so on.
+Please refer to [CONTRIBUTING.md](CONTRIBUTING.md).
 
-### By Pattern
+[skopeo]: https://github.com/containers/skopeo
+[skopeo-sync docs]: https://github.com/kubasobon/skopeo/blob/semver/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
+[masterminds docs]: https://github.com/Masterminds/semver/tree/v3.2.0#basic-comparisons
 
-**Warning:** Run `retagger` locally with `--dry-run` _before_ pushing your pattern to the repository to make sure it
-does what you want.
-
-It is also possible to watch and automatically retag new tagged releases in the upstream repository.
-To do this, specify a pattern for the image in the `images.yaml` configuration file.
-Each pattern must be a valid semver constraint (you can read about it [here](https://github.com/Masterminds/semver)),
-and should match as little as possible to avoid retagging huge numbers of useless images.
-
-_Hint:_ The `v` infront of a version is optional - so `v1.0.0` and `1.0.0` behave the same.
-
-For example, at the time of this writing:
-
-```yaml
-- name: registry.k8s.io/hyperkube
-  patterns:
-    - pattern: '>= v1.17.0'       # Match any v1.17.x
-```
-
-### Execution
-
-Please provide a PR with the change. Once merged into main, CI will execute
-`retagger` to push any new images.
-
-**Note**: To keep execution speedy, when adding a new version, please remove older versions (tags) that are no longer
-used from the configuration.
-
-## Background and details
-
-- `retagger` checks if an image and tag are already available in the target
-  registry, to avoid unnecessary pushing.
-
-- `retagger` currently only supports public images as a source.
-
-- In Quay, a repository must exist for the image before retagger can push an image.
-
-The `retagger` works inside a CI build. On merges to main, the binary is executed. The workflow is to add a new image
-/ sha tag pair or pattern in a PR, review it, and then merge. The `retagger` will take care that the image is handled.
-Users will still need to create repositories in the registry.
-
-### Usage
-
-The environment variables `REGISTRY`, `REGISTRY_ORGANISATION`, `REGISTRY_USERNAME`, and `REGISTRY_PASSWORD` need to be
-set (or passed as arguments).
-
-Executing
-
-```console
-./retagger
-```
-
-will iterate through the defined images, pull them from a public registry, and push them to the specified private
-registry.
-
-#### Options
-
-```console
-Usage:
-  retagger [flags]
-  retagger [command]
-
-Available Commands:
-  help        Help about any command
-  version     Prints version information.
-
-Flags:
-      --dry-run               if set, will list jobs but not run them
-  -f, --file string           retagger config file to use (default "images.yaml")
-  -h, --help                  help for retagger
-  -r, --host string           Registry hostname (e.g. quay.io)
-  -o, --organization string   organization to tag images for (default "giantswarm")
-  -p, --password string       password to authenticate against registry
-  -u, --username string       username to authenticate against registry
-
-Use "retagger [command] --help" for more information about a command.
-```
-
-### How to build/test
-
-The standard way!
-
-```nohighlight
-go test
-go build
-```
+[ciconf]: .circleci/config.yml
+[custom]: images/customized-images.yaml

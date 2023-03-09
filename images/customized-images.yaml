@@ -1,0 +1,392 @@
+- image: alpine
+  tag_or_pattern: "3.16.2"
+  sha: 1304f174557314a7ed9eddb4eab12fed12cb0cd9809e4c28f29af86979a3c870
+  add_tag_suffix: "envsubst"
+  dockerfile_extras:
+    - RUN apk add --no-cache gettext
+- image: alpine
+  tag_or_pattern: "3.16.2"
+  sha: 1304f174557314a7ed9eddb4eab12fed12cb0cd9809e4c28f29af86979a3c870
+  add_tag_suffix: "yq"
+  dockerfile_extras:
+    - RUN apk add --no-cache yq bash
+- image: alpine
+  semver: ">= 3.11"
+  filter: '(\d+\..*)'
+  add_tag_suffix: "giantswarm"
+  dockerfile_extras:
+    - RUN apk add --no-cache ca-certificates
+    - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+    - USER giantswarm
+- image: alpine
+  semver: ">= 3.11"
+  filter: '(\d+\..*)'
+  add_tag_suffix: "giantswarm-sysctl"
+  dockerfile_extras:
+    - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+    - 'RUN apk add --no-cache sudo && echo "giantswarm  ALL = NOPASSWD: /sbin/sysctl" >> /etc/sudoers'
+    - USER giantswarm
+- image: alpine
+  semver: ">= 3.11"
+  filter: '(\d+\..*)'
+  add_tag_suffix: "python3"
+  dockerfile_extras:
+    - RUN apk add --no-cache python3 py3-yaml
+- image: alpine/git
+  override_repo_name: alpinegit
+  tag_or_pattern: "v2.26.2"
+  sha: 7b94cd6038bf3f5ddd7b1d99b9591f243e6484417bc5fb8fa7fdbc076e904794
+  add_tag_suffix: "giantswarm"
+  dockerfile_extras:
+    - RUN apk add --no-cache ca-certificates
+    - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+    - USER giantswarm
+- image: alpine/helm
+  override_repo_name: alpine-helm
+  semver: ">= 3.9.3"
+  filter: '(\d+\..*)'
+- image: amazon/aws-cli
+  override_repo_name: awscli
+  tag_or_pattern: "2.7.35"
+  sha: e5988c45f13ec9c9500e9fb6742e19de642a5bdc2750f2cc0482a857f13c30ea
+- image: amazon/aws-cli
+  override_repo_name: awscli-tar
+  tag_or_pattern: "2.7.35"
+  sha: e5988c45f13ec9c9500e9fb6742e19de642a5bdc2750f2cc0482a857f13c30ea
+  add_tag_suffix: "giantswarm"
+  dockerfile_extras:
+    - RUN yum -y install tar
+- image: bitnami/redis
+  override_repo_name: bitnami-redis
+  tag_or_pattern: "4.0.9"
+  sha: 1b56b1c2c5d737bd8029f2e2e80852c0c1ef342e36ca0940dd313d4d8a786311
+- image: bitnami/postgresql
+  override_repo_name: postgresql-bitnami
+  tag_or_pattern: "13.6.0-debian-10-r52"
+  sha: 9f32478fdb19fb3a392999e7bc89cec54c2e74aa3313dc7667cdd750bb9b03e0
+- image: bitnami/postgresql
+  override_repo_name: postgresql-bitnami
+  tag_or_pattern: "15.1.0-debian-11-r20"
+  sha: c9d75b4521dbb75747d936504cb16031a087ae51755868c6b4e7fad0e2b8615d
+- image: bobrik/curator
+  override_repo_name: bobrik-curator
+  semver: ">= 5.8.1"
+- image: caicloud/event-exporter
+  override_repo_name: caicloud-event-exporter
+  semver: ">= v1.0.0"
+- image: cloudflare/cloudflared
+  semver: ">= 2022.8.0"
+  filter: "^(.+)-amd64$"
+- image: coredns/coredns
+  semver: ">= 1.6.5"
+  add_tag_suffix: "giantswarm"
+  dockerfile_extras:
+    - EXPOSE 1053
+- image: ghcr.io/linkerd/cni-plugin
+  override_repo_name: linkerd2-cni-plugin
+  semver: ">= 2.11.4"
+  filter: "^stable-(.*)$"
+- image: ghcr.io/linkerd/controller
+  override_repo_name: linkerd2-controller
+  semver: ">= 2.11.4"
+  filter: "^stable-(.*)$"
+- image: ghcr.io/linkerd/debug
+  override_repo_name: linkerd2-debug
+  semver: ">= 2.11.4"
+  filter: "^stable-(.*)$"
+- image: ghcr.io/linkerd/metrics-api
+  override_repo_name: linkerd-metrics-api
+  semver: ">= 2.11.4"
+  filter: "^stable-(.*)$"
+- image: ghcr.io/linkerd/policy-controller
+  override_repo_name: linkerd2-policy-controller
+  semver: ">= 2.11.4"
+  filter: "^stable-(.*)$"
+- image: ghcr.io/linkerd/proxy
+  override_repo_name: linkerd2-proxy
+  semver: ">= 2.11.4"
+  filter: "^stable-(.*)$"
+- image: ghcr.io/linkerd/proxy-init
+  override_repo_name: linkerd2-proxy-init
+  semver: ">= 2.11.4"
+  filter: "^stable-(.*)$"
+- image: ghcr.io/linkerd/tap
+  override_repo_name: linkerd-tap
+  semver: ">= 2.11.4"
+  filter: "^stable-(.*)$"
+- image: ghcr.io/linkerd/web
+  override_repo_name: linkerd2-web
+  semver: ">= 2.11.4"
+  filter: "^stable-(.*)$"
+- image: crossplane/xfn
+  override_repo_name: crossplane
+  semver: ">= v1.11.0"
+- image: fluent/fluent-bit
+  tag_or_pattern: "1.9.8"
+  sha: 137669ee97787c930ec00a8babff46ecc76988d128cc9e7fa581d1b05ef8fb3d
+  add_tag_suffix: aws-plugins
+  dockerfile_extras:
+    - |
+      FROM fluent/fluent-bit:1.9.8
+      COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/kinesis.so /fluent-bit/kinesis.so
+      COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/firehose.so /fluent-bit/firehose.so
+      COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/cloudwatch.so /fluent-bit/cloudwatch.so
+      CMD ["/fluent-bit/bin/fluent-bit", "-e", "/fluent-bit/firehose.so", "-e", "/fluent-bit/cloudwatch.so", "-e", "/fluent-bit/kinesis.so", "-c", "/fluent-bit/etc/fluent-bit.conf"]
+- image: fluent/fluent-bit
+  tag_or_pattern: "1.7.9"
+  sha: 8e3fdc011d3ff98502143650dfa3261860b11f1f289dbb3184c630f71236a366
+  add_tag_suffix: systemd247-aws-plugins
+  dockerfile_extras:
+    - |
+      FROM amd64/debian:buster-slim as builder
+      RUN echo "deb http://deb.debian.org/debian buster-backports main" > /etc/apt/sources.list.d/backports.list && \
+          apt-get update && \
+          apt-get install -y --no-install-recommends \
+          libsystemd-dev/buster-backports
+      FROM fluent/fluent-bit:1.7.9
+      COPY --from=builder /usr/lib/x86_64-linux-gnu/libsystemd* /lib/x86_64-linux-gnu/
+      COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/kinesis.so /fluent-bit/kinesis.so
+      COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/firehose.so /fluent-bit/firehose.so
+      COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/cloudwatch.so /fluent-bit/cloudwatch.so
+      CMD ["/fluent-bit/bin/fluent-bit", "-e", "/fluent-bit/firehose.so", "-e", "/fluent-bit/cloudwatch.so", "-e", "/fluent-bit/kinesis.so", "-c", "/fluent-bit/etc/fluent-bit.conf"]
+- image: fluxcd/helm-controller
+  override_repo_name: fluxcd-helm-controller
+  semver: ">= v0.12.0"
+- image: fluxcd/image-automation-controller
+  override_repo_name: fluxcd-image-automation-controller
+  semver: ">= v0.16.0"
+- image: fluxcd/image-reflector-controller
+  override_repo_name: fluxcd-image-reflector-controller
+  semver: ">= v0.13.0"
+- image: fluxcd/kustomize-controller
+  override_repo_name: fluxcd-kustomize-controller
+  semver: ">= v0.16.0"
+- image: fluxcd/notification-controller
+  override_repo_name: fluxcd-notification-controller
+  semver: ">= v0.18.0"
+- image: fluxcd/source-controller
+  override_repo_name: fluxcd-source-controller
+  semver: ">= v0.17.0"
+- image: gcr.io/cloud-provider-vsphere/cpi/release/manager
+  override_repo_name: cloud-provider-vsphere
+  semver: ">= v1.22.6"
+- image: gcr.io/cluster-api-provider-vsphere/release/manager
+  override_repo_name: cluster-api-vsphere-controller
+  semver: ">= v0.8.1"
+- image: gcr.io/heptio-images/eventrouter
+  tag_or_pattern: "v0.3"
+  sha: dba60a88600d2d94fcd4c365e2931e54ae9aa495e94a924f80814e019b7ea046
+  add_tag_suffix: "giantswarm"
+  dockerfile_extras:
+    - USER root
+    - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+    - USER giantswarm
+- image: jaegertracing/all-in-one
+  override_repo_name: jaeger-all-in-one
+  semver: ">= 1.17.0"
+- image: kedacore/keda
+  override_repo_name: kedacore-keda
+  tag_or_pattern: "2.1.0"
+  sha: b4932b7c763d57e97bd3165749cfd994196b20575e21a3b4cfc3097067f3fd67
+- image: kedacore/keda-metrics-apiserver
+  override_repo_name: kedacore-keda-metrics-apiserver
+  tag_or_pattern: "2.1.0"
+  sha: 8b315d56586ed4b658e0540fa80d395bf6ce0698693d07177aa4c13ce2c452f9
+- image: kindest/node
+  override_repo_name: kind-node
+  semver: ">= v1.16"
+- image: kong/kubernetes-ingress-controller
+  override_repo_name: kong-ingress-controller
+  semver: ">= 1.1.1"
+- image: macropower/analytics-panel-server
+  override_repo_name: macropower-analytics-panel-server
+  semver: ">= 0.0.1"
+- image: mysql
+  tag_or_pattern: "5.7.14"
+  sha: c8f03238ca1783d25af320877f063a36dbfce0daa56a7b4955e6c6e05ab5c70b
+  add_tag_suffix: "giantswarm"
+  dockerfile_extras:
+    - USER mysql
+- image: projects.registry.vmware.com/vmware-cloud-director/cloud-director-named-disk-csi-driver
+  override_repo_name: csi-cloud-director
+  tag_or_pattern: "1.2.0.latest"
+  sha: e281f711687e29a4c94ab2de12096a5d020515941d2d935ca1ee8f10b575c3e7
+- image: projects.registry.vmware.com/vmware-cloud-director/cloud-provider-for-cloud-director
+  override_repo_name: cpi-cloud-director
+  semver: ">= 1.2.0"
+- image: quay.io/calico/ctl
+  override_repo_name: calicoctl
+  semver: ">= v3.19.0"
+  dockerfile_extras:
+    - |
+      FROM quay.io/giantswarm/alpine:3.13.5
+      COPY --from=0 /calicoctl /calicoctl
+      ENV PATH=$PATH:/
+      ENTRYPOINT ["calicoctl"]
+- image: quay.io/calico/kube-controllers
+  override_repo_name: calico-crd-installer
+  semver: ">= v3.21.3"
+  dockerfile_extras:
+    - |
+      FROM quay.io/giantswarm/crd-installer:0.1.2 AS installer
+      FROM quay.io/giantswarm/alpine:3.15.0 AS downloader
+      WORKDIR /tmp/crd-installer
+      COPY --from=0 /usr/bin/kube-controllers /crd-installer/kube-controllers
+      COPY --from=0 /lib64/ /lib64
+      COPY --from=installer /scripts /scripts
+      RUN CALICO_VERSION=$(/crd-installer/kube-controllers -version) && \
+          /scripts/download-calico-crds.sh $CALICO_VERSION
+      FROM scratch
+      COPY --from=downloader /tmp/crd-installer/crds /crds
+      COPY --from=installer /usr/local/bin/crd-installer /usr/local/bin/crd-installer
+      CMD ["/usr/local/bin/crd-installer", "-dir", "/crds"]
+- image: quay.io/cilium/certgen
+  override_repo_name: cilium-certgen
+  semver: ">= v0.1.5"
+- image: quay.io/cilium/clustermesh-apiserver
+  override_repo_name: cilium-clustermesh-apiserver
+  semver: ">= v1.11.2"
+- image: quay.io/cilium/operator
+  override_repo_name: cilium-operator
+  semver: ">= v1.11.2"
+- image: quay.io/cilium/operator-generic
+  override_repo_name: cilium-operator-generic
+  semver: ">= v1.11.2"
+- image: quay.io/cilium/startup-script
+  override_repo_name: cilium-startup-script
+  sha: 72db9d6d9b319e36d68ad3a4cd9c43e3f8ded80694972dc458afacd34e73eb46
+  tag_or_pattern: "62bfbe88c17778aad7bef9fa57ff9e2d4a9ba0d8"
+- image: quay.io/helmpack/chart-testing
+  override_repo_name: helm-chart-testing
+  semver: ">= v3.4.0"
+- image: quay.io/jiralert/jiralert-linux-amd64
+  override_repo_name: jiralert
+  semver: ">= 1.0"
+- image: quay.io/prometheus/node-exporter
+  tag_or_pattern: "v0.18.1"
+  sha: a2f29256e53cc3e0b64d7a472512600b2e9410347d53cdc85b49f659c17e02ee
+  add_tag_suffix: "giantswarm"
+  dockerfile_extras:
+    - USER root
+    - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+    - USER giantswarm
+- image: quay.io/prometheus/node-exporter
+  tag_or_pattern: "v0.18.0"
+  sha: b2dd31b0d23fda63588674e40fd8d05010d07c5d4ac37163fc596ba9065ce38d
+  add_tag_suffix: "giantswarm"
+  dockerfile_extras:
+    - USER root
+    - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+    - USER giantswarm
+- image: quay.io/prometheus/node-exporter
+  tag_or_pattern: "v1.0.1"
+  sha: cf66a6bbd573fd819ea09c72e21b528e9252d58d01ae13564a29749de1e48e0f
+  add_tag_suffix: "giantswarm"
+  dockerfile_extras:
+    - USER root
+    - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+    - USER giantswarm
+- image: quay.io/prometheus/node-exporter
+  tag_or_pattern: "v1.0.1"
+  sha: cf66a6bbd573fd819ea09c72e21b528e9252d58d01ae13564a29749de1e48e0f
+  add_tag_suffix: "giantswarm"
+  dockerfile_extras:
+    - USER root
+    - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+    - USER giantswarm
+- image: quay.io/prometheus/node-exporter
+  tag_or_pattern: "v1.3.1"
+  sha: f2269e73124dd0f60a7d19a2ce1264d33d08a985aed0ee6b0b89d0be470592cd
+  add_tag_suffix: "giantswarm"
+  dockerfile_extras:
+    - USER root
+    - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
+    - USER giantswarm
+- image: quay.io/reactiveops/ci-images
+  override_repo_name: vpa-certgen-ci-images
+  semver: ">= v11"
+  filter: "^(.*)-alpine$"
+  add_tag_suffix: "openssl"
+  dockerfile_extras:
+    - RUN apk add --no-cache openssl
+- image: registry.k8s.io/etcd
+  semver: ">= v3.5.4-0"
+  add_tag_suffix: k8s
+- image: registry.k8s.io/ingress-nginx/controller
+  override_repo_name: ingress-nginx-controller
+  sha: 54f7fe2c6c5a9db9a0ebf1131797109bb7a4d91f56b9b362bde2abd237dd1974
+  tag_or_pattern: "v1.3.1"
+- image: registry.k8s.io/ingress-nginx/controller
+  override_repo_name: ingress-nginx-controller
+  sha: 34ee929b111ffc7aa426ffd409af44da48e5a0eea1eb2207994d9e0c0882d143
+  tag_or_pattern: "v1.4.0"
+- image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
+  override_repo_name: ingress-nginx-kube-webhook-certgen
+  sha: 549e71a6ca248c5abd51cdb73dbc3083df62cf92ed5e6147c780e30f7e007a47
+  tag_or_pattern: "v1.3.0"
+- image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
+  override_repo_name: ingress-nginx-kube-webhook-certgen
+  sha: 39c5b2e3310dc4264d638ad28d9d1d96c4cbb2b2dcfb52368fe4e3c63f61e10f
+  tag_or_pattern: "v20220916-gd32f8c343"
+- image: registry.k8s.io/kube-apiserver
+  semver: '>= v1.16.8 < v1.19'
+  add_tag_suffix: giantswarm
+  filter: '^(v\d+\.\d+\.\d+)$'
+  dockerfile_extras:
+    - RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+- image: registry.k8s.io/kube-apiserver
+  override_repo_name: hyperkube
+  semver: ">= v1.19.8"
+  filter: '^(v\d+\.\d+\.\d+)$'
+  strip_semver_prefix: true
+  dockerfile_extras:
+    - |
+      FROM quay.io/giantswarm/alpine:3.12.1 AS downloader
+      WORKDIR /tmp/hyperkube
+      COPY --from=0 /usr/local/bin/kube-apiserver /tmp/hyperkube/kube-apiserver
+      RUN KUBERNETES_VERSION=$(/tmp/hyperkube/kube-apiserver --version | grep Kubernetes | cut -d ' ' -f 2) && \
+      wget -t 5 https://storage.googleapis.com/kubernetes-release/release/$KUBERNETES_VERSION/bin/linux/amd64/kubelet && \
+      wget -t 5 https://storage.googleapis.com/kubernetes-release/release/$KUBERNETES_VERSION/bin/linux/amd64/kubectl && \
+      chmod +x /tmp/hyperkube/kubelet /tmp/hyperkube/kubectl
+      FROM scratch
+      COPY --from=downloader /tmp/hyperkube/kubelet /kubelet
+      COPY --from=downloader /tmp/hyperkube/kubectl /kubectl
+- image: registry.k8s.io/provider-aws/cloud-controller-manager
+  override_repo_name: aws-cloud-controller-manager
+  semver: ">= v1.21.0-alpha.0"
+- image: sonobuoy/sonobuoy
+  semver: ">= v0.52.0"
+  add_tag_suffix: alpine-giantswarm
+  dockerfile_extras:
+    - |
+      FROM quay.io/giantswarm/alpine:3.14.0-giantswarm
+      COPY --from=0 /sonobuoy /sonobuoy
+      WORKDIR /
+      CMD ["/sonobuoy", "aggregator", "--no-exit", "-v", "3", "--logtostderr"]
+- image: rook/ceph
+  override_repo_name: rook-ceph
+  semver: ">= v1.7.0"
+- image: ubuntu/squid
+  sha: a3df22307c1eb5a7b470f980e0141e97fa98beeaaeb9932743604b121835f3c8
+  tag_or_pattern: "5.2-22.04_beta"
+  add_tag_suffix: giantswarm
+  dockerfile_extras:
+    - RUN sed -i 's/http_access deny CONNECT/#http_access deny CONNECT/g' /etc/squid/squid.conf
+- image: untergeek/curator
+  override_repo_name: elasticsearch-untergeek-curator
+  semver: ">= 5.7.6"
+- image: xpkg.upbound.io/crossplane-contrib/provider-aws
+  override_repo_name: crossplane-provider-aws
+  semver: ">= v0.33.0"
+- image: xpkg.upbound.io/upbound/provider-aws
+  override_repo_name: upbound-provider-aws
+  semver: ">= v0.27.0"
+- image: xpkg.upbound.io/upbound/provider-azure
+  override_repo_name: upbound-provider-azure
+  semver: ">= v0.26.0"
+- image: xpkg.upbound.io/upbound/provider-gcp
+  override_repo_name: upbound-provider-gcp
+  semver: ">= v0.26.0"
+- image: xpkg.upbound.io/upbound/provider-terraform
+  override_repo_name: upbound-provider-terraform
+  semver: ">= v0.4.0"
