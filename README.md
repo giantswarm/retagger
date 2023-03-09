@@ -5,19 +5,6 @@
 > A tool to handle the retagging of third party docker images and make them
   available in own registries.
 
-## TODO(kuba):
-
-- Build Dockerfile/retagger image in CircleCI
-- Use that image as a runner for next steps
-- Add `docker buildx ls` debug step
-- If needed, extend `buildx` capabilities. See: https://docs.docker.com/build/building/multi-platform/
-- Rebuild `images.yaml` for `skopeo`
-- Build custom Dockerfiles for modified images (parameterized with `${TAG/SHA}`)
-- Add a custom bit of Go code to:
-  - use skopeo to sniff out all the tags/SHAs: `skopeo inspect --raw docker://ghcr.io/kyverno/kyverno:v1.8.1 | jq`
-  - rebuild the images using custom Dockerfiles
-  - sync built images to registries
-
 ## Building retagger
 
 Based on [CircleCI golang image](https://hub.docker.com/r/cimg/go) and [skopeo](https://github.com/containers/skopeo).
