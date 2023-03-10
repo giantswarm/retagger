@@ -136,8 +136,6 @@ docker.io:
       - ">= 0.2"
     aquasec/scanner:
       - ">= 5.3"
-    aquasec/starboard-operator:
-      - ">= 0.11.0"
     aquasec/trivy:
       - ">= 0.30.4"
     aquasec/trivy-operator:
