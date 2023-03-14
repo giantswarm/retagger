@@ -87,8 +87,6 @@ docker.io:
       - "0.3.2-dd13538"
     madnight/alpine-wkhtmltopdf-builder:
       - "0.12.5-alpine3.10-606718795"
-    mikefarah/yq:
-      - ">= 4.31.2"
     nginx:
       - "1.23-alpine"
     nginxinc/nginx-unprivileged:
@@ -201,6 +199,8 @@ docker.io:
       - ">= 1.20.0"
     kong:
       - ">= 1.4.3"
+    mikefarah/yq:
+      - ">= 4.31.2"
     mintel/dex-k8s-authenticator:
       - ">= 1.4.0"
     omnition/opencensus-collector:
