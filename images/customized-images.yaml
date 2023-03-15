@@ -118,6 +118,9 @@
   override_repo_name: linkerd2-web
   semver: ">= 2.11.4"
   filter: "^stable-(.*)$"
+- image: ghcr.io/weaveworks/wego-app
+  override_repo_name: weaveworks-wego-app
+  semver: "v0.18.0"
 - image: crossplane/xfn
   override_repo_name: crossplane
   semver: ">= v1.11.0"
