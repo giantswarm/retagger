@@ -209,6 +209,8 @@ docker.io:
       - ">= v2.0.0"
     opensearchproject/opensearch-dashboards:
       - ">= v2.0.0"
+    prom/blackbox-exporter:
+      - ">= v0.23.0"
     prom/prometheus:
       - ">= 2.17.0"
     prom/pushgateway:
