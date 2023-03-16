@@ -1,9 +1,6 @@
 # Docs: https://github.com/kubasobon/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
 gcr.io:
   images:
-    google_containers/defaultbackend:
-      - "1.0"
-      - "1.2"
     google-containers/startup-script:
       - "v2"
     heptio-images/gangway:
