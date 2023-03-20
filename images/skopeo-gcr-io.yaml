@@ -12,12 +12,6 @@ gcr.io:
   images-by-semver:
     cadvisor/cadvisor:
       - ">= v0.44.0"
-    cloud-provider-vsphere/cpi/release/manager:
-      - ">= v1.26.0"
-    cloud-provider-vsphere/csi/release/driver:
-      - ">= v2.7.1"
-    cloud-provider-vsphere/csi/release/syncer:
-      - ">= v2.7.1"
     k8s-staging-cloud-provider-gcp/gcp-compute-persistent-disk-csi-driver:
       - ">= 1.7.0"
     kubebuilder/kube-rbac-proxy:
