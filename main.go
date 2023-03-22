@@ -213,11 +213,11 @@ func (img *CustomImage) RetagUsingTags() error {
 	if flagSkipExistingTags {
 		quayTags, err := listTags(fmt.Sprintf("%s/%s", quayURL, destinationName))
 		if err != nil {
-			return fmt.Errorf("error getting Quay.io tags: %w", err)
+			logrus.Warnf("error getting Quay.io tags: %w", err)
 		}
 		aliyunTags, err := listTags(fmt.Sprintf("%s/%s", aliyunURL, destinationName))
 		if err != nil {
-			return fmt.Errorf("error getting Aliyun tags: %w", err)
+			logrus.Warnf("error getting Aliyun tags: %w", err)
 		}
 		tags = img.FindMissingTags(tags, quayTags, aliyunTags)
 		logrus.Infof("Found %d missing tags for image %q", len(tags), img.Image)
