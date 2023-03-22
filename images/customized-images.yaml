@@ -77,6 +77,15 @@
 - image: cloudflare/cloudflared
   semver: ">= 2022.8.0"
   filter: "^(.+)-amd64$"
+- image: gcr.io/cloud-provider-vsphere/cpi/release/manager
+  semver: ">= v1.26.0"
+  override_repo_name: cpi-vsphere-manager
+- image: gcr.io/cloud-provider-vsphere/csi/release/driver
+  semver: ">= v2.7.1"
+  override_repo_name: csi-vsphere-driver
+- image: gcr.io/cloud-provider-vsphere/csi/release/syncer
+  semver: ">= v2.7.1"
+  override_repo_name: csi-vsphere-syncer
 - image: coredns/coredns
   semver: ">= 1.6.5"
   add_tag_suffix: "giantswarm"
