@@ -258,7 +258,8 @@ images.
 
 ## How to add your image to the job
 
-You've come to the right place. Pick one of the below methods.
+You've come to the right place. Pick one of the below methods. For both methods first make sure
+the repository exists in the desired container registry.
 
 ### Plain copy
 

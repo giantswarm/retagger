@@ -179,9 +179,6 @@
 - image: fluxcd/source-controller
   override_repo_name: fluxcd-source-controller
   semver: ">= v0.17.0"
-- image: gcr.io/cloud-provider-vsphere/cpi/release/manager
-  override_repo_name: cloud-provider-vsphere
-  semver: ">= v1.22.6"
 - image: gcr.io/cluster-api-provider-vsphere/release/manager
   override_repo_name: cluster-api-vsphere-controller
   semver: ">= v0.8.1"
