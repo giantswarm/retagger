@@ -337,6 +337,10 @@
   tag_or_pattern: "v1.6.4"
   sha: 15be4666c53052484dd2992efacf2f50ea77a78ae8aa21ccd91af6baaa7ea22f
   override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.7.0"
+  sha: 7612338342a1e7b8090bef78f2a04fffcadd548ccaabe8a47bf7758ff549a5f7
+  override_repo_name: ingress-nginx-controller
 - image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
   tag_or_pattern: "v1.3.0"
   sha: 549e71a6ca248c5abd51cdb73dbc3083df62cf92ed5e6147c780e30f7e007a47
@@ -344,6 +348,10 @@
 - image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
   tag_or_pattern: "v20220916-gd32f8c343"
   sha: 39c5b2e3310dc4264d638ad28d9d1d96c4cbb2b2dcfb52368fe4e3c63f61e10f
+  override_repo_name: ingress-nginx-kube-webhook-certgen
+- image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
+  tag_or_pattern: "v20230312-helm-chart-4.5.2-28-g66a760794"
+  sha: 01d181618f270f2a96c04006f33b2699ad3ccb02da48d0f89b22abce084b292f
   override_repo_name: ingress-nginx-kube-webhook-certgen
 - image: registry.k8s.io/defaultbackend-amd64
   tag_or_pattern: "1.5"
