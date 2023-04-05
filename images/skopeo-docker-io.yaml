@@ -184,6 +184,8 @@ docker.io:
       - ">= v2.1.0"
     grafana/mimir:
       - ">= v2.7.0"
+    grafana/mimir-continuous-test:
+      - ">= v2.7.0"
     grafana/promtail:
       - ">= v1.2.0"
     jettech/kube-webhook-certgen:
@@ -203,6 +205,8 @@ docker.io:
       - ">= 1.4.3"
     mintel/dex-k8s-authenticator:
       - ">= 1.4.0"
+    memcached:
+      - ">= 1.6.19-alpine"
     omnition/opencensus-collector:
       - ">= 0.1.11"
     openpolicyagent/conftest:
@@ -213,6 +217,8 @@ docker.io:
       - ">= v2.0.0"
     prom/blackbox-exporter:
       - ">= v0.23.0"
+    prom/memcached-exporter:
+      - ">= v0.11.2"
     prom/prometheus:
       - ">= 2.17.0"
     prom/pushgateway:
