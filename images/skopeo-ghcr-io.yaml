@@ -11,6 +11,10 @@ ghcr.io:
   images-by-semver:
     external-secrets/external-secrets:
       - ">= v0.7.0"
+    kube-vip/kube-vip:
+      - ">= v0.5.11"
+    kube-vip/kube-vip-cloud-provider:
+      - ">= v0.0.4"
     kyverno/cleanup-controller:
       - ">= v1.9.0"
     kyverno/kyverno:
