@@ -218,8 +218,6 @@ docker.io:
       - ">= v0.23.0"
     prom/memcached-exporter:
       - ">= v0.11.2"
-    prom/prometheus:
-      - ">= 2.17.0"
     prom/pushgateway:
       - ">= v1.0.0"
     # Used in akv2k8s
