@@ -240,7 +240,7 @@
   semver: ">= v3.21.3"
   dockerfile_extras:
     - |
-      FROM quay.io/giantswarm/crd-installer:0.2.0 AS installer
+      FROM quay.io/giantswarm/crd-installer:0.2.2 AS installer
       FROM quay.io/giantswarm/alpine:3.15.0 AS downloader
       WORKDIR /tmp/crd-installer
       COPY --from=0 /usr/bin/kube-controllers /crd-installer/kube-controllers
