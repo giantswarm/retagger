@@ -209,7 +209,7 @@
   semver: ">= 1.1.1"
 - image: kylemanna/openvpn
   override_repo_name: kylemanna-openvpn
-  tag_or_pattern: "2.4"  
+  tag_or_pattern: "2.4"
 - image: macropower/analytics-panel-server
   override_repo_name: macropower-analytics-panel-server
   semver: ">= 0.0.1"
