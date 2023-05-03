@@ -63,8 +63,6 @@ docker.io:
     koalaman/shellcheck-alpine:
       - "v0.6.0"
     kong/kong-gateway:
-      - "2.3.3.2-alpine"
-      - "2.5.1.2-alpine"
       - "2.7.1.1-alpine"
       - "2.8.1.0-alpine"
       - "2.8.1.2-alpine"
@@ -75,6 +73,7 @@ docker.io:
       - "2.8.2.2-alpine"
       - "3.0.0.0-alpine"
       - "3.0.1.0-alpine"
+      - "3.0.2.0-debian"
       - "2.8.2.3-alpine"
       - "2.8.2.3-debian"
       - "3.1.0.0-debian"
