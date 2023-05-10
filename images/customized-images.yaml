@@ -402,10 +402,11 @@
   override_repo_name: rook-ceph
   semver: ">= v1.7.0"
 - image: ubuntu/squid
-  sha: a3df22307c1eb5a7b470f980e0141e97fa98beeaaeb9932743604b121835f3c8
-  tag_or_pattern: "5.2-22.04_beta"
+  sha: 76e8aa526f5380426e75cfed37e5d043781dfc4f8fd7ba8e3fcacebb163d4283
+  tag_or_pattern: "4.10-20.04_beta"
   add_tag_suffix: giantswarm
   dockerfile_extras:
+    - RUN sed -i '/^acl SSL_ports port 443/a acl SSL_ports port 6443' /etc/squid/squid.conf
     - RUN sed -i 's/http_access deny CONNECT/#http_access deny CONNECT/g' /etc/squid/squid.conf
 - image: untergeek/curator
   override_repo_name: elasticsearch-untergeek-curator
