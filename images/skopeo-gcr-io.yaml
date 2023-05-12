@@ -9,6 +9,8 @@ gcr.io:
       - "v1.11"
     spark-operator/spark-operator:
       - "v2.4.0-v1beta1-latest"
+    go-containerregistry/crane:
+      - "debug"
   images-by-semver:
     cadvisor/cadvisor:
       - ">= v0.44.0"
