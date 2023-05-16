@@ -195,6 +195,8 @@ docker.io:
       - ">= 1.20.0"
     kong:
       - ">= 1.4.3"
+    mikefarah/yq:
+      - ">= 4.31.2"
     mintel/dex-k8s-authenticator:
       - ">= 1.4.0"
     memcached:
