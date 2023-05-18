@@ -221,11 +221,10 @@
     - USER mysql
 - image: projects.registry.vmware.com/vmware-cloud-director/cloud-director-named-disk-csi-driver
   override_repo_name: csi-cloud-director
-  tag_or_pattern: "1.2.0.latest"
-  sha: e281f711687e29a4c94ab2de12096a5d020515941d2d935ca1ee8f10b575c3e7
+  semver: " >= 1.3.0"
 - image: projects.registry.vmware.com/vmware-cloud-director/cloud-provider-for-cloud-director
   override_repo_name: cpi-cloud-director
-  semver: ">= 1.2.0"
+  semver: ">= 1.3.0"
 - image: quay.io/calico/ctl
   override_repo_name: calicoctl
   semver: ">= v3.19.0"
