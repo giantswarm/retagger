@@ -101,7 +101,6 @@ docker.io:
       - "cloudwatch_exporter-0.4"
     prom/prometheus:
       - ">= 2.30.0"
-      - ">= 2.43.0-stringlabels"
     python:
       - "3.8.12-slim"
       - "3.9-alpine3.13"
