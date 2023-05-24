@@ -102,6 +102,7 @@ docker.io:
     prom/prometheus:
       - ">= 2.30.0"
       - ">= 2.43.0-stringlabels"
+      - ">= v2.44.0"
     python:
       - "3.8.12-slim"
       - "3.9-alpine3.13"
