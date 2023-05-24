@@ -99,10 +99,6 @@ docker.io:
       - "v0.104.3"
     prom/cloudwatch-exporter:
       - "cloudwatch_exporter-0.4"
-    prom/prometheus:
-      - ">= 2.30.0"
-      - ">= 2.43.0-stringlabels"
-      - ">= v2.44.0"
     python:
       - "3.8.12-slim"
       - "3.9-alpine3.13"
@@ -216,6 +212,9 @@ docker.io:
       - ">= v0.23.0"
     prom/memcached-exporter:
       - ">= v0.11.2"
+    prom/prometheus:
+      - ">= 2.41.0"
+      - ">= 2.43.0-stringlabels"
     prom/pushgateway:
       - ">= v1.0.0"
     # Used in akv2k8s
