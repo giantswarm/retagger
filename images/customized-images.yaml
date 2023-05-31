@@ -93,8 +93,7 @@
     - EXPOSE 1053
 - image: ghcr.io/linkerd/cni-plugin
   override_repo_name: linkerd2-cni-plugin
-  semver: ">= 2.11.4"
-  filter: "^stable-(.*)$"
+  semver: ">= v1.1.1"
 - image: ghcr.io/linkerd/controller
   override_repo_name: linkerd2-controller
   semver: ">= 2.11.4"
