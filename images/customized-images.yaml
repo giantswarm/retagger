@@ -346,6 +346,10 @@
   tag_or_pattern: "v1.7.1"
   sha: 7244b95ea47bddcb8267c1e625fb163fc183ef55448855e3ac52a7b260a60407
   override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.8.0"
+  sha: 744ae2afd433a395eeb13dc03d3313facba92e96ad71d9feaafc85925493fee3
+  override_repo_name: ingress-nginx-controller
 - image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
   tag_or_pattern: "v1.3.0"
   sha: 549e71a6ca248c5abd51cdb73dbc3083df62cf92ed5e6147c780e30f7e007a47
