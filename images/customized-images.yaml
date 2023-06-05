@@ -259,6 +259,9 @@
 - image: quay.io/cilium/operator
   override_repo_name: cilium-operator
   semver: ">= v1.11.2"
+- image: quay.io/cilium/operator-aws
+  override_repo_name: cilium-operator-aws
+  semver: ">= v1.13.0"
 - image: quay.io/cilium/operator-generic
   override_repo_name: cilium-operator-generic
   semver: ">= v1.11.2"
