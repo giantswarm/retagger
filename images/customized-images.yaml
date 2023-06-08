@@ -133,7 +133,7 @@
   override_repo_name: weaveworks-wego-app
   semver: ">= v0.18.0"
 - image: crossplane/xfn
-  override_repo_name: crossplane
+  override_repo_name: crossplane-xfn
   semver: ">= v1.11.0"
 - image: fluent/fluent-bit
   tag_or_pattern: "1.9.8"
