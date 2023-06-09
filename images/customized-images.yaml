@@ -129,6 +129,9 @@
   override_repo_name: linkerd2-web
   semver: ">= 2.11.4"
   filter: "^stable-(.*)$"
+- image: ghcr.io/linkerd/extension-init
+  override_repo_name: linkerd-extension-init
+  semver: ">= 0.1.0"
 - image: ghcr.io/weaveworks/wego-app
   override_repo_name: weaveworks-wego-app
   semver: ">= v0.18.0"
