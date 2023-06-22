@@ -135,8 +135,6 @@ docker.io:
       - ">= 7.67.0"
     cytopia/yamllint:
       - ">= 1.9"
-    directxman12/k8s-prometheus-adapter-amd64:
-      - ">=v0.6.0"
     ealen/echo-server:
       - ">=0.5.0"
     envoyproxy/envoy:
