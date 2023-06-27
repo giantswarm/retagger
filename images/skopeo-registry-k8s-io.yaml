@@ -53,6 +53,8 @@ registry.k8s.io:
       - ">= v3.5.4-0"
     external-dns/external-dns:
       - ">= v0.10.1"
+    git-sync/git-sync
+      - ">= v3.6.8"
     kube-state-metrics/kube-state-metrics:
       - "> v1.9.8"
     metrics-server/metrics-server:
