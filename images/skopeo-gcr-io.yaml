@@ -11,6 +11,8 @@ gcr.io:
       - "v2.4.0-v1beta1-latest"
     go-containerregistry/crane:
       - "debug"
+    tekton-releases/dogfooding/tkn:
+      - "latest"
   images-by-semver:
     cadvisor/cadvisor:
       - ">= v0.44.0"
