@@ -24,6 +24,8 @@ quay.io:
       - "v0.17.0"
       - "v0.18.0"
       - "v0.18.1"
+    prometheuscommunity/elasticsearch-exporter:
+      - "v1.5.0"
     pusher/oauth2_proxy:
       - "v5.1.0"
   images-by-semver:
