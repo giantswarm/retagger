@@ -8,6 +8,8 @@ ghcr.io:
     k8snetworkplumbingwg/multus-cni:
       - "v3.9-thick-amd64"
       - "v3.9-amd64"
+    telekom/cluster-api-ipam-provider-in-cluster:
+      - "v0.1.0-alpha.2"
   images-by-semver:
     aquasec/node-collector:
       - ">= 0.0.5"
