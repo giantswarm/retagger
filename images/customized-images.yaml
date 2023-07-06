@@ -139,6 +139,16 @@
   override_repo_name: crossplane-xfn
   semver: ">= v1.11.0"
 - image: fluent/fluent-bit
+  tag_or_pattern: "2.1.6"
+  add_tag_suffix: aws-plugins
+  dockerfile_extras:
+    - |
+      FROM fluent/fluent-bit:2.1.6
+      COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/cloudwatch.so /fluent-bit/cloudwatch.so
+      RUN  apt-get update && \
+           apt-get install -y --no-install-recommends auditd
+      CMD ["/fluent-bit/bin/fluent-bit", "-e", "/fluent-bit/cloudwatch.so", "-c", "/fluent-bit/etc/fluent-bit.conf"]
+- image: fluent/fluent-bit
   tag_or_pattern: "1.9.8"
   sha: 137669ee97787c930ec00a8babff46ecc76988d128cc9e7fa581d1b05ef8fb3d
   add_tag_suffix: aws-plugins
