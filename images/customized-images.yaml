@@ -145,15 +145,16 @@
     - |
       FROM debian:bullseye-slim as builder-audit
       RUN apt-get update && apt-get install -y --no-install-recommends auditd
-   
       FROM fluent/fluent-bit:2.1.6
-      COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/cloudwatch.so /fluent-bit/cloudwatch.so
       COPY --from=builder-audit /lib/x86_64-linux-gnu/libaudit* /lib/x86_64-linux-gnu/
       COPY --from=builder-audit /lib/x86_64-linux-gnu/libauparse* /lib/x86_64-linux-gnu/
       COPY --from=builder-audit /lib/x86_64-linux-gnu/libcap-ng* /lib/x86_64-linux-gnu/
       COPY --from=builder-audit /lib/x86_64-linux-gnu/libc.* /lib/x86_64-linux-gnu/
       COPY --from=builder-audit /sbin/ausearch /usr/sbin/
-      CMD ["/fluent-bit/bin/fluent-bit", "-e", "/fluent-bit/cloudwatch.so", "-c", "/fluent-bit/etc/fluent-bit.conf"]
+      COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/kinesis.so /fluent-bit/kinesis.so
+      COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/firehose.so /fluent-bit/firehose.so
+      COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/cloudwatch.so /fluent-bit/cloudwatch.so
+      CMD ["/fluent-bit/bin/fluent-bit", "-e", "/fluent-bit/firehose.so", "-e", "/fluent-bit/cloudwatch.so", "-e", "/fluent-bit/kinesis.so", "-c", "/fluent-bit/etc/fluent-bit.conf"]
 - image: fluent/fluent-bit
   tag_or_pattern: "1.9.8"
   sha: 137669ee97787c930ec00a8babff46ecc76988d128cc9e7fa581d1b05ef8fb3d
