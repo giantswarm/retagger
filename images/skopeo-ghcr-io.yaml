@@ -22,9 +22,9 @@ ghcr.io:
     kube-vip/kube-vip-cloud-provider:
       - ">= v0.0.4"
     kyverno/background-controller:
-      - ">= v1.10.0"
+      - ">= v1.10.1"
     kyverno/cleanup-controller:
-      - ">= v1.10.0"
+      - ">= v1.10.1"
     kyverno/kyverno:
       - ">= v1.9.0"
     kyverno/kyvernopre:
@@ -36,7 +36,7 @@ ghcr.io:
     kyverno/policy-reporter-ui:
       - ">= 1.7.2"
     kyverno/reports-controller:
-      - ">= 1.10.0"
+      - ">= 1.10.1"
     opsgenie/kubernetes-event-exporter:
       # used for https://github.com/giantswarm/event-exporter-app
       - ">= v0.9"
