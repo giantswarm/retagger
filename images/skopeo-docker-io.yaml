@@ -47,6 +47,7 @@ docker.io:
       - "1.17.8-alpine3.14"
       - "1.18.1-alpine3.15"
       - "1.19.1-alpine3.16"
+      - "1.20.6-alpine3.17"
     golangci/golangci-lint:
       - "v1.23.8"
     instrumenta/conftest:
