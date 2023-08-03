@@ -143,6 +143,8 @@ docker.io:
       - ">= 1.18.4"
     falcosecurity/falco:
       - ">= 0.33.0"
+    falcosecurity/falcoctl:
+      - ">= 0.5.1"
     falcosecurity/falco-driver-loader:
       - ">= 0.32.0"
     falcosecurity/falco-exporter:
