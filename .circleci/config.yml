@@ -32,7 +32,7 @@ jobs:
       - run:
           name: Build tools
           command: |
-            CGO_ENABLED=0 GOOS=linux go build -ldflags "$(cat .ldflags)" -o split-skopeo-file tools/split-skopeo-file.go
+            CGO_ENABLED=0 GOOS=linux go build -ldflags "$(cat .ldflags)" -o split-skopeo-file tools/split-skopeo-file/split-skopeo-file.go
       - persist_to_workspace:
           root: .
           paths:
