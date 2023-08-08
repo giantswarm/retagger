@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"os/exec"
 	"regexp"
 	"strings"
@@ -36,6 +37,8 @@ func main() {
 		logrus.Fatalf("error listing images and tags in %q: %v\n%s", filename, err, stderr.String())
 	}
 
+	imageTagMap := map[string][]string{}
+
 	matches := imageTagPattern.FindAllStringSubmatch(stderr.String(), -1)
 	if matches == nil {
 		logrus.Fatalf("found no images to check")
@@ -45,7 +48,8 @@ func main() {
 		// by index: 0 - entire line, 1 - image name, 2 - tag
 		image := strings.TrimPrefix(m[1], dockerPrefix+"/")
 		tag := m[2]
-		logrus.Infof("%s:%s", image, tag)
+		imageTagMap[image] = append(imageTagMap[image], tag)
 	}
 
+	fmt.Printf("%+v\n", imageTagMap)
 }
