@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/giantswarm/retagger.svg?style=shield)](https://circleci.com/gh/giantswarm/retagger)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/giantswarm/retagger/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/giantswarm/retagger/tree/main)
 
 # retagger
 
