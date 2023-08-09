@@ -163,6 +163,9 @@ func main() {
 		}
 
 		missingTagMap[image] = findMissingTags(tags, quayTags, aliyunTags)
+		if len(missingTagMap[image]) > 0 {
+			logrus.Infof("KUBA missing %q\nquay: %+v\naliyun: %+v\n", missingTagMap[image], quayTags, aliyunTags)
+		}
 	}
 
 	skopeoFile := map[string]skopeoRegistry{}
@@ -175,16 +178,17 @@ func main() {
 		logrus.Fatalf("error unmarshaling %q: %v", filename, err)
 	}
 	// there should be only one registry name there
-	for registry := range skopeoFile {
-		for image, tags := range missingTagMap {
-			if skopeoFile[registry].Images == nil {
-				skopeoFile[registry] = skopeoRegistry{
-					Images: map[string][]string{},
-				}
-			}
-			if len(tags) > 0 {
-				skopeoFile[registry].Images[image] = tags
-			}
+	var registry string
+	for r := range skopeoFile {
+		registry = r
+	}
+	skopeoFile[registry] = skopeoRegistry{
+		Images: map[string][]string{},
+	}
+
+	for image, tags := range missingTagMap {
+		if len(tags) > 0 {
+			skopeoFile[registry].Images[image] = tags
 		}
 	}
 
