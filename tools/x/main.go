@@ -8,6 +8,8 @@ import (
 	"strings"
 
 	"github.com/sirupsen/logrus"
+	"golang.org/x/exp/slices"
+	"gopkg.in/yaml.v2"
 )
 
 var (
@@ -17,6 +19,64 @@ var (
 const (
 	dockerPrefix = "xtractor"
 )
+
+// listTags gets a list of available tags for a given registry+image, for
+// example 'quay.io/giantswarm/curl'.
+func listTags(image string) ([]string, error) {
+	var tags []string
+	var err error
+
+	for attempt := 0; attempt < 3; attempt++ {
+		attemptLogger := logrus.WithField("attempt", attempt+1)
+
+		c, stdout, stderr := command("skopeo", "list-tags", dockerTransport+image)
+		err = c.Run()
+		if err != nil {
+			err = fmt.Errorf("error listing tags for %q: %w\n%s", image, err, stderr.String())
+			attemptLogger.Warn(err)
+			continue
+		}
+
+		stl := skopeoTagList{
+			Tags: []string{},
+		}
+		err = yaml.Unmarshal(stdout.Bytes(), &stl)
+		if err != nil {
+			err = fmt.Errorf("error listing tags for %q: %w\n%s", image, err, stderr.String())
+			attemptLogger.Warn(err)
+			continue
+		}
+
+		tags = stl.Tags
+		break
+	}
+
+	if err != nil {
+		return []string{}, err
+	}
+	return tags, nil
+}
+
+// findMissingTags returns a list of items of the 'tags' slice that are missing
+// from at least one of the 'present' slices.
+func findMissingTags(tags []string, present ...[]string) []string {
+	var filteredTags []string
+	for _, tag := range tags {
+		tagIsMissing := false
+
+		for _, existingTags := range present {
+			if !slices.Contains(existingTags, tag) {
+				tagIsMissing = true
+				break
+			}
+		}
+
+		if tagIsMissing {
+			filteredTags = append(filteredTags, tag)
+		}
+	}
+	return filteredTags
+}
 
 // command is a helper function so I don't have to manually plug bytes.Buffer
 // into command streams every time ;_;
