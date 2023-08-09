@@ -195,30 +195,6 @@ build_and_retag: &build_and_retag
         filters:
           tags:
             only: /^v.*/
-    - filter-skopeo-tags:
-        context: architect
-        name: filter-skopeo-docker-io
-        filepath: images/skopeo-docker-io.yaml
-        requires:
-          - build-go
-    - filter-skopeo-tags:
-        context: architect
-        name: filter-skopeo-quay-io
-        filepath: images/skopeo-quay-io.yaml
-        requires:
-          - build-go
-    - filter-skopeo-tags:
-        context: architect
-        name: filter-skopeo-k8s-io
-        filepath: images/skopeo-registry-k8s-io.yaml
-        requires:
-          - build-go
-    - filter-skopeo-tags:
-        context: architect
-        name: filter-skopeo-k8s-io-kubernetes
-        filepath: images/skopeo-registry-k8s-io-kubernetes.yaml
-        requires:
-          - build-go
     - build-and-push-docker:
         context: architect
         name: build-and-push-docker
@@ -227,10 +203,67 @@ build_and_retag: &build_and_retag
         registry: "quay.io"
         tag: ${CIRCLE_TAG:-$CIRCLE_SHA1}
         requires:
-          - filter-skopeo-docker-io
-          - filter-skopeo-quay-io
-          - filter-skopeo-k8s-io
-          - filter-skopeo-k8s-io-kubernetes
+          - build-go
+    - filter-skopeo-tags:
+        context: architect
+        name: filter-docker-elastic-co
+        filepath: images/skopeo-docker-elastic-co.yaml
+        requires:
+          - build-and-push-docker
+    - filter-skopeo-tags:
+        context: architect
+        name: filter-skopeo-docker-io
+        filepath: images/skopeo-docker-io.yaml
+        requires:
+          - build-and-push-docker
+    - filter-skopeo-tags:
+        context: architect
+        name: filter-skopeo-eu-gcr-io
+        filepath: images/skopeo-eu-gcr-io.yaml
+        requires:
+          - build-and-push-docker
+    - filter-skopeo-tags:
+        context: architect
+        name: filter-skopeo-gcr-io
+        filepath: images/skopeo-gcr-io.yaml
+        requires:
+          - build-and-push-docker
+    - filter-skopeo-tags:
+        context: architect
+        name: filter-skopeo-ghcr-io
+        filepath: images/skopeo-ghcr-io.yaml
+        requires:
+          - build-and-push-docker
+    - filter-skopeo-tags:
+        context: architect
+        name: filter-skopeo-mcr-mircosoft-com
+        filepath: images/skopeo-mcr-mircosoft-com.yaml
+        requires:
+          - build-and-push-docker
+    - filter-skopeo-tags:
+        context: architect
+        name: filter-skopeo-public-ecr-aws
+        filepath: images/skopeo-public-ecr-aws.yaml
+        requires:
+          - build-and-push-docker
+    - filter-skopeo-tags:
+        context: architect
+        name: filter-skopeo-quay-io
+        filepath: images/skopeo-quay-io.yaml
+        requires:
+          - build-and-push-docker
+    - filter-skopeo-tags:
+        context: architect
+        name: filter-skopeo-k8s-io
+        filepath: images/skopeo-registry-k8s-io.yaml
+        requires:
+          - build-and-push-docker
+    - filter-skopeo-tags:
+        context: architect
+        name: filter-skopeo-k8s-io-kubernetes
+        filepath: images/skopeo-registry-k8s-io-kubernetes.yaml
+        requires:
+          - build-and-push-docker
     - retag-registry:
         context: architect
         name: retag-quay-<<matrix.images_file>>
@@ -238,7 +271,16 @@ build_and_retag: &build_and_retag
         password: ${QUAY_PASSWORD}
         registry: "quay.io"
         requires:
-          - build-and-push-docker
+          - filter-skopeo-docker-elastic-co
+          - filter-skopeo-docker-io
+          - filter-skopeo-eu-gcr-io
+          - filter-skopeo-gcr-io
+          - filter-skopeo-ghcr-io
+          - filter-skopeo-mcr-microsoft-com
+          - filter-skopeo-public-ecr-aws
+          - filter-skopeo-quay-io
+          - filter-skopeo-k8s-io
+          - filter-skopeo-k8s-io-kubernetes
         matrix:
           parameters:
             images_file:
