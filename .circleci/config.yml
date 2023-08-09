@@ -76,7 +76,6 @@ jobs:
       filepath:
         type: string
     steps:
-      - checkout
       - attach_workspace:
           at: .
       - run :
