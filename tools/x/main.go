@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"os"
 	"os/exec"
 	"regexp"
 	"strings"
@@ -28,9 +29,9 @@ type skopeoTagList struct {
 	Tags []string `yaml:"Tags"`
 }
 
-// skopeoFileFormat is used to marshal/unmarshal yaml used by `skopeo sync` command.
+// skopeoRegistry is used to marshal/unmarshal yaml used by `skopeo sync` command.
 // See: https://github.com/containers/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
-type skopeoFileFormat struct {
+type skopeoRegistry struct {
 	Images map[string][]string `yaml:"images"`
 }
 
@@ -142,11 +143,32 @@ func main() {
 			continue
 		}
 
-		missingTags := findMissingTags(tags, quayTags, aliyunTags)
-		if len(missingTags) > 0 {
-			missingTagMap[image] = missingTags
+		missingTagMap[image] = findMissingTags(tags, quayTags, aliyunTags)
+	}
+
+	skopeoFile := map[string]skopeoRegistry{}
+
+	b, err := os.ReadFile(filename)
+	if err != nil {
+		logrus.Fatalf("error reading %q: %v", filename, err)
+	}
+	if err := yaml.Unmarshal(b, &skopeoFile); err != nil {
+		logrus.Fatalf("error unmarshaling %q: %v", filename, err)
+	}
+	// there should be only one registry name there
+	for registry := range skopeoFile {
+		for image, tags := range missingTagMap {
+			skopeoFile[registry].Images[image] = tags
 		}
 	}
 
-	fmt.Printf("missing tags:\n%+v\n", missingTagMap)
+	b, err = yaml.Marshal(&skopeoFile)
+	if err != nil {
+		logrus.Fatalf("error marshaling %q: %v", filename, err)
+	}
+	err = os.WriteFile(filename, b, 0644)
+	if err != nil {
+		logrus.Fatalf("error writing %q: %v", filename, err)
+	}
+
 }
