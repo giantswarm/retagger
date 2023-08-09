@@ -125,7 +125,13 @@ func imageBaseName(name string) string {
 }
 
 func main() {
+	// TODO: extract common parts - multiple funcs copied over from main retagger
+	// TODO: clean up flags/parameters
 	// TODO: filename should be command parameter
+	// TODO: consistent variable names
+	// TODO: better name than "xtractor"
+	// TODO: cleaner circleci script/config? (less repetition, run for all files)
+
 	filename := flagSrc
 	c, _, stderr := command("skopeo", "sync", "--all", "--dry-run", "--src", "yaml", "--dest", "docker", filename, dockerPrefix)
 	if err := c.Run(); err != nil {
@@ -163,9 +169,6 @@ func main() {
 		}
 
 		missingTagMap[image] = findMissingTags(tags, quayTags, aliyunTags)
-		if len(missingTagMap[image]) > 0 {
-			logrus.Infof("KUBA missing %q\nquay: %+v\naliyun: %+v\n", missingTagMap[image], quayTags, aliyunTags)
-		}
 	}
 
 	skopeoFile := map[string]skopeoRegistry{}
