@@ -153,13 +153,6 @@ func main() {
 			continue
 		}
 
-		if image == "kong/kong-gateway" {
-			fmt.Printf("tags: %+v\n", tags)
-			fmt.Printf("quay tags: %+v\n", quayTags)
-			fmt.Printf("aliyun tags: %+v\n", aliyunTags)
-			fmt.Printf("missing tags: %+v\n", findMissingTags(tags, quayTags, aliyunTags))
-		}
-
 		missingTagMap[image] = findMissingTags(tags, quayTags, aliyunTags)
 	}
 
