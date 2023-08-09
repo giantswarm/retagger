@@ -70,8 +70,8 @@ jobs:
             docker push "<<parameters.registry>>/giantswarm/retagger:<<parameters.tag>>"
 
   filter-skopeo-tags:
-    machine:
-      image: ubuntu-2004:current
+    docker:
+      - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
     parameters:
       filepath:
         type: string
