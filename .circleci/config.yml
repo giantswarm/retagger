@@ -78,6 +78,34 @@ jobs:
     steps:
       - attach_workspace:
           at: .
+      - run:
+          name: "Log in to registries: docker"
+          command: |
+            docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
+            docker login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
+            max_retry=5
+            counter=1
+            until docker login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
+            do
+                sleep 3
+                [[ counter -eq $max_retry ]] && echo "Failed by exhausting $max_retry retries" && exit 1
+                echo "Attempt $counter: trying again..."
+                ((counter++))
+            done
+      - run:
+          name: "Log in to registries: skopeo"
+          command: |
+            skopeo login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
+            skopeo login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
+            max_retry=5
+            counter=1
+            until skopeo login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
+            do
+                sleep 3
+                [[ counter -eq $max_retry ]] && echo "Failed by exhausting $max_retry retries" && exit 1
+                echo "Attempt $counter: trying again..."
+                ((counter++))
+            done
       - run :
           name: Filter tags in Skopeo YAML
           command: |
