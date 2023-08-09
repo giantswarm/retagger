@@ -113,7 +113,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - "<<parameters.filepath>>"
+            - "<<parameters.filepath>>.filtered"
 
   retag-registry:
     docker:
@@ -311,16 +311,16 @@ build_and_retag: &build_and_retag
         matrix:
           parameters:
             images_file:
-              - images/skopeo-docker-elastic-co.yaml
-              - images/skopeo-docker-io.yaml
-              - images/skopeo-eu-gcr-io.yaml
-              - images/skopeo-gcr-io.yaml
-              - images/skopeo-ghcr-io.yaml
-              - images/skopeo-mcr-microsoft-com.yaml
-              - images/skopeo-public-ecr-aws.yaml
-              - images/skopeo-quay-io.yaml
-              - images/skopeo-registry-k8s-io.yaml
-              - images/skopeo-registry-k8s-io-kubernetes.yaml
+              - images/skopeo-docker-elastic-co.yaml.filtered
+              - images/skopeo-docker-io.yaml.filtered
+              - images/skopeo-eu-gcr-io.yaml.filtered
+              - images/skopeo-gcr-io.yaml.filtered
+              - images/skopeo-ghcr-io.yaml.filtered
+              - images/skopeo-mcr-microsoft-com.yaml.filtered
+              - images/skopeo-public-ecr-aws.yaml.filtered
+              - images/skopeo-quay-io.yaml.filtered
+              - images/skopeo-registry-k8s-io.yaml.filtered
+              - images/skopeo-registry-k8s-io-kubernetes.yaml.filtered
     - retag-registry:
         context: architect
         name: retag-aliyun-<<matrix.images_file>>
@@ -341,16 +341,16 @@ build_and_retag: &build_and_retag
         matrix:
           parameters:
             images_file:
-              - images/skopeo-docker-elastic-co.yaml
-              - images/skopeo-docker-io.yaml
-              - images/skopeo-eu-gcr-io.yaml
-              - images/skopeo-gcr-io.yaml
-              - images/skopeo-ghcr-io.yaml
-              - images/skopeo-mcr-microsoft-com.yaml
-              - images/skopeo-public-ecr-aws.yaml
-              - images/skopeo-quay-io.yaml
-              - images/skopeo-registry-k8s-io.yaml
-              - images/skopeo-registry-k8s-io-kubernetes.yaml
+              - images/skopeo-docker-elastic-co.yaml.filtered
+              - images/skopeo-docker-io.yaml.filtered
+              - images/skopeo-eu-gcr-io.yaml.filtered
+              - images/skopeo-gcr-io.yaml.filtered
+              - images/skopeo-ghcr-io.yaml.filtered
+              - images/skopeo-mcr-microsoft-com.yaml.filtered
+              - images/skopeo-public-ecr-aws.yaml.filtered
+              - images/skopeo-quay-io.yaml.filtered
+              - images/skopeo-registry-k8s-io.yaml.filtered
+              - images/skopeo-registry-k8s-io-kubernetes.yaml.filtered
     - retag-customized-images:
         context: architect
         name: retag-customized-images

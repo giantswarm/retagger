@@ -20,10 +20,11 @@ var (
 )
 
 const (
-	dockerPrefix    = "xtractor"
-	dockerTransport = "docker://"
-	quayURL         = "quay.io/giantswarm"
-	aliyunURL       = "giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm"
+	dockerPrefix       = "xtractor"
+	dockerTransport    = "docker://"
+	quayURL            = "quay.io/giantswarm"
+	aliyunURL          = "giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm"
+	filteredFileSuffix = ".filtered"
 )
 
 func init() {
@@ -189,7 +190,7 @@ func main() {
 	if err != nil {
 		logrus.Fatalf("error marshaling %q: %v", filename, err)
 	}
-	err = os.WriteFile(filename, b, 0644)
+	err = os.WriteFile(filename+filteredFileSuffix, b, 0644)
 	if err != nil {
 		logrus.Fatalf("error writing %q: %v", filename, err)
 	}
