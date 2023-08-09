@@ -104,6 +104,16 @@ func command(name string, args ...string) (*exec.Cmd, *bytes.Buffer, *bytes.Buff
 	return c, stdout, stderr
 }
 
+// imageBaseName is a helper function extracting base image name.
+// Example: "registry.k8s.io/kube-apiserver" -> "kube-apiserver"
+func imageBaseName(name string) string {
+	if !strings.ContainsRune(name, '/') {
+		return name
+	}
+	elems := strings.Split(name, "/")
+	return elems[len(elems)-1]
+}
+
 func main() {
 	logrus.SetLevel(logrus.DebugLevel)
 	// TODO: filename should be command parameter
@@ -131,13 +141,13 @@ func main() {
 
 	for image, tags := range imageTagMap {
 		logrus.Debugf("searching for missing tags of %q", image)
-		quayTags, err := listTags(fmt.Sprintf("%s/%s", quayURL, image))
+		quayTags, err := listTags(fmt.Sprintf("%s/%s", quayURL, imageBaseName(image)))
 		if err != nil {
 			logrus.Errorf("error listing quay tags for %q: %v", image, err)
 			continue
 		}
 
-		aliyunTags, err := listTags(fmt.Sprintf("%s/%s", aliyunURL, image))
+		aliyunTags, err := listTags(fmt.Sprintf("%s/%s", aliyunURL, imageBaseName(image)))
 		if err != nil {
 			logrus.Errorf("error listing aliyun tags for %q: %v", image, err)
 			continue
