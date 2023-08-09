@@ -227,10 +227,10 @@ build_and_retag: &build_and_retag
         registry: "quay.io"
         tag: ${CIRCLE_TAG:-$CIRCLE_SHA1}
         requires:
-          - split-docker-io
-          - split-quay-io
-          - split-k8s-io
-          - split-k8s-io-kubernetes
+          - filter-skopeo-docker-io
+          - filter-skopeo-quay-io
+          - filter-skopeo-k8s-io
+          - filter-skopeo-k8s-io-kubernetes
     - retag-registry:
         context: architect
         name: retag-quay-<<matrix.images_file>>
