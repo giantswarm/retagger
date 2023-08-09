@@ -28,6 +28,12 @@ type skopeoTagList struct {
 	Tags []string `yaml:"Tags"`
 }
 
+// skopeoFileFormat is used to marshal/unmarshal yaml used by `skopeo sync` command.
+// See: https://github.com/containers/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
+type skopeoFileFormat struct {
+	Images map[string][]string `yaml:"images"`
+}
+
 // listTags gets a list of available tags for a given registry+image, for
 // example 'quay.io/giantswarm/curl'.
 func listTags(image string) ([]string, error) {
