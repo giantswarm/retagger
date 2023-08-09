@@ -69,7 +69,7 @@ jobs:
             echo "Pushing tag '<<parameters.tag>>' to <<parameters.registry>>..."
             docker push "<<parameters.registry>>/giantswarm/retagger:<<parameters.tag>>"
 
-  fliter-skopeo-tags:
+  filter-skopeo-tags:
     machine:
       image: ubuntu-2004:current
     parameters:
@@ -82,7 +82,7 @@ jobs:
       - run :
           name: Filter tags in Skopeo YAML
           command: |
-            ./fliter-skopeo-tags --src "<<parameters.filepath>>"
+            ./filter-skopeo-tags --src "<<parameters.filepath>>"
       - persist_to_workspace:
           root: .
           paths:
