@@ -9,7 +9,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"golang.org/x/exp/slices"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 var (
@@ -17,8 +17,16 @@ var (
 )
 
 const (
-	dockerPrefix = "xtractor"
+	dockerPrefix    = "xtractor"
+	dockerTransport = "docker://"
+	quayURL         = "quay.io/giantswarm"
+	aliyunURL       = "giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm"
 )
+
+// skopeoTagList is used to unmarshal `skopeo list-tags` command output.
+type skopeoTagList struct {
+	Tags []string `yaml:"Tags"`
+}
 
 // listTags gets a list of available tags for a given registry+image, for
 // example 'quay.io/giantswarm/curl'.
@@ -90,6 +98,7 @@ func command(name string, args ...string) (*exec.Cmd, *bytes.Buffer, *bytes.Buff
 }
 
 func main() {
+	logrus.SetLevel(logrus.DebugLevel)
 	// TODO: filename should be command parameter
 	filename := "images/skopeo-docker-io.yaml"
 	c, _, stderr := command("skopeo", "sync", "--all", "--dry-run", "--src", "yaml", "--dest", "docker", filename, dockerPrefix)
@@ -111,5 +120,27 @@ func main() {
 		imageTagMap[image] = append(imageTagMap[image], tag)
 	}
 
-	fmt.Printf("%+v\n", imageTagMap)
+	missingTagMap := map[string][]string{}
+
+	for image, tags := range imageTagMap {
+		logrus.Debugf("searching for missing tags of %q", image)
+		quayTags, err := listTags(fmt.Sprintf("%s/%s", quayURL, image))
+		if err != nil {
+			logrus.Errorf("error listing quay tags for %q: %v", image, err)
+			continue
+		}
+
+		aliyunTags, err := listTags(fmt.Sprintf("%s/%s", aliyunURL, image))
+		if err != nil {
+			logrus.Errorf("error listing aliyun tags for %q: %v", image, err)
+			continue
+		}
+
+		missingTags := findMissingTags(tags, quayTags, aliyunTags)
+		if len(missingTags) > 0 {
+			missingTagMap[image] = missingTags
+		}
+	}
+
+	fmt.Printf("missing tags:\n%+v\n", missingTagMap)
 }
