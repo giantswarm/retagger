@@ -176,6 +176,11 @@ func main() {
 	// there should be only one registry name there
 	for registry := range skopeoFile {
 		for image, tags := range missingTagMap {
+			if skopeoFile[registry].Images == nil {
+				skopeoFile[registry] = skopeoRegistry{
+					Images: map[string][]string{},
+				}
+			}
 			skopeoFile[registry].Images[image] = tags
 		}
 	}
