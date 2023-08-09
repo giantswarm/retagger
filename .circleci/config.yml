@@ -236,8 +236,8 @@ build_and_retag: &build_and_retag
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
-        name: filter-skopeo-mcr-mircosoft-com
-        filepath: images/skopeo-mcr-mircosoft-com.yaml
+        name: filter-skopeo-mcr-microsoft-com
+        filepath: images/skopeo-mcr-microsoft-com.yaml
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
