@@ -9,12 +9,14 @@ import (
 	"strings"
 
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/pflag"
 	"golang.org/x/exp/slices"
 	"gopkg.in/yaml.v3"
 )
 
 var (
 	imageTagPattern = regexp.MustCompile(`Would have copied image.*?from="docker://(.*?):(.*?)".*`)
+	flagSrc         string
 )
 
 const (
@@ -23,6 +25,13 @@ const (
 	quayURL         = "quay.io/giantswarm"
 	aliyunURL       = "giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm"
 )
+
+func init() {
+	logrus.SetFormatter(&logrus.TextFormatter{})
+	logrus.SetLevel(logrus.DebugLevel)
+	pflag.StringVar(&flagSrc, "src", "", "skopeo sync file to filter")
+	pflag.Parse()
+}
 
 // skopeoTagList is used to unmarshal `skopeo list-tags` command output.
 type skopeoTagList struct {
@@ -115,9 +124,8 @@ func imageBaseName(name string) string {
 }
 
 func main() {
-	logrus.SetLevel(logrus.DebugLevel)
 	// TODO: filename should be command parameter
-	filename := "images/skopeo-docker-io.yaml"
+	filename := flagSrc
 	c, _, stderr := command("skopeo", "sync", "--all", "--dry-run", "--src", "yaml", "--dest", "docker", filename, dockerPrefix)
 	if err := c.Run(); err != nil {
 		logrus.Fatalf("error listing images and tags in %q: %v\n%s", filename, err, stderr.String())
