@@ -182,7 +182,9 @@ func main() {
 					Images: map[string][]string{},
 				}
 			}
-			skopeoFile[registry].Images[image] = tags
+			if len(tags) > 0 {
+				skopeoFile[registry].Images[image] = tags
+			}
 		}
 	}
 
