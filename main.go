@@ -699,8 +699,9 @@ func commandFilter(filepath string) {
 
 func main() {
 	if len(flag.Args()) == 0 {
-		fmt.Println("retagger run    Retag custom images\nretagger filter    Filter missing tags for skopeo YAML file")
+		fmt.Println("retagger run             Retag custom images\nretagger filter <path>   Filter missing tags for skopeo YAML file\n\n")
 		flag.Usage()
+		os.Exit(0)
 	}
 
 	switch flag.Arg(0) {
