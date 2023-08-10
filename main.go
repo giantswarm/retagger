@@ -615,7 +615,7 @@ func commandFilter(filepath string) {
 	}
 	logger := logrus.WithField("file", filepath)
 
-	logger.Infof("Listing images & tags...")
+	logger.Infof("Listing images & tags")
 	missingTagsPerImage := map[string][]string{}
 	{
 		filterPrefix := "auniqueprefixa"
@@ -639,7 +639,7 @@ func commandFilter(filepath string) {
 			tagsPerImage[image] = append(tagsPerImage[image], tag)
 		}
 
-		logger.Infof("Found %d images, checking how many tags are missing...", len(tagsPerImage))
+		logger.Infof("Found %d images, checking how many tags are missing", len(tagsPerImage))
 		missingTagCount := 0
 		for image, tags := range tagsPerImage {
 			logger.WithField("image", image).Debugf("searching for missing tags")
