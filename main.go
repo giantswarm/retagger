@@ -14,12 +14,14 @@ import (
 	"github.com/Masterminds/semver/v3"
 	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
+	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
 	"gopkg.in/yaml.v3"
 )
 
 var (
-	temporaryWorkingDir = path.Join(os.TempDir(), "retagger")
+	temporaryWorkingDir     = path.Join(os.TempDir(), "retagger")
+	skopeoSyncOutputPattern = regexp.MustCompile(`Would have copied image.*?from="docker://(.*?):(.*?)".*`)
 
 	flagLogLevel         string
 	flagExecutorCount    int
@@ -33,6 +35,7 @@ const (
 	dockerTransport      = "docker://"
 	quayURL              = "quay.io/giantswarm"
 	aliyunURL            = "giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm"
+	filteredFileSuffix   = ".filtered"
 )
 
 // CustomImage represents a set of rules used to rebuild/retag multiple tags of
@@ -422,6 +425,16 @@ type skopeoTagList struct {
 	Tags []string `yaml:"Tags"`
 }
 
+// skopeoFile is used to un/marshal YAML file format used by `skopeo sync`.
+// Only partial support is implemented, since we don't need the full functionality.
+// docs: https://github.com/containers/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
+type skopeoFile map[string]skopeoFileRegistry
+
+type skopeoFileRegistry struct {
+	// Images is a map of ImageName -> []Tags
+	Images map[string][]string `yaml:"images"`
+}
+
 // listTags gets a list of available tags for a given registry+image, for
 // example 'quay.io/giantswarm/curl'.
 func listTags(image string) ([]string, error) {
@@ -513,9 +526,11 @@ func command(name string, args ...string) (*exec.Cmd, *bytes.Buffer, *bytes.Buff
 
 func init() {
 	flag.StringVar(&flagLogLevel, "log-level", "debug", "Sets log level")
-	flag.IntVar(&flagExecutorCount, "executor-count", 1, "Number of executors in a parallelized run")
-	flag.IntVar(&flagExecutorID, "executor-id", 0, "ID of the executor in a parallelized run")
-	flag.BoolVar(&flagSkipExistingTags, "skip-existing-tags", true, "Skip tags which are already present in the target container registry")
+	// `retagger run` flags
+	flag.IntVar(&flagExecutorCount, "executor-count", 1, "Number of executors in a parallelized run. Used with 'retagger run'.")
+	flag.IntVar(&flagExecutorID, "executor-id", 0, "ID of the executor in a parallelized run. Used with 'retagger run'.")
+	flag.BoolVar(&flagSkipExistingTags, "skip-existing-tags", true, "Skip tags which are already present in the target container registry. Used with 'retagger run'.")
+
 	flag.Parse()
 
 	logrus.SetFormatter(&logrus.TextFormatter{})
@@ -527,19 +542,21 @@ func init() {
 	} else {
 		logrus.SetLevel(lvl)
 	}
+}
 
+// commandRun is invoked when `retagger run` is called.
+func commandRun() {
+	// Validate commandRun-specific flags
 	if flagExecutorID < 0 || flagExecutorID >= flagExecutorCount {
 		logrus.Fatalf("%q flag has to be greater than 0 and lower than %q", "executor-id", "executor-count")
 	}
 	if flagExecutorCount < 1 {
-		logrus.Fatal("%q cannot be lower than 1", "executor-count")
+		logrus.Fatalf("%q cannot be lower than 1", "executor-count")
 	}
 	if flagExecutorCount > 10 {
 		logrus.Warnf("%q is set to %d, are you sure that's on purpose?", "executor-count", flagExecutorCount)
 	}
-}
 
-func main() {
 	if err := os.MkdirAll(temporaryWorkingDir, 0777); err != nil {
 		logrus.Fatal(err)
 	}
@@ -590,4 +607,83 @@ func main() {
 		logger.Fatalf("Retagging ended with %d errors", errorCounter)
 	}
 	logger.Infof("Done retagging %d images with no errors", len(customizedImages))
+}
+
+// commandFilter is invoked when `retagger filter` is called.
+func commandFilter(filepath string) {
+	logger := logrus.WithField("file", filepath)
+
+	missingTagsPerImage := map[string][]string{}
+
+	{
+		filterPrefix := "auniqueprefixa"
+		c, _, stderr := command("skopeo", "sync", "--all", "--dry-run", "--src", "yaml", "--dest", "docker", filepath, filterPrefix)
+		if err := c.Run(); err != nil {
+			logger = logger.WithField("stderr", stderr.String())
+			logger.Fatal("error running 'skopeo sync --dry-run': %v", err)
+		}
+
+		tagsPerImage := map[string][]string{}
+
+		matches := skopeoSyncOutputPattern.FindAllStringSubmatch(stderr.String(), -1)
+		if matches == nil {
+			logger = logger.WithField("stderr", stderr.String())
+			logger.Fatalf("found no images or tags in 'skopeo sync' output")
+		}
+		for _, m := range matches {
+			// by index: 0 - entire line, 1 - image name, 2 - tag
+			image := strings.TrimPrefix(m[1], filterPrefix+"/")
+			tag := m[2]
+			tagsPerImage[image] = append(tagsPerImage[image], tag)
+		}
+
+		for image, tags := range tagsPerImage {
+			logger.WithField("image", image).Debugf("searching for missing tags")
+			quayTags, err := listTags(fmt.Sprintf("%s/%s", quayURL, imageBaseName(image)))
+			if err != nil {
+				logger.WithField("image", image).Errorf("error listing Quay tags: %v", err)
+				continue
+			}
+			aliyunTags, err := listTags(fmt.Sprintf("%s/%s", aliyunURL, imageBaseName(image)))
+			if err != nil {
+				logger.WithField("image", image).Errorf("error listing Aliyun tags: %v", err)
+				continue
+			}
+			i := &CustomImage{}
+			missingTagsPerImage[image] = i.FindMissingTags(tags, quayTags, aliyunTags)
+		}
+	}
+
+	filteredFile := skopeoFile{}
+	{
+		b, err := os.ReadFile(filepath)
+		if err != nil {
+			logger.Fatalf("error reading file: %v", err)
+		}
+		if err := yaml.Unmarshal(b, &filteredFile); err != nil {
+			logger.Fatalf("error unmarshaling file: %v", err)
+		}
+
+		// Files are split by registry, so there is exactly one registry
+		// defined in each one of them.
+		registryName := maps.Keys(filteredFile)[0]
+		// Ensure empty images map.
+		filteredFile[registryName] = skopeoFileRegistry{
+			Images: make(map[string][]string),
+		}
+		for image, tags := range missingTagsPerImage {
+			if len(tags) > 0 {
+				filteredFile[registryName].Images[image] = tags
+			}
+		}
+	}
+
+	b, err := yaml.Marshal(&filteredFile)
+	if err != nil {
+		logger.Fatalf("error marshaling file: %v", err)
+	}
+	err = os.WriteFile(filepath+filteredFileSuffix, b, 0644)
+	if err != nil {
+		logrus.Fatalf("error writing file: %v", err)
+	}
 }
