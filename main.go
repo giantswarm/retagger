@@ -530,7 +530,6 @@ func init() {
 	flag.IntVar(&flagExecutorCount, "executor-count", 1, "Number of executors in a parallelized run. Used with 'retagger run'.")
 	flag.IntVar(&flagExecutorID, "executor-id", 0, "ID of the executor in a parallelized run. Used with 'retagger run'.")
 	flag.BoolVar(&flagSkipExistingTags, "skip-existing-tags", true, "Skip tags which are already present in the target container registry. Used with 'retagger run'.")
-
 	flag.Parse()
 
 	logrus.SetFormatter(&logrus.TextFormatter{})
@@ -611,6 +610,9 @@ func commandRun() {
 
 // commandFilter is invoked when `retagger filter` is called.
 func commandFilter(filepath string) {
+	if filepath == "" {
+		logrus.Fatal("You need to specify filepath: 'retagger filter <path>'")
+	}
 	logger := logrus.WithField("file", filepath)
 
 	logger.Infof("Listing images & tags...")
@@ -693,4 +695,20 @@ func commandFilter(filepath string) {
 		logrus.Fatalf("error writing file: %v", err)
 	}
 	logger.Infof("Saved filtered file with missing tags")
+}
+
+func main() {
+	if len(flag.Args()) == 0 {
+		fmt.Println("retagger run    Retag custom images\nretagger filter    Filter missing tags for skopeo YAML file")
+		flag.Usage()
+	}
+
+	switch flag.Arg(0) {
+	case "run":
+		commandRun()
+	case "filter":
+		commandFilter(flag.Arg(1))
+	default:
+		logrus.Fatalf("unknown command: %v", flag.Args())
+	}
 }
