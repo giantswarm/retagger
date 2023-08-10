@@ -613,14 +613,14 @@ func commandRun() {
 func commandFilter(filepath string) {
 	logger := logrus.WithField("file", filepath)
 
+	logger.Infof("Listing images & tags...")
 	missingTagsPerImage := map[string][]string{}
-
 	{
 		filterPrefix := "auniqueprefixa"
 		c, _, stderr := command("skopeo", "sync", "--all", "--dry-run", "--src", "yaml", "--dest", "docker", filepath, filterPrefix)
 		if err := c.Run(); err != nil {
 			logger = logger.WithField("stderr", stderr.String())
-			logger.Fatal("error running 'skopeo sync --dry-run': %v", err)
+			logger.Fatalf("error running 'skopeo sync --dry-run': %v", err)
 		}
 
 		tagsPerImage := map[string][]string{}
@@ -637,6 +637,8 @@ func commandFilter(filepath string) {
 			tagsPerImage[image] = append(tagsPerImage[image], tag)
 		}
 
+		logger.Infof("Found %d images, checking how many tags are missing...", len(tagsPerImage))
+		missingTagCount := 0
 		for image, tags := range tagsPerImage {
 			logger.WithField("image", image).Debugf("searching for missing tags")
 			quayTags, err := listTags(fmt.Sprintf("%s/%s", quayURL, imageBaseName(image)))
@@ -650,10 +652,14 @@ func commandFilter(filepath string) {
 				continue
 			}
 			i := &CustomImage{}
-			missingTagsPerImage[image] = i.FindMissingTags(tags, quayTags, aliyunTags)
+			missingTags := i.FindMissingTags(tags, quayTags, aliyunTags)
+			missingTagCount += len(missingTags)
+			missingTagsPerImage[image] = missingTags
 		}
+		logger.Infof("Found %d missing tags", missingTagCount)
 	}
 
+	logger.Debugf("Saving filtered file")
 	filteredFile := skopeoFile{}
 	{
 		b, err := os.ReadFile(filepath)
@@ -686,4 +692,5 @@ func commandFilter(filepath string) {
 	if err != nil {
 		logrus.Fatalf("error writing file: %v", err)
 	}
+	logger.Infof("Saved filtered file with missing tags")
 }
