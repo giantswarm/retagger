@@ -29,15 +29,10 @@ jobs:
           name: Build Retagger binary
           command: |
             CGO_ENABLED=0 GOOS=linux go build -ldflags "$(cat .ldflags)" -o retagger .
-      - run:
-          name: Build tools
-          command: |
-            CGO_ENABLED=0 GOOS=linux go build -ldflags "$(cat .ldflags)" -o filter-skopeo-tags tools/x/main.go
       - persist_to_workspace:
           root: .
           paths:
             - retagger
-            - filter-skopeo-tags
 
   build-and-push-docker:
     machine:
@@ -109,7 +104,7 @@ jobs:
       - run :
           name: Filter tags in Skopeo YAML
           command: |
-            ./filter-skopeo-tags --src "<<parameters.filepath>>"
+            ./retagger filter "<<parameters.filepath>>"
       - persist_to_workspace:
           root: .
           paths:
@@ -203,7 +198,7 @@ jobs:
           name: "Run retagger"
           no_output_timeout: 1h
           command: |
-            ./retagger --log-level "<<parameters.log_level>>" \
+            ./retagger run --log-level "<<parameters.log_level>>" \
               --executor-count <<parameters.executor_count>> --executor-id <<parameters.executor_id>> | tee /tmp/retagger.log
       - store_artifacts:
           path: /tmp/retagger.log
