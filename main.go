@@ -679,9 +679,11 @@ func commandFilter(filepath string) {
 		filteredFile[registryName] = skopeoFileRegistry{
 			Images: make(map[string][]string),
 		}
-		for image, tags := range missingTagsPerImage {
+		for fullImageName, tags := range missingTagsPerImage {
 			if len(tags) > 0 {
-				filteredFile[registryName].Images[image] = tags
+				strippedImageName := strings.TrimPrefix(fullImageName, registryName)
+				strippedImageName = strings.TrimLeft(strippedImageName, "/")
+				filteredFile[registryName].Images[strippedImageName] = tags
 			}
 		}
 	}
