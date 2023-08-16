@@ -441,7 +441,7 @@ func listTags(image string) ([]string, error) {
 	var tags []string
 	var err error
 
-	for attempt := 0; attempt < 3; attempt++ {
+	for attempt := 0; attempt < 5; attempt++ {
 		attemptLogger := logrus.WithField("attempt", attempt+1)
 
 		c, stdout, stderr := command("skopeo", "list-tags", dockerTransport+image)
