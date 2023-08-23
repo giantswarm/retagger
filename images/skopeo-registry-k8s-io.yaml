@@ -13,22 +13,11 @@ registry.k8s.io:
       - ">= 0.8.0"
     capi-openstack/capi-openstack-controller:
       - ">= 0.4.0"
-    cluster-api-aws/cluster-api-aws-controller:
-      - ">= v0.6.7"
-    cluster-api-aws/eks-bootstrap-controller:
-      - ">= v0.6.7"
-    cluster-api-aws/eks-controlplane-controller:
-      - ">= v0.6.7"
     cluster-api-azure/cluster-api-azure-controller:
       - ">= v0.5.0"
     cluster-api-gcp/cluster-api-gcp-controller:
       - ">= v1.0.2"
-    cluster-api/cluster-api-controller:
-      - ">= v0.4.0"
-    cluster-api/kubeadm-bootstrap-controller:
-      - ">= v0.4.0"
-    cluster-api/kubeadm-control-plane-controller:
-      - ">= v0.4.0"
+
     cluster-proportional-autoscaler-amd64:
       - ">= 1.6.0"
     # We have to ensure that etcd is available to CAPI clusters - we set
