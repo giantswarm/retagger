@@ -101,6 +101,8 @@ docker.io:
       - "4.0.9"
       - "6.2.1-alpine"
       - "6.2.4-alpine"
+    sonobuoy/sonobuoy:
+      - "latest"
     toniblyx/prowler:
       - "2.2.0"
     weaveworks/watch:
