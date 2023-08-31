@@ -413,6 +413,12 @@ func (img *CustomImage) FindMissingTags(tags []string, present ...[]string) []st
 			}
 		}
 
+		// We always want to attempt to sync these mutable tags
+		if tag == "latest" || tag == "develop" || tag == "debug" {
+			logrus.Tracef("image %s has a mutable tag (%s) so considering it missing", img.Image, tag)
+			tagIsMissing = true
+		}
+
 		if tagIsMissing {
 			filteredTags = append(filteredTags, tag)
 		}
