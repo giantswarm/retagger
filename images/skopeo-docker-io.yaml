@@ -48,6 +48,7 @@ docker.io:
       - "1.18.1-alpine3.15"
       - "1.19.1-alpine3.16"
       - "1.20.6-alpine3.17"
+      # Future `golang` versions are now handled in `customized-images.yaml` to automatically match alpine tags via semver
     golangci/golangci-lint:
       - "v1.23.8"
     instrumenta/conftest:
