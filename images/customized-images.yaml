@@ -89,6 +89,9 @@
 - image: gcr.io/cloud-provider-vsphere/csi/release/syncer
   semver: ">= v2.7.1"
   override_repo_name: csi-vsphere-syncer
+- image: golang
+  semver: ">= 1.21.1"
+  filter: "(.+)-alpine3.18"
 - image: coredns/coredns
   semver: ">= 1.6.5"
   add_tag_suffix: "giantswarm"
