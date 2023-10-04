@@ -180,6 +180,8 @@ docker.io:
       - ">= 1.20.0"
     k8scloudprovider/openstack-cloud-controller-manager:
       - ">= 1.20.0"
+    kiwigrid/k8s-sidecar:
+      - ">= 1.24.0"
     kong:
       - ">= 1.4.3"
     mikefarah/yq:
