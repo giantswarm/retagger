@@ -452,7 +452,10 @@ func listTags(image string) ([]string, error) {
 
 		c, stdout, stderr := command("skopeo", "list-tags", dockerTransport+image)
 		err = c.Run()
-		if err != nil {
+		if err != nil && strings.Contains(stderr.String(), "repository name not known to registry") {
+			// This image has never been pushed to registry - has no synced tags.
+			return tags, nil
+		} else if err != nil {
 			err = fmt.Errorf("error listing tags for %q: %w\n%s", image, err, stderr.String())
 			attemptLogger.Warn(err)
 			continue
