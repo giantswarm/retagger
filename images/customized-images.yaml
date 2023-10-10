@@ -56,6 +56,10 @@
   add_tag_suffix: "giantswarm"
   dockerfile_extras:
     - RUN yum -y install tar
+- image: bitnami/memcached
+  override_repo_name: bitnami-memcached
+  tag_or_pattern: "1.6.21"
+  sha: 247ec29efd6030960047a623aef025021154662edf6b6d6e88c97936f164d99d
 - image: bitnami/redis
   override_repo_name: bitnami-redis
   tag_or_pattern: "4.0.9"
