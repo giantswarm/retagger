@@ -484,6 +484,9 @@ func listTags(image string) ([]string, error) {
 // imageBaseName is a helper function extracting base image name.
 // Example: "registry.k8s.io/kube-apiserver" -> "kube-apiserver"
 func imageBaseName(name string) string {
+	if strings.ContainsRune(name, '@') {
+		name = strings.Split(name, "@")[0]
+	}
 	if !strings.ContainsRune(name, '/') {
 		return name
 	}
@@ -645,6 +648,9 @@ func commandFilter(filepath string) {
 			// by index: 0 - entire line, 1 - image name, 2 - tag
 			image := strings.TrimPrefix(m[1], filterPrefix+"/")
 			tag := m[2]
+			if strings.Contains(m[0], "@sha256:") {
+				tag = "sha256:" + tag
+			}
 			tagsPerImage[image] = append(tagsPerImage[image], tag)
 		}
 
