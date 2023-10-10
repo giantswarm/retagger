@@ -21,7 +21,7 @@ import (
 
 var (
 	temporaryWorkingDir     = path.Join(os.TempDir(), "retagger")
-	skopeoSyncOutputPattern = regexp.MustCompile(`Would have copied image.*?from="docker://(.*?):(.*?)".*`)
+	skopeoSyncOutputPattern = regexp.MustCompile(`Would have copied image.*?from="docker://(.*?)[@:](.*?)".*`)
 
 	flagLogLevel         string
 	flagExecutorCount    int
