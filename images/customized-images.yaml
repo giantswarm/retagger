@@ -418,6 +418,10 @@
   tag_or_pattern: "v1.9.0"
   sha: d9fa7a136de2104fb2ecfcf1666978bfab927f4a125b75c0fb471e6104366ab5
   override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/opentelemetry
+  tag_or_pattern: "v20230721-3e2062ee5"
+  sha: 13bee3f5223883d3ca62fee7309ad02d22ec00ff0d7033e3e9aca7a9f60fd472
+  override_repo_name: ingress-nginx-opentelemetry
 - image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
   tag_or_pattern: "v1.3.0"
   sha: 549e71a6ca248c5abd51cdb73dbc3083df62cf92ed5e6147c780e30f7e007a47
