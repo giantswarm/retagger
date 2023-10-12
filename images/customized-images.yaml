@@ -479,6 +479,10 @@
 - image: registry.k8s.io/provider-aws/cloud-controller-manager
   override_repo_name: aws-cloud-controller-manager
   semver: ">= v1.21.0-alpha.0"
+- image: serjs/go-socks5-proxy
+  add_tag_suffix: gs1
+  tag_or_pattern: "v0.0.3"
+  sha: d19b9977ebf01739d204efe3c4b1e3b4fa995db3e3b88f5801adfb6c41b1ac2e
 - image: sonobuoy/sonobuoy
   semver: ">= v0.52.0"
   add_tag_suffix: alpine-giantswarm
