@@ -386,6 +386,10 @@
   tag_or_pattern: "v1.9.1"
   sha: 605a737877de78969493a4b1213b21de4ee425d2926906857b98050f57a95b25
   override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.9.3"
+  sha: 8fd21d59428507671ce0fb47f818b1d859c92d2ad07bb7c947268d433030ba98
+  override_repo_name: ingress-nginx-controller
 - image: registry.k8s.io/ingress-nginx/controller-chroot
   tag_or_pattern: "v1.3.1"
   sha: a8466b19c621bd550b1645e27a004a5cc85009c858a9ab19490216735ac432b1
@@ -425,6 +429,10 @@
 - image: registry.k8s.io/ingress-nginx/controller-chroot
   tag_or_pattern: "v1.9.0"
   sha: d9fa7a136de2104fb2ecfcf1666978bfab927f4a125b75c0fb471e6104366ab5
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.9.3"
+  sha: df4931fd6859fbf1a71e785f02a44b2f9a16f010ae852c442e9bb779cbefdc86
   override_repo_name: ingress-nginx-controller-chroot
 - image: registry.k8s.io/ingress-nginx/controller-chroot
   tag_or_pattern: "v1.9.1"
