@@ -60,6 +60,10 @@
   override_repo_name: bitnami-memcached
   tag_or_pattern: "1.6.21"
   sha: 247ec29efd6030960047a623aef025021154662edf6b6d6e88c97936f164d99d
+- image: bitnami/memcached-exporter
+  override_repo_name: bitnami-memcached-exporter
+  tag_or_pattern: "0.13.0"
+  sha: ed4cb413c2074a2ac62005d0da61d5a6872382f318c206506b3f200fa8900442
 - image: bitnami/redis
   override_repo_name: bitnami-redis
   tag_or_pattern: "4.0.9"
