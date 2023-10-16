@@ -78,6 +78,7 @@ docker.io:
       - "1.23-alpine"
     nginxinc/nginx-unprivileged:
       - "1.23-alpine"
+      - "1.24-alpine"
     ns1labs/flame:
       - "0.11.0"
     peaceiris/hugo:
