@@ -66,6 +66,7 @@ docker.io:
       - "v0.6.0"
     kong/kong-gateway:
       - "2.8.4.4-alpine"
+      - "2.8.4.4-ubuntu"
       - "3.1.1.6-debian"
       - "3.2.2.5-debian"
       - "3.3.1.1-debian"
