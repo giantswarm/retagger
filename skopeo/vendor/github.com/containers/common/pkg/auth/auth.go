@@ -10,14 +10,31 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/containers/common/pkg/util"
 	"github.com/containers/image/v5/docker"
 	"github.com/containers/image/v5/docker/reference"
 	"github.com/containers/image/v5/pkg/docker/config"
 	"github.com/containers/image/v5/pkg/sysregistriesv2"
 	"github.com/containers/image/v5/types"
 	"github.com/sirupsen/logrus"
-	terminal "golang.org/x/term"
 )
+
+// ErrNewCredentialsInvalid means that the new user-provided credentials are
+// not accepted by the registry.
+type ErrNewCredentialsInvalid struct {
+	underlyingError error
+	message         string
+}
+
+// Error returns the error message as a string.
+func (e ErrNewCredentialsInvalid) Error() string {
+	return e.message
+}
+
+// Unwrap returns the underlying error.
+func (e ErrNewCredentialsInvalid) Unwrap() error {
+	return e.underlyingError
+}
 
 // GetDefaultAuthFile returns env value REGISTRY_AUTH_FILE as default
 // --authfile path used in multiple --authfile flag definitions
@@ -77,7 +94,7 @@ func Login(ctx context.Context, systemContext *types.SystemContext, opts *LoginO
 	switch len(args) {
 	case 0:
 		if !opts.AcceptUnspecifiedRegistry {
-			return errors.New("please provide a registry to login to")
+			return errors.New("please provide a registry to log in to")
 		}
 		if key, err = defaultRegistryWhenUnspecified(systemContext); err != nil {
 			return err
@@ -92,7 +109,7 @@ func Login(ctx context.Context, systemContext *types.SystemContext, opts *LoginO
 		}
 
 	default:
-		return errors.New("login accepts only one registry to login to")
+		return errors.New("login accepts only one registry to log in to")
 	}
 
 	authConfig, err := config.GetCredentials(systemContext, key)
@@ -143,22 +160,25 @@ func Login(ctx context.Context, systemContext *types.SystemContext, opts *LoginO
 	}
 
 	if err = docker.CheckAuth(ctx, systemContext, username, password, registry); err == nil {
-		// Write the new credentials to the authfile
-		desc, err := config.SetCredentials(systemContext, key, username, password)
-		if err != nil {
-			return err
+		if !opts.NoWriteBack {
+			// Write the new credentials to the authfile
+			desc, err := config.SetCredentials(systemContext, key, username, password)
+			if err != nil {
+				return err
+			}
+			if opts.Verbose {
+				fmt.Fprintln(opts.Stdout, "Used: ", desc)
+			}
 		}
-		if opts.Verbose {
-			fmt.Fprintln(opts.Stdout, "Used: ", desc)
-		}
-	}
-	if err == nil {
 		fmt.Fprintln(opts.Stdout, "Login Succeeded!")
 		return nil
 	}
 	if unauthorized, ok := err.(docker.ErrUnauthorizedForCredentials); ok {
 		logrus.Debugf("error logging into %q: %v", key, unauthorized)
-		return fmt.Errorf("logging into %q: invalid username/password", key)
+		return ErrNewCredentialsInvalid{
+			underlyingError: err,
+			message:         fmt.Sprintf("logging into %q: invalid username/password", key),
+		}
 	}
 	return fmt.Errorf("authenticating creds for %q: %w", key, err)
 }
@@ -222,19 +242,24 @@ func replaceURLByHostPort(repository string) (string, error) {
 // using the -u and -p flags.  If the username prompt is left empty, the
 // displayed userFromAuthFile will be used instead.
 func getUserAndPass(opts *LoginOptions, password, userFromAuthFile string) (user, pass string, err error) {
-	reader := bufio.NewReader(opts.Stdin)
 	username := opts.Username
 	if username == "" {
+		if opts.Stdin == nil {
+			return "", "", fmt.Errorf("cannot prompt for username without stdin")
+		}
+
 		if userFromAuthFile != "" {
 			fmt.Fprintf(opts.Stdout, "Username (%s): ", userFromAuthFile)
 		} else {
 			fmt.Fprint(opts.Stdout, "Username: ")
 		}
+
+		reader := bufio.NewReader(opts.Stdin)
 		username, err = reader.ReadString('\n')
 		if err != nil {
 			return "", "", fmt.Errorf("reading username: %w", err)
 		}
-		// If the user just hit enter, use the displayed user from the
+		// If the user just hit enter, use the displayed user from
 		// the authentication file.  This allows to do a lazy
 		// `$ buildah login -p $NEW_PASSWORD` without specifying the
 		// user.
@@ -244,7 +269,7 @@ func getUserAndPass(opts *LoginOptions, password, userFromAuthFile string) (user
 	}
 	if password == "" {
 		fmt.Fprint(opts.Stdout, "Password: ")
-		pass, err := terminal.ReadPassword(int(os.Stdin.Fd()))
+		pass, err := util.ReadPassword(int(os.Stdin.Fd()))
 		if err != nil {
 			return "", "", fmt.Errorf("reading password: %w", err)
 		}
@@ -279,7 +304,7 @@ func Logout(systemContext *types.SystemContext, opts *LogoutOptions, args []stri
 	switch len(args) {
 	case 0:
 		if !opts.AcceptUnspecifiedRegistry {
-			return errors.New("please provide a registry to logout from")
+			return errors.New("please provide a registry to log out from")
 		}
 		if key, err = defaultRegistryWhenUnspecified(systemContext); err != nil {
 			return err
@@ -294,7 +319,7 @@ func Logout(systemContext *types.SystemContext, opts *LogoutOptions, args []stri
 		}
 
 	default:
-		return errors.New("logout accepts only one registry to logout from")
+		return errors.New("logout accepts only one registry to log out from")
 	}
 
 	err = config.RemoveAuthentication(systemContext, key)
@@ -311,7 +336,7 @@ func Logout(systemContext *types.SystemContext, opts *LogoutOptions, args []stri
 
 		authInvalid := docker.CheckAuth(context.Background(), systemContext, authConfig.Username, authConfig.Password, registry)
 		if authConfig.Username != "" && authConfig.Password != "" && authInvalid == nil {
-			fmt.Printf("Not logged into %s with current tool. Existing credentials were established via docker login. Please use docker logout instead.\n", key)
+			fmt.Printf("Not logged into %s with current tool. Existing credentials were established via docker login. Please use docker logout instead.\n", key) //nolint:forbidigo
 			return nil
 		}
 		return fmt.Errorf("not logged into %s", key)

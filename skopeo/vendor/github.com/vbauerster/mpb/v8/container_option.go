@@ -39,10 +39,9 @@ func WithRefreshRate(d time.Duration) ContainerOption {
 
 // WithManualRefresh disables internal auto refresh time.Ticker.
 // Refresh will occur upon receive value from provided ch.
-func WithManualRefresh(ch chan interface{}) ContainerOption {
+func WithManualRefresh(ch <-chan interface{}) ContainerOption {
 	return func(s *pState) {
-		s.manualRefresh = ch
-		s.disableAutoRefresh = true
+		s.manualRC = ch
 	}
 }
 
@@ -52,34 +51,27 @@ func WithManualRefresh(ch chan interface{}) ContainerOption {
 // rendering will start as soon as provided chan is closed.
 func WithRenderDelay(ch <-chan struct{}) ContainerOption {
 	return func(s *pState) {
-		s.renderDelay = ch
+		s.delayRC = ch
 	}
 }
 
-// WithShutdownNotifier provided chanel will be closed, after all bars
-// have been rendered.
-func WithShutdownNotifier(ch chan struct{}) ContainerOption {
+// WithShutdownNotifier value of type `[]*mpb.Bar` will be send into provided
+// channel upon container shutdown.
+func WithShutdownNotifier(ch chan<- interface{}) ContainerOption {
 	return func(s *pState) {
-		select {
-		case <-ch:
-		default:
-			s.shutdownNotifier = ch
-		}
+		s.shutdownNotifier = ch
 	}
 }
 
-// WithOutput overrides default os.Stdout output. Setting it to nil
-// will effectively disable auto refresh rate and discard any output,
-// useful if you want to disable progress bars with little overhead.
+// WithOutput overrides default os.Stdout output. If underlying io.Writer
+// is not a terminal then auto refresh is disabled unless WithAutoRefresh
+// option is set.
 func WithOutput(w io.Writer) ContainerOption {
-	var discarded bool
 	if w == nil {
 		w = io.Discard
-		discarded = true
 	}
 	return func(s *pState) {
 		s.output = w
-		s.outputDiscarded = discarded
 	}
 }
 
@@ -90,6 +82,14 @@ func WithDebugOutput(w io.Writer) ContainerOption {
 	}
 	return func(s *pState) {
 		s.debugOut = w
+	}
+}
+
+// WithAutoRefresh force auto refresh regardless of what output is set to.
+// Applicable only if not WithManualRefresh set.
+func WithAutoRefresh() ContainerOption {
+	return func(s *pState) {
+		s.autoRefresh = true
 	}
 }
 
