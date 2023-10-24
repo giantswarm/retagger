@@ -168,6 +168,8 @@ docker.io:
       - ">= v2.7.0"
     grafana/promtail:
       - ">= v1.2.0"
+    grafana/tempo:
+      - ">= v1.6.0"
     jettech/kube-webhook-certgen:
       # Used in prometheus-operator-app
       - ">= v1.2.0"
