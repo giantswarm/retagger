@@ -83,7 +83,7 @@
   override_repo_name: caicloud-event-exporter
   semver: ">= v1.0.0"
 - image: cloudflare/cloudflared
-  semver: ">= 2022.8.0"
+  semver: ">= 2023.8.2"
   filter: "^(.+)-amd64$"
 - image: docker.io/grafana/agent
   override_repo_name: grafana-agent
@@ -110,35 +110,35 @@
   semver: ">= v1.1.1"
 - image: ghcr.io/linkerd/controller
   override_repo_name: linkerd2-controller
-  semver: ">= 2.11.4"
+  semver: ">= 2.13.4"
   filter: "^stable-(.*)$"
 - image: ghcr.io/linkerd/debug
   override_repo_name: linkerd2-debug
-  semver: ">= 2.11.4"
+  semver: ">= 2.13.4"
   filter: "^stable-(.*)$"
 - image: ghcr.io/linkerd/metrics-api
   override_repo_name: linkerd-metrics-api
-  semver: ">= 2.11.4"
+  semver: ">= 2.13.4"
   filter: "^stable-(.*)$"
 - image: ghcr.io/linkerd/policy-controller
   override_repo_name: linkerd2-policy-controller
-  semver: ">= 2.11.4"
+  semver: ">= 2.13.4"
   filter: "^stable-(.*)$"
 - image: ghcr.io/linkerd/proxy
   override_repo_name: linkerd2-proxy
-  semver: ">= 2.11.4"
+  semver: ">= 2.13.4"
   filter: "^stable-(.*)$"
 - image: ghcr.io/linkerd/proxy-init
   override_repo_name: linkerd2-proxy-init
-  semver: ">= 2.11.4"
+  semver: ">= 2.13.4"
   filter: "^stable-(.*)$"
 - image: ghcr.io/linkerd/tap
   override_repo_name: linkerd-tap
-  semver: ">= 2.11.4"
+  semver: ">= 2.13.4"
   filter: "^stable-(.*)$"
 - image: ghcr.io/linkerd/web
   override_repo_name: linkerd2-web
-  semver: ">= 2.11.4"
+  semver: ">= 2.13.4"
   filter: "^stable-(.*)$"
 - image: ghcr.io/linkerd/extension-init
   override_repo_name: linkerd2-extension-init
@@ -222,7 +222,7 @@
   semver: ">= v1.16"
 - image: kong/kubernetes-ingress-controller
   override_repo_name: kong-ingress-controller
-  semver: ">= 1.1.1"
+  semver: ">= 2.6.0"
 - image: kylemanna/openvpn
   override_repo_name: kylemanna-openvpn
   tag_or_pattern: "2.4"

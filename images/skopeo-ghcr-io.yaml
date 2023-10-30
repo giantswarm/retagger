@@ -1,10 +1,6 @@
 # Docs: https://github.com/kubasobon/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
 ghcr.io:
   images:
-    inlets/inlets-operator:
-      - "0.14.1"
-    inlets/inlets-pro:
-      - "0.8.8"
     k8snetworkplumbingwg/multus-cni:
       - "v3.9-thick-amd64"
       - "v3.9-amd64"
