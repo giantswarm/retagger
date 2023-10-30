@@ -34,8 +34,6 @@ registry.k8s.io:
     # install it using our app platform) is fixed, we can remove this:
     coredns/coredns:
       - ">= v1.8.0"
-    descheduler/descheduler:
-      - ">= v0.20.0"
     dns/k8s-dns-node-cache:
       - ">= 1.21.1"
     etcd:
