@@ -6,7 +6,7 @@ require (
 	github.com/Masterminds/semver/v3 v3.2.0
 	github.com/containers/common v0.51.0
 	github.com/containers/image/v5 v5.24.2-0.20230215091257-15e211694ae5
-	github.com/containers/ocicrypt v1.1.7
+	github.com/containers/ocicrypt v1.1.8
 	github.com/containers/storage v1.45.3
 	github.com/docker/distribution v2.8.1+incompatible
 	github.com/opencontainers/go-digest v1.0.0
@@ -142,6 +142,5 @@ require (
 	google.golang.org/grpc v1.55.0 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/go-jose/go-jose.v2 v2.6.1 // indirect
-	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
