@@ -187,6 +187,8 @@ docker.io:
       - ">= 1.24.0"
     kong:
       - ">= 2.8.1"
+    kubegreen/kube-green:
+      - ">= 0.5.2"
     mikefarah/yq:
       - ">= 4.31.2"
     mintel/dex-k8s-authenticator:
