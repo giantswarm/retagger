@@ -39,7 +39,7 @@ registry.k8s.io:
     etcd:
       - ">= v3.5.4-0"
     external-dns/external-dns:
-      - ">= v0.10.1"
+      - ">= v0.11.0"
     git-sync/git-sync:
       - ">= v3.6.8"
     kube-state-metrics/kube-state-metrics:
