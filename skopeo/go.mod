@@ -6,7 +6,7 @@ require (
 	github.com/Masterminds/semver/v3 v3.2.1
 	github.com/containers/common v0.51.0
 	github.com/containers/image/v5 v5.24.2-0.20230215091257-15e211694ae5
-	github.com/containers/ocicrypt v1.1.8
+	github.com/containers/ocicrypt v1.1.9
 	github.com/containers/storage v1.45.3
 	github.com/docker/distribution v2.8.1+incompatible
 	github.com/opencontainers/go-digest v1.0.0
@@ -131,7 +131,7 @@ require (
 	go.uber.org/zap v1.24.0 // indirect
 	golang.org/x/crypto v0.14.0 // indirect
 	golang.org/x/mod v0.13.0 // indirect
-	golang.org/x/net v0.16.0 // indirect
+	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/oauth2 v0.7.0 // indirect
 	golang.org/x/sync v0.4.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect
@@ -139,7 +139,7 @@ require (
 	golang.org/x/tools v0.14.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
-	google.golang.org/grpc v1.55.0 // indirect
+	google.golang.org/grpc v1.56.3 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/go-jose/go-jose.v2 v2.6.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

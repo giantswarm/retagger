@@ -138,7 +138,7 @@ github.com/containers/image/v5/version
 # github.com/containers/libtrust v0.0.0-20230121012942-c1716e8a8d01
 ## explicit
 github.com/containers/libtrust
-# github.com/containers/ocicrypt v1.1.8
+# github.com/containers/ocicrypt v1.1.9
 ## explicit; go 1.20
 github.com/containers/ocicrypt
 github.com/containers/ocicrypt/blockcipher
@@ -693,7 +693,7 @@ golang.org/x/exp/slices
 ## explicit; go 1.18
 golang.org/x/mod/semver
 golang.org/x/mod/sumdb/note
-# golang.org/x/net v0.16.0
+# golang.org/x/net v0.17.0
 ## explicit; go 1.17
 golang.org/x/net/context
 golang.org/x/net/html
@@ -767,7 +767,7 @@ google.golang.org/appengine/urlfetch
 google.golang.org/genproto/googleapis/api
 google.golang.org/genproto/googleapis/api/annotations
 google.golang.org/genproto/googleapis/rpc/status
-# google.golang.org/grpc v1.55.0
+# google.golang.org/grpc v1.56.3
 ## explicit; go 1.17
 google.golang.org/grpc
 google.golang.org/grpc/attributes
