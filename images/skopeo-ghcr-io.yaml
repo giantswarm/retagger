@@ -18,7 +18,7 @@ ghcr.io:
     kedacore/keda-admission-webhooks:
       - ">= 2.10.1"
     kedacore/keda:
-      - ">= v2.10.1"
+      - ">= 2.10.1"
     kedacore/keda-metrics-apiserver:
       - ">= 2.10.1"
     kube-vip/kube-vip:
