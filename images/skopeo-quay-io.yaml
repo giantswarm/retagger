@@ -68,7 +68,7 @@ quay.io:
     fairwinds/polaris:
       - ">= 4.0"
     giantswarm/amazon-k8s-cni:
-      - ">= v1.6.0"
+      - ">= v1.11.2"
     google-cloud-tools/kube-eagle:
       - ">= v1.1.4"
     jacksontj/promxy:
