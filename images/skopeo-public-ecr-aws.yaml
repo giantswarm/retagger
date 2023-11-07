@@ -3,5 +3,3 @@ public.ecr.aws:
   images:
     aws-ec2/aws-node-termination-handler:
       - "v1.17.2"
-      - "v1.16.5"
-      - "v1.15.0"
