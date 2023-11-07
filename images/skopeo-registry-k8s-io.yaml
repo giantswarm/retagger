@@ -51,18 +51,18 @@ registry.k8s.io:
     pause-amd64:
       - ">= 3.1"
     provider-aws/aws-ebs-csi-driver:
-      - ">= 0.7.0"
+      - ">= 1.6.2"
     sig-storage/csi-attacher:
-      - ">= v1.2.0"
+      - ">= v3.4.0"
     sig-storage/csi-node-driver-registrar:
-      - ">= v1.1.0"
+      - ">= v2.5.0"
     sig-storage/csi-provisioner:
-      - ">= v1.6.0"
+      - ">= v3.1.0"
     sig-storage/csi-resizer:
-      - ">= v0.3.0"
+      - ">= v1.3.0"
     sig-storage/csi-snapshotter:
-      - ">= v2.1.1"
+      - ">= v4.2.1"
     sig-storage/livenessprobe:
-      - ">= v1.1.0"
+      - ">= v2.6.0"
     sig-storage/snapshot-controller:
-      - ">= v3.0.0"
+      - ">= v4.2.1"
