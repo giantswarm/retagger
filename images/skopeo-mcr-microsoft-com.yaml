@@ -9,9 +9,9 @@ mcr.microsoft.com:
     oss/azure/aad-pod-identity/nmi:
       - ">= 1.8.10"
     oss/kubernetes-csi/azuredisk-csi:
-      - ">= v1.12.0"
+      - ">= v1.25.0"
     oss/kubernetes-csi/azurefile-csi:
-      - ">= v1.12.0"
+      - ">= v1.25.0"
     oss/kubernetes/azure-cloud-controller-manager:
       - ">= v1.24.5"
     oss/kubernetes/azure-cloud-node-manager:
