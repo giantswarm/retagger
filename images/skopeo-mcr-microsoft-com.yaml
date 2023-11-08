@@ -15,4 +15,4 @@ mcr.microsoft.com:
     oss/kubernetes/azure-cloud-controller-manager:
       - ">= v1.24.5"
     oss/kubernetes/azure-cloud-node-manager:
-      - ">= v1.1.8"
+      - ">= v1.24.5"
