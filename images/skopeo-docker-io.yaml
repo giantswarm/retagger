@@ -224,6 +224,6 @@ docker.io:
     squareup/ghostunnel:
       - ">= v1.5.2"
     vault:
-      - ">= v1.2.0"
+      - ">= v1.5.4"
     velero/velero:
       - ">= v1.4.3"
