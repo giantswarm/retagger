@@ -1,4 +1,4 @@
-ARG GOLANG_VERSION=1.18
+ARG GOLANG_VERSION=1.21
 
 FROM golang:${GOLANG_VERSION} AS skopeo-builder
 COPY skopeo /skopeo
