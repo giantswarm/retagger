@@ -1,12 +1,15 @@
 package mpb
 
-// A priorityQueue implements heap.Interface
+import "container/heap"
+
+var _ heap.Interface = (*priorityQueue)(nil)
+
 type priorityQueue []*Bar
 
 func (pq priorityQueue) Len() int { return len(pq) }
 
 func (pq priorityQueue) Less(i, j int) bool {
-	// less priority pops first
+	// greater priority pops first
 	return pq[i].priority > pq[j].priority
 }
 
@@ -17,17 +20,18 @@ func (pq priorityQueue) Swap(i, j int) {
 }
 
 func (pq *priorityQueue) Push(x interface{}) {
-	s := *pq
+	n := len(*pq)
 	bar := x.(*Bar)
-	bar.index = len(s)
-	s = append(s, bar)
-	*pq = s
+	bar.index = n
+	*pq = append(*pq, bar)
 }
 
 func (pq *priorityQueue) Pop() interface{} {
-	s := *pq
-	*pq = s[0 : len(s)-1]
-	bar := s[len(s)-1]
+	old := *pq
+	n := len(old)
+	bar := old[n-1]
+	old[n-1] = nil // avoid memory leak
 	bar.index = -1 // for safety
+	*pq = old[:n-1]
 	return bar
 }

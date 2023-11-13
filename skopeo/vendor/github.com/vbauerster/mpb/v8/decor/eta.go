@@ -8,6 +8,13 @@ import (
 	"github.com/VividCortex/ewma"
 )
 
+var (
+	_ Decorator        = (*movingAverageETA)(nil)
+	_ EwmaDecorator    = (*movingAverageETA)(nil)
+	_ Decorator        = (*averageETA)(nil)
+	_ AverageDecorator = (*averageETA)(nil)
+)
+
 // TimeNormalizer interface. Implementors could be passed into
 // MovingAverageETA, in order to affect i.e. normalize its output.
 type TimeNormalizer interface {
@@ -61,13 +68,13 @@ type movingAverageETA struct {
 	producer   func(time.Duration) string
 }
 
-func (d *movingAverageETA) Decor(s Statistics) string {
+func (d *movingAverageETA) Decor(s Statistics) (string, int) {
 	v := math.Round(d.average.Value())
 	remaining := time.Duration((s.Total - s.Current) * int64(v))
 	if d.normalizer != nil {
 		remaining = d.normalizer.Normalize(remaining)
 	}
-	return d.FormatMsg(d.producer(remaining))
+	return d.Format(d.producer(remaining))
 }
 
 func (d *movingAverageETA) EwmaUpdate(n int64, dur time.Duration) {
@@ -113,7 +120,7 @@ type averageETA struct {
 	producer   func(time.Duration) string
 }
 
-func (d *averageETA) Decor(s Statistics) string {
+func (d *averageETA) Decor(s Statistics) (string, int) {
 	var remaining time.Duration
 	if s.Current != 0 {
 		durPerItem := float64(time.Since(d.startTime)) / float64(s.Current)
@@ -123,7 +130,7 @@ func (d *averageETA) Decor(s Statistics) string {
 			remaining = d.normalizer.Normalize(remaining)
 		}
 	}
-	return d.FormatMsg(d.producer(remaining))
+	return d.Format(d.producer(remaining))
 }
 
 func (d *averageETA) AverageAdjust(startTime time.Time) {
@@ -192,8 +199,7 @@ func chooseTimeProducer(style TimeStyle) func(time.Duration) string {
 		}
 	default:
 		return func(remaining time.Duration) string {
-			// strip off nanoseconds
-			return ((remaining / time.Second) * time.Second).String()
+			return remaining.Truncate(time.Second).String()
 		}
 	}
 }

@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/acarl005/stripansi"
 	"github.com/mattn/go-runewidth"
 )
 
 const (
 	// DidentRight bit specifies identation direction.
-	// |foo   |b     | With DidentRight
-	// |   foo|     b| Without DidentRight
+	//
+	//	|foo   |b     | With DidentRight
+	//	|   foo|     b| Without DidentRight
 	DidentRight = 1 << iota
 
 	// DextraSpace bit adds extra space, makes sense with DSyncWidth only.
@@ -66,13 +66,13 @@ type Statistics struct {
 // `DecorFunc` into a `Decorator` interface by using provided
 // `func Any(DecorFunc, ...WC) Decorator`.
 type Decorator interface {
-	Configurator
 	Synchronizer
-	Decor(Statistics) string
+	Formatter
+	Decor(Statistics) (str string, viewWidth int)
 }
 
 // DecorFunc func type.
-// To be used with `func Any`(DecorFunc, ...WC) Decorator`.
+// To be used with `func Any(DecorFunc, ...WC) Decorator`.
 type DecorFunc func(Statistics) string
 
 // Synchronizer interface.
@@ -82,10 +82,12 @@ type Synchronizer interface {
 	Sync() (chan int, bool)
 }
 
-// Configurator interface.
-type Configurator interface {
-	GetConf() WC
-	SetConf(WC)
+// Formatter interface.
+// Format method needs to be called from within Decorator.Decor method
+// in order to format string according to decor.WC settings.
+// No need to implement manually as long as decor.WC is embedded.
+type Formatter interface {
+	Format(string) (str string, viewWidth int)
 }
 
 // Wrapper interface.
@@ -93,7 +95,7 @@ type Configurator interface {
 // it is necessary to implement this interface to retain functionality
 // of built-in Decorator.
 type Wrapper interface {
-	Base() Decorator
+	Unwrap() Decorator
 }
 
 // EwmaDecorator interface.
@@ -113,7 +115,7 @@ type AverageDecorator interface {
 // If decorator needs to be notified once upon bar shutdown event, so
 // this is the right interface to implement.
 type ShutdownListener interface {
-	Shutdown()
+	OnShutdown()
 }
 
 // Global convenience instances of WC with sync width bit set.
@@ -135,28 +137,29 @@ type WC struct {
 	wsync chan int
 }
 
-// FormatMsg formats final message according to WC.W and WC.C.
-// Should be called by any Decorator implementation.
-func (wc *WC) FormatMsg(msg string) string {
-	pureWidth := runewidth.StringWidth(msg)
-	viewWidth := runewidth.StringWidth(stripansi.Strip(msg))
-	max := wc.W
+// Format should be called by any Decorator implementation.
+// Returns formatted string and its view (visual) width.
+func (wc WC) Format(str string) (string, int) {
+	viewWidth := runewidth.StringWidth(str)
+	if wc.W > viewWidth {
+		viewWidth = wc.W
+	}
 	if (wc.C & DSyncWidth) != 0 {
-		viewWidth := viewWidth
 		if (wc.C & DextraSpace) != 0 {
 			viewWidth++
 		}
 		wc.wsync <- viewWidth
-		max = <-wc.wsync
+		viewWidth = <-wc.wsync
 	}
-	return wc.fill(msg, max-viewWidth+pureWidth)
+	return wc.fill(str, viewWidth), viewWidth
 }
 
 // Init initializes width related config.
 func (wc *WC) Init() WC {
-	wc.fill = runewidth.FillLeft
 	if (wc.C & DidentRight) != 0 {
 		wc.fill = runewidth.FillRight
+	} else {
+		wc.fill = runewidth.FillLeft
 	}
 	if (wc.C & DSyncWidth) != 0 {
 		// it's deliberate choice to override wsync on each Init() call,
@@ -167,21 +170,11 @@ func (wc *WC) Init() WC {
 }
 
 // Sync is implementation of Synchronizer interface.
-func (wc *WC) Sync() (chan int, bool) {
+func (wc WC) Sync() (chan int, bool) {
 	if (wc.C&DSyncWidth) != 0 && wc.wsync == nil {
 		panic(fmt.Sprintf("%T is not initialized", wc))
 	}
 	return wc.wsync, (wc.C & DSyncWidth) != 0
-}
-
-// GetConf is implementation of Configurator interface.
-func (wc *WC) GetConf() WC {
-	return *wc
-}
-
-// SetConf is implementation of Configurator interface.
-func (wc *WC) SetConf(conf WC) {
-	*wc = conf.Init()
 }
 
 func initWC(wcc ...WC) WC {
