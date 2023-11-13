@@ -74,15 +74,15 @@ quay.io:
     jacksontj/promxy:
       - ">= v0.0.60"
     jetstack/cert-manager-acmesolver:
-      - ">= v1.6.1"
+      - ">= 1.7.3"
     jetstack/cert-manager-cainjector:
-      - ">= v0.14.2"
+      - ">= 1.7.3"
     jetstack/cert-manager-controller:
-      - ">= v0.14.2"
+      - ">= 1.7.3"
     jetstack/cert-manager-ctl:
-      - ">= v1.5.3"
+      - ">= 1.7.3"
     jetstack/cert-manager-webhook:
-      - ">= v0.14.2"
+      - ">= 1.7.3"
     oauth2-proxy/oauth2-proxy:
       - ">= v7.2.1"
     open-policy-agent/gatekeeper:
