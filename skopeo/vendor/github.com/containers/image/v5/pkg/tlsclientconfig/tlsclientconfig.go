@@ -91,14 +91,13 @@ func NewTransport() *http.Transport {
 	direct := &net.Dialer{
 		Timeout:   30 * time.Second,
 		KeepAlive: 30 * time.Second,
-		DualStack: true,
 	}
 	tr := &http.Transport{
 		Proxy:               http.ProxyFromEnvironment,
 		DialContext:         direct.DialContext,
 		TLSHandshakeTimeout: 10 * time.Second,
-		// TODO(dmcgowan): Call close idle connections when complete and use keep alive
-		DisableKeepAlives: true,
+		IdleConnTimeout:     90 * time.Second,
+		MaxIdleConns:        100,
 	}
 	return tr
 }

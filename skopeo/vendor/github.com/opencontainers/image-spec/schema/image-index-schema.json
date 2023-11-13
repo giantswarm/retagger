@@ -1,6 +1,6 @@
 {
   "description": "OpenContainer Image Index Specification",
-  "$schema": "https://json-schema.org/draft-04/schema#",
+  "$schema": "http://json-schema.org/draft-04/schema#",
   "id": "https://opencontainers.org/schema/image/index",
   "type": "object",
   "properties": {
@@ -14,6 +14,13 @@
     "mediaType": {
       "description": "the mediatype of the referenced object",
       "$ref": "defs-descriptor.json#/definitions/mediaType"
+    },
+    "artifactType": {
+      "description": "the artifact mediatype of the referenced object",
+      "$ref": "defs-descriptor.json#/definitions/mediaType"
+    },
+    "subject": {
+      "$ref": "content-descriptor.json"
     },
     "manifests": {
       "type": "array",
