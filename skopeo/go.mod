@@ -17,7 +17,7 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.4
 	github.com/syndtr/gocapability v0.0.0-20200815063812-42c35b437635
-	golang.org/x/exp v0.0.0-20231108232855-2478ac86f678
+	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa
 	golang.org/x/term v0.14.0
 	gopkg.in/yaml.v3 v3.0.1
 )
