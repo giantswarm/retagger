@@ -17,6 +17,6 @@ gcr.io:
     cadvisor/cadvisor:
       - ">= v0.44.0"
     k8s-staging-cloud-provider-gcp/gcp-compute-persistent-disk-csi-driver:
-      - ">= 1.7.0"
+      - "1.8.0"
     kubebuilder/kube-rbac-proxy:
       - ">= v0.4.1"

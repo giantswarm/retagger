@@ -100,4 +100,4 @@ quay.io:
     thanos/thanos:
       - ">= v0.17.2"
     uswitch/kiam:
-      - ">= v4.0"
+      - ">= v4.2.0"
