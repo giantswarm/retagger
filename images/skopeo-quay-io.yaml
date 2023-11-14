@@ -62,7 +62,7 @@ quay.io:
     coreos/prometheus-operator:
       - ">= 0.38.1"
     dexidp/dex:
-      - ">=v2.24.0"
+      - ">=v2.30.2"
     fairwinds/goldilocks:
       - ">= v2.2.0"
     fairwinds/polaris:
