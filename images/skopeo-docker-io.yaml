@@ -54,6 +54,8 @@ docker.io:
     instrumenta/conftest:
       - "v0.18.1"
       - "v0.21.0"
+    janeczku/go-dnsmasq:
+      - "release-1.0.7"
     jgsqware/fluentd-loki-plugin:
       - "9ee2ce8"
     jimschubert/swagger-codegen-cli:
