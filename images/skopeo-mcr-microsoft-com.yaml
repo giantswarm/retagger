@@ -1,8 +1,5 @@
 # Docs: https://github.com/kubasobon/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
 mcr.microsoft.com:
-  images:
-    azuremonitor/containerinsights/ciprod:
-      - "ciprod06112021"
   images-by-semver:
     oss/azure/aad-pod-identity/mic:
       - ">= 1.8.10"
