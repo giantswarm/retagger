@@ -145,17 +145,17 @@ docker.io:
     envoyproxy/envoy:
       - ">= 1.18.4"
     falcosecurity/falco:
-      - ">= 0.33.0"
+      - ">= 0.36.1"
     falcosecurity/falcoctl:
-      - ">= 0.5.1"
+      - ">= 0.6.2"
     falcosecurity/falco-driver-loader:
-      - ">= 0.32.0"
+      - ">= 0.36.1"
     falcosecurity/falco-exporter:
-      - ">= v0.5.0"
+      - ">= v0.8.3"
     falcosecurity/falco-no-driver:
-      - ">= 0.33.0"
+      - ">= 0.36.1"
     falcosecurity/falcosidekick:
-      - ">= 2.22.0"
+      - ">= 2.28.0"
     fluent/fluent-bit:
       - ">= 1.x.x"
     golang:
