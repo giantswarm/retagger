@@ -36,10 +36,8 @@ const (
 	filteredFileSuffix   = ".filtered"
 
 	aliyunURL = "giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm"
-	// TODO(kuba): ------------------------ IMPORTANT --------------------------
-	// Change azureURL once we have set up a new Azure Container Registry.
-	azureURL = "giantswarm.azurecr.io"
-	quayURL  = "quay.io/giantswarm"
+	azureURL  = "gsoci.azurecr.io"
+	quayURL   = "quay.io/giantswarm"
 )
 
 // CustomImage represents a set of rules used to rebuild/retag multiple tags of
