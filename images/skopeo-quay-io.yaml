@@ -72,7 +72,7 @@ quay.io:
     prometheus-operator/prometheus-config-reloader:
       - ">= v0.62.0"
     prometheus-operator/prometheus-operator:
-      - ">= 0.62.0"
+      - ">= 0.63.0"
     prometheus/alertmanager:
       - ">= v0.25.0"
     uswitch/kiam:
