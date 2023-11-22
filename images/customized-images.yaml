@@ -78,16 +78,16 @@
   sha: c9d75b4521dbb75747d936504cb16031a087ae51755868c6b4e7fad0e2b8615d
 - image: bobrik/curator
   override_repo_name: bobrik-curator
-  semver: ">= 5.8.1"
+  tag_or_pattern: "5.8.1"
 - image: caicloud/event-exporter
   override_repo_name: caicloud-event-exporter
-  semver: ">= v1.0.0"
+  tag_or_pattern: "v1.0.0"
 - image: cloudflare/cloudflared
   semver: ">= 2023.8.2"
   filter: "^(.+)-amd64$"
 - image: docker.io/grafana/agent
   override_repo_name: grafana-agent
-  semver: ">= v0.33.0"
+  semver: ">= v0.37.2"
 - image: gcr.io/cloud-provider-vsphere/cpi/release/manager
   semver: ">= v1.26.0"
   override_repo_name: cpi-vsphere-manager
@@ -208,7 +208,7 @@
     - USER giantswarm
 - image: jaegertracing/all-in-one
   override_repo_name: jaeger-all-in-one
-  semver: ">= 1.17.0"
+  tag_or_pattern: "1.21.0"
 - image: kedacore/keda
   override_repo_name: kedacore-keda
   tag_or_pattern: "2.1.0"
@@ -228,7 +228,7 @@
   tag_or_pattern: "2.4"
 - image: macropower/analytics-panel-server
   override_repo_name: macropower-analytics-panel-server
-  semver: ">= 0.0.1"
+  tag_or_pattern: "0.0.1"
 - image: mysql
   tag_or_pattern: "5.7.14"
   sha: c8f03238ca1783d25af320877f063a36dbfce0daa56a7b4955e6c6e05ab5c70b
@@ -292,38 +292,6 @@
 - image: quay.io/jiralert/jiralert-linux-amd64
   override_repo_name: jiralert
   semver: ">= 1.0"
-- image: quay.io/prometheus/node-exporter
-  tag_or_pattern: "v0.18.1"
-  sha: a2f29256e53cc3e0b64d7a472512600b2e9410347d53cdc85b49f659c17e02ee
-  add_tag_suffix: "giantswarm"
-  dockerfile_extras:
-    - USER root
-    - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
-    - USER giantswarm
-- image: quay.io/prometheus/node-exporter
-  tag_or_pattern: "v0.18.0"
-  sha: b2dd31b0d23fda63588674e40fd8d05010d07c5d4ac37163fc596ba9065ce38d
-  add_tag_suffix: "giantswarm"
-  dockerfile_extras:
-    - USER root
-    - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
-    - USER giantswarm
-- image: quay.io/prometheus/node-exporter
-  tag_or_pattern: "v1.0.1"
-  sha: cf66a6bbd573fd819ea09c72e21b528e9252d58d01ae13564a29749de1e48e0f
-  add_tag_suffix: "giantswarm"
-  dockerfile_extras:
-    - USER root
-    - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
-    - USER giantswarm
-- image: quay.io/prometheus/node-exporter
-  tag_or_pattern: "v1.0.1"
-  sha: cf66a6bbd573fd819ea09c72e21b528e9252d58d01ae13564a29749de1e48e0f
-  add_tag_suffix: "giantswarm"
-  dockerfile_extras:
-    - USER root
-    - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
-    - USER giantswarm
 - image: quay.io/prometheus/node-exporter
   tag_or_pattern: "v1.3.1"
   sha: f2269e73124dd0f60a7d19a2ce1264d33d08a985aed0ee6b0b89d0be470592cd
@@ -533,9 +501,6 @@
     - RUN chmod a+rwx /run && chmod a+rwx /var/log/squid && chmod a+rwx /var/spool/squid
     - USER proxy
     - CMD ["squid", "-N"]
-- image: untergeek/curator
-  override_repo_name: elasticsearch-untergeek-curator
-  semver: ">= 5.7.6"
 - image: xpkg.upbound.io/crossplane-contrib/provider-aws
   override_repo_name: crossplane-provider-aws
   semver: ">= v0.33.0"
