@@ -104,13 +104,8 @@ docker.io:
       - "6.2.4-alpine"
     sonobuoy/sonobuoy:
       - "latest"
-    toniblyx/prowler:
-      - "2.2.0"
     weaveworks/watch:
       - "master-5b2a6e5"
-    zricethezav/gitleaks:
-      - "v3.3.0"
-      - "v6.0.0"
   images-by-semver:
     alpine:
       - ">= 3.13"
@@ -140,17 +135,17 @@ docker.io:
     envoyproxy/envoy:
       - ">= 1.18.4"
     falcosecurity/falco:
-      - ">= 0.33.0"
+      - ">= 0.36.1"
     falcosecurity/falcoctl:
-      - ">= 0.5.1"
+      - ">= 0.6.2"
     falcosecurity/falco-driver-loader:
-      - ">= 0.32.0"
+      - ">= 0.36.1"
     falcosecurity/falco-exporter:
-      - ">= v0.5.0"
+      - ">= v0.8.3"
     falcosecurity/falco-no-driver:
-      - ">= 0.33.0"
+      - ">= 0.36.1"
     falcosecurity/falcosidekick:
-      - ">= 2.22.0"
+      - ">= 2.28.0"
     fluent/fluent-bit:
       - ">= 1.x.x"
     golang:
@@ -204,3 +199,5 @@ docker.io:
       - ">= v1.5.4"
     velero/velero:
       - ">= v1.4.3"
+    zricethezav/gitleaks:
+      - ">=v7.4.0"

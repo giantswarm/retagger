@@ -53,8 +53,6 @@ quay.io:
       - ">=v2.30.2"
     fairwinds/goldilocks:
       - ">= v2.2.0"
-    fairwinds/polaris:
-      - ">= 4.0"
     giantswarm/amazon-k8s-cni:
       - ">= v1.11.2"
     jacksontj/promxy:
@@ -71,8 +69,6 @@ quay.io:
       - ">= v1.7.3"
     oauth2-proxy/oauth2-proxy:
       - ">= v7.2.1"
-    open-policy-agent/gatekeeper:
-      - ">= v3.1.0-beta.5"
     prometheus-operator/prometheus-config-reloader:
       - ">= v0.62.0"
     prometheus-operator/prometheus-operator:
