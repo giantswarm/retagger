@@ -153,6 +153,7 @@ docker.io:
     grafana/grafana:
       - ">= 9.1.1"
     grafana/loki:
+      - ">= 2.7.3"
       - ">= v1.2.0"
     grafana/loki-canary:
       - ">= v2.1.0"
