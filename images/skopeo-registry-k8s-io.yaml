@@ -17,7 +17,6 @@ registry.k8s.io:
       - ">= v0.5.0"
     cluster-api-gcp/cluster-api-gcp-controller:
       - ">= v1.0.2"
-
     cluster-proportional-autoscaler-amd64:
       - ">= 1.6.0"
     # We have to ensure that etcd is available to CAPI clusters - we set
@@ -43,9 +42,9 @@ registry.k8s.io:
     git-sync/git-sync:
       - ">= v3.6.8"
     kube-state-metrics/kube-state-metrics:
-      - "> v1.9.8"
+      - "> v2.3.0"
     metrics-server/metrics-server:
-      - ">= v0.4.2"
+      - ">= v0.5.2"
     node-problem-detector/node-problem-detector:
       - ">= v0.8.14"
     pause:

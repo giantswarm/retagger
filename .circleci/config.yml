@@ -231,12 +231,6 @@ build_and_retag: &build_and_retag
           - build-go
     - filter-skopeo-tags:
         context: architect
-        name: filter-skopeo-docker-elastic-co
-        filepath: images/skopeo-docker-elastic-co.yaml
-        requires:
-          - build-and-push-docker
-    - filter-skopeo-tags:
-        context: architect
         name: filter-skopeo-docker-io
         filepath: images/skopeo-docker-io.yaml
         requires:
