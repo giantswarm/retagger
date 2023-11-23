@@ -34,9 +34,9 @@ quay.io:
     calico/typha:
       - ">= v3.10.1"
     ceph/ceph:
-      - ">= v16.2.5-20210708"
+      - "v16.2.5-20210708"
     cephcsi/cephcsi:
-      - ">= v3.1.1"
+      - "v3.1.1 - v3.4.0"
     cilium/cilium:
       - ">= v1.11.2"
     cilium/cilium-etcd-operator:
