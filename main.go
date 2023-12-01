@@ -36,7 +36,7 @@ const (
 	filteredFileSuffix   = ".filtered"
 
 	aliyunURL = "giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm"
-	azureURL  = "gsoci.azurecr.io"
+	azureURL  = "gsoci.azurecr.io/giantswarm"
 	quayURL   = "quay.io/giantswarm"
 )
 
