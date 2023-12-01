@@ -180,7 +180,7 @@
   semver: ">= v0.17.0"
 - image: gcr.io/cluster-api-provider-vsphere/release/manager
   override_repo_name: cluster-api-vsphere-controller
-  semver: ">= v0.8.1"
+  semver: ">= v1.5.1"
 - image: gcr.io/heptio-images/eventrouter
   tag_or_pattern: "v0.3"
   sha: dba60a88600d2d94fcd4c365e2931e54ae9aa495e94a924f80814e019b7ea046
