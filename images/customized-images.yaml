@@ -473,7 +473,7 @@
       CMD ["/sonobuoy", "aggregator", "--no-exit", "-v", "3", "--logtostderr"]
 - image: rook/ceph
   override_repo_name: rook-ceph
-  semver: ">= v1.7.0"
+  semver: "v1.7.0 - v1.7.11"
 - image: ubuntu/squid
   sha: 4e1f0204b58779fb89f0281b3ccd4ee19723209d65dbec63bc4b5a07d0509841
   tag_or_pattern: "5.2-22.04_beta"
