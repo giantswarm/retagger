@@ -79,6 +79,7 @@ jobs:
           command: |
             docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
             docker login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
+            docker login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} gsoci.azurecr.io
             max_retry=5
             counter=1
             until docker login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
@@ -93,6 +94,7 @@ jobs:
           command: |
             skopeo login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
             skopeo login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
+            skopeo login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} gsoci.azurecr.io
             max_retry=5
             counter=1
             until skopeo login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
@@ -174,6 +176,7 @@ jobs:
           command: |
             docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
             docker login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
+            docker login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} gsoci.azurecr.io
             max_retry=5
             counter=1
             until docker login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
@@ -188,6 +191,7 @@ jobs:
           command: |
             skopeo login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
             skopeo login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
+            skopeo login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} gsoci.azurecr.io
             max_retry=5
             counter=1
             until skopeo login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
@@ -330,6 +334,36 @@ build_and_retag: &build_and_retag
         matrix:
           parameters:
             images_file:
+              - images/skopeo-docker-io.yaml.filtered
+              - images/skopeo-eu-gcr-io.yaml.filtered
+              - images/skopeo-gcr-io.yaml.filtered
+              - images/skopeo-ghcr-io.yaml.filtered
+              - images/skopeo-mcr-microsoft-com.yaml.filtered
+              - images/skopeo-public-ecr-aws.yaml.filtered
+              - images/skopeo-quay-io.yaml.filtered
+              - images/skopeo-registry-k8s-io.yaml.filtered
+              - images/skopeo-registry-k8s-io-kubernetes.yaml.filtered
+    - retag-registry:
+        context: architect
+        name: retag-gsoci-<<matrix.images_file>>
+        username: ${ACR_GSOCI_RETAGGER_USERNAME}
+        password: ${ACR_GSOCI_RETAGGER_PASSWORD}
+        registry: "gsoci.azurecr.io"
+        requires:
+          - filter-skopeo-docker-elastic-co
+          - filter-skopeo-docker-io
+          - filter-skopeo-eu-gcr-io
+          - filter-skopeo-gcr-io
+          - filter-skopeo-ghcr-io
+          - filter-skopeo-mcr-microsoft-com
+          - filter-skopeo-public-ecr-aws
+          - filter-skopeo-quay-io
+          - filter-skopeo-k8s-io
+          - filter-skopeo-k8s-io-kubernetes
+        matrix:
+          parameters:
+            images_file:
+              - images/skopeo-docker-elastic-co.yaml.filtered
               - images/skopeo-docker-io.yaml.filtered
               - images/skopeo-eu-gcr-io.yaml.filtered
               - images/skopeo-gcr-io.yaml.filtered
