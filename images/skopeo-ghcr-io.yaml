@@ -10,7 +10,7 @@ ghcr.io:
     aquasecurity/node-collector:
       - ">= 0.0.5"
     aquasecurity/trivy:
-      - ">= 0.30.4"
+      - ">= 0.37.2"
     aquasecurity/trivy-operator:
       - ">= 0.16.1"
     external-secrets/external-secrets:
@@ -22,7 +22,7 @@ ghcr.io:
     kedacore/keda-metrics-apiserver:
       - ">= 2.10.1"
     kube-vip/kube-vip:
-      - ">= v0.5.11"
+      - ">= v0.6.3"
     kube-vip/kube-vip-cloud-provider:
       - ">= v0.0.4"
     kyverno/background-controller:

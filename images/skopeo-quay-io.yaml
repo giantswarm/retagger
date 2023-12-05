@@ -5,8 +5,6 @@ quay.io:
       - "v0.3.2"
     coreos/flannel:
       - "v0.11.0-amd64"
-    coreos/prometheus-operator:
-      - "v0.30.1"
     giantswarm/docker-strongswan:
       - "d432793577e07bfe6856d3739e6bca3d91db71e4"
     giantswarm/k8s-api-healthz:
@@ -18,12 +16,8 @@ quay.io:
     prometheus/haproxy-exporter:
       - "v0.9.0"
     prometheus/node-exporter:
-      - "v1.0.1"
       - "v1.3.1"
-      - "v0.15.1"
-      - "v0.17.0"
-      - "v0.18.0"
-      - "v0.18.1"
+      - "v1.5.0"
     pusher/oauth2_proxy:
       - "v5.1.0"
   images-by-semver:
@@ -40,9 +34,9 @@ quay.io:
     calico/typha:
       - ">= v3.10.1"
     ceph/ceph:
-      - ">= v16.2.5-20210708"
+      - "v16.2.5-20210708"
     cephcsi/cephcsi:
-      - ">= v3.1.1"
+      - "v3.1.1 - v3.4.0"
     cilium/cilium:
       - ">= v1.11.2"
     cilium/cilium-etcd-operator:
@@ -53,24 +47,14 @@ quay.io:
       - ">= v0.8.5"
     cilium/hubble-ui-backend:
       - ">= v0.8.5"
-    coreos/configmap-reload:
-      - ">= v0.0.1"
     coreos/etcd:
       - ">= v3.3"
-    coreos/prometheus-config-reloader:
-      - ">= v0.38.1"
-    coreos/prometheus-operator:
-      - ">= 0.38.1"
     dexidp/dex:
       - ">=v2.30.2"
     fairwinds/goldilocks:
       - ">= v2.2.0"
-    fairwinds/polaris:
-      - ">= 4.0"
     giantswarm/amazon-k8s-cni:
       - ">= v1.11.2"
-    google-cloud-tools/kube-eagle:
-      - ">= v1.1.4"
     jacksontj/promxy:
       - ">= v0.0.60"
     jetstack/cert-manager-acmesolver:
@@ -85,19 +69,11 @@ quay.io:
       - ">= v1.7.3"
     oauth2-proxy/oauth2-proxy:
       - ">= v7.2.1"
-    open-policy-agent/gatekeeper:
-      - ">= v3.1.0-beta.5"
     prometheus-operator/prometheus-config-reloader:
-      - ">= v0.43.0"
+      - ">= v0.62.0"
     prometheus-operator/prometheus-operator:
-      - ">= 0.43.0"
+      - ">= 0.63.0"
     prometheus/alertmanager:
-      - ">= v0.19.0"
-    prometheus/node-exporter:
-      - ">= v1.3.0"
-    prometheuscommunity/elasticsearch-exporter:
-      - ">= v1.5.0"
-    thanos/thanos:
-      - ">= v0.17.2"
+      - ">= v0.25.0"
     uswitch/kiam:
       - ">= v4.2.0"

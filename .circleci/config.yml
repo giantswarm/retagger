@@ -235,12 +235,6 @@ build_and_retag: &build_and_retag
           - build-go
     - filter-skopeo-tags:
         context: architect
-        name: filter-skopeo-docker-elastic-co
-        filepath: images/skopeo-docker-elastic-co.yaml
-        requires:
-          - build-and-push-docker
-    - filter-skopeo-tags:
-        context: architect
         name: filter-skopeo-docker-io
         filepath: images/skopeo-docker-io.yaml
         requires:
@@ -300,7 +294,6 @@ build_and_retag: &build_and_retag
         password: ${QUAY_PASSWORD}
         registry: "quay.io"
         requires:
-          - filter-skopeo-docker-elastic-co
           - filter-skopeo-docker-io
           - filter-skopeo-eu-gcr-io
           - filter-skopeo-gcr-io
@@ -313,7 +306,6 @@ build_and_retag: &build_and_retag
         matrix:
           parameters:
             images_file:
-              - images/skopeo-docker-elastic-co.yaml.filtered
               - images/skopeo-docker-io.yaml.filtered
               - images/skopeo-eu-gcr-io.yaml.filtered
               - images/skopeo-gcr-io.yaml.filtered
@@ -330,7 +322,6 @@ build_and_retag: &build_and_retag
         password: ${ALIYUN_PASSWORD}
         registry: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com"
         requires:
-          - filter-skopeo-docker-elastic-co
           - filter-skopeo-docker-io
           - filter-skopeo-eu-gcr-io
           - filter-skopeo-gcr-io
@@ -343,7 +334,6 @@ build_and_retag: &build_and_retag
         matrix:
           parameters:
             images_file:
-              - images/skopeo-docker-elastic-co.yaml.filtered
               - images/skopeo-docker-io.yaml.filtered
               - images/skopeo-eu-gcr-io.yaml.filtered
               - images/skopeo-gcr-io.yaml.filtered

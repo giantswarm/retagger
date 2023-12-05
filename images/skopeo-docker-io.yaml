@@ -4,6 +4,11 @@ docker.io:
     alpine:
       - "3.14"
       - "3.16.2"
+    amazon/opendistro-for-elasticsearch:
+      - ">= 1.3.2"
+      - ">= 1.3.3"
+    amazon/opendistro-for-elasticsearch-kibana:
+      - ">= 1.3.2"
     centos:
       - "8.1.1911"
     cibuilds/github:
@@ -13,6 +18,7 @@ docker.io:
       - "1.8.6"
       - "1.8.7"
       - "1.9.3"
+      - "1.11.1"
     docker:
       - "18.09.1"
     elasticsearch:
@@ -56,12 +62,10 @@ docker.io:
       - "v0.21.0"
     janeczku/go-dnsmasq:
       - "release-1.0.7"
-    jgsqware/fluentd-loki-plugin:
-      - "9ee2ce8"
     jimschubert/swagger-codegen-cli:
       - "2.2.3"
-    jollinshead/journald-cloudwatch-logs:
-      - "0.1"
+    justwatch/elasticsearch_exporter:
+      - "v1.1.0"
     k8spin/loki-multi-tenant-proxy:
       - "v1.0.0"
     koalaman/shellcheck-alpine:
@@ -75,6 +79,7 @@ docker.io:
       - "3.4.1.1-debian"
       - "3.4.2.0-debian"
       - "3.5.0.0-debian"
+      - "3.5.0.1-debian"
     looztra/kubesplit:
       - "0.3.2-dd13538"
     madnight/alpine-wkhtmltopdf-builder:
@@ -89,8 +94,6 @@ docker.io:
     peaceiris/hugo:
       - "v0.118.2-full"
       - "v0.120.2"
-    prom/cloudwatch-exporter:
-      - "cloudwatch_exporter-0.4"
     python:
       - "3.8.12-slim"
       - "3.9-alpine3.13"
@@ -103,13 +106,8 @@ docker.io:
       - "6.2.4-alpine"
     sonobuoy/sonobuoy:
       - "latest"
-    toniblyx/prowler:
-      - "2.2.0"
     weaveworks/watch:
       - "master-5b2a6e5"
-    zricethezav/gitleaks:
-      - "v3.3.0"
-      - "v6.0.0"
   images-by-semver:
     alpine:
       - ">= 3.13"
@@ -120,16 +118,10 @@ docker.io:
       - ">= 2.4.1"
     amazon/aws-efs-csi-driver:
       - ">= 1.0.0"
-    amazon/opendistro-for-elasticsearch:
-      - ">= 1.3.0"
-    amazon/opendistro-for-elasticsearch-kibana:
-      - ">= 1.3.0"
     aquasec/kube-bench:
       - ">= 0.2"
     bash:
       - ">= 5"
-    bats/bats:
-      - ">= 1.2.1"
     bitnami/kubectl:
       - ">= 1.16"
     busybox:
@@ -157,15 +149,13 @@ docker.io:
     falcosecurity/falcosidekick:
       - ">= 2.28.0"
     fluent/fluent-bit:
-      - ">= 1.x.x"
+      - ">= 1.7.1"
     golang:
       - ">= 1.19.0"
     grafana/grafana:
-      - ">= 6.0.0"
-    grafana/grafana-image-renderer:
-      - ">= 2.0.0"
+      - ">= 9.1.1"
     grafana/loki:
-      - ">= v1.2.0"
+      - ">= 2.7.3"
     grafana/loki-canary:
       - ">= v2.1.0"
     grafana/mimir:
@@ -173,16 +163,11 @@ docker.io:
     grafana/mimir-continuous-test:
       - ">= v2.7.0"
     grafana/promtail:
-      - ">= v1.2.0"
+      - ">= v2.5.0"
     grafana/tempo:
-      - ">= v2.2.0"
-    jettech/kube-webhook-certgen:
-      # Used in prometheus-operator-app
-      - ">= v1.2.0"
+      - ">= v2.3.0"
     jimmidyson/configmap-reload:
-      - ">= v0.2.0"
-    justwatch/elasticsearch_exporter:
-      - ">= v1.1.0"
+      - ">= v0.8.0"
     k8scloudprovider/cinder-csi-plugin:
       - ">= 1.20.0"
     k8scloudprovider/octavia-ingress-controller:
@@ -190,7 +175,7 @@ docker.io:
     k8scloudprovider/openstack-cloud-controller-manager:
       - ">= 1.20.0"
     kiwigrid/k8s-sidecar:
-      - ">= 1.24.0"
+      - ">= 1.24.3"
     kong:
       - ">= 2.8.1"
     hjacobs/kube-downscaler:
@@ -199,34 +184,20 @@ docker.io:
       - ">= 4.31.2"
     mintel/dex-k8s-authenticator:
       - ">= 1.4.0"
-    memcached:
-      - ">= 1.6.19-alpine"
-    omnition/opencensus-collector:
-      - ">= 0.1.11"
     openpolicyagent/conftest:
       - ">= v0.25.0"
-    opensearchproject/opensearch:
-      - ">= v2.0.0"
-    opensearchproject/opensearch-dashboards:
-      - ">= v2.0.0"
     prom/blackbox-exporter:
       - ">= v0.23.0"
-    prom/memcached-exporter:
-      - ">= v0.11.2"
     prom/prometheus:
       - ">= 2.41.0"
-      - ">= 2.43.0-stringlabels"
-    prom/pushgateway:
-      - ">= v1.0.0"
     # Used in akv2k8s
     spvest/azure-keyvault-controller:
       - ">= 1.3.0"
     spvest/azure-keyvault-webhook:
       - ">= 1.3.0"
-    # Used in prometheus-operator-app
-    squareup/ghostunnel:
-      - ">= v1.5.2"
     vault:
       - ">= v1.5.4"
     velero/velero:
       - ">= v1.4.3"
+    zricethezav/gitleaks:
+      - ">=v7.4.0"
