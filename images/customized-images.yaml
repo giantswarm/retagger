@@ -100,11 +100,6 @@
 - image: golang
   semver: ">= 1.21.1"
   filter: "(.+)-alpine3.18"
-- image: coredns/coredns
-  semver: ">= 1.6.5"
-  add_tag_suffix: "giantswarm"
-  dockerfile_extras:
-    - EXPOSE 1053
 - image: ghcr.io/linkerd/cni-plugin
   override_repo_name: linkerd2-cni-plugin
   semver: ">= v1.1.1"
