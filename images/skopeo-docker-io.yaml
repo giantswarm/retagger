@@ -92,6 +92,7 @@ docker.io:
     ns1labs/flame:
       - "0.11.0"
     peaceiris/hugo:
+      - "v0.121.0-full"
       - "v0.121.0-mod"
       - "v0.120.2-mod"
     python:
