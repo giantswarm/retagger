@@ -350,7 +350,6 @@ build_and_retag: &build_and_retag
         password: ${ACR_GSOCI_RETAGGER_PASSWORD}
         registry: "gsoci.azurecr.io"
         requires:
-          - filter-skopeo-docker-elastic-co
           - filter-skopeo-docker-io
           - filter-skopeo-eu-gcr-io
           - filter-skopeo-gcr-io
@@ -363,7 +362,6 @@ build_and_retag: &build_and_retag
         matrix:
           parameters:
             images_file:
-              - images/skopeo-docker-elastic-co.yaml.filtered
               - images/skopeo-docker-io.yaml.filtered
               - images/skopeo-eu-gcr-io.yaml.filtered
               - images/skopeo-gcr-io.yaml.filtered
