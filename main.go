@@ -35,9 +35,8 @@ const (
 	dockerTransport      = "docker://"
 	filteredFileSuffix   = ".filtered"
 
-	aliyunURL = "giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm"
-	azureURL  = "gsoci.azurecr.io/giantswarm"
-	quayURL   = "quay.io/giantswarm"
+	azureURL = "gsoci.azurecr.io/giantswarm"
+	quayURL  = "quay.io/giantswarm"
 )
 
 // CustomImage represents a set of rules used to rebuild/retag multiple tags of
@@ -122,15 +121,9 @@ func (img *CustomImage) RetagUsingSHA() error {
 	if len(img.DockerfileExtras) == 0 {
 		source := fmt.Sprintf("%s%s@sha256:%s", dockerTransport, img.Image, img.SHA)
 		wg := sync.WaitGroup{}
-		wg.Add(3)
-		// Quay
-		destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, quayURL, destinationName, destinationTag)
-		go copyImage(&wg, errorCounter, source, destination)
+		wg.Add(1)
 		// AzureCR
-		destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, azureURL, destinationName, destinationTag)
-		go copyImage(&wg, errorCounter, source, destination)
-		// Aliyun
-		destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, aliyunURL, destinationName, destinationTag)
+		destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, azureURL, destinationName, destinationTag)
 		go copyImage(&wg, errorCounter, source, destination)
 		wg.Wait()
 
@@ -162,11 +155,10 @@ func (img *CustomImage) RetagUsingSHA() error {
 	}
 
 	wg := sync.WaitGroup{}
-	wg.Add(3)
+	wg.Add(1)
 	name := fmt.Sprintf("%s:%s", destinationName, destinationTag)
 	quayName := fmt.Sprintf("%s/%s", quayURL, name)
 	azureName := fmt.Sprintf("%s/%s", azureURL, name)
-	aliyunName := fmt.Sprintf("%s/%s", aliyunURL, name)
 	// Build the generated Dockerfile, tagging it for Quay
 	{
 		c, stdout, stderr := command("docker", "build", "-t", quayName, "-f", dockerfile, temporaryWorkingDir)
@@ -175,9 +167,6 @@ func (img *CustomImage) RetagUsingSHA() error {
 		}
 		logrus.Tracef(stdout.String())
 	}
-
-	// Start pushing to Quay immediately
-	go pushImage(&wg, errorCounter, quayName)
 
 	// Tag the image we've just built for AzureCR...
 	{
@@ -188,16 +177,6 @@ func (img *CustomImage) RetagUsingSHA() error {
 	}
 	// push to AzureCR...
 	go pushImage(&wg, errorCounter, azureName)
-
-	// Tag the image we've just built for Aliyun as well...
-	{
-		c, _, stderr := command("docker", "tag", quayName, aliyunName)
-		if err := c.Run(); err != nil {
-			return fmt.Errorf("error tagging custom image for \"%s@sha256:%s\": %w\n%s", img.Image, img.SHA, err, stderr.String())
-		}
-	}
-	// and push to Aliyun
-	go pushImage(&wg, errorCounter, aliyunName)
 
 	wg.Wait()
 
@@ -231,19 +210,11 @@ func (img *CustomImage) RetagUsingTags() error {
 
 	// Exclude tags existing in all registries
 	if flagSkipExistingTags {
-		quayTags, err := listTags(fmt.Sprintf("%s/%s", quayURL, destinationName))
-		if err != nil {
-			logrus.Warnf("error getting Quay.io tags: %w", err)
-		}
 		azureTags, err := listTags(fmt.Sprintf("%s/%s", azureURL, destinationName))
 		if err != nil {
 			logrus.Warnf("error getting AzureCR tags: %w", err)
 		}
-		aliyunTags, err := listTags(fmt.Sprintf("%s/%s", aliyunURL, destinationName))
-		if err != nil {
-			logrus.Warnf("error getting Aliyun tags: %w", err)
-		}
-		tags = img.FindMissingTags(tags, quayTags, azureTags, aliyunTags)
+		tags = img.FindMissingTags(tags, azureTags)
 		logrus.Infof("Found %d missing tags for image %q", len(tags), img.Image)
 	}
 
@@ -265,15 +236,9 @@ tagLoop:
 		if len(img.DockerfileExtras) == 0 {
 			source := fmt.Sprintf("%s%s:%s", dockerTransport, img.Image, tag)
 			wg := sync.WaitGroup{}
-			wg.Add(3)
-			// Quay
-			destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, quayURL, destinationName, destinationTag)
-			go copyImage(&wg, errorCounter, source, destination)
+			wg.Add(1)
 			// Azure
-			destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, azureURL, destinationName, destinationTag)
-			go copyImage(&wg, errorCounter, source, destination)
-			// Aliyun
-			destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, aliyunURL, destinationName, destinationTag)
+			destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, azureURL, destinationName, destinationTag)
 			go copyImage(&wg, errorCounter, source, destination)
 			wg.Wait()
 
@@ -307,11 +272,10 @@ tagLoop:
 		}
 
 		wg := sync.WaitGroup{}
-		wg.Add(3)
+		wg.Add(1)
 		name := fmt.Sprintf("%s:%s", destinationName, destinationTag)
 		quayName := fmt.Sprintf("%s/%s", quayURL, name)
 		azureName := fmt.Sprintf("%s/%s", azureURL, name)
-		aliyunName := fmt.Sprintf("%s/%s", aliyunURL, name)
 		// Build the generated Dockerfile, tagging it for Quay
 		{
 			c, stdout, stderr := command("docker", "build", "-t", quayName, "-f", dockerfile, temporaryWorkingDir)
@@ -323,9 +287,6 @@ tagLoop:
 			logrus.Tracef(stdout.String())
 		}
 
-		// Start pushing to Quay immediately
-		go pushImage(&wg, errorCounter, quayName)
-
 		// Tag the image we've just built for AzureCR...
 		{
 			c, _, stderr := command("docker", "tag", quayName, azureName)
@@ -336,17 +297,6 @@ tagLoop:
 		}
 		// and push to Azure
 		go pushImage(&wg, errorCounter, azureName)
-
-		// Tag the image we've just built for Aliyun as well...
-		{
-			c, _, stderr := command("docker", "tag", quayName, aliyunName)
-			if err := c.Run(); err != nil {
-				logrus.Errorf("error tagging custom image for %s:%s: %v\n%s", img.Image, tag, err, stderr.String())
-				continue tagLoop
-			}
-		}
-		// and push to Aliyun
-		go pushImage(&wg, errorCounter, aliyunName)
 
 		wg.Wait()
 	}
@@ -690,24 +640,13 @@ func commandFilter(filepath string) {
 		logger.Infof("Found %d images, checking how many tags are missing", len(tagsPerImage))
 		missingTagCount := 0
 		for image, tags := range tagsPerImage {
-			logger.WithField("image", image).Debugf("searching for missing tags")
-			quayTags, err := listTags(fmt.Sprintf("%s/%s", quayURL, imageBaseName(image)))
-			if err != nil {
-				logger.WithField("image", image).Errorf("error listing Quay tags: %v", err)
-				continue
-			}
 			azureTags, err := listTags(fmt.Sprintf("%s/%s", azureURL, imageBaseName(image)))
 			if err != nil {
 				logger.WithField("image", image).Errorf("error listing AzureCR tags: %v", err)
 				continue
 			}
-			aliyunTags, err := listTags(fmt.Sprintf("%s/%s", aliyunURL, imageBaseName(image)))
-			if err != nil {
-				logger.WithField("image", image).Errorf("error listing Aliyun tags: %v", err)
-				continue
-			}
 			i := &CustomImage{}
-			missingTags := i.FindMissingTags(tags, quayTags, azureTags, aliyunTags)
+			missingTags := i.FindMissingTags(tags, azureTags)
 			missingTagCount += len(missingTags)
 			missingTagsPerImage[image] = missingTags
 		}
