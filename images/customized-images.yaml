@@ -99,7 +99,7 @@
   override_repo_name: csi-vsphere-syncer
 - image: golang
   semver: ">= 1.21.1"
-  filter: "(.+)-alpine3.18"
+  filter: "(.+)-alpine3.19"
 - image: ghcr.io/linkerd/cni-plugin
   override_repo_name: linkerd2-cni-plugin
   semver: ">= v1.1.1"
