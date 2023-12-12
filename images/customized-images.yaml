@@ -141,9 +141,6 @@
 - image: ghcr.io/weaveworks/wego-app
   override_repo_name: weaveworks-wego-app
   semver: ">= v0.18.0"
-- image: crossplane/xfn
-  override_repo_name: crossplane-xfn
-  semver: ">= v1.11.0"
 - image: fluent/fluent-bit
   tag_or_pattern: "1.9.8"
   sha: 137669ee97787c930ec00a8babff46ecc76988d128cc9e7fa581d1b05ef8fb3d
