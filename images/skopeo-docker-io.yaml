@@ -165,6 +165,8 @@ docker.io:
       - ">= v2.7.0"
     grafana/promtail:
       - ">= v2.5.0"
+    grafana/pyroscope:
+      - ">= 1.2.1"
     grafana/tempo:
       - ">= v2.3.0"
     jimmidyson/configmap-reload:
