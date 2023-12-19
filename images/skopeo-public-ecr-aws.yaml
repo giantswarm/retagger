@@ -4,4 +4,4 @@ public.ecr.aws:
     aws-ec2/aws-node-termination-handler:
       - "v1.17.2"
     gravitational/teleport:
-      - "14.1.1"
+      - "=> 14.1.1"
