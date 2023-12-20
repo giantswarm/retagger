@@ -222,6 +222,9 @@ build_and_retag: &build_and_retag
         requires:
           - validate-images-yaml
         filters:
+          branches:
+            only:
+              - main
           tags:
             only: /^v.*/
     - build-and-push-docker:
