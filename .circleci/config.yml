@@ -222,9 +222,6 @@ build_and_retag: &build_and_retag
         requires:
           - validate-images-yaml
         filters:
-          branches:
-            only:
-              - main
           tags:
             only: /^v.*/
     - build-and-push-docker:
@@ -240,54 +237,90 @@ build_and_retag: &build_and_retag
         context: architect
         name: filter-skopeo-docker-io
         filepath: images/skopeo-docker-io.yaml
+        filters:
+          branches:
+            only:
+              - main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-eu-gcr-io
         filepath: images/skopeo-eu-gcr-io.yaml
+        filters:
+          branches:
+            only:
+              - main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-gcr-io
         filepath: images/skopeo-gcr-io.yaml
+        filters:
+          branches:
+            only:
+              - main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-ghcr-io
         filepath: images/skopeo-ghcr-io.yaml
+        filters:
+          branches:
+            only:
+              - main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-mcr-microsoft-com
         filepath: images/skopeo-mcr-microsoft-com.yaml
+        filters:
+          branches:
+            only:
+              - main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-public-ecr-aws
         filepath: images/skopeo-public-ecr-aws.yaml
+        filters:
+          branches:
+            only:
+              - main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-quay-io
         filepath: images/skopeo-quay-io.yaml
+        filters:
+          branches:
+            only:
+              - main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-k8s-io
         filepath: images/skopeo-registry-k8s-io.yaml
+        filters:
+          branches:
+            only:
+              - main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-k8s-io-kubernetes
         filepath: images/skopeo-registry-k8s-io-kubernetes.yaml
+        filters:
+          branches:
+            only:
+              - main
         requires:
           - build-and-push-docker
     - retag-registry:
@@ -380,6 +413,10 @@ build_and_retag: &build_and_retag
         requires:
           - build-and-push-docker
         executor_count: 5
+        filters:
+          branches:
+            only:
+              - main
         matrix:
           parameters:
             # i in range(executor_count)
