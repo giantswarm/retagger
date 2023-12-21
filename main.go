@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"net/url"
 	"os"
 	"os/exec"
 	"path"
@@ -528,6 +529,23 @@ func imageBaseName(name string) string {
 	}
 	elems := strings.Split(name, "/")
 	return elems[len(elems)-1]
+}
+
+// removeRegistryPrefix is a helper function to get rid of the
+// registry name if it exists.
+// Examples:
+// "docker.io/alpine/alpine" -> "alpine/alpine"
+// "grafana" -> "grafana"
+func removeRegistryPrefix(name string) string {
+	if !strings.ContainsRune(name, '/') {
+		return name
+	}
+	name = "docker://" + name
+	u, err := url.Parse(name)
+	if err != nil {
+		logrus.Fatalf("error parsing %q as URL", name)
+	}
+	return strings.TrimLeft(u.RequestURI(), "/")
 }
 
 // copyImage is a helper function used to invoke `skopeo copy`. Please note the
