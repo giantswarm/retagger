@@ -144,6 +144,14 @@ func (img *CustomImage) RetagUsingSHA() error {
 			return fmt.Errorf("finished %q with %d errors", img.Image, errorCount)
 		}
 		return nil
+	} else {
+		source := fmt.Sprintf("%s%s@sha256:%s", dockerTransport, img.Image, img.SHA)
+		wg := sync.WaitGroup{}
+		wg.Add(1)
+		// AzureCR/upstream
+		destination := fmt.Sprintf("%s%s/%s:@sha256:%s", dockerTransport, azureUpstreamURL, upstreamName, img.SHA)
+		go copyImage(&wg, errorCounter, source, destination)
+		wg.Wait()
 	}
 
 	// DockerfileExtras were defined. We'll create a Dockefile which
@@ -168,11 +176,10 @@ func (img *CustomImage) RetagUsingSHA() error {
 	}
 
 	wg := sync.WaitGroup{}
-	wg.Add(4)
+	wg.Add(3)
 	name := fmt.Sprintf("%s:%s", destinationName, destinationTag)
 	quayName := fmt.Sprintf("%s/%s", quayURL, name)
 	azureName := fmt.Sprintf("%s/%s", azureURL, name)
-	azureUpstreamName := fmt.Sprintf("%s/%s@sha256:%s", azureUpstreamURL, upstreamName, img.SHA)
 	aliyunName := fmt.Sprintf("%s/%s", aliyunURL, name)
 	// Build the generated Dockerfile, tagging it for Quay
 	{
@@ -195,16 +202,6 @@ func (img *CustomImage) RetagUsingSHA() error {
 	}
 	// push to AzureCR...
 	go pushImage(&wg, errorCounter, azureName)
-
-	// Tag the image we've just built for AzureCR upstream...
-	{
-		c, _, stderr := command("docker", "tag", quayName, azureUpstreamName)
-		if err := c.Run(); err != nil {
-			return fmt.Errorf("error tagging custom image for \"%s@sha256:%s\": %w\n%s", img.Image, img.SHA, err, stderr.String())
-		}
-	}
-	// push to AzureCR upstream...
-	go pushImage(&wg, errorCounter, azureUpstreamName)
 
 	// Tag the image we've just built for Aliyun as well...
 	{
@@ -300,6 +297,14 @@ tagLoop:
 
 			// We'll skip to the next tag
 			continue
+		} else {
+			source := fmt.Sprintf("%s%s:%s", dockerTransport, img.Image, tag)
+			wg := sync.WaitGroup{}
+			wg.Add(1)
+			// AzureCR/upstream
+			destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, azureUpstreamURL, upstreamName, tag)
+			go copyImage(&wg, errorCounter, source, destination)
+			wg.Wait()
 		}
 
 		// DockerfileExtras were defined. We'll create a Dockefile which
@@ -328,11 +333,10 @@ tagLoop:
 		}
 
 		wg := sync.WaitGroup{}
-		wg.Add(4)
+		wg.Add(3)
 		name := fmt.Sprintf("%s:%s", destinationName, destinationTag)
 		quayName := fmt.Sprintf("%s/%s", quayURL, name)
 		azureName := fmt.Sprintf("%s/%s", azureURL, name)
-		azureUpstreamName := fmt.Sprintf("%s/%s:%s", azureUpstreamURL, upstreamName, tag)
 		aliyunName := fmt.Sprintf("%s/%s", aliyunURL, name)
 		// Build the generated Dockerfile, tagging it for Quay
 		{
@@ -358,17 +362,6 @@ tagLoop:
 		}
 		// and push to Azure
 		go pushImage(&wg, errorCounter, azureName)
-
-		// Tag the image we've just built for AzureCR upstream...
-		{
-			c, _, stderr := command("docker", "tag", quayName, azureUpstreamName)
-			if err := c.Run(); err != nil {
-				logrus.Errorf("error tagging custom image for %s:%s: %v\n%s", img.Image, tag, err, stderr.String())
-				continue tagLoop
-			}
-		}
-		// and push to AzureCR upstream
-		go pushImage(&wg, errorCounter, azureUpstreamName)
 
 		// Tag the image we've just built for Aliyun as well...
 		{
