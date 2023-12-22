@@ -81,6 +81,7 @@ docker.io:
       - "3.4.3.1-debian"
       - "3.5.0.0-debian"
       - "3.5.0.1-debian"
+      - "3.5.0.2-debian"
     looztra/kubesplit:
       - "0.3.2-dd13538"
     madnight/alpine-wkhtmltopdf-builder:
