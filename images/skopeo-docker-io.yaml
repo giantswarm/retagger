@@ -65,7 +65,7 @@ docker.io:
     jimschubert/swagger-codegen-cli:
       - "2.2.3"
     justwatch/elasticsearch_exporter:
-      - "v1.1.0"
+      - "1.1.0"
     k8spin/loki-multi-tenant-proxy:
       - "v1.0.0"
     koalaman/shellcheck-alpine:
@@ -81,6 +81,7 @@ docker.io:
       - "3.4.3.1-debian"
       - "3.5.0.0-debian"
       - "3.5.0.1-debian"
+      - "3.5.0.2-debian"
     looztra/kubesplit:
       - "0.3.2-dd13538"
     madnight/alpine-wkhtmltopdf-builder:
@@ -166,6 +167,8 @@ docker.io:
       - ">= v2.7.0"
     grafana/promtail:
       - ">= v2.5.0"
+    grafana/pyroscope:
+      - ">= 1.2.1"
     grafana/tempo:
       - ">= v2.3.0"
     jimmidyson/configmap-reload:
