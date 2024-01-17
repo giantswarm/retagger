@@ -79,6 +79,7 @@ docker.io:
       - "3.4.1.1-debian"
       - "3.4.2.0-debian"
       - "3.4.3.1-debian"
+      - "3.4.3.3-debian"
       - "3.5.0.0-debian"
       - "3.5.0.1-debian"
       - "3.5.0.2-debian"
