@@ -118,8 +118,6 @@ docker.io:
       - ">= 3.11"
     amazon/amazon-eks-pod-identity-webhook:
       - ">= v0.3.0"
-    amazon/aws-alb-ingress-controller:
-      - ">= 2.4.1"
     amazon/aws-efs-csi-driver:
       - ">= 1.0.0"
     aquasec/kube-bench:
