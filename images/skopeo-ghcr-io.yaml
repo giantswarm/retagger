@@ -46,6 +46,8 @@ ghcr.io:
     opsgenie/kubernetes-event-exporter:
       # used for https://github.com/giantswarm/event-exporter-app
       - ">= v0.9"
+    project-zot/zot-linux-amd64:
+      - ">= v2.0.0"
     prymitive/karma:
       - ">= 0.74"
     slok/sloth:
