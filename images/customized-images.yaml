@@ -511,3 +511,6 @@
 - image: xpkg.upbound.io/upbound/provider-terraform
   override_repo_name: upbound-provider-terraform
   semver: ">= v0.4.0"
+- image: public.ecr.aws/karpenter/controller
+  override_repo_name: karpenter-controller
+  semver: ">= v0.29.0"
