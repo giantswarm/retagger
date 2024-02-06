@@ -514,3 +514,4 @@
 - image: public.ecr.aws/karpenter/controller
   override_repo_name: karpenter-controller
   semver: ">= v0.29.0"
+  filter: "^v(.*)$"
