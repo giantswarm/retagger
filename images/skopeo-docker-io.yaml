@@ -2,7 +2,7 @@
 docker.io:
   images-by-tag-regex:
     nginxinc/nginx-unprivileged:
-      - "1\.2[456789]-alpine"
+      - "1\\.2[456789]-alpine"
   images:
     alpine:
       - ">= 3.16.9"
