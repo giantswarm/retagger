@@ -487,8 +487,8 @@
   override_repo_name: rook-ceph
   semver: "v1.7.0 - v1.7.11"
 - image: ubuntu/squid
-  sha: 4e1f0204b58779fb89f0281b3ccd4ee19723209d65dbec63bc4b5a07d0509841
-  tag_or_pattern: "5.2-22.04_beta"
+  sha: ce0ecb6789692f968ec9975149834e3ab2471851ad4951dc2de01a47fecdd4bf
+  tag_or_pattern: "5.6-22.10_beta"
   add_tag_suffix: giantswarm_gs1
   dockerfile_extras:
     - RUN sed -i '/^acl SSL_ports port 443/a acl SSL_ports port 6443' /etc/squid/squid.conf
