@@ -21,7 +21,7 @@ jobs:
 
   validate-skopeo:
     docker:
-      - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
+      - image: quay.io/skopeo/stable:v1
     resource_class: small
     steps:
       - checkout
