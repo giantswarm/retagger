@@ -88,11 +88,6 @@ docker.io:
       - "0.3.2-dd13538"
     madnight/alpine-wkhtmltopdf-builder:
       - "0.12.5-alpine3.10-606718795"
-    nginx:
-      - "1.23-alpine"
-    nginxinc/nginx-unprivileged:
-      - "1.23-alpine"
-      - "1.24-alpine"
     ns1labs/flame:
       - "0.11.0"
     peaceiris/hugo:
@@ -114,9 +109,6 @@ docker.io:
     weaveworks/watch:
       - "master-5b2a6e5"
   images-by-semver:
-    alpine:
-      - ">= 3.13"
-      - ">= 3.11"
     amazon/amazon-eks-pod-identity-webhook:
       - ">= v0.3.0"
     amazon/aws-efs-csi-driver:
@@ -206,3 +198,7 @@ docker.io:
       - ">= v1.4.3"
     zricethezav/gitleaks:
       - ">=v7.4.0"
+  images-by-tag-regex:
+    alpine: ^3\.[123][0-9]\.[0-9]+$
+    nginx: ^1\.2[3-9]-alpine$
+    nginxinc/nginx-unprivileged: ^1\.2[3-9]-alpine$
