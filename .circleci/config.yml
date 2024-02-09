@@ -39,8 +39,8 @@ jobs:
             # So let's make sure this test fails if there were some.
             if grep "level=error" dry-run.log; then
                 echo ""
-                echo "ERRORS OCCURRED"
-                echo "Scroll up to see them in context."
+                echo "\033[0;31mERRORS OCCURRED\033[0m"
+                echo "Here is the gist only. Scroll up to see them in context."
                 echo ""
                 grep "level=error" dry-run.log
                 exit 1
