@@ -36,7 +36,8 @@ jobs:
             done
 
             # Skopeo sync exits with code 0 even of there were errors. So let's make sure this test fails if there were some.
-            grep ERR dry-run.log && exit 1
+            echo ""
+            grep "level=error" dry-run.log && exit 1
 
   build-go:
     machine:
