@@ -32,8 +32,11 @@ jobs:
           command: |
             for file in images/skopeo-*.yaml; do
               # The target does not matter here, so we use the non-existing `dummy.example.com/namespace/`.
-              skopeo sync --dry-run --src yaml $file --dest docker dummy.example.com/namespace/
+              skopeo sync --dry-run --src yaml $file --dest docker dummy.example.com/namespace/  2>&1 | tee -a dry-run.log
             done
+
+            # Skopeo sync exits with code 0 even of there were errors. So let's make sure this test fails if there were some.
+            grep ERR dry-run.log && exit 1
 
   build-go:
     machine:
