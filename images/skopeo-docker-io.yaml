@@ -1,5 +1,10 @@
 # Docs: https://github.com/kubasobon/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
 docker.io:
+  # Deliberately introducing a fatal schema error here
+  images-by-tag-regex:
+    some-image:
+      - "some-string"
+  # End of deliberate error
   images:
     alpine:
       - "3.14"
