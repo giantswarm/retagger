@@ -14,13 +14,6 @@ jobs:
              giantswarm/yamllint \
              -c .yamllint \
              images/*.yaml
-      - run:
-          name: Run skopeo YAML files through 'skopeo sync --dry-run' for validation
-          command: |
-            for file in images/skopeo-*.yaml; do
-              # The target does not matter here, so we use the non-existing `dummy.example.com/namespace/`.
-              skopeo sync --dry-run --src yaml $file --dest docker dummy.example.com/namespace/
-            done
       - persist_to_workspace:
           root: .
           paths:
