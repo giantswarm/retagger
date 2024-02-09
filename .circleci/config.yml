@@ -1,6 +1,4 @@
 version: 2.1
-orbs:
-  architect: giantswarm/architect@4.27.0
 
 jobs:
   validate:
@@ -20,6 +18,36 @@ jobs:
           root: .
           paths:
             - "images/"
+
+  validate-skopeo:
+    docker:
+      - image: quay.io/skopeo/stable:v1
+    resource_class: small
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run skopeo YAML files through 'skopeo sync --dry-run' for validation
+          command: |
+            for file in images/skopeo-*.yaml; do
+              # The target does not matter here, so we use the non-existing `dummy.example.com/namespace/`.
+              echo "Checking $file:"
+              skopeo sync --dry-run --src yaml $file --dest docker dummy.example.com/namespace/  2>&1 | tee -a dry-run.log
+              echo ""
+            done
+
+            # Skopeo sync exits with code 0 even of there were errors.
+            # So let's make sure this test fails if there were some.
+            if grep -q "level=error" dry-run.log; then
+                echo -e "\033[0;31mERRORS OCCURRED\033[0m"
+                echo "Here is the gist only. Scroll up to see them in context."
+                echo ""
+                grep "level=error" dry-run.log
+                exit 1
+            fi
+            
+
   build-go:
     machine:
       image: ubuntu-2004:current
@@ -216,11 +244,15 @@ build_and_retag: &build_and_retag
   jobs:
     - validate:
         name: validate-images-yaml
+    - validate-skopeo:
+        name: validate-skopeo
+        requires:
+          - validate-images-yaml
     - build-go:
         context: architect
         name: build-go
         requires:
-          - validate-images-yaml
+          - validate-skopeo
         filters:
           tags:
             only: /^v.*/
@@ -423,7 +455,6 @@ build_and_retag: &build_and_retag
             executor_id: [0, 1, 2, 3, 4]
 
 workflows:
-  version: 2
   build_retag:
     <<: *build_and_retag
 
