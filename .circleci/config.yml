@@ -35,9 +35,17 @@ jobs:
               skopeo sync --dry-run --src yaml $file --dest docker dummy.example.com/namespace/  2>&1 | tee -a dry-run.log
             done
 
-            # Skopeo sync exits with code 0 even of there were errors. So let's make sure this test fails if there were some.
-            echo ""
-            grep "level=error" dry-run.log && exit 1
+            # Skopeo sync exits with code 0 even of there were errors.
+            # So let's make sure this test fails if there were some.
+            if grep "level=error" dry-run.log; then
+                echo ""
+                echo "ERRORS OCCURRED"
+                echo "Scroll up to see them in context."
+                echo ""
+                grep "level=error" dry-run.log
+                exit 1
+            fi
+            
 
   build-go:
     machine:
