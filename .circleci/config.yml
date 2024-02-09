@@ -421,7 +421,6 @@ build_and_retag: &build_and_retag
             executor_id: [0, 1, 2, 3, 4]
 
 workflows:
-  version: 2
   build_retag:
     <<: *build_and_retag
 
