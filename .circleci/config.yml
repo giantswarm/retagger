@@ -25,6 +25,23 @@ jobs:
           root: .
           paths:
             - "images/"
+
+  validate-skopeo:
+    docker:
+      - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
+    resource_class: small
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run skopeo YAML files through 'skopeo sync --dry-run' for validation
+          command: |
+            for file in images/skopeo-*.yaml; do
+              # The target does not matter here, so we use the non-existing `dummy.example.com/namespace/`.
+              skopeo sync --dry-run --src yaml $file --dest docker dummy.example.com/namespace/
+            done
+
   build-go:
     machine:
       image: ubuntu-2004:current
@@ -221,6 +238,10 @@ build_and_retag: &build_and_retag
   jobs:
     - validate:
         name: validate-images-yaml
+    - validate-skopeo:
+        name: validate-skopeo
+        requires:
+          - validate-images-yaml
     - build-go:
         context: architect
         name: build-go
