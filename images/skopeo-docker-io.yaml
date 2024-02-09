@@ -2,7 +2,7 @@
 docker.io:
   images:
     centos:
-      - "8.1.1911"
+      - ">= 8.1.1911"
     cibuilds/github:
       - "0.12"
     coredns/coredns:
