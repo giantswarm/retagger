@@ -239,7 +239,7 @@ build_and_retag: &build_and_retag
         context: architect
         name: build-go
         requires:
-          - validate-images-yaml
+          - validate-skopeo
         filters:
           tags:
             only: /^v.*/
