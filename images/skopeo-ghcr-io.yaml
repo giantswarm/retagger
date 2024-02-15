@@ -52,3 +52,5 @@ ghcr.io:
       - ">= 0.74"
     slok/sloth:
       - ">= v0.11.0"
+  images-by-tag-regex:
+    nginxinc/nginx-unprivileged: ^1\.2[3-9]-alpine$
