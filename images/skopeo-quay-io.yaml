@@ -49,7 +49,6 @@ quay.io:
       - ">= v0.8.5"
     cilium/cilium-envoy:
       - ">=v1.27.3-713b673cccf1af661efd75ca20532336517ddcb9"
-    
     coreos/etcd:
       - ">= v3.3"
     dexidp/dex:
