@@ -1,14 +1,6 @@
 # Docs: https://github.com/kubasobon/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
 docker.io:
   images:
-    alpine:
-      - "3.14"
-      - "3.16.2"
-    amazon/opendistro-for-elasticsearch:
-      - ">= 1.3.2"
-      - ">= 1.3.3"
-    amazon/opendistro-for-elasticsearch-kibana:
-      - ">= 1.3.2"
     centos:
       - "8.1.1911"
     cibuilds/github:
@@ -18,6 +10,7 @@ docker.io:
       - "1.8.6"
       - "1.8.7"
       - "1.9.3"
+      - "1.11.1"
     docker:
       - "18.09.1"
     elasticsearch:
@@ -64,7 +57,7 @@ docker.io:
     jimschubert/swagger-codegen-cli:
       - "2.2.3"
     justwatch/elasticsearch_exporter:
-      - "v1.1.0"
+      - "1.1.0"
     k8spin/loki-multi-tenant-proxy:
       - "v1.0.0"
     koalaman/shellcheck-alpine:
@@ -77,22 +70,22 @@ docker.io:
       - "3.3.1.1-debian"
       - "3.4.1.1-debian"
       - "3.4.2.0-debian"
+      - "3.4.3.1-debian"
+      - "3.4.3.3-debian"
       - "3.5.0.0-debian"
       - "3.5.0.1-debian"
+      - "3.5.0.2-debian"
+      - "3.5.0.3-debian"
     looztra/kubesplit:
       - "0.3.2-dd13538"
     madnight/alpine-wkhtmltopdf-builder:
       - "0.12.5-alpine3.10-606718795"
-    nginx:
-      - "1.23-alpine"
-    nginxinc/nginx-unprivileged:
-      - "1.23-alpine"
-      - "1.24-alpine"
     ns1labs/flame:
       - "0.11.0"
     peaceiris/hugo:
-      - "v0.118.2-full"
-      - "v0.120.2"
+      - "v0.121.0-full"
+      - "v0.121.0-mod"
+      - "v0.120.2-mod"
     python:
       - "3.8.12-slim"
       - "3.9-alpine3.13"
@@ -108,15 +101,15 @@ docker.io:
     weaveworks/watch:
       - "master-5b2a6e5"
   images-by-semver:
-    alpine:
-      - ">= 3.13"
-      - ">= 3.11"
     amazon/amazon-eks-pod-identity-webhook:
       - ">= v0.3.0"
-    amazon/aws-alb-ingress-controller:
-      - ">= 2.4.1"
     amazon/aws-efs-csi-driver:
       - ">= 1.0.0"
+    amazon/opendistro-for-elasticsearch:
+      - ">= 1.3.2"
+      - ">= 1.3.3"
+    amazon/opendistro-for-elasticsearch-kibana:
+      - ">= 1.3.2"
     aquasec/kube-bench:
       - ">= 0.2"
     bash:
@@ -163,6 +156,8 @@ docker.io:
       - ">= v2.7.0"
     grafana/promtail:
       - ">= v2.5.0"
+    grafana/pyroscope:
+      - ">= 1.2.1"
     grafana/tempo:
       - ">= v2.3.0"
     jimmidyson/configmap-reload:
@@ -200,3 +195,6 @@ docker.io:
       - ">= v1.4.3"
     zricethezav/gitleaks:
       - ">=v7.4.0"
+  images-by-tag-regex:
+    alpine: ^3\.[123][0-9]\.[0-9]+$
+    nginx: ^1\.2[3-9]-alpine$

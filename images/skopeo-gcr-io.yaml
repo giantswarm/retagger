@@ -7,8 +7,6 @@ gcr.io:
       - "v3.1.0"
     heptio-images/kube-conformance:
       - "v1.11"
-    spark-operator/spark-operator:
-      - "v2.4.0-v1beta1-latest"
     go-containerregistry/crane:
       - "debug"
     tekton-releases/dogfooding/tkn:

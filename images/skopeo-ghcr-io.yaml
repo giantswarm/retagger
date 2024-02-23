@@ -9,13 +9,15 @@ ghcr.io:
       - "v0.1.0-alpha.3"
   images-by-semver:
     aquasecurity/node-collector:
-      - ">= 0.0.5"
+      - ">= 0.0.6"
     aquasecurity/trivy:
       - ">= 0.37.2"
     aquasecurity/trivy-operator:
       - ">= 0.16.1"
     external-secrets/external-secrets:
       - ">= v0.7.0"
+    giantswarm/staticjscms-hugo-standalone:
+      - ">= v0.0.1"
     kedacore/keda-admission-webhooks:
       - ">= 2.10.1"
     kedacore/keda:
@@ -45,7 +47,9 @@ ghcr.io:
     opsgenie/kubernetes-event-exporter:
       # used for https://github.com/giantswarm/event-exporter-app
       - ">= v0.9"
-    prymitive/karma:
-      - ">= 0.74"
+    project-zot/zot-linux-amd64:
+      - ">= v2.0.0"
     slok/sloth:
       - ">= v0.11.0"
+  images-by-tag-regex:
+    nginxinc/nginx-unprivileged: ^1\.2[3-9]-alpine$

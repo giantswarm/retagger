@@ -1,6 +1,4 @@
 version: 2.1
-orbs:
-  architect: giantswarm/architect@4.27.0
 
 jobs:
   validate:
@@ -20,6 +18,36 @@ jobs:
           root: .
           paths:
             - "images/"
+
+  validate-skopeo:
+    docker:
+      - image: quay.io/skopeo/stable:v1
+    resource_class: small
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run skopeo YAML files through 'skopeo sync --dry-run' for validation
+          command: |
+            for file in images/skopeo-*.yaml; do
+              # The target does not matter here, so we use the non-existing `dummy.example.com/namespace/`.
+              echo "Checking $file:"
+              skopeo sync --dry-run --src yaml $file --dest docker dummy.example.com/namespace/  2>&1 | tee -a dry-run.log
+              echo ""
+            done
+
+            # Skopeo sync exits with code 0 even of there were errors.
+            # So let's make sure this test fails if there were some.
+            if grep -q "level=error" dry-run.log; then
+                echo -e "\033[0;31mERRORS OCCURRED\033[0m"
+                echo "Here is the gist only. Scroll up to see them in context."
+                echo ""
+                grep "level=error" dry-run.log
+                exit 1
+            fi
+            
+
   build-go:
     machine:
       image: ubuntu-2004:current
@@ -79,6 +107,7 @@ jobs:
           command: |
             docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
             docker login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
+            docker login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} gsoci.azurecr.io
             max_retry=5
             counter=1
             until docker login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
@@ -93,6 +122,7 @@ jobs:
           command: |
             skopeo login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
             skopeo login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
+            skopeo login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} gsoci.azurecr.io
             max_retry=5
             counter=1
             until skopeo login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
@@ -174,6 +204,7 @@ jobs:
           command: |
             docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
             docker login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
+            docker login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} gsoci.azurecr.io
             max_retry=5
             counter=1
             until docker login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
@@ -188,6 +219,7 @@ jobs:
           command: |
             skopeo login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
             skopeo login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
+            skopeo login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} gsoci.azurecr.io
             max_retry=5
             counter=1
             until skopeo login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
@@ -212,11 +244,15 @@ build_and_retag: &build_and_retag
   jobs:
     - validate:
         name: validate-images-yaml
+    - validate-skopeo:
+        name: validate-skopeo
+        requires:
+          - validate-images-yaml
     - build-go:
         context: architect
         name: build-go
         requires:
-          - validate-images-yaml
+          - validate-skopeo
         filters:
           tags:
             only: /^v.*/
@@ -233,54 +269,90 @@ build_and_retag: &build_and_retag
         context: architect
         name: filter-skopeo-docker-io
         filepath: images/skopeo-docker-io.yaml
+        filters:
+          branches:
+            only:
+              - main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-eu-gcr-io
         filepath: images/skopeo-eu-gcr-io.yaml
+        filters:
+          branches:
+            only:
+              - main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-gcr-io
         filepath: images/skopeo-gcr-io.yaml
+        filters:
+          branches:
+            only:
+              - main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-ghcr-io
         filepath: images/skopeo-ghcr-io.yaml
+        filters:
+          branches:
+            only:
+              - main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-mcr-microsoft-com
         filepath: images/skopeo-mcr-microsoft-com.yaml
+        filters:
+          branches:
+            only:
+              - main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-public-ecr-aws
         filepath: images/skopeo-public-ecr-aws.yaml
+        filters:
+          branches:
+            only:
+              - main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-quay-io
         filepath: images/skopeo-quay-io.yaml
+        filters:
+          branches:
+            only:
+              - main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-k8s-io
         filepath: images/skopeo-registry-k8s-io.yaml
+        filters:
+          branches:
+            only:
+              - main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-k8s-io-kubernetes
         filepath: images/skopeo-registry-k8s-io-kubernetes.yaml
+        filters:
+          branches:
+            only:
+              - main
         requires:
           - build-and-push-docker
     - retag-registry:
@@ -339,19 +411,50 @@ build_and_retag: &build_and_retag
               - images/skopeo-quay-io.yaml.filtered
               - images/skopeo-registry-k8s-io.yaml.filtered
               - images/skopeo-registry-k8s-io-kubernetes.yaml.filtered
+    - retag-registry:
+        context: architect
+        name: retag-gsoci-<<matrix.images_file>>
+        username: ${ACR_GSOCI_RETAGGER_USERNAME}
+        password: ${ACR_GSOCI_RETAGGER_PASSWORD}
+        registry: "gsoci.azurecr.io"
+        requires:
+          - filter-skopeo-docker-io
+          - filter-skopeo-eu-gcr-io
+          - filter-skopeo-gcr-io
+          - filter-skopeo-ghcr-io
+          - filter-skopeo-mcr-microsoft-com
+          - filter-skopeo-public-ecr-aws
+          - filter-skopeo-quay-io
+          - filter-skopeo-k8s-io
+          - filter-skopeo-k8s-io-kubernetes
+        matrix:
+          parameters:
+            images_file:
+              - images/skopeo-docker-io.yaml.filtered
+              - images/skopeo-eu-gcr-io.yaml.filtered
+              - images/skopeo-gcr-io.yaml.filtered
+              - images/skopeo-ghcr-io.yaml.filtered
+              - images/skopeo-mcr-microsoft-com.yaml.filtered
+              - images/skopeo-public-ecr-aws.yaml.filtered
+              - images/skopeo-quay-io.yaml.filtered
+              - images/skopeo-registry-k8s-io.yaml.filtered
+              - images/skopeo-registry-k8s-io-kubernetes.yaml.filtered
     - retag-customized-images:
         context: architect
         name: retag-customized-images
         requires:
           - build-and-push-docker
         executor_count: 5
+        filters:
+          branches:
+            only:
+              - main
         matrix:
           parameters:
             # i in range(executor_count)
             executor_id: [0, 1, 2, 3, 4]
 
 workflows:
-  version: 2
   build_retag:
     <<: *build_and_retag
 

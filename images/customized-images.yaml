@@ -98,13 +98,8 @@
   semver: ">= v2.7.1"
   override_repo_name: csi-vsphere-syncer
 - image: golang
-  semver: ">= 1.21.1"
-  filter: "(.+)-alpine3.18"
-- image: coredns/coredns
-  semver: ">= 1.6.5"
-  add_tag_suffix: "giantswarm"
-  dockerfile_extras:
-    - EXPOSE 1053
+  semver: ">= 1.21.6"
+  filter: "(.+)-alpine3.19"
 - image: ghcr.io/linkerd/cni-plugin
   override_repo_name: linkerd2-cni-plugin
   semver: ">= v1.1.1"
@@ -146,9 +141,6 @@
 - image: ghcr.io/weaveworks/wego-app
   override_repo_name: weaveworks-wego-app
   semver: ">= v0.18.0"
-- image: crossplane/xfn
-  override_repo_name: crossplane-xfn
-  semver: ">= v1.11.0"
 - image: fluent/fluent-bit
   tag_or_pattern: "1.9.8"
   sha: 137669ee97787c930ec00a8babff46ecc76988d128cc9e7fa581d1b05ef8fb3d
@@ -349,6 +341,14 @@
   tag_or_pattern: "v1.9.4"
   sha: 5b161f051d017e55d358435f295f5e9a297e66158f136321d9b04520ec6c48a3
   override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.9.5"
+  sha: b3aba22b1da80e7acfc52b115cae1d4c687172cbf2b742d5b502419c25ff340e
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.9.6"
+  sha: 1405cc613bd95b2c6edd8b2a152510ae91c7e62aea4698500d23b2145960ab9c
+  override_repo_name: ingress-nginx-controller
 - image: registry.k8s.io/ingress-nginx/controller-chroot
   tag_or_pattern: "v1.3.1"
   sha: a8466b19c621bd550b1645e27a004a5cc85009c858a9ab19490216735ac432b1
@@ -405,6 +405,14 @@
   tag_or_pattern: "v1.9.4"
   sha: 5976b1067cfbca8a21d0ba53d71f83543a73316a61ea7f7e436d6cf84ddf9b26
   override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.9.5"
+  sha: 9a8d7b25a846a6461cd044b9aea9cf6cad972bcf2e64d9fd246c0279979aad2d
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.9.6"
+  sha: 7eb46ff733429e0e46892903c7394aff149ac6d284d92b3946f3baf7ff26a096
+  override_repo_name: ingress-nginx-controller-chroot
 - image: registry.k8s.io/ingress-nginx/opentelemetry
   tag_or_pattern: "v20230721-3e2062ee5"
   sha: 13bee3f5223883d3ca62fee7309ad02d22ec00ff0d7033e3e9aca7a9f60fd472
@@ -428,6 +436,10 @@
 - image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
   tag_or_pattern: "v20231011-8b53cabe0"
   sha: a7943503b45d552785aa3b5e457f169a5661fb94d82b8a3373bcd9ebaf9aac80
+  override_repo_name: ingress-nginx-kube-webhook-certgen
+- image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
+  tag_or_pattern: "v20231226-1a7112e06"
+  sha: 25d6a5f11211cc5c3f9f2bf552b585374af287b4debf693cacbe2da47daa5084
   override_repo_name: ingress-nginx-kube-webhook-certgen
 - image: registry.k8s.io/defaultbackend-amd64
   tag_or_pattern: "1.5"
@@ -475,8 +487,8 @@
   override_repo_name: rook-ceph
   semver: "v1.7.0 - v1.7.11"
 - image: ubuntu/squid
-  sha: 4e1f0204b58779fb89f0281b3ccd4ee19723209d65dbec63bc4b5a07d0509841
-  tag_or_pattern: "5.2-22.04_beta"
+  sha: 341611dd7eb3b2905e1d2e0cf1936606625dcab4085baf7cc4ae21c490670ac0
+  tag_or_pattern: "5.6-22.10_beta"
   add_tag_suffix: giantswarm_gs1
   dockerfile_extras:
     - RUN sed -i '/^acl SSL_ports port 443/a acl SSL_ports port 6443' /etc/squid/squid.conf
@@ -499,3 +511,7 @@
 - image: xpkg.upbound.io/upbound/provider-terraform
   override_repo_name: upbound-provider-terraform
   semver: ">= v0.4.0"
+- image: public.ecr.aws/karpenter/controller
+  override_repo_name: karpenter-controller
+  semver: ">= v0.29.0"
+  filter: "^v(.*)$"
