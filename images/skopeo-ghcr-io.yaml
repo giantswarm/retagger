@@ -4,8 +4,6 @@ ghcr.io:
     k8snetworkplumbingwg/multus-cni:
       - "v3.9-thick-amd64"
       - "v3.9-amd64"
-    k8s-staging-capi-ipam-ic/cluster-api-ipam-provider-in-cluster:
-      - "v0.1.0-rc.0"
   images-by-semver:
     aquasecurity/node-collector:
       - ">= 0.0.6"
