@@ -11,6 +11,8 @@ registry.k8s.io:
       - ">= 0.8.0"
     autoscaling/vpa-updater:
       - ">= 0.8.0"
+    capi-ipam-ic/cluster-api-ipam-in-cluster-controller:
+      - ">= v0.1.0"
     capi-openstack/capi-openstack-controller:
       - ">= 0.4.0"
     cluster-api-azure/cluster-api-azure-controller:
