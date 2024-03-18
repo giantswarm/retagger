@@ -1,6 +1,8 @@
 # Docs: https://github.com/kubasobon/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
 docker.io:
   images:
+    alpine/socat:
+      - "1.7.4.4"
     centos:
       - "8.1.1911"
     cibuilds/github:
