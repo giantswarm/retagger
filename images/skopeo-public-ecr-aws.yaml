@@ -10,3 +10,5 @@ public.ecr.aws:
       - ">= 14.1.1"
     gravitational/teleport-distroless:
       - ">= 14"
+    gravitational/tbot-distroless:
+      - ">= 14"
