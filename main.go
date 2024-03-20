@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"net/url"
 	"os"
 	"os/exec"
 	"path"
@@ -35,9 +36,10 @@ const (
 	dockerTransport      = "docker://"
 	filteredFileSuffix   = ".filtered"
 
-	aliyunURL = "giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm"
-	azureURL  = "gsoci.azurecr.io/giantswarm"
-	quayURL   = "quay.io/giantswarm"
+	aliyunURL        = "giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm"
+	azureURL         = "gsoci.azurecr.io/giantswarm"
+	azureUpstreamURL = "gsoci.azurecr.io/upstream"
+	quayURL          = "quay.io/giantswarm"
 )
 
 // CustomImage represents a set of rules used to rebuild/retag multiple tags of
@@ -114,6 +116,7 @@ func (img *CustomImage) RetagUsingSHA() error {
 	if img.AddTagSuffix != "" {
 		destinationTag = img.TagOrPattern + "-" + img.AddTagSuffix
 	}
+	upstreamName := removeRegistryPrefix(img.Image)
 
 	errorCounter := &atomic.Int64{}
 
@@ -122,12 +125,15 @@ func (img *CustomImage) RetagUsingSHA() error {
 	if len(img.DockerfileExtras) == 0 {
 		source := fmt.Sprintf("%s%s@sha256:%s", dockerTransport, img.Image, img.SHA)
 		wg := sync.WaitGroup{}
-		wg.Add(3)
+		wg.Add(4)
 		// Quay
 		destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, quayURL, destinationName, destinationTag)
 		go copyImage(&wg, errorCounter, source, destination)
-		// AzureCR
+		// AzureCR/giantswarm
 		destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, azureURL, destinationName, destinationTag)
+		go copyImage(&wg, errorCounter, source, destination)
+		// AzureCR/upstream
+		destination = fmt.Sprintf("%s%s/%s:@sha256:%s", dockerTransport, azureUpstreamURL, upstreamName, img.SHA)
 		go copyImage(&wg, errorCounter, source, destination)
 		// Aliyun
 		destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, aliyunURL, destinationName, destinationTag)
@@ -138,6 +144,14 @@ func (img *CustomImage) RetagUsingSHA() error {
 			return fmt.Errorf("finished %q with %d errors", img.Image, errorCount)
 		}
 		return nil
+	} else {
+		source := fmt.Sprintf("%s%s@sha256:%s", dockerTransport, img.Image, img.SHA)
+		wg := sync.WaitGroup{}
+		wg.Add(1)
+		// AzureCR/upstream
+		destination := fmt.Sprintf("%s%s/%s:@sha256:%s", dockerTransport, azureUpstreamURL, upstreamName, img.SHA)
+		go copyImage(&wg, errorCounter, source, destination)
+		wg.Wait()
 	}
 
 	// DockerfileExtras were defined. We'll create a Dockefile which
@@ -222,6 +236,7 @@ func (img *CustomImage) RetagUsingTags() error {
 	if img.OverrideRepoName != "" {
 		destinationName = img.OverrideRepoName
 	}
+	upstreamName := removeRegistryPrefix(img.Image)
 
 	// Filter the tags using TagOrPattern or Semver+Filter.
 	tags, err = img.FilterTags(tags)
@@ -265,12 +280,15 @@ tagLoop:
 		if len(img.DockerfileExtras) == 0 {
 			source := fmt.Sprintf("%s%s:%s", dockerTransport, img.Image, tag)
 			wg := sync.WaitGroup{}
-			wg.Add(3)
+			wg.Add(4)
 			// Quay
 			destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, quayURL, destinationName, destinationTag)
 			go copyImage(&wg, errorCounter, source, destination)
 			// Azure
 			destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, azureURL, destinationName, destinationTag)
+			go copyImage(&wg, errorCounter, source, destination)
+			// Azure upstream
+			destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, azureUpstreamURL, upstreamName, tag)
 			go copyImage(&wg, errorCounter, source, destination)
 			// Aliyun
 			destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, aliyunURL, destinationName, destinationTag)
@@ -279,6 +297,14 @@ tagLoop:
 
 			// We'll skip to the next tag
 			continue
+		} else {
+			source := fmt.Sprintf("%s%s:%s", dockerTransport, img.Image, tag)
+			wg := sync.WaitGroup{}
+			wg.Add(1)
+			// AzureCR/upstream
+			destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, azureUpstreamURL, upstreamName, tag)
+			go copyImage(&wg, errorCounter, source, destination)
+			wg.Wait()
 		}
 
 		// DockerfileExtras were defined. We'll create a Dockefile which
@@ -528,6 +554,23 @@ func imageBaseName(name string) string {
 	}
 	elems := strings.Split(name, "/")
 	return elems[len(elems)-1]
+}
+
+// removeRegistryPrefix is a helper function to get rid of the
+// registry name if it exists.
+// Examples:
+// "docker.io/alpine/alpine" -> "alpine/alpine"
+// "grafana" -> "grafana"
+func removeRegistryPrefix(name string) string {
+	if !strings.ContainsRune(name, '/') {
+		return name
+	}
+	name = "docker://" + name
+	u, err := url.Parse(name)
+	if err != nil {
+		logrus.Fatalf("error parsing %q as URL", name)
+	}
+	return strings.TrimLeft(u.RequestURI(), "/")
 }
 
 // copyImage is a helper function used to invoke `skopeo copy`. Please note the
