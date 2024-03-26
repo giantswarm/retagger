@@ -445,6 +445,10 @@
   tag_or_pattern: "v20231226-1a7112e06"
   sha: 25d6a5f11211cc5c3f9f2bf552b585374af287b4debf693cacbe2da47daa5084
   override_repo_name: ingress-nginx-kube-webhook-certgen
+- image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
+  tag_or_pattern: "v1.4.0"
+  sha: 44d1d0e9f19c63f58b380c5fddaca7cf22c7cee564adeff365225a5df5ef3334
+  override_repo_name: ingress-nginx-kube-webhook-certgen
 - image: registry.k8s.io/defaultbackend-amd64
   tag_or_pattern: "1.5"
   override_repo_name: defaultbackend
