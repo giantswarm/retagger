@@ -46,6 +46,8 @@ ghcr.io:
       - ">= v0.9"
     project-zot/zot-linux-amd64:
       - ">= v2.0.0"
+    project-zot/zot:
+      - ">= v2.0.0"
     slok/sloth:
       - ">= v0.11.0"
   images-by-tag-regex:
