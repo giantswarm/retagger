@@ -100,6 +100,9 @@
 - image: golang
   semver: ">= 1.21.6"
   filter: "(.+)-alpine3.19"
+- image: ghcr.io/cloudnative-pg/postgresql
+  override_repo_name: postgresql-cnpg
+  semver: ">= 15.6"
 - image: ghcr.io/linkerd/cni-plugin
   override_repo_name: linkerd2-cni-plugin
   semver: ">= v1.1.1"
