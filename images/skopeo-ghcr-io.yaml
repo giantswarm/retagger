@@ -11,6 +11,8 @@ ghcr.io:
       - ">= 0.37.2"
     aquasecurity/trivy-operator:
       - ">= 0.16.1"
+    cloudnative-pg/postgresql:
+      - ">= 15.6"
     external-secrets/external-secrets:
       - ">= v0.7.0"
     giantswarm/staticjscms-hugo-standalone:
