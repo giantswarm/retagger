@@ -5,52 +5,29 @@ ghcr.io:
       - "v3.9-thick-amd64"
       - "v3.9-amd64"
   images-by-semver:
-    aquasecurity/node-collector:
-      - ">= 0.0.6"
-    aquasecurity/trivy:
-      - ">= 0.37.2"
-    aquasecurity/trivy-operator:
-      - ">= 0.16.1"
-    cloudnative-pg/cloudnative-pg:
-      - ">= 1.22.2"
-    external-secrets/external-secrets:
-      - ">= v0.7.0"
-    giantswarm/staticjscms-hugo-standalone:
-      - ">= v0.0.1"
-    kedacore/keda-admission-webhooks:
-      - ">= 2.10.1"
-    kedacore/keda:
-      - ">= 2.10.1"
-    kedacore/keda-metrics-apiserver:
-      - ">= 2.10.1"
-    kube-vip/kube-vip:
-      - ">= v0.6.3"
-    kube-vip/kube-vip-cloud-provider:
-      - ">= v0.0.4"
-    kyverno/background-controller:
-      - ">= v1.10.1"
-    kyverno/cleanup-controller:
-      - ">= v1.10.1"
-    kyverno/kyverno:
-      - ">= v1.9.0"
-    kyverno/kyvernopre:
-      - ">= v1.9.0"
-    kyverno/policy-reporter:
-      - ">= 2.12.0"
-    kyverno/policy-reporter-kyverno-plugin:
-      - ">= 1.5.0"
-    kyverno/policy-reporter-ui:
-      - ">= 1.7.2"
-    kyverno/reports-controller:
-      - ">= 1.10.1"
-    opsgenie/kubernetes-event-exporter:
-      # used for https://github.com/giantswarm/event-exporter-app
-      - ">= v0.9"
-    project-zot/zot-linux-amd64:
-      - ">= v2.0.0"
-    project-zot/zot:
-      - ">= v2.0.0"
-    slok/sloth:
-      - ">= v0.11.0"
+    aquasecurity/node-collector: ">= 0.0.6"
+    aquasecurity/trivy: ">= 0.37.2"
+    aquasecurity/trivy-operator: ">= 0.16.1"
+    cloudnative-pg/cloudnative-pg: ">= 1.22.2"
+    external-secrets/external-secrets: ">= v0.7.0"
+    # giantswarm/staticjscms-hugo-standalone: ">= v0.0.1" -- commented out as this is a private package breaking the job. To be clarfified with @lyind
+    kedacore/keda-admission-webhooks: ">= 2.10.1"
+    kedacore/keda: ">= 2.10.1"
+    kedacore/keda-metrics-apiserver: ">= 2.10.1"
+    kube-vip/kube-vip: ">= v0.6.3"
+    kube-vip/kube-vip-cloud-provider: ">= v0.0.4"
+    kyverno/background-controller: ">= v1.10.1"
+    kyverno/cleanup-controller: ">= v1.10.1"
+    kyverno/kyverno: ">= v1.9.0"
+    kyverno/kyvernopre: ">= v1.9.0"
+    kyverno/policy-reporter: ">= 2.12.0"
+    kyverno/policy-reporter-kyverno-plugin: ">= 1.5.0"
+    kyverno/policy-reporter-ui: ">= 1.7.2"
+    kyverno/reports-controller: ">= 1.10.1"
+    # used for https://github.com/giantswarm/event-exporter-app
+    opsgenie/kubernetes-event-exporter: ">= v0.9"
+    project-zot/zot-linux-amd64: ">= v2.0.0"
+    project-zot/zot: ">= v2.0.0"
+    slok/sloth: ">= v0.11.0"
   images-by-tag-regex:
     nginxinc/nginx-unprivileged: ^1\.2[3-9]-alpine$

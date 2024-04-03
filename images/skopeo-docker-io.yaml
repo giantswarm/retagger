@@ -105,100 +105,53 @@ docker.io:
     weaveworks/watch:
       - "master-5b2a6e5"
   images-by-semver:
-    amazon/amazon-eks-pod-identity-webhook:
-      - ">= v0.3.0"
-    amazon/aws-efs-csi-driver:
-      - ">= 1.0.0"
-    amazon/opendistro-for-elasticsearch:
-      - ">= 1.3.2"
-      - ">= 1.3.3"
-    amazon/opendistro-for-elasticsearch-kibana:
-      - ">= 1.3.2"
-    aquasec/kube-bench:
-      - ">= 0.2"
-    bash:
-      - ">= 5"
-    bitnami/kubectl:
-      - ">= 1.16"
-    busybox:
-      - ">= 1.31.0"
-    crossplane/crossplane:
-      - ">= v1.9.1"
-    curlimages/curl:
-      - ">= 7.67.0"
-    cytopia/yamllint:
-      - ">= 1.9"
-    ealen/echo-server:
-      - ">=0.5.0"
-    envoyproxy/envoy:
-      - ">= 1.18.4"
-    falcosecurity/falco:
-      - ">= 0.36.1"
-    falcosecurity/falcoctl:
-      - ">= 0.6.2"
-    falcosecurity/falco-driver-loader:
-      - ">= 0.36.1"
-    falcosecurity/falco-exporter:
-      - ">= v0.8.3"
-    falcosecurity/falco-no-driver:
-      - ">= 0.36.1"
-    falcosecurity/falcosidekick:
-      - ">= 2.28.0"
-    fluent/fluent-bit:
-      - ">= 1.7.1"
-    golang:
-      - ">= 1.19.0"
-    grafana/grafana:
-      - ">= 9.1.1"
-    grafana/loki:
-      - ">= 2.7.3"
-    grafana/loki-canary:
-      - ">= v2.1.0"
-    grafana/mimir:
-      - ">= v2.7.0"
-    grafana/mimir-continuous-test:
-      - ">= v2.7.0"
-    grafana/promtail:
-      - ">= v2.5.0"
-    grafana/pyroscope:
-      - ">= 1.2.1"
-    grafana/tempo:
-      - ">= v2.3.0"
-    jimmidyson/configmap-reload:
-      - ">= v0.8.0"
-    k8scloudprovider/cinder-csi-plugin:
-      - ">= 1.20.0"
-    k8scloudprovider/octavia-ingress-controller:
-      - ">= 1.20.0"
-    k8scloudprovider/openstack-cloud-controller-manager:
-      - ">= 1.20.0"
-    kiwigrid/k8s-sidecar:
-      - ">= 1.24.3"
-    kong:
-      - ">= 2.8.1"
-    hjacobs/kube-downscaler:
-      - ">= 23.2.0"
-    mikefarah/yq:
-      - ">= 4.31.2"
-    mintel/dex-k8s-authenticator:
-      - ">= 1.4.0"
-    openpolicyagent/conftest:
-      - ">= v0.25.0"
-    prom/blackbox-exporter:
-      - ">= v0.23.0"
-    prom/prometheus:
-      - ">= 2.41.0"
+    amazon/amazon-eks-pod-identity-webhook: ">= v0.3.0"
+    amazon/aws-efs-csi-driver: ">= 1.0.0"
+    amazon/opendistro-for-elasticsearch: ">= 1.3.3"
+    amazon/opendistro-for-elasticsearch-kibana: ">= 1.3.2"
+    aquasec/kube-bench: ">= 0.2"
+    bash: ">= 5"
+    bitnami/kubectl: ">= 1.16"
+    busybox: ">= 1.31.0"
+    crossplane/crossplane: ">= v1.9.1"
+    curlimages/curl: ">= 7.67.0"
+    cytopia/yamllint: ">= 1.9"
+    ealen/echo-server: ">=0.5.0"
+    envoyproxy/envoy: ">= 1.18.4"
+    falcosecurity/falco: ">= 0.36.1"
+    falcosecurity/falcoctl: ">= 0.6.2"
+    falcosecurity/falco-driver-loader: ">= 0.36.1"
+    falcosecurity/falco-exporter: ">= v0.8.3"
+    falcosecurity/falco-no-driver: ">= 0.36.1"
+    falcosecurity/falcosidekick: ">= 2.28.0"
+    fluent/fluent-bit: ">= 1.7.1"
+    golang: ">= 1.19.0"
+    grafana/grafana: ">= 9.1.1"
+    grafana/loki: ">= 2.7.3"
+    grafana/loki-canary: ">= v2.1.0"
+    grafana/mimir: ">= v2.7.0"
+    grafana/mimir-continuous-test: ">= v2.7.0"
+    grafana/promtail: ">= v2.5.0"
+    grafana/pyroscope: ">= 1.2.1"
+    grafana/tempo: ">= v2.3.0"
+    jimmidyson/configmap-reload: ">= v0.8.0"
+    k8scloudprovider/cinder-csi-plugin: ">= 1.20.0"
+    k8scloudprovider/octavia-ingress-controller: ">= 1.20.0"
+    k8scloudprovider/openstack-cloud-controller-manager: ">= 1.20.0"
+    kiwigrid/k8s-sidecar: ">= 1.24.3"
+    kong: ">= 2.8.1"
+    hjacobs/kube-downscaler: ">= 23.2.0"
+    mikefarah/yq: ">= 4.31.2"
+    mintel/dex-k8s-authenticator: ">= 1.4.0"
+    openpolicyagent/conftest: ">= v0.25.0"
+    prom/blackbox-exporter: ">= v0.23.0"
+    prom/prometheus: ">= 2.41.0"
     # Used in akv2k8s
-    spvest/azure-keyvault-controller:
-      - ">= 1.3.0"
-    spvest/azure-keyvault-webhook:
-      - ">= 1.3.0"
-    vault:
-      - ">= v1.5.4"
-    velero/velero:
-      - ">= v1.4.3"
-    zricethezav/gitleaks:
-      - ">=v7.4.0"
+    spvest/azure-keyvault-controller: ">= 1.3.0"
+    spvest/azure-keyvault-webhook: ">= 1.3.0"
+    vault: ">= v1.5.4"
+    velero/velero: ">= v1.4.3"
+    zricethezav/gitleaks: ">=v7.4.0"
   images-by-tag-regex:
     alpine: ^3\.[123][0-9]\.[0-9]+$
     nginx: ^1\.2[3-9]-alpine$

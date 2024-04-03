@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   validate:
     machine:
-      image: ubuntu-2004:current
+      image: ubuntu-2204:2024.01.2
     steps:
       - checkout
       - run:
@@ -11,8 +11,9 @@ jobs:
           command: |
             docker run --rm -it \
              -v $PWD:/workdir \
-             giantswarm/yamllint \
-             -c .yamllint \
+             -w /workdir \
+             gsoci.azurecr.io/giantswarm/yamllint:1.26@sha256:1bf8270a671a2e5f2fea8ac2e80164d627e0c5fa083759862bbde80628f942b2 \
+             --config-file /workdir/.yamllint \
              images/*.yaml
       - persist_to_workspace:
           root: .
@@ -21,7 +22,7 @@ jobs:
 
   validate-skopeo:
     docker:
-      - image: quay.io/skopeo/stable:v1
+      - image: quay.io/skopeo/stable:v1.15.0@sha256:3ddd5a84d11b8ea4447e8f6ec5e6a749832642724e041837b7de98f2c7f62927
     resource_class: small
     steps:
       - checkout
@@ -50,11 +51,11 @@ jobs:
 
   build-go:
     machine:
-      image: ubuntu-2004:current
+      image: ubuntu-2204:2024.01.2
     steps:
       - checkout
       - run:
-          name: Build Retagger binary
+          name: Build retagger binary
           command: |
             CGO_ENABLED=0 GOOS=linux go build -ldflags "$(cat .ldflags)" -o retagger .
       - persist_to_workspace:
@@ -64,7 +65,7 @@ jobs:
 
   build-and-push-docker:
     machine:
-      image: ubuntu-2004:current
+      image: ubuntu-2204:2024.01.2
     parameters:
       username:
         type: string
