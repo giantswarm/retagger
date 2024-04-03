@@ -22,7 +22,7 @@ jobs:
 
   validate-skopeo:
     docker:
-      - image: quay.io/skopeo/stable:v1.15.0@sha256:3ddd5a84d11b8ea4447e8f6ec5e6a749832642724e041837b7de98f2c7f62927
+      - image: gsoci.azurecr.io/giantswarm/skopeo:v1.15.0@sha256:85fc31993df6f0c8bbb553f2f105c12056ea846c133f341158c21d80f44312a9
     resource_class: small
     steps:
       - checkout
@@ -240,6 +240,17 @@ jobs:
           path: /tmp/retagger.log
           destination: "retagger-<<parameters.executor_id>>-of-<<parameters.executor_count>>.log"
 
+  ping-heartbeat:
+    machine:
+      image: ubuntu-2022:current
+    steps:
+      - run:
+          name: Ping heartbeat
+          environment:
+            HEARTBEAT_NAME: retagger-cronjob@giantswarm.heartbeat.opsgenie.net
+          command: |
+            curl -X GET https://api.opsgenie.com/v2/heartbeats/$HEARTBEAT_NAME/ping --header "Authorization: GenieKey ${OPSGENIE_HEARTBEAT_KEY}"
+
 # Define 'build_and_retag' workflow steps, so we can reuse it.
 build_and_retag: &build_and_retag
   jobs:
@@ -455,15 +466,22 @@ build_and_retag: &build_and_retag
             # i in range(executor_count)
             executor_id: [0, 1, 2, 3, 4]
 
+    - ping-heartbeat:
+        name: ping-heartbeat
+        # Ideally we would wait for the end of the workflow. But we don't know what the last job is, since it's a matrix executed in parallel.
+        # So this is better than nothing.
+        requires:
+          - filter-skopeo-k8s-io-kubernetes
+
 workflows:
   build_retag:
     <<: *build_and_retag
 
-  # Runs nightly at 21:30 UTC (22:30 Berlin)
+  # Runs nightly at 21:38 UTC
   build_retag_nightly:
     triggers:
       - schedule:
-          cron: "30 21 * * *"
+          cron: "38 21 * * *"
           filters:
             branches:
               only: main

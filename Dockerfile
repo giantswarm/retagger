@@ -1,4 +1,4 @@
-FROM quay.io/skopeo/stable:v1.15.0@sha256:3ddd5a84d11b8ea4447e8f6ec5e6a749832642724e041837b7de98f2c7f62927 AS skopeo-upstream
+FROM gsoci.azurecr.io/giantswarm/skopeo:v1.15.0@sha256:85fc31993df6f0c8bbb553f2f105c12056ea846c133f341158c21d80f44312a9 AS skopeo-upstream
 
 FROM cimg/go:1.21
 USER root
