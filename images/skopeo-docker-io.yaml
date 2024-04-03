@@ -119,7 +119,7 @@ docker.io:
     bash:
       - ">= 5"
     bitnami/kubectl:
-      - ">= 1.16"
+      - ">= 1.29.0"
     busybox:
       - ">= 1.31.0"
     crossplane/crossplane:
