@@ -1,15 +1,9 @@
 # Docs: https://github.com/kubasobon/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
 mcr.microsoft.com:
   images-by-semver:
-    oss/azure/aad-pod-identity/mic:
-      - ">= 1.8.10"
-    oss/azure/aad-pod-identity/nmi:
-      - ">= 1.8.10"
-    oss/kubernetes-csi/azuredisk-csi:
-      - ">= v1.25.0"
-    oss/kubernetes-csi/azurefile-csi:
-      - ">= v1.25.0"
-    oss/kubernetes/azure-cloud-controller-manager:
-      - ">= v1.24.5"
-    oss/kubernetes/azure-cloud-node-manager:
-      - ">= v1.24.5"
+    oss/azure/aad-pod-identity/mic: ">= 1.8.10"
+    oss/azure/aad-pod-identity/nmi: ">= 1.8.10"
+    oss/kubernetes-csi/azuredisk-csi: ">= v1.25.0"
+    oss/kubernetes-csi/azurefile-csi: ">= v1.25.0"
+    oss/kubernetes/azure-cloud-controller-manager: ">= v1.24.5"
+    oss/kubernetes/azure-cloud-node-manager: ">= v1.24.5"
