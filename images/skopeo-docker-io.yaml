@@ -107,4 +107,3 @@ docker.io:
   images-by-semver:
     bitnami/kubectl:
       - ">= 1.29.0"
- 
