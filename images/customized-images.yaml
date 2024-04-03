@@ -507,6 +507,9 @@
     - RUN chmod a+rwx /run && chmod a+rwx /var/log/squid && chmod a+rwx /var/spool/squid
     - USER proxy
     - CMD ["squid", "-N"]
+- image: quay.io/skopeo/stable
+  override_repo_name: skopeo
+  semver: ">= v1.15.0"
 - image: xpkg.upbound.io/crossplane-contrib/provider-aws
   override_repo_name: crossplane-provider-aws
   semver: ">= v0.33.0"
