@@ -1,10 +1,4 @@
-ARG GOLANG_VERSION=1.18
-
-FROM golang:${GOLANG_VERSION} AS skopeo-builder
-COPY skopeo /skopeo
-WORKDIR /skopeo
-ENV CGO_ENABLED=0
-RUN DISABLE_DOCS=1 make BUILDTAGS=containers_image_openpgp GO_DYN_FLAGS=''
+ARG GOLANG_VERSION=1.21
 
 FROM quay.io/skopeo/stable:v1.15.0@sha256:3ddd5a84d11b8ea4447e8f6ec5e6a749832642724e041837b7de98f2c7f62927 AS skopeo-upstream
 
@@ -13,7 +7,7 @@ USER root
 COPY --from=skopeo-upstream /etc/containers/* /etc/containers/
 COPY --from=skopeo-upstream /usr/share/containers/* /usr/share/containers/
 COPY --from=skopeo-upstream /var/lib/containers/* /var/lib/containers/
-COPY --from=skopeo-builder /skopeo/bin/skopeo /usr/bin/
+COPY --from=skopeo-upstream /usr/bin/skopeo /usr/bin/
 RUN mkdir -p /run/containers && \
     chown -R circleci:circleci /run/containers
 COPY retagger retagger
