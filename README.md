@@ -65,9 +65,7 @@ registry.example.com:
             - "2.0"
             - "sha256:0000000000000000000000000000000011111111111111111111111111111111"
     images-by-semver:
-        alpine:
-            - "3.12 - 3.13"
-            - ">= 3.17"
+        alpine: ">= 3.17"
 ```
 
 The full specification is available in [upstream skopeo-sync docs][skopeo-sync
