@@ -3,13 +3,8 @@
 # images/skopeo-registry-k8s-io.yaml for the sake of speeding up the sync.
 registry.k8s.io:
   images-by-semver:
-    hyperkube:
-      - ">= v1.15 < 1.24"
-    kube-apiserver:
-      - ">= v1.19.0"
-    kube-controller-manager:
-      - ">= v1.16.8"
-    kube-proxy:
-      - ">= v1.16.8"
-    kube-scheduler:
-      - ">= v1.16.8"
+    hyperkube: ">= v1.15 < 1.24"
+    kube-apiserver: ">= v1.19.0"
+    kube-controller-manager: ">= v1.16.8"
+    kube-proxy: ">= v1.16.8"
+    kube-scheduler: ">= v1.16.8"

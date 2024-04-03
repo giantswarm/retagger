@@ -1,26 +1,16 @@
 # Docs: https://github.com/kubasobon/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
 registry.k8s.io:
   images-by-semver:
-    addon-resizer:
-      - ">= 1.8.7"
-    autoscaling/cluster-autoscaler:
-      - ">= 1.24.0"
-    autoscaling/vpa-admission-controller:
-      - ">= 0.8.0"
-    autoscaling/vpa-recommender:
-      - ">= 0.8.0"
-    autoscaling/vpa-updater:
-      - ">= 0.8.0"
-    capi-ipam-ic/cluster-api-ipam-in-cluster-controller:
-      - ">= v0.1.0"
-    capi-openstack/capi-openstack-controller:
-      - ">= 0.4.0"
-    cluster-api-azure/cluster-api-azure-controller:
-      - ">= v0.5.0"
-    cluster-api-gcp/cluster-api-gcp-controller:
-      - ">= v1.0.2"
-    cluster-proportional-autoscaler-amd64:
-      - ">= 1.6.0"
+    addon-resizer: ">= 1.8.7"
+    autoscaling/cluster-autoscaler: ">= 1.24.0"
+    autoscaling/vpa-admission-controller: ">= 0.8.0"
+    autoscaling/vpa-recommender: ">= 0.8.0"
+    autoscaling/vpa-updater: ">= 0.8.0"
+    capi-ipam-ic/cluster-api-ipam-in-cluster-controller: ">= v0.1.0"
+    capi-openstack/capi-openstack-controller: ">= 0.4.0"
+    cluster-api-azure/cluster-api-azure-controller: ">= v0.5.0"
+    cluster-api-gcp/cluster-api-gcp-controller: ">= v1.0.2"
+    cluster-proportional-autoscaler-amd64: ">= 1.6.0"
     # We have to ensure that etcd is available to CAPI clusters - we set
     # `clusterConfiguration.imageRepository=docker.io/giantswarm` (e.g. in
     # cluster-aws:
@@ -33,39 +23,21 @@ registry.k8s.io:
     # Once https://github.com/kubernetes/kubeadm/issues/2603 (kubeadm shouldn't
     # pull the coredns image at all since we skip the coredns addon and instead
     # install it using our app platform) is fixed, we can remove this:
-    coredns/coredns:
-      - ">= v1.8.0"
-    dns/k8s-dns-node-cache:
-      - ">= 1.21.1"
-    etcd:
-      - ">= v3.5.4-0"
-    external-dns/external-dns:
-      - ">= v0.11.0"
-    git-sync/git-sync:
-      - ">= v3.6.8"
-    kube-state-metrics/kube-state-metrics:
-      - "> v2.3.0"
-    metrics-server/metrics-server:
-      - ">= v0.5.2"
-    node-problem-detector/node-problem-detector:
-      - ">= v0.8.14"
-    pause:
-      - ">= 3.1"
-    pause-amd64:
-      - ">= 3.1"
-    provider-aws/aws-ebs-csi-driver:
-      - ">= 1.6.2"
-    sig-storage/csi-attacher:
-      - ">= v3.4.0"
-    sig-storage/csi-node-driver-registrar:
-      - ">= v2.5.0"
-    sig-storage/csi-provisioner:
-      - ">= v3.1.0"
-    sig-storage/csi-resizer:
-      - ">= v1.3.0"
-    sig-storage/csi-snapshotter:
-      - ">= v4.2.1"
-    sig-storage/livenessprobe:
-      - ">= v2.6.0"
-    sig-storage/snapshot-controller:
-      - ">= v4.2.1"
+    coredns/coredns: ">= v1.8.0"
+    dns/k8s-dns-node-cache: ">= 1.21.1"
+    etcd: ">= v3.5.4-0"
+    external-dns/external-dns: ">= v0.11.0"
+    git-sync/git-sync: ">= v3.6.8"
+    kube-state-metrics/kube-state-metrics: "> v2.3.0"
+    metrics-server/metrics-server: ">= v0.5.2"
+    node-problem-detector/node-problem-detector: ">= v0.8.14"
+    pause: ">= 3.1"
+    pause-amd64: ">= 3.1"
+    provider-aws/aws-ebs-csi-driver: ">= 1.6.2"
+    sig-storage/csi-attacher: ">= v3.4.0"
+    sig-storage/csi-node-driver-registrar: ">= v2.5.0"
+    sig-storage/csi-provisioner: ">= v3.1.0"
+    sig-storage/csi-resizer: ">= v1.3.0"
+    sig-storage/csi-snapshotter: ">= v4.2.1"
+    sig-storage/livenessprobe: ">= v2.6.0"
+    sig-storage/snapshot-controller: ">= v4.2.1"

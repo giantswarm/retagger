@@ -21,61 +21,32 @@ quay.io:
     pusher/oauth2_proxy:
       - "v5.1.0"
   images-by-semver:
-    argoproj/argocd:
-      - ">= v2.0.1"
-    calico/cni:
-      - ">= v3.9.5"
-    calico/kube-controllers:
-      - ">= v3.9.5"
-    calico/node:
-      - ">= v3.9.5"
-    calico/pod2daemon-flexvol:
-      - ">= v3.9.5"
-    calico/typha:
-      - ">= v3.10.1"
-    ceph/ceph:
-      - "v16.2.5-20210708"
-    cephcsi/cephcsi:
-      - "v3.1.1 - v3.4.0"
-    cilium/cilium:
-      - ">= v1.11.2"
-    cilium/cilium-etcd-operator:
-      - ">= v2.0.7"
-    cilium/hubble-relay:
-      - ">= v1.11.2"
-    cilium/hubble-ui:
-      - ">= v0.8.5"
-    cilium/hubble-ui-backend:
-      - ">= v0.8.5"
-    cilium/cilium-envoy:
-      - ">= v1.27.3-713b673cccf1af661efd75ca20532336517ddcb9"
-    coreos/etcd:
-      - ">= v3.3"
-    dexidp/dex:
-      - ">=v2.30.2"
-    fairwinds/goldilocks:
-      - ">= v2.2.0"
-    giantswarm/amazon-k8s-cni:
-      - ">= v1.11.2"
-    jacksontj/promxy:
-      - ">= v0.0.60"
-    jetstack/cert-manager-acmesolver:
-      - ">= v1.7.3"
-    jetstack/cert-manager-cainjector:
-      - ">= v1.7.3"
-    jetstack/cert-manager-controller:
-      - ">= v1.7.3"
-    jetstack/cert-manager-ctl:
-      - ">= v1.7.3"
-    jetstack/cert-manager-webhook:
-      - ">= v1.7.3"
-    oauth2-proxy/oauth2-proxy:
-      - ">= v7.2.1"
-    prometheus-operator/prometheus-config-reloader:
-      - ">= v0.62.0"
-    prometheus-operator/prometheus-operator:
-      - ">= 0.63.0"
-    prometheus/alertmanager:
-      - ">= v0.25.0"
-    uswitch/kiam:
-      - ">= v4.2.0"
+    argoproj/argocd: ">= v2.0.1"
+    calico/cni: ">= v3.9.5"
+    calico/kube-controllers: ">= v3.9.5"
+    calico/node: ">= v3.9.5"
+    calico/pod2daemon-flexvol: ">= v3.9.5"
+    calico/typha: ">= v3.10.1"
+    ceph/ceph: "v16.2.5-20210708"
+    cephcsi/cephcsi: "v3.1.1 - v3.4.0"
+    cilium/cilium: ">= v1.11.2"
+    cilium/cilium-etcd-operator: ">= v2.0.7"
+    cilium/hubble-relay: ">= v1.11.2"
+    cilium/hubble-ui: ">= v0.8.5"
+    cilium/hubble-ui-backend: ">= v0.8.5"
+    cilium/cilium-envoy: ">= v1.27.3-713b673cccf1af661efd75ca20532336517ddcb9"
+    coreos/etcd: ">= v3.3"
+    dexidp/dex: ">=v2.30.2"
+    fairwinds/goldilocks: ">= v2.2.0"
+    giantswarm/amazon-k8s-cni: ">= v1.11.2"
+    jacksontj/promxy: ">= v0.0.60"
+    jetstack/cert-manager-acmesolver: ">= v1.7.3"
+    jetstack/cert-manager-cainjector: ">= v1.7.3"
+    jetstack/cert-manager-controller: ">= v1.7.3"
+    jetstack/cert-manager-ctl: ">= v1.7.3"
+    jetstack/cert-manager-webhook: ">= v1.7.3"
+    oauth2-proxy/oauth2-proxy: ">= v7.2.1"
+    prometheus-operator/prometheus-config-reloader: ">= v0.62.0"
+    prometheus-operator/prometheus-operator: ">= 0.63.0"
+    prometheus/alertmanager: ">= v0.25.0"
+    uswitch/kiam: ">= v4.2.0"
