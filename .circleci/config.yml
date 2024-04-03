@@ -465,6 +465,13 @@ build_and_retag: &build_and_retag
             # i in range(executor_count)
             executor_id: [0, 1, 2, 3, 4]
 
+    - ping-heartbeat:
+        name: ping-heartbeat
+        # Ideally we would wait for the end of the workflow. But we don't know what the last job is, since it's a matrix executed in parallel.
+        # So this is better than nothing.
+        requires:
+          - filter-skopeo-k8s-io-kubernetes
+
 workflows:
   build_retag:
     <<: *build_and_retag
