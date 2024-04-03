@@ -1,9 +1,9 @@
 # Docs: https://github.com/kubasobon/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
 ghcr.io:
-  images:
-    k8snetworkplumbingwg/multus-cni:
-      - "v3.9-thick-amd64"
-      - "v3.9-amd64"
+  # images:
+  #   k8snetworkplumbingwg/multus-cni:
+  #     - "v3.9-thick-amd64"
+  #     - "v3.9-amd64"
   images-by-semver:
     aquasecurity/node-collector: ">= 0.0.6"
     aquasecurity/trivy: ">= 0.37.2"
