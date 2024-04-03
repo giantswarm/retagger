@@ -10,7 +10,7 @@ ghcr.io:
     aquasecurity/trivy-operator: ">= 0.16.1"
     cloudnative-pg/cloudnative-pg: ">= 1.22.2"
     external-secrets/external-secrets: ">= v0.7.0"
-    giantswarm/staticjscms-hugo-standalone: ">= v0.0.1"
+    # giantswarm/staticjscms-hugo-standalone: ">= v0.0.1" -- commented out as this is a private package breaking the job. To be clarfified with @lyind
     kedacore/keda-admission-webhooks: ">= 2.10.1"
     kedacore/keda: ">= 2.10.1"
     kedacore/keda-metrics-apiserver: ">= 2.10.1"
