@@ -1,3 +1,11 @@
+// Package main is the retagger program.
+//
+// The program provides two commands:
+//   - `retagger run` - Performs retagging of the miages defined in images/customized-images.yaml.
+//     This retagging may include manipulations on the source image, like adding new layers.
+//   - `retagger filter <path>` - Processes skopeo YAML files in images/skopeo-* and creates a
+//     list of image syncing tasks to be performed. This is simple copyingf of images from one
+//     repository to another.
 package main
 
 import (
@@ -657,6 +665,12 @@ func commandRun() {
 }
 
 // commandFilter is invoked when `retagger filter` is called.
+//
+// The function reads a skopeo configuration file and runs `skopeo sync --dry-run`
+// with it. The output is processed for image tags to be synced. Each tag checked
+// against Quay, AzureCR, and Aliyun. If a tag is missing in any of the registries,
+// it is added to the list of tags to be synced. The list is stored in a file next
+// to the input file, with the name suffixed with `.filtered`.
 func commandFilter(filepath string) {
 	if filepath == "" {
 		logrus.Fatal("You need to specify filepath: 'retagger filter <path>'")
