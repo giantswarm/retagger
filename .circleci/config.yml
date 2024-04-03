@@ -51,11 +51,11 @@ jobs:
 
   build-go:
     machine:
-      image: ubuntu-2004:current
+      image: ubuntu-2204:2024.01.2
     steps:
       - checkout
       - run:
-          name: Build Retagger binary
+          name: Build retagger binary
           command: |
             CGO_ENABLED=0 GOOS=linux go build -ldflags "$(cat .ldflags)" -o retagger .
       - persist_to_workspace:
@@ -65,7 +65,7 @@ jobs:
 
   build-and-push-docker:
     machine:
-      image: ubuntu-2004:current
+      image: ubuntu-2204:2024.01.2
     parameters:
       username:
         type: string
