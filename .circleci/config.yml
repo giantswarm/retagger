@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   validate:
     machine:
-      image: ubuntu-2004:current
+      image: ubuntu-2204:2024.01.2
     steps:
       - checkout
       - run:
