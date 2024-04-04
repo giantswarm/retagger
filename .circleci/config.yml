@@ -226,8 +226,8 @@ jobs:
           destination: "retagger-<<parameters.executor_id>>-of-<<parameters.executor_count>>.log"
 
   ping-heartbeat:
-    machine:
-      image: ubuntu-2022:current
+    docker:
+      - image: curlimages/curl:latest
     steps:
       - run:
           name: Ping heartbeat
