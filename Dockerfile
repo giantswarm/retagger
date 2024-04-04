@@ -1,4 +1,7 @@
-FROM gsoci.azurecr.io/giantswarm/golang:1.22.1-alpine3.19 as builder
+ARG ALPINE_VERSION=3.19
+ARG GO_VERSION=1.22.1
+
+FROM gsoci.azurecr.io/giantswarm/golang:${GO_VERSION}-alpine${ALPINE_VERSION} as builder
 
 # Build a static skopeo binary
 ARG SKOPEO_VERSION=v1.15.0
@@ -13,8 +16,8 @@ WORKDIR /build/retagger
 COPY main.go go.mod go.sum /build/retagger/
 RUN CGO_ENABLED=0 go build -o retagger .
 
-# Add both binraries to a fresh image
-FROM gsoci.azurecr.io/giantswarm/alpine:3.19
+# Add both binaries to a fresh image
+FROM gsoci.azurecr.io/giantswarm/alpine:${ALPINE_VERSION}
 COPY --from=builder /build/skopeo/bin/skopeo /usr/local/bin/skopeo
 COPY --from=builder /build/retagger/retagger /usr/local/bin/retagger
 
