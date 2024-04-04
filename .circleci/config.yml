@@ -121,7 +121,7 @@ jobs:
       - run :
           name: Filter tags in Skopeo YAML
           command: |
-            ./retagger filter "<<parameters.filepath>>"
+            retagger filter "<<parameters.filepath>>"
       - persist_to_workspace:
           root: .
           paths:
@@ -219,15 +219,15 @@ jobs:
           name: "Run retagger"
           no_output_timeout: 1h
           command: |
-            ./retagger run --log-level "<<parameters.log_level>>" \
+            retagger run --log-level "<<parameters.log_level>>" \
               --executor-count <<parameters.executor_count>> --executor-id <<parameters.executor_id>> | tee /tmp/retagger.log
       - store_artifacts:
           path: /tmp/retagger.log
           destination: "retagger-<<parameters.executor_id>>-of-<<parameters.executor_count>>.log"
 
   ping-heartbeat:
-    machine:
-      image: ubuntu-2022:current
+    docker:
+      - image: curlimages/curl:latest
     steps:
       - run:
           name: Ping heartbeat
