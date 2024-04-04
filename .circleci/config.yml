@@ -47,21 +47,6 @@ jobs:
                 grep "level=error" dry-run.log
                 exit 1
             fi
-            
-
-  build-go:
-    machine:
-      image: ubuntu-2204:2024.01.2
-    steps:
-      - checkout
-      - run:
-          name: Build retagger binary
-          command: |
-            CGO_ENABLED=0 GOOS=linux go build -ldflags "$(cat .ldflags)" -o retagger .
-      - persist_to_workspace:
-          root: .
-          paths:
-            - retagger
 
   build-and-push-docker:
     machine:
@@ -80,15 +65,15 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Build Docker image
+          name: Build container image
           command: |
             docker build -t "<<parameters.registry>>/giantswarm/retagger:<<parameters.tag>>" .
       - run:
-          name: Authenticate to Docker registry
+          name: Authenticate to registry
           command: |
             docker login -u "<<parameters.username>>" -p "<<parameters.password>>" "<<parameters.registry>>"
       - run:
-          name: Push Docker image
+          name: Push container image
           command: |
             echo "Pushing tag '<<parameters.tag>>' to <<parameters.registry>>..."
             docker push "<<parameters.registry>>/giantswarm/retagger:<<parameters.tag>>"
@@ -260,14 +245,6 @@ build_and_retag: &build_and_retag
         name: validate-skopeo
         requires:
           - validate-images-yaml
-    - build-go:
-        context: architect
-        name: build-go
-        requires:
-          - validate-skopeo
-        filters:
-          tags:
-            only: /^v.*/
     - build-and-push-docker:
         context: architect
         name: build-and-push-docker
@@ -276,7 +253,7 @@ build_and_retag: &build_and_retag
         registry: "quay.io"
         tag: ${CIRCLE_TAG:-$CIRCLE_SHA1}
         requires:
-          - build-go
+          - validate-skopeo
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-docker-io

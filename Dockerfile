@@ -1,12 +1,24 @@
-FROM gsoci.azurecr.io/giantswarm/skopeo:v1.15.0@sha256:85fc31993df6f0c8bbb553f2f105c12056ea846c133f341158c21d80f44312a9 AS skopeo-upstream
+ARG ALPINE_VERSION=3.19
+ARG GO_VERSION=1.22.1
 
-FROM cimg/go:1.21
-USER root
-COPY --from=skopeo-upstream /etc/containers/* /etc/containers/
-COPY --from=skopeo-upstream /usr/share/containers/* /usr/share/containers/
-COPY --from=skopeo-upstream /var/lib/containers/* /var/lib/containers/
-COPY --from=skopeo-upstream /usr/bin/skopeo /usr/bin/
-RUN mkdir -p /run/containers && \
-    chown -R circleci:circleci /run/containers
-COPY retagger retagger
-USER circleci
+FROM gsoci.azurecr.io/giantswarm/golang:${GO_VERSION}-alpine${ALPINE_VERSION} as builder
+
+# Build a static skopeo binary
+ARG SKOPEO_VERSION=v1.15.0
+RUN apk add --no-cache git make bash
+WORKDIR /build
+RUN git clone --branch ${SKOPEO_VERSION} --depth 1 https://github.com/containers/skopeo.git
+WORKDIR /build/skopeo
+RUN BUILDTAGS=containers_image_openpgp DISABLE_CGO=1 CGO_ENABLED=0 make bin/skopeo
+
+# Build retagger binary
+WORKDIR /build/retagger
+COPY main.go go.mod go.sum /build/retagger/
+RUN CGO_ENABLED=0 go build -o retagger .
+
+# Add both binaries to a fresh image
+FROM gsoci.azurecr.io/giantswarm/alpine:${ALPINE_VERSION}
+COPY --from=builder /build/skopeo/bin/skopeo /usr/local/bin/skopeo
+COPY --from=builder /build/retagger/retagger /usr/local/bin/retagger
+
+ENTRYPOINT ["retagger"]
