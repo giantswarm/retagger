@@ -261,7 +261,7 @@ build_and_retag: &build_and_retag
         filters:
           branches:
             only:
-              - main
+              - add-docker-binary # TODO: revert to main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
@@ -271,7 +271,7 @@ build_and_retag: &build_and_retag
         filters:
           branches:
             only:
-              - main
+              - add-docker-binary # TODO: revert to main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
@@ -281,7 +281,7 @@ build_and_retag: &build_and_retag
         filters:
           branches:
             only:
-              - main
+              - add-docker-binary # TODO: revert to main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
@@ -291,7 +291,7 @@ build_and_retag: &build_and_retag
         filters:
           branches:
             only:
-              - main
+              - add-docker-binary # TODO: revert to main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
@@ -301,7 +301,7 @@ build_and_retag: &build_and_retag
         filters:
           branches:
             only:
-              - main
+              - add-docker-binary # TODO: revert to main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
@@ -311,7 +311,7 @@ build_and_retag: &build_and_retag
         filters:
           branches:
             only:
-              - main
+              - add-docker-binary # TODO: revert to main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
@@ -321,7 +321,7 @@ build_and_retag: &build_and_retag
         filters:
           branches:
             only:
-              - main
+              - add-docker-binary # TODO: revert to main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
@@ -331,7 +331,7 @@ build_and_retag: &build_and_retag
         filters:
           branches:
             only:
-              - main
+              - add-docker-binary # TODO: revert to main
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
@@ -341,7 +341,7 @@ build_and_retag: &build_and_retag
         filters:
           branches:
             only:
-              - main
+              - add-docker-binary # TODO: revert to main
         requires:
           - build-and-push-docker
     - retag-registry:
@@ -437,7 +437,7 @@ build_and_retag: &build_and_retag
         filters:
           branches:
             only:
-              - main
+              - add-docker-binary # TODO: revert to main
         matrix:
           parameters:
             # i in range(executor_count)
