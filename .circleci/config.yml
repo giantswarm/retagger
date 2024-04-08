@@ -232,7 +232,7 @@ jobs:
       - run:
           name: Ping heartbeat
           environment:
-            HEARTBEAT_NAME: retagger-cronjob@giantswarm.heartbeat.opsgenie.net
+            HEARTBEAT_NAME: retagger-cronjob
           command: |
             curl -X GET https://api.opsgenie.com/v2/heartbeats/$HEARTBEAT_NAME/ping --header "Authorization: GenieKey ${OPSGENIE_HEARTBEAT_KEY}"
 
