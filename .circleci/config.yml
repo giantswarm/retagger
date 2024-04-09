@@ -22,7 +22,7 @@ jobs:
 
   validate-skopeo:
     docker:
-      - image: gsoci.azurecr.io/giantswarm/skopeo:v1.15.0@sha256:85fc31993df6f0c8bbb553f2f105c12056ea846c133f341158c21d80f44312a9
+      - image: gsoci.azurecr.io/giantswarm/skopeo:v1.15.0
     resource_class: small
     steps:
       - checkout
@@ -232,7 +232,7 @@ jobs:
       - run:
           name: Ping heartbeat
           environment:
-            HEARTBEAT_NAME: retagger-cronjob@giantswarm.heartbeat.opsgenie.net
+            HEARTBEAT_NAME: retagger-cronjob
           command: |
             curl -X GET https://api.opsgenie.com/v2/heartbeats/$HEARTBEAT_NAME/ping --header "Authorization: GenieKey ${OPSGENIE_HEARTBEAT_KEY}"
 
