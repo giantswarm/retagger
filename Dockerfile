@@ -22,7 +22,7 @@ WORKDIR /build/docker
 ARG DOCKER_VERSION=25.0.5
 RUN curl -O https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz && tar -xvf docker-${DOCKER_VERSION}.tgz
 
-FROM quay.io/skopeo/stable:v1.15.0 as skopeo
+FROM gsoci.azurecr.io/giantswarm/skopeo:v1.15.0 as skopeo
 
 # Add all binaries to a fresh image
 FROM gsoci.azurecr.io/giantswarm/alpine:${ALPINE_VERSION}
