@@ -4,7 +4,7 @@ ghcr.io:
     k8snetworkplumbingwg/multus-cni:
       - "v3.9-thick-amd64"
       - "v3.9-amd64"
-    kyverno/reports-server: 
+    kyverno/reports-server:
       - "v0.1.0-alpha.1"
   images-by-semver:
     aquasecurity/node-collector: ">= 0.0.6"
