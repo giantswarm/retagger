@@ -531,4 +531,4 @@
   semver: ">= v0.4.0"
 - image: public.ecr.aws/karpenter/controller
   override_repo_name: karpenter-controller
-  filter: '(\d+\..*)'
+  semver: ">= 0.29.0"
