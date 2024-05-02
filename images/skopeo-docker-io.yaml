@@ -85,6 +85,10 @@ docker.io:
       - "0.3.2-dd13538"
     madnight/alpine-wkhtmltopdf-builder:
       - "0.12.5-alpine3.10-606718795"
+    node:
+      - "20"
+      - "21"
+      - "22"
     ns1labs/flame:
       - "0.11.0"
     peaceiris/hugo:
