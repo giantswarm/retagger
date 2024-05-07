@@ -10,7 +10,7 @@ ghcr.io:
     aquasecurity/node-collector: ">= 0.0.6"
     aquasecurity/trivy: ">= 0.37.2"
     aquasecurity/trivy-operator: ">= 0.16.1"
-    aquasecurity/trivy-policies: ">= 0.10.0"
+    aquasecurity/trivy-checks: ">= 0.10.0"
     cloudnative-pg/cloudnative-pg: ">= 1.22.2"
     external-secrets/external-secrets: ">= v0.7.0"
     # giantswarm/staticjscms-hugo-standalone: ">= v0.0.1" -- commented out as this is a private package breaking the job. To be clarfified with @lyind
