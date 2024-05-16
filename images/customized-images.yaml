@@ -264,6 +264,10 @@
   override_repo_name: cilium-startup-script
   sha: 72db9d6d9b319e36d68ad3a4cd9c43e3f8ded80694972dc458afacd34e73eb46
   tag_or_pattern: "62bfbe88c17778aad7bef9fa57ff9e2d4a9ba0d8"
+- image: quay.io/cilium/startup-script
+  override_repo_name: cilium-startup-script
+  sha: 820155cb3b7f00c8d61c1cffa68c44440906cb046bdbad8ff544f5deb1103456
+  tag_or_pattern: "19fb149fb3d5c7a37d3edfaf10a2be3ab7386661"
 - image: quay.io/helmpack/chart-testing
   override_repo_name: helm-chart-testing
   semver: ">= v3.4.0"
