@@ -173,7 +173,7 @@
 - image: fluxcd/source-controller
   override_repo_name: fluxcd-source-controller
   semver: ">= v0.17.0"
-- image: gcr.io/cluster-api-provider-vsphere/release/manager
+- image: registry.k8s.io/cluster-api-vsphere/cluster-api-vsphere-controller
   override_repo_name: cluster-api-vsphere-controller
   semver: ">= v1.5.1"
 - image: gcr.io/heptio-images/eventrouter
