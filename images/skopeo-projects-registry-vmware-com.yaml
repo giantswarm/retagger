@@ -1,0 +1,5 @@
+# Docs: https://github.com/kubasobon/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
+projects.registry.vmware.com:
+  images-by-semver:
+    vmware-cloud-director/cloud-provider-for-cloud-director: ">= v1.4.0"
+    vmware-cloud-director/cloud-director-named-disk-csi-driver: ">= 1.4.0"
