@@ -30,9 +30,10 @@ You do **not** need any customizations. Great!
    container registry's name. Create a new one, if necessary.
 2. Add a tag, SHA, or a semantic version constraint for your image. Refer to
    [Skopeo](#skopeo) section or existing files for format definition.
-3. If you haven't created a new file, that's it. You're set. Otherwise continue
+3. Create the registry for the image on [quay.io](https://quay.io/organization/giantswarm).
+4. If you haven't created a new file, that's it. You're set. Otherwise continue
    following the steps.
-4. Open [CircleCI config][ciconf] and add your file to both `retag-registry`
+5. Open [CircleCI config][ciconf] and add your file to both `retag-registry`
    steps under `matrix.parameters.images_file`.
 
 ### Modify upstream Dockerfile
