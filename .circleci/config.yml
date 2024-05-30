@@ -344,6 +344,16 @@ build_and_retag: &build_and_retag
               - main
         requires:
           - build-and-push-docker
+    - filter-skopeo-tags:
+        context: architect
+        name: filter-skopeo-projects-registry-vmware-com
+        filepath: images/skopeo-projects-registry-vmware-com.yaml
+        filters:
+          branches:
+            only:
+              - main
+        requires:
+          - build-and-push-docker
     - retag-registry:
         context: architect
         name: retag-quay-<<matrix.images_file>>
@@ -360,6 +370,7 @@ build_and_retag: &build_and_retag
           - filter-skopeo-quay-io
           - filter-skopeo-k8s-io
           - filter-skopeo-k8s-io-kubernetes
+          - filter-skopeo-projects-registry-vmware-com
         matrix:
           parameters:
             images_file:
@@ -372,6 +383,7 @@ build_and_retag: &build_and_retag
               - images/skopeo-quay-io.yaml.filtered
               - images/skopeo-registry-k8s-io.yaml.filtered
               - images/skopeo-registry-k8s-io-kubernetes.yaml.filtered
+              - images/skopeo-projects-registry-vmware-com.yaml.filtered
     - retag-registry:
         context: architect
         name: retag-aliyun-<<matrix.images_file>>
@@ -416,6 +428,7 @@ build_and_retag: &build_and_retag
           - filter-skopeo-quay-io
           - filter-skopeo-k8s-io
           - filter-skopeo-k8s-io-kubernetes
+          - filter-skopeo-projects-registry-vmware-com
         matrix:
           parameters:
             images_file:
@@ -428,6 +441,7 @@ build_and_retag: &build_and_retag
               - images/skopeo-quay-io.yaml.filtered
               - images/skopeo-registry-k8s-io.yaml.filtered
               - images/skopeo-registry-k8s-io-kubernetes.yaml.filtered
+              - images/skopeo-projects-registry-vmware-com.yaml.filtered
     - retag-customized-images:
         context: architect
         name: retag-customized-images
