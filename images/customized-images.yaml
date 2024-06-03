@@ -360,6 +360,10 @@
   tag_or_pattern: "v1.10.0"
   sha: 42b3f0e5d0846876b1791cd3afeb5f1cbbe4259d6f35651dcc1b5c980925379c
   override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.10.1"
+  sha: e24f39d3eed6bcc239a56f20098878845f62baa34b9f2be2fd2c38ce9fb0f29e
+  override_repo_name: ingress-nginx-controller
 - image: registry.k8s.io/ingress-nginx/controller-chroot
   tag_or_pattern: "v1.3.1"
   sha: a8466b19c621bd550b1645e27a004a5cc85009c858a9ab19490216735ac432b1
@@ -423,6 +427,10 @@
 - image: registry.k8s.io/ingress-nginx/controller-chroot
   tag_or_pattern: "v1.9.6"
   sha: 7eb46ff733429e0e46892903c7394aff149ac6d284d92b3946f3baf7ff26a096
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.10.1"
+  sha: c155954116b397163c88afcb3252462771bd7867017e8a17623e83601bab7ac7
   override_repo_name: ingress-nginx-controller-chroot
 - image: registry.k8s.io/ingress-nginx/opentelemetry
   tag_or_pattern: "v20230721-3e2062ee5"
