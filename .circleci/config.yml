@@ -265,7 +265,6 @@ build_and_retag: &build_and_retag
           branches:
             only:
               - main
-              - fix-retries # TODO: remove before merging
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
@@ -276,7 +275,6 @@ build_and_retag: &build_and_retag
           branches:
             only:
               - main
-              - fix-retries # TODO: remove before merging
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
@@ -287,7 +285,6 @@ build_and_retag: &build_and_retag
           branches:
             only:
               - main
-              - fix-retries # TODO: remove before merging
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
@@ -298,7 +295,6 @@ build_and_retag: &build_and_retag
           branches:
             only:
               - main
-              - fix-retries # TODO: remove before merging
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
@@ -309,7 +305,6 @@ build_and_retag: &build_and_retag
           branches:
             only:
               - main
-              - fix-retries # TODO: remove before merging
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
@@ -320,7 +315,6 @@ build_and_retag: &build_and_retag
           branches:
             only:
               - main
-              - fix-retries # TODO: remove before merging
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
@@ -331,7 +325,6 @@ build_and_retag: &build_and_retag
           branches:
             only:
               - main
-              - fix-retries # TODO: remove before merging
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
@@ -342,7 +335,6 @@ build_and_retag: &build_and_retag
           branches:
             only:
               - main
-              - fix-retries # TODO: remove before merging
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
@@ -353,7 +345,6 @@ build_and_retag: &build_and_retag
           branches:
             only:
               - main
-              - fix-retries # TODO: remove before merging
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
@@ -364,7 +355,6 @@ build_and_retag: &build_and_retag
           branches:
             only:
               - main
-              - fix-retries # TODO: remove before merging
         requires:
           - build-and-push-docker
     - retag-registry:
@@ -465,7 +455,6 @@ build_and_retag: &build_and_retag
           branches:
             only:
               - main
-              - fix-retries # TODO: remove before merging
         matrix:
           parameters:
             # i in range(executor_count)
