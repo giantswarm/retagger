@@ -4,6 +4,7 @@ jobs:
   validate:
     machine:
       image: ubuntu-2204:2024.01.2
+    shell: bash
     steps:
       - checkout
       - run:
