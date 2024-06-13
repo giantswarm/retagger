@@ -4,7 +4,6 @@ jobs:
   validate:
     machine:
       image: ubuntu-2204:2024.01.2
-    shell: bash
     steps:
       - checkout
       - run:
@@ -83,6 +82,7 @@ jobs:
     docker:
       - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
     resource_class: small
+    shell: /bin/bash
     parameters:
       filepath:
         type: string
@@ -132,6 +132,7 @@ jobs:
     docker:
       - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
     resource_class: small
+    shell: /bin/bash
     parameters:
       username:
         type: string
@@ -171,6 +172,7 @@ jobs:
     docker:
       - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
     resource_class: small
+    shell: /bin/bash
     parameters:
       log_level:
         type: string
