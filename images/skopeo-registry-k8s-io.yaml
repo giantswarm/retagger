@@ -8,6 +8,7 @@ registry.k8s.io:
     autoscaling/vpa-updater: ">= 0.8.0"
     capi-ipam-ic/cluster-api-ipam-in-cluster-controller: ">= v0.1.0"
     capi-openstack/capi-openstack-controller: ">= 0.4.0"
+    cloud-pv-vsphere/cloud-provider-vsphere: ">= v1.28.0"
     cluster-api-azure/cluster-api-azure-controller: ">= v0.5.0"
     cluster-api-gcp/cluster-api-gcp-controller: ">= v1.0.2"
     cluster-proportional-autoscaler-amd64: ">= 1.6.0"
