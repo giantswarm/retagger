@@ -14,6 +14,7 @@ ghcr.io:
     cloudnative-pg/cloudnative-pg: ">= 1.22.2"
     external-secrets/external-secrets: ">= v0.7.0"
     # giantswarm/staticjscms-hugo-standalone: ">= v0.0.1" -- commented out as this is a private package breaking the job. To be clarfified with @lyind
+    jimmidyson/configmap-reload: ">= v0.10.0"
     kedacore/keda-admission-webhooks: ">= 2.10.1"
     kedacore/keda: ">= 2.10.1"
     kedacore/keda-metrics-apiserver: ">= 2.10.1"
