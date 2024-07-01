@@ -143,6 +143,7 @@ docker.io:
     falcosecurity/falcosidekick: ">= 2.28.0"
     fluent/fluent-bit: ">= 1.7.1"
     golang: ">= 1.19.0"
+    grafana/alloy: ">= v1.2.0"
     grafana/grafana: ">= 9.1.1"
     grafana/loki: ">= 2.7.3"
     grafana/loki-canary: ">= v2.1.0"
