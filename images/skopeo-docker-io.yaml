@@ -83,10 +83,13 @@ docker.io:
       - "3.5.0.3-debian"
       - "3.5.0.4-debian"
       - "3.5.0.5-debian"
+      - "3.5.0.6-debian"
       - "3.6.1.4-debian"
       - "3.6.1.5-debian"
+      - "3.6.1.6-debian"
       - "3.7.0.0-debian"
       - "3.7.1.0-debian"
+      - "3.7.1.1-debian"
     looztra/kubesplit:
       - "0.3.2-dd13538"
     madnight/alpine-wkhtmltopdf-builder:
