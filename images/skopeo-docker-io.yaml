@@ -40,6 +40,12 @@ docker.io:
     goharbor/registry-photon:
       - "v2.6.2-v1.6.0"
       - "v2.2.1"
+    goharbor/harbor-exporter:
+      - "v2.2.1"
+    goharbor/harbor-portal:
+      - "v2.2.1"
+    goharbor/harbor-registryctl:
+      - "v2.2.1"
     golang:
       - "1.14.1-alpine3.11"
       - "1.15.2-alpine3.12"
@@ -111,6 +117,8 @@ docker.io:
       - "v0.121.0-mod"
       - "v0.120.2-mod"
     peharbor/harbor-core:
+      - "v2.2.1-adidas-1"
+    peharbor/harbor-jobservice:
       - "v2.2.1-adidas-1"
     python:
       - "3.8.12-slim"
