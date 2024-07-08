@@ -88,9 +88,6 @@
 - image: docker.io/grafana/agent
   override_repo_name: grafana-agent
   semver: ">= v0.37.2"
-- image: gcr.io/cloud-provider-vsphere/cpi/release/manager
-  semver: ">= v1.26.0"
-  override_repo_name: cpi-vsphere-manager
 - image: gcr.io/cloud-provider-vsphere/csi/release/driver
   semver: ">= v2.7.1"
   override_repo_name: csi-vsphere-driver
