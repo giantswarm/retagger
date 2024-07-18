@@ -152,6 +152,7 @@ docker.io:
     cytopia/yamllint: ">= 1.9"
     ealen/echo-server: ">=0.5.0"
     envoyproxy/envoy: ">= 1.18.4"
+    envoyproxy/gateway: ">= 1.0.2"
     falcosecurity/falco: ">= 0.36.1"
     falcosecurity/falcoctl: ">= 0.6.2"
     falcosecurity/falco-driver-loader: ">= 0.36.1"
