@@ -88,6 +88,9 @@
 - image: docker.io/grafana/agent
   override_repo_name: grafana-agent
   semver: ">= v0.37.2"
+- image: docker.io/envoyproxy/gateway
+  override_repo_name: envoyproxy-gateway
+  semver: ">= v1.0.2"
 - image: gcr.io/cloud-provider-vsphere/csi/release/driver
   semver: ">= v2.7.1"
   override_repo_name: csi-vsphere-driver
