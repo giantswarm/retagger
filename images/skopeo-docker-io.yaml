@@ -92,6 +92,7 @@ docker.io:
       - "3.5.0.5-debian"
       - "3.5.0.6-debian"
       - "3.5.0.7-debian"
+      - "3.5.0.7-rhel"
       - "3.6.1.4-debian"
       - "3.6.1.5-debian"
       - "3.6.1.6-debian"
