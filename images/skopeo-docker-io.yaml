@@ -187,6 +187,7 @@ docker.io:
     # Used in akv2k8s
     spvest/azure-keyvault-controller: ">= 1.3.0"
     spvest/azure-keyvault-webhook: ">= 1.3.0"
+    traefik: ">= v3.1"
     vault: ">= v1.5.4"
     velero/velero: ">= v1.4.3"
     zricethezav/gitleaks: ">=v7.4.0"
