@@ -15,9 +15,6 @@ quay.io:
       - "v0.2.5"
     prometheus/haproxy-exporter:
       - "v0.9.0"
-    prometheus/node-exporter:
-      - "v1.3.1"
-      - "v1.5.0"
     pusher/oauth2_proxy:
       - "v5.1.0"
   images-by-semver:
@@ -49,4 +46,5 @@ quay.io:
     prometheus-operator/prometheus-config-reloader: ">= v0.62.0"
     prometheus-operator/prometheus-operator: ">= 0.63.0"
     prometheus/alertmanager: ">= v0.25.0"
+    prometheus/node-exporter: ">= v1.8.2"
     uswitch/kiam: ">= v4.2.0"
