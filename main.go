@@ -720,6 +720,38 @@ func commandFilter(filepath string) {
 				logger.WithField("image", image).Errorf("error listing Aliyun tags: %v", err)
 				continue
 			}
+			/*
+				Context: https://github.com/giantswarm/giantswarm/issues/31283
+
+				I am not sure what to think about the above code. The comment to the `commandFilter`
+				function states: `If a tag is missing in any of the registries, it is added to the
+				list of tags to be synced.`, what means in order to proceed with a given image we need
+				to establish the truth of:
+
+				ImgTagsMissingIn(Quay) ∨ ImgTagsMissingIn(Azure) ∨ ImgTagsMissingIn(Aliyun) ≡ T
+
+				In case any of the disjuncts is undefined, when error is returned, then obviously the
+				predicate is false and the image is skipped, so the code meets specification.
+
+				On the other hand, maybe the undefined state could be treated as false, what would change
+				the postcondition to:
+
+				ImgTagsMissingIn(Quay) = T ∨ ImgTagsMissingIn(Azure) = T ∨ ImgTagsMissingIn(Aliyun) = T ≡ T
+
+				The question of whether that's possible or not boils down to the question: does it pose
+				any danger to include an image if we do not know its state in the final registry? The
+				repository for it may not exist at all in the registry, it may be already present there,
+				with all the tags, or registry may not be accessible at all at the moment, etc.
+
+				Maybe there is no danger to it, what's implied by how the retagger gets executed. Assuming
+				tags are missing in one of the three registries, the retagger is anyway executed against
+				all three of them in the CircleCI, meaning it must have a way, which is the `skopeo`,
+				I believe, to account for tags already present in the destination registry. If so, the state
+				of registries, that already have tags in question, do not really matter. Tags state should
+				get correctly handled by the `skopeo` later, and in case there is a problem with the registry
+				or repository, we should get an error.
+
+			*/
 			i := &CustomImage{}
 			missingTags := i.FindMissingTags(tags, quayTags, azureTags, aliyunTags)
 			missingTagCount += len(missingTags)
