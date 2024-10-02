@@ -122,12 +122,12 @@ jobs:
       - run :
           name: Filter tags in Skopeo YAML
           command: |
-            retagger filter "<<parameters.filepath>>" 2> >(tee "<<parameters.filepath>>.errlog" >&2)
-            cat "<<parameters.filepath>>.errlog"
+            retagger filter "<<parameters.filepath>>" 2> >(tee "<<parameters.filepath>>.filtered.errlog" >&2)
       - persist_to_workspace:
           root: .
           paths:
             - "<<parameters.filepath>>.filtered"
+            - "<<parameters.filepath>>.filtered.errlog"
 
   retag-registry:
     docker:
@@ -168,6 +168,15 @@ jobs:
       - store_artifacts:
           path: /tmp/skopeo.log
           destination: "<<parameters.registry>>-<<parameters.images_file>>.log"
+      - run:
+          name: Validate success
+          command: |
+            [[ -s <<parameters.images_file>>.errlog ]] || exit 0
+            echo "Errors have been encountered on the \"filter-skopeo-tags\" job, what could lead to some images and tags not being processed correctly."
+            echo "These errors could be to multiple reasons, e.g. connectivity problems, malfunctioning code, etc., for more details see the logs below.\n"
+            echo "Note, one common source of problems is when a target repository, for the image being retagged, does not exists in a target registries, e.g. Aliyun.\n"
+            cat  <<parameters.images_file>>.errlog
+            exit 1
 
   retag-customized-images:
     docker:
