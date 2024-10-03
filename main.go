@@ -35,6 +35,9 @@ var (
 	flagExecutorCount    int
 	flagExecutorID       int
 	flagSkipExistingTags bool
+
+	logStdOut = logrus.New()
+	logStdErr = logrus.New()
 )
 
 const (
@@ -492,7 +495,7 @@ func listTags(image string) ([]string, error) {
 	var err error
 
 	for attempt := 0; attempt < 3; attempt++ {
-		attemptLogger := logrus.WithField("attempt", attempt+1)
+		attemptLogger := logStdOut.WithField("attempt", attempt+1)
 
 		c, stdout, stderr := command("skopeo", "list-tags", dockerTransport+image)
 		err = c.Run()
@@ -591,12 +594,19 @@ func init() {
 	logrus.SetFormatter(&logrus.TextFormatter{})
 	logrus.SetLevel(logrus.DebugLevel)
 
+	logStdOut.SetFormatter(&logrus.TextFormatter{})
+	logStdOut.SetLevel(logrus.DebugLevel)
+
 	lvl, err := logrus.ParseLevel(flagLogLevel)
 	if err != nil {
 		logrus.Warnf("could not parse log level %q, defaulting to %q", flagLogLevel, logrus.DebugLevel.String())
 	} else {
 		logrus.SetLevel(lvl)
 	}
+
+	logStdOut.SetLevel(lvl)
+	logStdOut.Out = os.Stdout
+	logStdErr.Out = os.Stderr
 }
 
 // commandRun is invoked when `retagger run` is called.
@@ -675,24 +685,25 @@ func commandFilter(filepath string) {
 	if filepath == "" {
 		logrus.Fatal("You need to specify filepath: 'retagger filter <path>'")
 	}
-	logger := logrus.WithField("file", filepath)
+	logStdOut.WithField("file", filepath)
+	logStdErr.WithField("file", filepath)
 
-	logger.Infof("Listing images & tags")
+	logStdOut.Infof("Listing images & tags")
 	missingTagsPerImage := map[string][]string{}
 	{
 		filterPrefix := "auniqueprefixa"
 		c, _, stderr := command("skopeo", "sync", "--all", "--dry-run", "--src", "yaml", "--dest", "docker", filepath, filterPrefix)
 		if err := c.Run(); err != nil {
-			logger = logger.WithField("stderr", stderr.String())
-			logger.Fatalf("error running 'skopeo sync --dry-run': %v", err)
+			logStdErr.WithField("stderr", stderr.String())
+			logStdErr.Fatalf("error running 'skopeo sync --dry-run': %v", err)
 		}
 
 		tagsPerImage := map[string][]string{}
 
 		matches := skopeoSyncOutputPattern.FindAllStringSubmatch(stderr.String(), -1)
 		if matches == nil {
-			logger = logger.WithField("stderr", stderr.String())
-			logger.Fatalf("found no images or tags in 'skopeo sync' output")
+			logStdErr.WithField("stderr", stderr.String())
+			logStdErr.Fatalf("found no images or tags in 'skopeo sync' output")
 		}
 		for _, m := range matches {
 			// by index: 0 - entire line, 1 - image name, 2 - tag
@@ -701,42 +712,77 @@ func commandFilter(filepath string) {
 			tagsPerImage[image] = append(tagsPerImage[image], tag)
 		}
 
-		logger.Infof("Found %d images, checking how many tags are missing", len(tagsPerImage))
+		logStdOut.Infof("Found %d images, checking how many tags are missing", len(tagsPerImage))
 		missingTagCount := 0
 		for image, tags := range tagsPerImage {
-			logger.WithField("image", image).Debugf("searching for missing tags")
+			logStdOut.WithField("image", image).Debugf("searching for missing tags")
 			quayTags, err := listTags(fmt.Sprintf("%s/%s", quayURL, imageBaseName(image)))
 			if err != nil {
-				logger.WithField("image", image).Errorf("error listing Quay tags: %v", err)
+				logStdErr.WithField("image", image).Errorf("error listing Quay tags: %v", err)
 				continue
 			}
 			azureTags, err := listTags(fmt.Sprintf("%s/%s", azureURL, imageBaseName(image)))
 			if err != nil {
-				logger.WithField("image", image).Errorf("error listing AzureCR tags: %v", err)
+				logStdErr.WithField("image", image).Errorf("error listing AzureCR tags: %v", err)
 				continue
 			}
 			aliyunTags, err := listTags(fmt.Sprintf("%s/%s", aliyunURL, imageBaseName(image)))
 			if err != nil {
-				logger.WithField("image", image).Errorf("error listing Aliyun tags: %v", err)
+				logStdErr.WithField("image", image).Errorf("error listing Aliyun tags: %v", err)
 				continue
 			}
+			/*
+				Context: https://github.com/giantswarm/giantswarm/issues/31283
+
+				I am not sure what to think about the above code. The comment to the `commandFilter`
+				function states: `If a tag is missing in any of the registries, it is added to the
+				list of tags to be synced.`, what means in order to proceed with a given image we need
+				to establish the truth of:
+
+				ImgTagsMissingIn(Quay) ∨ ImgTagsMissingIn(Azure) ∨ ImgTagsMissingIn(Aliyun) ≡ T
+
+				In case any of the disjuncts is undefined, when error is returned, then obviously the
+				predicate is undefined and the image is skipped, so the code meets specification.
+
+				On the other hand, maybe the undefined state could be treated as false, what would change
+				the postcondition to:
+
+				ImgTagsMissingIn(Quay) = T ∨ ImgTagsMissingIn(Azure) = T ∨ ImgTagsMissingIn(Aliyun) = T ≡ T
+
+				The question of whether that's possible or not boils down to the question: does it pose
+				any danger to include an image if we do not know its state in the final registry? The
+				repository for it may not exist at all in the registry, it may be already present there,
+				with all the tags, or registry may not be accessible at all at the moment, etc.
+
+				Maybe there is no danger to it, what's implied by how the retagger gets executed. Assuming
+				tags are missing in one of the three registries, the retagger is anyway executed against
+				all three of them in the CircleCI, meaning it must have a way, which is the `skopeo`,
+				I believe, to account for tags already present in the destination registry. If so, the state
+				of registries, that already have tags in question, do not really matter. Tags state should
+				get correctly handled by the `skopeo` later, and in case there is a problem with the registry
+				or repository, we should get an error.
+
+				On the other hand, it wouldn't make any difference for the original issue, linked on top, for
+				in its case the repository was missing in all three registries, so the result would still be
+				the same.
+			*/
 			i := &CustomImage{}
 			missingTags := i.FindMissingTags(tags, quayTags, azureTags, aliyunTags)
 			missingTagCount += len(missingTags)
 			missingTagsPerImage[image] = missingTags
 		}
-		logger.Infof("Found %d missing tags", missingTagCount)
+		logStdOut.Infof("Found %d missing tags", missingTagCount)
 	}
 
-	logger.Debugf("Saving filtered file")
+	logStdOut.Debugf("Saving filtered file")
 	filteredFile := skopeoFile{}
 	{
 		b, err := os.ReadFile(filepath)
 		if err != nil {
-			logger.Fatalf("error reading file: %v", err)
+			logStdErr.Fatalf("error reading file: %v", err)
 		}
 		if err := yaml.Unmarshal(b, &filteredFile); err != nil {
-			logger.Fatalf("error unmarshaling file: %v", err)
+			logStdErr.Fatalf("error unmarshaling file: %v", err)
 		}
 
 		// Files are split by registry, so there is exactly one registry
@@ -757,13 +803,13 @@ func commandFilter(filepath string) {
 
 	b, err := yaml.Marshal(&filteredFile)
 	if err != nil {
-		logger.Fatalf("error marshaling file: %v", err)
+		logStdErr.Fatalf("error marshaling file: %v", err)
 	}
 	err = os.WriteFile(filepath+filteredFileSuffix, b, 0644)
 	if err != nil {
-		logrus.Fatalf("error writing file: %v", err)
+		logStdErr.Fatalf("error writing file: %v", err)
 	}
-	logger.Infof("Saved filtered file with missing tags")
+	logStdOut.Infof("Saved filtered file with missing tags")
 }
 
 func main() {
