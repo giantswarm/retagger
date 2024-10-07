@@ -12,6 +12,7 @@ ghcr.io:
     aquasecurity/trivy-operator: ">= 0.16.1"
     aquasecurity/trivy-checks: ">= 0.10.0"
     cloudnative-pg/cloudnative-pg: ">= 1.22.2"
+    dexidp/dex: ">=v2.40.0"
     external-secrets/external-secrets: ">= v0.7.0"
     # giantswarm/staticjscms-hugo-standalone: ">= v0.0.1" -- commented out as this is a private package breaking the job. To be clarfified with @lyind
     jimmidyson/configmap-reload: ">= v0.10.0"
