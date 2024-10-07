@@ -33,7 +33,6 @@ quay.io:
     cilium/hubble-ui-backend: ">= v0.8.5"
     cilium/cilium-envoy: ">= v1.27.3-713b673cccf1af661efd75ca20532336517ddcb9"
     coreos/etcd: ">= v3.3"
-    dexidp/dex: ">=v2.30.2"
     fairwinds/goldilocks: ">= v2.2.0"
     giantswarm/amazon-k8s-cni: ">= v1.11.2"
     jacksontj/promxy: ">= v0.0.60"
