@@ -152,6 +152,7 @@ docker.io:
     kiwigrid/k8s-sidecar: ">= 1.24.3"
     kong: ">= 2.8.1"
     hjacobs/kube-downscaler: ">= 23.2.0"
+    
     mikefarah/yq: ">= 4.31.2"
     mintel/dex-k8s-authenticator: ">= 1.4.0"
     openpolicyagent/conftest: ">= v0.25.0"
@@ -165,4 +166,5 @@ docker.io:
     zricethezav/gitleaks: ">=v7.4.0"
   images-by-tag-regex:
     alpine: ^3\.[123][0-9]\.[0-9]+$
+    memcached: ^1\.[6-9]\.[0-9]+-alpine$
     nginx: ^1\.2[3-9]-alpine$
