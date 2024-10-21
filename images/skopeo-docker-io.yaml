@@ -73,6 +73,7 @@ docker.io:
       - "3.6.1.5-debian"
       - "3.6.1.6-debian"
       - "3.6.1.7-debian"
+      - "3.6.1.8-debian"
       - "3.7.0.0-debian"
       - "3.7.1.0-debian"
       - "3.7.1.1-debian"
