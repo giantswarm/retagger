@@ -11,7 +11,10 @@ gcr.io:
       - "debug"
     tekton-releases/dogfooding/tkn:
       - "latest"
+    k8s-staging-sig-storage/nfsplugin:
+      - "canary"
   images-by-semver:
     cadvisor/cadvisor: ">= v0.44.0"
     k8s-staging-cloud-provider-gcp/gcp-compute-persistent-disk-csi-driver: "1.8.0"
     kubebuilder/kube-rbac-proxy: ">= v0.4.1"
+
