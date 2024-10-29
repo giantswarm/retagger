@@ -1,46 +1,3 @@
-- image: alpine
-  tag_or_pattern: "3.16.2"
-  sha: 1304f174557314a7ed9eddb4eab12fed12cb0cd9809e4c28f29af86979a3c870
-  add_tag_suffix: "envsubst"
-  dockerfile_extras:
-    - RUN apk add --no-cache gettext
-- image: alpine
-  tag_or_pattern: "3.16.2"
-  sha: 1304f174557314a7ed9eddb4eab12fed12cb0cd9809e4c28f29af86979a3c870
-  add_tag_suffix: "yq"
-  dockerfile_extras:
-    - RUN apk add --no-cache yq bash
-- image: alpine
-  semver: ">= 3.11"
-  filter: '(\d+\..*)'
-  add_tag_suffix: "giantswarm"
-  dockerfile_extras:
-    - RUN apk add --no-cache ca-certificates
-    - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
-    - USER giantswarm
-- image: alpine
-  semver: ">= 3.11"
-  filter: '(\d+\..*)'
-  add_tag_suffix: "giantswarm-sysctl"
-  dockerfile_extras:
-    - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
-    - 'RUN apk add --no-cache sudo && echo "giantswarm  ALL = NOPASSWD: /sbin/sysctl" >> /etc/sudoers'
-    - USER giantswarm
-- image: alpine
-  semver: ">= 3.11"
-  filter: '(\d+\..*)'
-  add_tag_suffix: "python3"
-  dockerfile_extras:
-    - RUN apk add --no-cache python3 py3-yaml
-- image: alpine/git
-  override_repo_name: alpinegit
-  tag_or_pattern: "v2.26.2"
-  sha: 7b94cd6038bf3f5ddd7b1d99b9591f243e6484417bc5fb8fa7fdbc076e904794
-  add_tag_suffix: "giantswarm"
-  dockerfile_extras:
-    - RUN apk add --no-cache ca-certificates
-    - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
-    - USER giantswarm
 - image: alpine/helm
   override_repo_name: alpine-helm
   semver: ">= 3.9.3"
@@ -49,13 +6,6 @@
   override_repo_name: awscli
   tag_or_pattern: "2.7.35"
   sha: e5988c45f13ec9c9500e9fb6742e19de642a5bdc2750f2cc0482a857f13c30ea
-- image: amazon/aws-cli
-  override_repo_name: awscli-tar
-  tag_or_pattern: "2.7.35"
-  sha: e5988c45f13ec9c9500e9fb6742e19de642a5bdc2750f2cc0482a857f13c30ea
-  add_tag_suffix: "giantswarm"
-  dockerfile_extras:
-    - RUN yum -y install tar
 - image: bitnami/memcached
   override_repo_name: bitnami-memcached
   tag_or_pattern: "1.6.21"
@@ -144,17 +94,6 @@
 - image: ghcr.io/weaveworks/wego-app
   override_repo_name: weaveworks-wego-app
   semver: ">= v0.18.0"
-- image: fluent/fluent-bit
-  tag_or_pattern: "1.9.8"
-  sha: 137669ee97787c930ec00a8babff46ecc76988d128cc9e7fa581d1b05ef8fb3d
-  add_tag_suffix: aws-plugins
-  dockerfile_extras:
-    - |
-      FROM fluent/fluent-bit:1.9.8
-      COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/kinesis.so /fluent-bit/kinesis.so
-      COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/firehose.so /fluent-bit/firehose.so
-      COPY --from=amazon/aws-for-fluent-bit:latest /fluent-bit/cloudwatch.so /fluent-bit/cloudwatch.so
-      CMD ["/fluent-bit/bin/fluent-bit", "-e", "/fluent-bit/firehose.so", "-e", "/fluent-bit/cloudwatch.so", "-e", "/fluent-bit/kinesis.so", "-c", "/fluent-bit/etc/fluent-bit.conf"]
 - image: fluxcd/helm-controller
   override_repo_name: fluxcd-helm-controller
   semver: ">= v0.12.0"
@@ -176,14 +115,6 @@
 - image: registry.k8s.io/cluster-api-vsphere/cluster-api-vsphere-controller
   override_repo_name: cluster-api-vsphere-controller
   semver: ">= v1.5.1"
-- image: gcr.io/heptio-images/eventrouter
-  tag_or_pattern: "v0.3"
-  sha: dba60a88600d2d94fcd4c365e2931e54ae9aa495e94a924f80814e019b7ea046
-  add_tag_suffix: "giantswarm"
-  dockerfile_extras:
-    - USER root
-    - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
-    - USER giantswarm
 - image: jaegertracing/all-in-one
   override_repo_name: jaeger-all-in-one
   tag_or_pattern: "1.21.0"
@@ -207,44 +138,12 @@
 - image: macropower/analytics-panel-server
   override_repo_name: macropower-analytics-panel-server
   tag_or_pattern: "0.0.1"
-- image: mysql
-  tag_or_pattern: "5.7.14"
-  sha: c8f03238ca1783d25af320877f063a36dbfce0daa56a7b4955e6c6e05ab5c70b
-  add_tag_suffix: "giantswarm"
-  dockerfile_extras:
-    - USER mysql
 - image: projects.registry.vmware.com/vmware-cloud-director/cloud-director-named-disk-csi-driver
   override_repo_name: csi-cloud-director
   semver: " >= 1.3.0"
 - image: projects.registry.vmware.com/vmware-cloud-director/cloud-provider-for-cloud-director
   override_repo_name: cpi-cloud-director
   semver: ">= 1.3.0"
-- image: quay.io/calico/ctl
-  override_repo_name: calicoctl
-  semver: ">= v3.19.0"
-  dockerfile_extras:
-    - |
-      FROM quay.io/giantswarm/alpine:3.13.5
-      COPY --from=0 /calicoctl /calicoctl
-      ENV PATH=$PATH:/
-      ENTRYPOINT ["calicoctl"]
-- image: quay.io/calico/kube-controllers
-  override_repo_name: calico-crd-installer
-  semver: ">= v3.21.3"
-  dockerfile_extras:
-    - |
-      FROM quay.io/giantswarm/crd-installer:0.2.2 AS installer
-      FROM quay.io/giantswarm/alpine:3.15.0 AS downloader
-      WORKDIR /tmp/crd-installer
-      COPY --from=0 /usr/bin/kube-controllers /crd-installer/kube-controllers
-      COPY --from=0 /lib64/ /lib64
-      COPY --from=installer /scripts /scripts
-      RUN CALICO_VERSION=$(/crd-installer/kube-controllers -version) && \
-          /scripts/download-calico-crds.sh $CALICO_VERSION
-      FROM scratch
-      COPY --from=downloader /tmp/crd-installer/crds /crds
-      COPY --from=installer /usr/local/bin/crd-installer /usr/local/bin/crd-installer
-      CMD ["/usr/local/bin/crd-installer", "-dir", "/crds"]
 - image: quay.io/cilium/certgen
   override_repo_name: cilium-certgen
   semver: ">= v0.1.5"
@@ -274,21 +173,6 @@
 - image: quay.io/jiralert/jiralert-linux-amd64
   override_repo_name: jiralert
   semver: ">= 1.0"
-- image: quay.io/prometheus/node-exporter
-  tag_or_pattern: "v1.3.1"
-  sha: f2269e73124dd0f60a7d19a2ce1264d33d08a985aed0ee6b0b89d0be470592cd
-  add_tag_suffix: "giantswarm"
-  dockerfile_extras:
-    - USER root
-    - RUN addgroup -g 1000 -S giantswarm && adduser -u 1000 -S giantswarm -G giantswarm
-    - USER giantswarm
-- image: quay.io/reactiveops/ci-images
-  override_repo_name: vpa-certgen-ci-images
-  semver: ">= v11"
-  filter: "^(.*)-alpine$"
-  add_tag_suffix: "openssl"
-  dockerfile_extras:
-    - RUN apk add --no-cache openssl
 - image: registry.k8s.io/etcd
   semver: ">= v3.5.4-0"
   add_tag_suffix: k8s
@@ -619,29 +503,6 @@
 - image: registry.k8s.io/defaultbackend-amd64
   tag_or_pattern: "1.5"
   override_repo_name: defaultbackend
-- image: registry.k8s.io/kube-apiserver
-  semver: '>= v1.16.8 < v1.19'
-  add_tag_suffix: giantswarm
-  filter: '^(v\d+\.\d+\.\d+)$'
-  dockerfile_extras:
-    - RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
-- image: registry.k8s.io/kube-apiserver
-  override_repo_name: hyperkube
-  semver: ">= v1.19.8"
-  filter: '^(v\d+\.\d+\.\d+)$'
-  strip_semver_prefix: true
-  dockerfile_extras:
-    - |
-      FROM quay.io/giantswarm/alpine:3.12.1 AS downloader
-      WORKDIR /tmp/hyperkube
-      COPY --from=0 /usr/local/bin/kube-apiserver /tmp/hyperkube/kube-apiserver
-      RUN KUBERNETES_VERSION=$(/tmp/hyperkube/kube-apiserver --version | grep Kubernetes | cut -d ' ' -f 2) && \
-      wget -t 5 https://storage.googleapis.com/kubernetes-release/release/$KUBERNETES_VERSION/bin/linux/amd64/kubelet && \
-      wget -t 5 https://storage.googleapis.com/kubernetes-release/release/$KUBERNETES_VERSION/bin/linux/amd64/kubectl && \
-      chmod +x /tmp/hyperkube/kubelet /tmp/hyperkube/kubectl
-      FROM scratch
-      COPY --from=downloader /tmp/hyperkube/kubelet /kubelet
-      COPY --from=downloader /tmp/hyperkube/kubectl /kubectl
 - image: registry.k8s.io/provider-aws/cloud-controller-manager
   override_repo_name: aws-cloud-controller-manager
   semver: ">= v1.21.0-alpha.0"
@@ -649,28 +510,9 @@
   add_tag_suffix: gs1
   tag_or_pattern: "v0.0.3"
   sha: d19b9977ebf01739d204efe3c4b1e3b4fa995db3e3b88f5801adfb6c41b1ac2e
-- image: sonobuoy/sonobuoy
-  semver: ">= v0.52.0"
-  add_tag_suffix: alpine-giantswarm
-  dockerfile_extras:
-    - |
-      FROM quay.io/giantswarm/alpine:3.14.0-giantswarm
-      COPY --from=0 /sonobuoy /sonobuoy
-      WORKDIR /
-      CMD ["/sonobuoy", "aggregator", "--no-exit", "-v", "3", "--logtostderr"]
 - image: rook/ceph
   override_repo_name: rook-ceph
   semver: "v1.7.0 - v1.7.11"
-- image: ubuntu/squid
-  sha: 341611dd7eb3b2905e1d2e0cf1936606625dcab4085baf7cc4ae21c490670ac0
-  tag_or_pattern: "5.6-22.10_beta"
-  add_tag_suffix: giantswarm_gs1
-  dockerfile_extras:
-    - RUN sed -i '/^acl SSL_ports port 443/a acl SSL_ports port 6443' /etc/squid/squid.conf
-    - RUN sed -i 's/http_access deny CONNECT/#http_access deny CONNECT/g' /etc/squid/squid.conf
-    - RUN chmod a+rwx /run && chmod a+rwx /var/log/squid && chmod a+rwx /var/spool/squid
-    - USER proxy
-    - CMD ["squid", "-N"]
 - image: quay.io/skopeo/stable
   override_repo_name: skopeo
   semver: ">= v1.15.0"
