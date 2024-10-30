@@ -317,6 +317,33 @@ trivy_databases: &trivy_databases
         image_name: "ghcr.io/aquasecurity/trivy-db"
         requires:
           - build-and-push-docker
+    - retag-trivy-dbs:
+        context: architect
+        name: retag-gsoci-trivy-java-database
+        username: ${ACR_GSOCI_RETAGGER_USERNAME}
+        password: ${ACR_GSOCI_RETAGGER_PASSWORD}
+        registry: "gsoci.azurecr.io"
+        image_name: "ghcr.io/aquasecurity/trivy-java-db"
+        requires:
+          - build-and-push-docker
+    - retag-trivy-dbs:
+        context: architect
+        name: retag-aliyun-trivy-database
+        username: ${ALIYUN_USERNAME}
+        password: ${ALIYUN_PASSWORD}
+        registry: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com"
+        image_name: "ghcr.io/aquasecurity/trivy-db"
+        requires:
+          - build-and-push-docker
+    - retag-trivy-dbs:
+        context: architect
+        name: retag-aliyun-trivy-java-database
+        username: ${ALIYUN_USERNAME}
+        password: ${ALIYUN_PASSWORD}
+        registry: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com"
+        image_name: "ghcr.io/aquasecurity/trivy-java-db"
+        requires:
+          - build-and-push-docker
 
 # Define 'build_and_retag' workflow steps, so we can reuse it.
 build_and_retag: &build_and_retag
