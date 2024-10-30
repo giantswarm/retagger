@@ -66,6 +66,10 @@ The full specification is available in [upstream skopeo-sync docs][skopeo-sync
 docs]. Semantic version constraint documentation is available in
 [Masterminds/semver docs][masterminds docs].
 
+### Custom image builds
+
+Custom container image builds were moved to: https://github.com/giantswarm/custom-container-images.
+
 ### Renamed images
 
 Renamed images are represented as an array of `RenamedImages` objects. Please
