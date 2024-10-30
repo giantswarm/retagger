@@ -301,6 +301,13 @@ jobs:
 # Define 'trivy_databases' workflow so we can reuse it.
 trivy_databases: &trivy_databases
   jobs:
+    - build-and-push-docker:
+        context: architect
+        name: build-and-push-docker
+        username: ${QUAY_USERNAME}
+        password: ${QUAY_PASSWORD}
+        registry: "quay.io"
+        tag: ${CIRCLE_TAG:-$CIRCLE_SHA1}
     - retag-trivy-dbs:
         context: architect
         name: retag-gsoci-trivy-database
@@ -308,6 +315,8 @@ trivy_databases: &trivy_databases
         password: ${ACR_GSOCI_RETAGGER_PASSWORD}
         registry: "gsoci.azurecr.io"
         image_name: "ghcr.io/aquasecurity/trivy-db"
+        requires:
+          - build-and-push-docker
 
 # Define 'build_and_retag' workflow steps, so we can reuse it.
 build_and_retag: &build_and_retag
