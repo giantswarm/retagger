@@ -1,8 +1,7 @@
 // Package main is the retagger program.
 //
 // The program provides two commands:
-//   - `retagger run` - Performs retagging of the miages defined in images/customized-images.yaml.
-//     This retagging may include manipulations on the source image, like adding new layers.
+//   - `retagger run` - Performs retagging / renaming of the images defined in images/renamed-images.yaml.
 //   - `retagger filter <path>` - Processes skopeo YAML files in images/skopeo-* and creates a
 //     list of image syncing tasks to be performed. This is simple copyingf of images from one
 //     repository to another.
@@ -41,19 +40,19 @@ var (
 )
 
 const (
-	customizedImagesFile = "images/customized-images.yaml"
-	defaultPlatform      = "linux/amd64"
-	dockerTransport      = "docker://"
-	filteredFileSuffix   = ".filtered"
+	renamedImagesFile  = "images/renamed-images.yaml"
+	defaultPlatform    = "linux/amd64"
+	dockerTransport    = "docker://"
+	filteredFileSuffix = ".filtered"
 
 	aliyunURL = "giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm"
 	azureURL  = "gsoci.azurecr.io/giantswarm"
 	quayURL   = "quay.io/giantswarm"
 )
 
-// CustomImage represents a set of rules used to rebuild/retag multiple tags of
+// RenamedImage represents a set of rules used to rebuild/retag multiple tags of
 // the same image that match the specified tag pattern.
-type CustomImage struct {
+type RenamedImage struct {
 	// Image is the full name of the image to pull.
 	// Example: "alpine", "docker.io/giantswarm/app-operator", or
 	// "ghcr.io/fluxcd/kustomize-controller"
@@ -75,10 +74,6 @@ type CustomImage struct {
 	//   Filter: "(.+)-alpine"  ->  Image tag: "3.12-alpine" -> Comparison: "3.12>=3.10"
 	//   Semver: ">= 3.10"          Extracted group: "3.12"
 	Filter string `yaml:"filter,omitempty"`
-	// DockerfileExtras is a list of additional Dockerfile statements you want to
-	// append to the upstream Dockerfile. (optional)
-	// Example: ["RUN apk add -y bash"]
-	DockerfileExtras []string `yaml:"dockerfile_extras,omitempty"`
 	// AddTagSuffix is an extra string to append to the tag.
 	// Example: "giantswarm", the tag would become "<tag>-giantswarm"
 	AddTagSuffix string `yaml:"add_tag_suffix,omitempty"`
@@ -91,7 +86,7 @@ type CustomImage struct {
 	StripSemverPrefix bool `yaml:"strip_semver_prefix,omitempty"`
 }
 
-func (img *CustomImage) Validate() error {
+func (img *RenamedImage) Validate() error {
 	if img.TagOrPattern == "" && img.SHA == "" && img.Semver == "" {
 		return fmt.Errorf("neither %q, %q, nor %q specified", "tag_or_pattern", "semver", "sha")
 	}
@@ -114,7 +109,7 @@ func (img *CustomImage) Validate() error {
 // Quay, AzureCR and Aliyun.
 // Any optional parameters configured will be applied as well, e.g. tag suffix.
 // The pushed image will be tagged with the value of image.TagOrPattern.
-func (img *CustomImage) RetagUsingSHA() error {
+func (img *RenamedImage) RetagUsingSHA() error {
 	// Overwrite image name if applicable
 	destinationName := imageBaseName(img.Image)
 	if img.OverrideRepoName != "" {
@@ -128,88 +123,19 @@ func (img *CustomImage) RetagUsingSHA() error {
 
 	errorCounter := &atomic.Int64{}
 
-	// If no DockerfileExtras were defined, we can simply copy the upstream
-	// image. We'll use skopeo for this, because it's awesome.
-	if len(img.DockerfileExtras) == 0 {
-		source := fmt.Sprintf("%s%s@sha256:%s", dockerTransport, img.Image, img.SHA)
-		wg := sync.WaitGroup{}
-		wg.Add(3)
-		// Quay
-		destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, quayURL, destinationName, destinationTag)
-		go copyImage(&wg, errorCounter, source, destination)
-		// AzureCR
-		destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, azureURL, destinationName, destinationTag)
-		go copyImage(&wg, errorCounter, source, destination)
-		// Aliyun
-		destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, aliyunURL, destinationName, destinationTag)
-		go copyImage(&wg, errorCounter, source, destination)
-		wg.Wait()
-
-		if errorCount := errorCounter.Load(); errorCount > 0 {
-			return fmt.Errorf("finished %q with %d errors", img.Image, errorCount)
-		}
-		return nil
-	}
-
-	// DockerfileExtras were defined. We'll create a Dockefile which
-	// references the upstream image and write our changes to it.
-	var dockerfile string
-	{
-		tmp, err := os.CreateTemp(temporaryWorkingDir, "Dockerfile.*")
-		if err != nil {
-			return fmt.Errorf("error creating temporary Image: %w", err)
-		}
-		dockerfile = tmp.Name()
-		defer func() {
-			os.Remove(dockerfile)
-		}()
-		fmt.Fprintf(tmp, "FROM %s@sha256:%s\n", img.Image, img.SHA)
-		for _, line := range img.DockerfileExtras {
-			_, err := tmp.WriteString(line + "\n")
-			if err != nil {
-				return fmt.Errorf("error writing temporary Image: %w", err)
-			}
-		}
-	}
-
+	// We'll use skopeo copy for this, because it's awesome.
+	source := fmt.Sprintf("%s%s@sha256:%s", dockerTransport, img.Image, img.SHA)
 	wg := sync.WaitGroup{}
 	wg.Add(3)
-	name := fmt.Sprintf("%s:%s", destinationName, destinationTag)
-	quayName := fmt.Sprintf("%s/%s", quayURL, name)
-	azureName := fmt.Sprintf("%s/%s", azureURL, name)
-	aliyunName := fmt.Sprintf("%s/%s", aliyunURL, name)
-	// Build the generated Dockerfile, tagging it for Quay
-	{
-		c, stdout, stderr := command("docker", "build", "-t", quayName, "-f", dockerfile, temporaryWorkingDir)
-		if err := c.Run(); err != nil {
-			return fmt.Errorf("error building custom image for \"%s@sha256:%s\": %w\n%s", img.Image, img.SHA, err, stderr.String())
-		}
-		logrus.Tracef(stdout.String())
-	}
-
-	// Start pushing to Quay immediately
-	go pushImage(&wg, errorCounter, quayName)
-
-	// Tag the image we've just built for AzureCR...
-	{
-		c, _, stderr := command("docker", "tag", quayName, azureName)
-		if err := c.Run(); err != nil {
-			return fmt.Errorf("error tagging custom image for \"%s@sha256:%s\": %w\n%s", img.Image, img.SHA, err, stderr.String())
-		}
-	}
-	// push to AzureCR...
-	go pushImage(&wg, errorCounter, azureName)
-
-	// Tag the image we've just built for Aliyun as well...
-	{
-		c, _, stderr := command("docker", "tag", quayName, aliyunName)
-		if err := c.Run(); err != nil {
-			return fmt.Errorf("error tagging custom image for \"%s@sha256:%s\": %w\n%s", img.Image, img.SHA, err, stderr.String())
-		}
-	}
-	// and push to Aliyun
-	go pushImage(&wg, errorCounter, aliyunName)
-
+	// Quay
+	destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, quayURL, destinationName, destinationTag)
+	go copyImage(&wg, errorCounter, source, destination)
+	// AzureCR
+	destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, azureURL, destinationName, destinationTag)
+	go copyImage(&wg, errorCounter, source, destination)
+	// Aliyun
+	destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, aliyunURL, destinationName, destinationTag)
+	go copyImage(&wg, errorCounter, source, destination)
 	wg.Wait()
 
 	if errorCount := errorCounter.Load(); errorCount > 0 {
@@ -221,7 +147,7 @@ func (img *CustomImage) RetagUsingSHA() error {
 // RetagUsingTags finds all tags matching the img.TagOrPattern or
 // img.Semver, retags, and pushes them to Quay and Aliyun container registries.
 // Any optional parameters configured will be applied as well, e.g. tag suffix.
-func (img *CustomImage) RetagUsingTags() error {
+func (img *RenamedImage) RetagUsingTags() error {
 	// List available image tags
 	tags, err := listTags(img.Image)
 	if err != nil {
@@ -259,7 +185,7 @@ func (img *CustomImage) RetagUsingTags() error {
 	}
 
 	errorCounter := &atomic.Int64{}
-tagLoop:
+
 	// Iterate through all found tags and retag ones matching the semver/pattern
 	for _, tag := range tags {
 		// Add tag suffix if applicable
@@ -271,95 +197,23 @@ tagLoop:
 			destinationTag = strings.TrimPrefix(destinationTag, "v")
 		}
 
-		// If no DockerfileExtras were defined, we can simply copy the upstream
-		// image. We'll use skopeo for this, because it's awesome.
-		if len(img.DockerfileExtras) == 0 {
-			source := fmt.Sprintf("%s%s:%s", dockerTransport, img.Image, tag)
-			wg := sync.WaitGroup{}
-			wg.Add(3)
-			// Quay
-			destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, quayURL, destinationName, destinationTag)
-			go copyImage(&wg, errorCounter, source, destination)
-			// Azure
-			destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, azureURL, destinationName, destinationTag)
-			go copyImage(&wg, errorCounter, source, destination)
-			// Aliyun
-			destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, aliyunURL, destinationName, destinationTag)
-			go copyImage(&wg, errorCounter, source, destination)
-			wg.Wait()
-
-			// We'll skip to the next tag
-			continue
-		}
-
-		// DockerfileExtras were defined. We'll create a Dockefile which
-		// references the upstream image and write our changes to it.
-		var dockerfile string
-		{
-			tmp, err := os.CreateTemp(temporaryWorkingDir, "Dockerfile.*")
-			if err != nil {
-				logrus.Errorf("error creating temporary Image: %v", err)
-				errorCounter.Add(1)
-				continue tagLoop
-			}
-			dockerfile = tmp.Name()
-			defer func() {
-				os.Remove(dockerfile)
-			}()
-			fmt.Fprintf(tmp, "FROM --platform=%s %s:%s\n", defaultPlatform, img.Image, tag)
-			for _, line := range img.DockerfileExtras {
-				_, err := tmp.WriteString(line + "\n")
-				if err != nil {
-					logrus.Errorf("error writing temporary Image: %v", err)
-					errorCounter.Add(1)
-					continue tagLoop
-				}
-			}
-		}
-
+		// We'll use skopeo copy for this, because it's awesome.
+		source := fmt.Sprintf("%s%s:%s", dockerTransport, img.Image, tag)
 		wg := sync.WaitGroup{}
 		wg.Add(3)
-		name := fmt.Sprintf("%s:%s", destinationName, destinationTag)
-		quayName := fmt.Sprintf("%s/%s", quayURL, name)
-		azureName := fmt.Sprintf("%s/%s", azureURL, name)
-		aliyunName := fmt.Sprintf("%s/%s", aliyunURL, name)
-		// Build the generated Dockerfile, tagging it for Quay
-		{
-			c, stdout, stderr := command("docker", "build", "-t", quayName, "-f", dockerfile, temporaryWorkingDir)
-			if err := c.Run(); err != nil {
-				logrus.Errorf("error building custom image for %s:%s: %v\n%s", img.Image, tag, err, stderr.String())
-				errorCounter.Add(1)
-				continue tagLoop
-			}
-			logrus.Tracef(stdout.String())
-		}
-
-		// Start pushing to Quay immediately
-		go pushImage(&wg, errorCounter, quayName)
-
-		// Tag the image we've just built for AzureCR...
-		{
-			c, _, stderr := command("docker", "tag", quayName, azureName)
-			if err := c.Run(); err != nil {
-				logrus.Errorf("error tagging custom image for %s:%s: %v\n%s", img.Image, tag, err, stderr.String())
-				continue tagLoop
-			}
-		}
-		// and push to Azure
-		go pushImage(&wg, errorCounter, azureName)
-
-		// Tag the image we've just built for Aliyun as well...
-		{
-			c, _, stderr := command("docker", "tag", quayName, aliyunName)
-			if err := c.Run(); err != nil {
-				logrus.Errorf("error tagging custom image for %s:%s: %v\n%s", img.Image, tag, err, stderr.String())
-				continue tagLoop
-			}
-		}
-		// and push to Aliyun
-		go pushImage(&wg, errorCounter, aliyunName)
-
+		// Quay
+		destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, quayURL, destinationName, destinationTag)
+		go copyImage(&wg, errorCounter, source, destination)
+		// Azure
+		destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, azureURL, destinationName, destinationTag)
+		go copyImage(&wg, errorCounter, source, destination)
+		// Aliyun
+		destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, aliyunURL, destinationName, destinationTag)
+		go copyImage(&wg, errorCounter, source, destination)
 		wg.Wait()
+
+		// We'll skip to the next tag
+		continue
 	}
 
 	if errorCount := errorCounter.Load(); errorCount > 0 {
@@ -372,7 +226,7 @@ tagLoop:
 // uses either a TagOrPattern, or Semver+Filter fields, whichever are defined.
 // Validate() function guarantees that only one method can be available at any
 // given time.
-func (img *CustomImage) FilterTags(tags []string) ([]string, error) {
+func (img *RenamedImage) FilterTags(tags []string) ([]string, error) {
 	var filteredTags []string
 
 	// Filter by TagOrPattern...
@@ -440,7 +294,7 @@ func (img *CustomImage) FilterTags(tags []string) ([]string, error) {
 
 // findMissingTags returns a list of items of the 'tags' slice that are missing
 // from at least one of the 'present' slices.
-func (img *CustomImage) FindMissingTags(tags []string, present ...[]string) []string {
+func (img *RenamedImage) FindMissingTags(tags []string, present ...[]string) []string {
 	var filteredTags []string
 	for _, tag := range tags {
 		tagIsMissing := false
@@ -555,23 +409,6 @@ func copyImage(wg *sync.WaitGroup, errorCounter *atomic.Int64, source, destinati
 	logrus.Debugf("copied %q to %q", source, destination)
 }
 
-// pushImage is a helper function used to invoke `docker push`.
-func pushImage(wg *sync.WaitGroup, errorCounter *atomic.Int64, nameAndTag string) {
-	defer wg.Done()
-	c, _, stderr := command("docker", "push", nameAndTag)
-	logrus.Debugf("pushing %q", nameAndTag)
-	if err := c.Run(); err != nil {
-		logrus.Errorf("error pushing %q: %v\n%s", nameAndTag, err, stderr.String())
-		return
-	}
-	logrus.Debugf("pushed %q", nameAndTag)
-	// try to free up docker space
-	c = exec.Command("docker", "image", "rm", nameAndTag)
-	if err := c.Run(); err != nil {
-		logrus.Tracef("error running %q", c.String())
-	}
-}
-
 // command is a helper function so I don't have to manually plug bytes.Buffer
 // into command streams every time ;_;
 func command(name string, args ...string) (*exec.Cmd, *bytes.Buffer, *bytes.Buffer) {
@@ -628,33 +465,33 @@ func commandRun() {
 
 	logger := logrus.WithField("executor", flagExecutorID)
 
-	// Load custom dockerfile definitions from a file
-	customizedImages := []CustomImage{}
+	// Load renamed image definitions from a file
+	var renamedImages []RenamedImage
 	{
-		b, err := os.ReadFile(customizedImagesFile)
+		b, err := os.ReadFile(renamedImagesFile)
 		if err != nil {
-			logger.Fatalf("error reading %q: %s", customizedImagesFile, err)
+			logger.Fatalf("error reading %q: %s", renamedImagesFile, err)
 		}
-		if err := yaml.Unmarshal(b, &customizedImages); err != nil {
-			logger.Fatalf("error unmarshaling %q: %s", customizedImagesFile, err)
+		if err := yaml.Unmarshal(b, &renamedImages); err != nil {
+			logger.Fatalf("error unmarshaling %q: %s", renamedImagesFile, err)
 		}
 	}
 
-	logger.Infof("Found %d custom Images to build", len(customizedImages))
+	logger.Infof("Found %d images to rename and copy", len(renamedImages))
 
 	// Iterate over every image x tag and retag/rebuild it
 	errorCounter := 0
-	for i, image := range customizedImages {
+	for i, image := range renamedImages {
 		// Skip images meant for other executors
 		if i%flagExecutorCount != flagExecutorID {
 			continue
 		}
 		if err := image.Validate(); err != nil {
-			logger.Errorf("[%d/%d] %q error: %s", i+1, len(customizedImages), image.Image, err)
+			logger.Errorf("[%d/%d] %q error: %s", i+1, len(renamedImages), image.Image, err)
 			errorCounter++
 			continue
 		}
-		logger.Printf("[%d/%d] Retagging %q", i+1, len(customizedImages), image.Image)
+		logger.Printf("[%d/%d] Retagging %q", i+1, len(renamedImages), image.Image)
 		if image.SHA != "" {
 			if err := image.RetagUsingSHA(); err != nil {
 				logger.Errorf("got error: %v", err)
@@ -671,7 +508,7 @@ func commandRun() {
 	if errorCounter > 0 {
 		logger.Fatalf("Retagging ended with %d errors", errorCounter)
 	}
-	logger.Infof("Done retagging %d images with no errors", len(customizedImages))
+	logger.Infof("Done retagging %d images with no errors", len(renamedImages))
 }
 
 // commandFilter is invoked when `retagger filter` is called.
@@ -766,7 +603,7 @@ func commandFilter(filepath string) {
 				in its case the repository was missing in all three registries, so the result would still be
 				the same.
 			*/
-			i := &CustomImage{}
+			i := &RenamedImage{}
 			missingTags := i.FindMissingTags(tags, quayTags, azureTags, aliyunTags)
 			missingTagCount += len(missingTags)
 			missingTagsPerImage[image] = missingTags
@@ -814,7 +651,7 @@ func commandFilter(filepath string) {
 
 func main() {
 	if len(flag.Args()) == 0 {
-		fmt.Println("retagger run             Retag custom images\nretagger filter <path>   Filter missing tags for skopeo YAML file\n\n")
+		fmt.Println("retagger run             Retag images\nretagger filter <path>   Filter missing tags for skopeo YAML file\n\n")
 		flag.Usage()
 		os.Exit(0)
 	}
