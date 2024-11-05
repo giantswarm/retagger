@@ -129,6 +129,55 @@ jobs:
             - "<<parameters.filepath>>.filtered"
             - "<<parameters.filepath>>.filtered.errlog"
 
+  retag-image-name:
+    docker:
+      - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
+    resource_class: small
+    shell: /bin/bash
+    parameters:
+      username:
+        type: string
+      password:
+        type: string
+      registry:
+        type: string
+      image_name:
+        type: string
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Log in to Docker registry
+          command: |
+            skopeo login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
+            max_retry=30
+            counter=1
+            until skopeo login -u "<<parameters.username>>" -p "<<parameters.password>>" "<<parameters.registry>>"
+            do
+                sleep 3
+                [[ counter -eq $max_retry ]] && echo "Failed by exhausting $max_retry retries" && exit 1
+                echo "Attempt $counter: trying again..."
+                ((counter++))
+            done
+      - run:
+          name: Retag images
+          no_output_timeout: 1h
+          command: |
+            skopeo sync --all --keep-going --retry-times 3 --src docker --dest docker \
+              "<<parameters.image_name>>" "<<parameters.registry>>/giantswarm" | tee /tmp/skopeo.log
+      - store_artifacts:
+          path: /tmp/skopeo.log
+          destination: "<<parameters.registry>>-<<parameters.image_name>>.log"
+      - run:
+          name: Validate success
+          command: |
+            [[ -s <<parameters.image_name>>.errlog ]] || exit 0
+            echo "Errors have been encountered on the \"filter-skopeo-tags\" job, what could lead to some images and tags not being processed correctly."
+            echo "These errors could be to multiple reasons, e.g. connectivity problems, malfunctioning code, etc., for more details see the logs below.\n"
+            echo "Note, one common source of problems is when a target repository, for the image being retagged, does not exists in a target registries, e.g. Aliyun.\n"
+            cat  <<parameters.image_name>>.errlog
+            exit 1
+
   retag-registry:
     docker:
       - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
@@ -248,6 +297,53 @@ jobs:
             HEARTBEAT_NAME: retagger-cronjob
           command: |
             curl -X GET https://api.opsgenie.com/v2/heartbeats/$HEARTBEAT_NAME/ping --header "Authorization: GenieKey ${OPSGENIE_HEARTBEAT_KEY}"
+
+# Define 'trivy_databases' workflow so we can reuse it.
+trivy_databases: &trivy_databases
+  jobs:
+    - build-and-push-docker:
+        context: architect
+        name: build-and-push-docker
+        username: ${QUAY_USERNAME}
+        password: ${QUAY_PASSWORD}
+        registry: "quay.io"
+        tag: ${CIRCLE_TAG:-$CIRCLE_SHA1}
+    - retag-image-name:
+        context: architect
+        name: retag-gsoci-trivy-database
+        username: ${ACR_GSOCI_RETAGGER_USERNAME}
+        password: ${ACR_GSOCI_RETAGGER_PASSWORD}
+        registry: "gsoci.azurecr.io"
+        image_name: "ghcr.io/aquasecurity/trivy-db"
+        requires:
+          - build-and-push-docker
+    - retag-image-name:
+        context: architect
+        name: retag-gsoci-trivy-java-database
+        username: ${ACR_GSOCI_RETAGGER_USERNAME}
+        password: ${ACR_GSOCI_RETAGGER_PASSWORD}
+        registry: "gsoci.azurecr.io"
+        image_name: "ghcr.io/aquasecurity/trivy-java-db"
+        requires:
+          - build-and-push-docker
+    - retag-image-name:
+        context: architect
+        name: retag-aliyun-trivy-database
+        username: ${ALIYUN_USERNAME}
+        password: ${ALIYUN_PASSWORD}
+        registry: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com"
+        image_name: "ghcr.io/aquasecurity/trivy-db"
+        requires:
+          - build-and-push-docker
+    - retag-image-name:
+        context: architect
+        name: retag-aliyun-trivy-java-database
+        username: ${ALIYUN_USERNAME}
+        password: ${ALIYUN_PASSWORD}
+        registry: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com"
+        image_name: "ghcr.io/aquasecurity/trivy-java-db"
+        requires:
+          - build-and-push-docker
 
 # Define 'build_and_retag' workflow steps, so we can reuse it.
 build_and_retag: &build_and_retag
@@ -490,3 +586,13 @@ workflows:
             branches:
               only: main
     <<: *build_and_retag
+
+  # Runs every 12 hours at 09:08 and 21:08 UTC
+  trivy_databases:
+    triggers:
+      - schedule:
+          cron: "08 09,21 * * *"
+          filters:
+            branches:
+              only: main
+    <<: *trivy_databases
