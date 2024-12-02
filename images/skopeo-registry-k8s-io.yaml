@@ -25,6 +25,7 @@ registry.k8s.io:
     # pull the coredns image at all since we skip the coredns addon and instead
     # install it using our app platform) is fixed, we can remove this:
     coredns/coredns: ">= v1.8.0"
+    descheduler/descheduler: ">= v0.31.0"
     dns/k8s-dns-node-cache: ">= 1.21.1"
     etcd: ">= v3.5.4-0"
     external-dns/external-dns: ">= v0.11.0"
