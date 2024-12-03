@@ -99,7 +99,8 @@ jobs:
             counter=1
             until docker login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
             do
-                sleep 3
+                # Total potential wait is x * ((max_retry * (max_retry - 1)) / 2), where x is the constant in the expression
+                sleep $((10 * $counter))
                 [[ counter -eq $max_retry ]] && echo "Failed by exhausting $max_retry retries" && exit 1
                 echo "Attempt $counter: trying again..."
                 ((counter++))
@@ -114,7 +115,7 @@ jobs:
             counter=1
             until skopeo login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
             do
-                sleep 3
+                sleep $((10 * $counter))
                 [[ counter -eq $max_retry ]] && echo "Failed by exhausting $max_retry retries" && exit 1
                 echo "Attempt $counter: trying again..."
                 ((counter++))
@@ -150,11 +151,11 @@ jobs:
           name: Log in to Docker registry
           command: |
             skopeo login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
-            max_retry=30
+            max_retry=5
             counter=1
             until skopeo login -u "<<parameters.username>>" -p "<<parameters.password>>" "<<parameters.registry>>"
             do
-                sleep 3
+                sleep $((10 * $counter))
                 [[ counter -eq $max_retry ]] && echo "Failed by exhausting $max_retry retries" && exit 1
                 echo "Attempt $counter: trying again..."
                 ((counter++))
@@ -199,11 +200,11 @@ jobs:
           name: Log in to Docker registry
           command: |
             skopeo login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
-            max_retry=30
+            max_retry=5
             counter=1
             until skopeo login -u "<<parameters.username>>" -p "<<parameters.password>>" "<<parameters.registry>>"
             do
-                sleep 3
+                sleep $((10 * $counter))
                 [[ counter -eq $max_retry ]] && echo "Failed by exhausting $max_retry retries" && exit 1
                 echo "Attempt $counter: trying again..."
                 ((counter++))
@@ -257,7 +258,7 @@ jobs:
             counter=1
             until docker login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
             do
-                sleep 3
+                sleep $((10 * $counter))
                 [[ counter -eq $max_retry ]] && echo "Failed by exhausting $max_retry retries" && exit 1
                 echo "Attempt $counter: trying again..."
                 ((counter++))
@@ -272,7 +273,7 @@ jobs:
             counter=1
             until skopeo login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
             do
-                sleep 3
+                sleep $((10 * $counter))
                 [[ counter -eq $max_retry ]] && echo "Failed by exhausting $max_retry retries" && exit 1
                 echo "Attempt $counter: trying again..."
                 ((counter++))
