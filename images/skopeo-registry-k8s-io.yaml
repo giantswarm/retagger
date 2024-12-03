@@ -41,4 +41,5 @@ registry.k8s.io:
     sig-storage/csi-resizer: ">= v1.3.0"
     sig-storage/csi-snapshotter: ">= v4.2.1"
     sig-storage/livenessprobe: ">= v2.6.0"
+    sig-storage/nfsplugin: ">= v4.9.0"
     sig-storage/snapshot-controller: ">= v4.2.1"

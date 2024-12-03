@@ -13,6 +13,9 @@ docker.io:
       - "1.8.7"
       - "1.9.3"
       - "1.11.1"
+      - "1.11.3"
+      - "1.11.4"
+      - "1.12.0"
     docker:
       - "18.09.1"
     edgedb/edgedb:
@@ -21,31 +24,6 @@ docker.io:
       - "6.8.13"
     fluxcd/flux-cli:
       - "v0.27.0"
-    goharbor/chartmuseum-photon:
-      - "v0.7.1-v1.6.0"
-    goharbor/clair-photon:
-      - "v2.0.5-v1.6.0"
-    goharbor/harbor-adminserver:
-      - "v1.6.0"
-    goharbor/harbor-db:
-      - "v1.6.0"
-    goharbor/harbor-jobservice:
-      - "v1.6.0"
-    goharbor/harbor-ui:
-      - "v1.6.0"
-    goharbor/notary-server-photon:
-      - "v0.5.1-v1.6.0"
-    goharbor/notary-signer-photon:
-      - "v0.5.1-v1.6.0"
-    goharbor/registry-photon:
-      - "v2.6.2-v1.6.0"
-      - "v2.2.1"
-    goharbor/harbor-exporter:
-      - "v2.2.1"
-    goharbor/harbor-portal:
-      - "v2.2.1"
-    goharbor/harbor-registryctl:
-      - "v2.2.1"
     golang:
       - "1.14.1-alpine3.11"
       - "1.15.2-alpine3.12"
@@ -57,7 +35,7 @@ docker.io:
       - "1.18.1-alpine3.15"
       - "1.19.1-alpine3.16"
       - "1.20.6-alpine3.17"
-      # Future `golang` versions are now handled in `customized-images.yaml` to automatically match alpine tags via semver
+      # Future `golang` versions are now handled in `renamed-images.yaml` to automatically match alpine tags via semver
     golangci/golangci-lint:
       - "v1.23.8"
     instrumenta/conftest:
@@ -84,6 +62,7 @@ docker.io:
       - "3.4.3.1-debian"
       - "3.4.3.3-debian"
       - "3.4.3.10-debian"
+      - "3.4.3.13-debian"
       - "3.5.0.0-debian"
       - "3.5.0.1-debian"
       - "3.5.0.2-debian"
@@ -97,10 +76,12 @@ docker.io:
       - "3.6.1.5-debian"
       - "3.6.1.6-debian"
       - "3.6.1.7-debian"
+      - "3.6.1.8-debian"
       - "3.7.0.0-debian"
       - "3.7.1.0-debian"
       - "3.7.1.1-debian"
       - "3.7.1.2-debian"
+      - "3.8.1.0-debian"
     looztra/kubesplit:
       - "0.3.2-dd13538"
     madnight/alpine-wkhtmltopdf-builder:
@@ -120,16 +101,13 @@ docker.io:
       - "v0.121.0-full"
       - "v0.121.0-mod"
       - "v0.120.2-mod"
-    peharbor/harbor-core:
-      - "v2.2.1-adidas-1"
-    peharbor/harbor-jobservice:
-      - "v2.2.1-adidas-1"
     python:
       - "3.8.12-slim"
       - "3.9-alpine3.13"
       - "3.10.3-slim"
       - "3.12.0-alpine3.18"
       - "3.12.3-alpine"
+      - "3.12.7-slim"
     redis:
       - "3.2.11-alpine"
       - "4.0.9"
@@ -194,4 +172,5 @@ docker.io:
     zricethezav/gitleaks: ">=v7.4.0"
   images-by-tag-regex:
     alpine: ^3\.[123][0-9]\.[0-9]+$
+    memcached: ^1\.[6-9]\.[0-9]+-alpine$
     nginx: ^1\.2[3-9]-alpine$

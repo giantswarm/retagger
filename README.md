@@ -7,9 +7,9 @@
 
 ## What does retagger do, exactly?
 
-`retagger` is first and foremost a CircleCI worfklow that runs every day at 21:30
+`retagger` is first and foremost a CircleCI workflow that runs every day at 21:30
 UTC and on every merge to master branch. It utilizes [skopeo][skopeo] and
-[custom golang code](main.go) to take upstream docker images, customize them if
+[custom golang code](main.go) to take upstream docker images, rename them if
 necessary, and push them to Giant Swarm's container registries: `quay.io` and
 `giantswarm-registry.cn-shanghai.cr.aliyuncs.com`. It is capable of working
 with `v1`, `v2`, and `OCI` registries, as well as retagging multi-architecture
@@ -35,13 +35,6 @@ You do **not** need any customizations. Great!
    following the steps.
 5. Open [CircleCI config][ciconf] and add your file to both `retag-registry`
    steps under `matrix.parameters.images_file`.
-
-### Modify upstream Dockerfile
-
-You need to modify the upstream image before it's pushed to Giant Swarm registries.
-1. Find the [customized-images.yaml][custom] and add your image to the list.
-   Please refer to [Customized Images](#customized-images) section to see the
-   options.
 
 ### Manual copy
 
@@ -73,13 +66,17 @@ The full specification is available in [upstream skopeo-sync docs][skopeo-sync
 docs]. Semantic version constraint documentation is available in
 [Masterminds/semver docs][masterminds docs].
 
-### Customized images
+### Custom image builds
 
-Customized images are represented as an array of `CustomImage` objects. Please
+Custom container image builds were moved to: https://github.com/giantswarm/custom-container-images.
+
+### Renamed images
+
+Renamed images are represented as an array of `RenamedImages` objects. Please
 see the below definition:
 
 ```golang
-type CustomImage struct {
+type RenamedImage struct {
 	// Image is the full name of the image to pull.
 	// Example: "alpine", "docker.io/giantswarm/app-operator", or
 	// "ghcr.io/fluxcd/kustomize-controller"
@@ -101,10 +98,6 @@ type CustomImage struct {
 	//   Filter: "(.+)-alpine"  ->  Image tag: "3.12-alpine" -> Comparison: "3.12>=3.10"
 	//   Semver: ">= 3.10"          Extracted group: "3.12"
 	Filter string `yaml:"filter,omitempty"`
-	// DockerfileExtras is a list of additional Dockerfile statements you want to
-	// append to the upstream Dockerfile. (optional)
-	// Example: ["RUN apk add -y bash"]
-	DockerfileExtras []string `yaml:"dockerfile_extras,omitempty"`
 	// AddTagSuffix is an extra string to append to the tag.
 	// Example: "giantswarm", the tag would become "<tag>-giantswarm"
 	AddTagSuffix string `yaml:"add_tag_suffix,omitempty"`
@@ -127,4 +120,4 @@ Please refer to [CONTRIBUTING.md](CONTRIBUTING.md).
 [masterminds docs]: https://github.com/Masterminds/semver/tree/v3.2.0#basic-comparisons
 
 [ciconf]: .circleci/config.yml
-[custom]: images/customized-images.yaml
+[renamed]: images/renamed-images.yaml
