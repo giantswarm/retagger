@@ -7,6 +7,8 @@ docker.io:
       - "8.1.1911"
     cibuilds/github:
       - "0.12"
+    circleci/runner-agent:
+      - "kubernetes-3"
     coredns/coredns:
       - "1.8.3"
       - "1.8.6"
