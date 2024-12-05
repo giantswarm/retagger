@@ -32,6 +32,9 @@
 - image: caicloud/event-exporter
   override_repo_name: caicloud-event-exporter
   tag_or_pattern: "v1.0.0"
+- image: circleci/runner-agent
+  override_repo_name: "circleci-runner-agent"
+  tag_or_pattern: "kubernetes-3"
 - image: cloudflare/cloudflared
   semver: ">= 2023.8.2"
   filter: "^(.+)-amd64$"
