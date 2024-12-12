@@ -19,7 +19,7 @@ docker.io:
     docker:
       - "18.09.1"
     edgedb/edgedb:
-      - "4.7"
+      - "5.7"
     elasticsearch:
       - "6.8.13"
     fluxcd/flux-cli:
