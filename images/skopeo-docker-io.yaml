@@ -164,6 +164,7 @@ docker.io:
     openpolicyagent/conftest: ">= v0.25.0"
     prom/blackbox-exporter: ">= v0.23.0"
     prom/prometheus: ">= 2.41.0"
+    envoyproxy/gateway: ">= v1.2.1"
     # Used in akv2k8s
     spvest/azure-keyvault-controller: ">= 1.3.0"
     spvest/azure-keyvault-webhook: ">= 1.3.0"
