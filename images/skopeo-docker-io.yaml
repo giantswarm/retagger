@@ -3,6 +3,9 @@ docker.io:
   images:
     alpine/socat:
       - "1.7.4.4"
+    # Redis is used by 1password/scim.
+    bitnami/redis:
+      - "6.0.9-debian-10-r13"
     centos:
       - "8.1.1911"
     cibuilds/github:
