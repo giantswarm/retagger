@@ -1,8 +1,13 @@
 # Docs: https://github.com/kubasobon/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
 docker.io:
   images:
+    1password/scim:
+      - "v2.9.9"
     alpine/socat:
       - "1.7.4.4"
+    # Redis is used by 1password/scim.
+    bitnami/redis:
+      - "6.0.9-debian-10-r13"
     centos:
       - "8.1.1911"
     cibuilds/github:
