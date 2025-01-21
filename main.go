@@ -30,6 +30,7 @@ var (
 	skopeoSyncOutputPattern = regexp.MustCompile(`Would have copied image.*?from="docker://(.*?)[@:](.*?)".*`)
 	temporaryWorkingDir     = path.Join(os.TempDir(), "retagger")
 
+	flagFile             string
 	flagLogLevel         string
 	flagExecutorCount    int
 	flagExecutorID       int
@@ -421,6 +422,7 @@ func command(name string, args ...string) (*exec.Cmd, *bytes.Buffer, *bytes.Buff
 }
 
 func init() {
+	flag.StringVar(&flagFile, "filename", renamedImagesFile, "Sets the file to use for renaming")
 	flag.StringVar(&flagLogLevel, "log-level", "debug", "Sets log level")
 	// `retagger run` flags
 	flag.IntVar(&flagExecutorCount, "executor-count", 1, "Number of executors in a parallelized run. Used with 'retagger run'.")
@@ -465,15 +467,17 @@ func commandRun() {
 
 	logger := logrus.WithField("executor", flagExecutorID)
 
+	logger.Infof("Using file %q", flagFile)
+
 	// Load renamed image definitions from a file
 	var renamedImages []RenamedImage
 	{
-		b, err := os.ReadFile(renamedImagesFile)
+		b, err := os.ReadFile(flagFile)
 		if err != nil {
-			logger.Fatalf("error reading %q: %s", renamedImagesFile, err)
+			logger.Fatalf("error reading %q: %s", flagFile, err)
 		}
 		if err := yaml.Unmarshal(b, &renamedImages); err != nil {
-			logger.Fatalf("error unmarshaling %q: %s", renamedImagesFile, err)
+			logger.Fatalf("error unmarshaling %q: %s", flagFile, err)
 		}
 	}
 

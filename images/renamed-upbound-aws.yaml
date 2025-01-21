@@ -1,0 +1,501 @@
+- image: xpkg.upbound.io/upbound/provider-family-aws
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-family-aws
+- image: xpkg.upbound.io/upbound/provider-aws-elbv2
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-elbv2
+- image: xpkg.upbound.io/upbound/provider-aws-devicefarm
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-devicefarm
+- image: xpkg.upbound.io/upbound/provider-aws-servicediscovery
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-servicediscovery
+- image: xpkg.upbound.io/upbound/provider-aws-cloudwatch
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-cloudwatch
+- image: xpkg.upbound.io/upbound/provider-aws-acmpca
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-acmpca
+- image: xpkg.upbound.io/upbound/provider-aws-appautoscaling
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-appautoscaling
+- image: xpkg.upbound.io/upbound/provider-aws-rolesanywhere
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-rolesanywhere
+- image: xpkg.upbound.io/upbound/provider-aws-cloudformation
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-cloudformation
+- image: xpkg.upbound.io/upbound/provider-aws-dlm
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-dlm
+- image: xpkg.upbound.io/upbound/provider-aws-schemas
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-schemas
+- image: xpkg.upbound.io/upbound/provider-aws-cur
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-cur
+- image: xpkg.upbound.io/upbound/provider-aws-cognitoidp
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-cognitoidp
+- image: xpkg.upbound.io/upbound/provider-aws-rum
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-rum
+- image: xpkg.upbound.io/upbound/provider-aws-kendra
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-kendra
+- image: xpkg.upbound.io/upbound/provider-aws-mediapackage
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-mediapackage
+- image: xpkg.upbound.io/upbound/provider-aws-quicksight
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-quicksight
+- image: xpkg.upbound.io/upbound/provider-aws-sns
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-sns
+- image: xpkg.upbound.io/upbound/provider-aws-docdb
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-docdb
+- image: xpkg.upbound.io/upbound/provider-aws-workspaces
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-workspaces
+- image: xpkg.upbound.io/upbound/provider-aws-applicationinsights
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-applicationinsights
+- image: xpkg.upbound.io/upbound/provider-aws-opsworks
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-opsworks
+- image: xpkg.upbound.io/upbound/provider-aws-ce
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-ce
+- image: xpkg.upbound.io/upbound/provider-aws-budgets
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-budgets
+- image: xpkg.upbound.io/upbound/provider-aws-configservice
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-configservice
+- image: xpkg.upbound.io/upbound/provider-aws-codecommit
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-codecommit
+- image: xpkg.upbound.io/upbound/provider-aws-route53resolver
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-route53resolver
+- image: xpkg.upbound.io/upbound/provider-aws-neptune
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-neptune
+- image: xpkg.upbound.io/upbound/provider-aws-swf
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-swf
+- image: xpkg.upbound.io/upbound/provider-aws-ses
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-ses
+- image: xpkg.upbound.io/upbound/provider-aws-fis
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-fis
+- image: xpkg.upbound.io/upbound/provider-aws-osis
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-osis
+- image: xpkg.upbound.io/upbound/provider-aws-servicequotas
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-servicequotas
+- image: xpkg.upbound.io/upbound/provider-aws-iot
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-iot
+- image: xpkg.upbound.io/upbound/provider-aws-wafv2
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-wafv2
+- image: xpkg.upbound.io/upbound/provider-aws-organizations
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-organizations
+- image: xpkg.upbound.io/upbound/provider-aws-directconnect
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-directconnect
+- image: xpkg.upbound.io/upbound/provider-aws-accessanalyzer
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-accessanalyzer
+- image: xpkg.upbound.io/upbound/provider-aws-serverlessrepo
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-serverlessrepo
+- image: xpkg.upbound.io/upbound/provider-aws-imagebuilder
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-imagebuilder
+- image: xpkg.upbound.io/upbound/provider-aws-inspector
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-inspector
+- image: xpkg.upbound.io/upbound/provider-aws-autoscalingplans
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-autoscalingplans
+- image: xpkg.upbound.io/upbound/provider-aws-glacier
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-glacier
+- image: xpkg.upbound.io/upbound/provider-aws-codestarnotifications
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-codestarnotifications
+- image: xpkg.upbound.io/upbound/provider-aws-cloudwatchevents
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-cloudwatchevents
+- image: xpkg.upbound.io/upbound/provider-aws-ram
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-ram
+- image: xpkg.upbound.io/upbound/provider-aws-codepipeline
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-codepipeline
+- image: xpkg.upbound.io/upbound/provider-aws-keyspaces
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-keyspaces
+- image: xpkg.upbound.io/upbound/provider-aws-apigatewayv2
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-apigatewayv2
+- image: xpkg.upbound.io/upbound/provider-aws-dms
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-dms
+- image: xpkg.upbound.io/upbound/provider-aws-kms
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-kms
+- image: xpkg.upbound.io/upbound/provider-aws-mwaa
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-mwaa
+- image: xpkg.upbound.io/upbound/provider-aws-redshiftserverless
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-redshiftserverless
+- image: xpkg.upbound.io/upbound/provider-aws-elasticbeanstalk
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-elasticbeanstalk
+- image: xpkg.upbound.io/upbound/provider-aws-appmesh
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-appmesh
+- image: xpkg.upbound.io/upbound/provider-aws-pipes
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-pipes
+- image: xpkg.upbound.io/upbound/provider-aws-ec2
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-ec2
+- image: xpkg.upbound.io/upbound/provider-aws-gamelift
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-gamelift
+- image: xpkg.upbound.io/upbound/provider-aws-sfn
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-sfn
+- image: xpkg.upbound.io/upbound/provider-aws-timestreamwrite
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-timestreamwrite
+- image: xpkg.upbound.io/upbound/provider-aws-mediaconvert
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-mediaconvert
+- image: xpkg.upbound.io/upbound/provider-aws-lambda
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-lambda
+- image: xpkg.upbound.io/upbound/provider-aws-scheduler
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-scheduler
+- image: xpkg.upbound.io/upbound/provider-aws-vpc
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-vpc
+- image: xpkg.upbound.io/upbound/provider-aws-cloudwatchlogs
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-cloudwatchlogs
+- image: xpkg.upbound.io/upbound/provider-aws-transfer
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-transfer
+- image: xpkg.upbound.io/upbound/provider-aws-inspector2
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-inspector2
+- image: xpkg.upbound.io/upbound/provider-aws-route53
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-route53
+- image: xpkg.upbound.io/upbound/provider-aws-codeartifact
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-codeartifact
+- image: xpkg.upbound.io/upbound/provider-aws-medialive
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-medialive
+- image: xpkg.upbound.io/upbound/provider-aws-lexmodels
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-lexmodels
+- image: xpkg.upbound.io/upbound/provider-aws-appflow
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-appflow
+- image: xpkg.upbound.io/upbound/provider-aws-chime
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-chime
+- image: xpkg.upbound.io/upbound/provider-aws-batch
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-batch
+- image: xpkg.upbound.io/upbound/provider-aws-transcribe
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-transcribe
+- image: xpkg.upbound.io/upbound/provider-aws-route53recoveryreadiness
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-route53recoveryreadiness
+- image: xpkg.upbound.io/upbound/provider-aws-apprunner
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-apprunner
+- image: xpkg.upbound.io/upbound/provider-aws-lightsail
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-lightsail
+- image: xpkg.upbound.io/upbound/provider-aws-emrserverless
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-emrserverless
+- image: xpkg.upbound.io/upbound/provider-aws-elb
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-elb
+- image: xpkg.upbound.io/upbound/provider-aws-datapipeline
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-datapipeline
+- image: xpkg.upbound.io/upbound/provider-aws-dataexchange
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-dataexchange
+- image: xpkg.upbound.io/upbound/provider-aws-s3control
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-s3control
+- image: xpkg.upbound.io/upbound/provider-aws-macie2
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-macie2
+- image: xpkg.upbound.io/upbound/provider-aws-securityhub
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-securityhub
+- image: xpkg.upbound.io/upbound/provider-aws-backup
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-backup
+- image: xpkg.upbound.io/upbound/provider-aws-rds
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-rds
+- image: xpkg.upbound.io/upbound/provider-aws-glue
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-glue
+- image: xpkg.upbound.io/upbound/provider-aws-s3
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-s3
+- image: xpkg.upbound.io/upbound/provider-aws-kinesisvideo
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-kinesisvideo
+- image: xpkg.upbound.io/upbound/provider-aws-globalaccelerator
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-globalaccelerator
+- image: xpkg.upbound.io/upbound/provider-aws-sqs
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-sqs
+- image: xpkg.upbound.io/upbound/provider-aws-appstream
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-appstream
+- image: xpkg.upbound.io/upbound/provider-aws-firehose
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-firehose
+- image: xpkg.upbound.io/upbound/provider-aws-networkmanager
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-networkmanager
+- image: xpkg.upbound.io/upbound/provider-aws-cloudcontrol
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-cloudcontrol
+- image: xpkg.upbound.io/upbound/provider-aws-secretsmanager
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-secretsmanager
+- image: xpkg.upbound.io/upbound/provider-aws-kinesis
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-kinesis
+- image: xpkg.upbound.io/upbound/provider-aws-mediastore
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-mediastore
+- image: xpkg.upbound.io/upbound/provider-aws-detective
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-detective
+- image: xpkg.upbound.io/upbound/provider-aws-memorydb
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-memorydb
+- image: xpkg.upbound.io/upbound/provider-aws-bedrockagent
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-bedrockagent
+- image: xpkg.upbound.io/upbound/provider-aws-acm
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-acm
+- image: xpkg.upbound.io/upbound/provider-aws-mq
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-mq
+- image: xpkg.upbound.io/upbound/provider-aws-ecrpublic
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-ecrpublic
+- image: xpkg.upbound.io/upbound/provider-aws-appintegrations
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-appintegrations
+- image: xpkg.upbound.io/upbound/provider-aws-waf
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-waf
+- image: xpkg.upbound.io/upbound/provider-aws-amplify
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-amplify
+- image: xpkg.upbound.io/upbound/provider-aws-dynamodb
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-dynamodb
+- image: xpkg.upbound.io/upbound/provider-aws-apigateway
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-apigateway
+- image: xpkg.upbound.io/upbound/provider-aws-cognitoidentity
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-cognitoidentity
+- image: xpkg.upbound.io/upbound/provider-aws-kinesisanalyticsv2
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-kinesisanalyticsv2
+- image: xpkg.upbound.io/upbound/provider-aws-simpledb
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-simpledb
+- image: xpkg.upbound.io/upbound/provider-aws-servicecatalog
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-servicecatalog
+- image: xpkg.upbound.io/upbound/provider-aws-guardduty
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-guardduty
+- image: xpkg.upbound.io/upbound/provider-aws-kafkaconnect
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-kafkaconnect
+- image: xpkg.upbound.io/upbound/provider-aws-lakeformation
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-lakeformation
+- image: xpkg.upbound.io/upbound/provider-aws-cloudfront
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-cloudfront
+- image: xpkg.upbound.io/upbound/provider-aws-emr
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-emr
+- image: xpkg.upbound.io/upbound/provider-aws-location
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-location
+- image: xpkg.upbound.io/upbound/provider-aws-account
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-account
+- image: xpkg.upbound.io/upbound/provider-aws-ssm
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-ssm
+- image: xpkg.upbound.io/upbound/provider-aws-grafana
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-grafana
+- image: xpkg.upbound.io/upbound/provider-aws-ecr
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-ecr
+- image: xpkg.upbound.io/upbound/provider-aws-wafregional
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-wafregional
+- image: xpkg.upbound.io/upbound/provider-aws-autoscaling
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-autoscaling
+- image: xpkg.upbound.io/upbound/provider-aws-cloud9
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-cloud9
+- image: xpkg.upbound.io/upbound/provider-aws-evidently
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-evidently
+- image: xpkg.upbound.io/upbound/provider-aws-ds
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-ds
+- image: xpkg.upbound.io/upbound/provider-aws-resourcegroups
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-resourcegroups
+- image: xpkg.upbound.io/upbound/provider-aws-qldb
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-qldb
+- image: xpkg.upbound.io/upbound/provider-aws-opensearch
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-opensearch
+- image: xpkg.upbound.io/upbound/provider-aws-codestarconnections
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-codestarconnections
+- image: xpkg.upbound.io/upbound/provider-aws-cloudsearch
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-cloudsearch
+- image: xpkg.upbound.io/upbound/provider-aws-fsx
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-fsx
+- image: xpkg.upbound.io/upbound/provider-aws-elasticsearch
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-elasticsearch
+- image: xpkg.upbound.io/upbound/provider-aws-pinpoint
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-pinpoint
+- image: xpkg.upbound.io/upbound/provider-aws-ecs
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-ecs
+- image: xpkg.upbound.io/upbound/provider-aws-codeguruprofiler
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-codeguruprofiler
+- image: xpkg.upbound.io/upbound/provider-aws-ssoadmin
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-ssoadmin
+- image: xpkg.upbound.io/upbound/provider-aws-kafka
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-kafka
+- image: xpkg.upbound.io/upbound/provider-aws-datasync
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-datasync
+- image: xpkg.upbound.io/upbound/provider-aws-appconfig
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-appconfig
+- image: xpkg.upbound.io/upbound/provider-aws-iam
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-iam
+- image: xpkg.upbound.io/upbound/provider-aws-dax
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-dax
+- image: xpkg.upbound.io/upbound/provider-aws-elastictranscoder
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-elastictranscoder
+- image: xpkg.upbound.io/upbound/provider-aws-deploy
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-deploy
+- image: xpkg.upbound.io/upbound/provider-aws-connect
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-connect
+- image: xpkg.upbound.io/upbound/provider-aws-opensearchserverless
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-opensearchserverless
+- image: xpkg.upbound.io/upbound/provider-aws-licensemanager
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-licensemanager
+- image: xpkg.upbound.io/upbound/provider-aws-athena
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-athena
+- image: xpkg.upbound.io/upbound/provider-aws-signer
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-signer
+- image: xpkg.upbound.io/upbound/provider-aws-kinesisanalytics
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-kinesisanalytics
+- image: xpkg.upbound.io/upbound/provider-aws-route53recoverycontrolconfig
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-route53recoverycontrolconfig
+- image: xpkg.upbound.io/upbound/provider-aws-networkfirewall
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-networkfirewall
+- image: xpkg.upbound.io/upbound/provider-aws-identitystore
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-identitystore
+- image: xpkg.upbound.io/upbound/provider-aws-sesv2
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-sesv2
+- image: xpkg.upbound.io/upbound/provider-aws-elasticache
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-elasticache
+- image: xpkg.upbound.io/upbound/provider-aws-amp
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-amp
+- image: xpkg.upbound.io/upbound/provider-aws-redshift
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-redshift
+- image: xpkg.upbound.io/upbound/provider-aws-cloudtrail
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-cloudtrail
+- image: xpkg.upbound.io/upbound/provider-aws-eks
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-eks
+- image: xpkg.upbound.io/upbound/provider-aws-appsync
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-appsync
+- image: xpkg.upbound.io/upbound/provider-aws-xray
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-xray
+- image: xpkg.upbound.io/upbound/provider-aws-sagemaker
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-sagemaker
+- image: xpkg.upbound.io/upbound/provider-aws-efs
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-efs
+- image: xpkg.upbound.io/upbound/provider-aws-ivs
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-aws-ivs

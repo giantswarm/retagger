@@ -243,6 +243,8 @@ jobs:
       executor_id:
         type: integer
         default: 0
+      filename:
+        type: string
     steps:
       - setup_remote_docker:
           docker_layer_caching: true
@@ -564,6 +566,11 @@ build_and_retag: &build_and_retag
               - main
         matrix:
           parameters:
+            filename:
+              - images/renamed-images.yaml
+              - images/renamed-upbound-aws.yaml
+              - images/renamed-upbound-azure.yaml
+              - images/renamed-upbound-gcp.yaml
             # i in range(executor_count)
             executor_id: [0, 1, 2, 3, 4]
 
