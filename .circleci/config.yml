@@ -120,7 +120,7 @@ jobs:
                 echo "Attempt $counter: trying again..."
                 ((counter++))
             done
-      - run :
+      - run:
           name: Filter tags in Skopeo YAML
           command: |
             retagger filter "<<parameters.filepath>>" 2> >(tee "<<parameters.filepath>>.filtered.errlog" >&2)
@@ -285,10 +285,10 @@ jobs:
           no_output_timeout: 1h
           command: |
             retagger run --log-level "<<parameters.log_level>>" \
-              --executor-count <<parameters.executor_count>> --executor-id <<parameters.executor_id>> | tee /tmp/retagger.log
+              --executor-count <<parameters.executor_count>> --executor-id <<parameters.executor_id>> --filename <<parameters.filename>> | tee /tmp/retagger.log
       - store_artifacts:
           path: /tmp/retagger.log
-          destination: "retagger-<<parameters.executor_id>>-of-<<parameters.executor_count>>.log"
+          destination: "retagger-<<parameters.filename>>-<<parameters.executor_id>>-of-<<parameters.executor_count>>.log"
 
   ping-heartbeat:
     docker:
