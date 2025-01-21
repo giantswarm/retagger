@@ -7,6 +7,7 @@ ghcr.io:
     kyverno/reports-server:
       - "v0.1.0-alpha.1"
   images-by-semver:
+    ahrtr/etcd-defrag: ">= v0.22.0"
     aquasecurity/node-collector: ">= 0.0.6"
     aquasecurity/trivy: ">= 0.37.2"
     aquasecurity/trivy-operator: ">= 0.16.1"
