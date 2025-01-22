@@ -5,8 +5,6 @@ quay.io:
       - "v0.3.2"
     coreos/flannel:
       - "v0.11.0-amd64"
-    giantswarm/docker-strongswan:
-      - "d432793577e07bfe6856d3739e6bca3d91db71e4"
     giantswarm/k8s-api-healthz:
       - "1c0cdf1ed5ee18fdf59063ecdd84bf3787f80fac"
     giantswarm/k8s-setup-network-environment:
