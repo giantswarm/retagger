@@ -1,0 +1,7 @@
+destinations:
+  - name: quay
+    url: quay.io/giantswarm
+  - name: gsoci
+    url: gsoci.azurecr.io/giantswarm
+  - name: aliyun
+    url: giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm
