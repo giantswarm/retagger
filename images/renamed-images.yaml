@@ -563,3 +563,24 @@
   override_repo_name: karpenter-controller
   semver: ">= 0.29.0"
   filter: '^(\d+\.\d+\.\d+)$'
+- image: xpkg.upbound.io/crossplane-contrib/provider-kubernetes
+  semver: ">= 0.9.0"
+  override_repo_name: crossplane-contrib-provider-kubernetes
+- image: xpkg.upbound.io/crossplane-contrib/provider-sql
+  semver: ">= 0.0.1"
+  override_repo_name: crossplane-contrib-provider-sql
+- image: xpkg.upbound.io/crossplane-contrib/function-auto-ready
+  semver: ">= 0.2.0"
+  override_repo_name: crossplane-contrib-function-auto-ready
+- image: xpkg.upbound.io/crossplane-contrib/function-kcl
+  semver: ">= v0.9.0"
+  override_repo_name: crossplane-contrib-function-kcl
+- image: xpkg.upbound.io/crossplane-contrib/function-patch-and-transform
+  semver: ">= 0.6.0"
+  override_repo_name: crossplane-contrib-function-patch-and-transform
+- image: xpkg.upbound.io/crossplane-contrib/function-shell
+  semver: ">= v0.2.0"
+  override_repo_name: crossplane-contrib-function-shell
+- image: xpkg.upbound.io/upbound/function-cidr
+  semver: ">= 0.5.0"
+  override_repo_name: crossplane-contrib-function-cidr
