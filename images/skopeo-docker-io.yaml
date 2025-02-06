@@ -172,7 +172,7 @@ docker.io:
     # Used in akv2k8s
     spvest/azure-keyvault-controller: ">= 1.7.0"
     spvest/azure-keyvault-webhook: ">= 1.7.0"
-    vault: ">= v1.5.4"
+    vault: ">= 1.13.3"
     velero/velero: ">= v1.14.1"
     zricethezav/gitleaks: ">= v8.19.0"
   images-by-tag-regex:
