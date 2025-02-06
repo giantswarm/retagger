@@ -1,4 +1,4 @@
-ARG ALPINE_VERSION=3.21
+ARG ALPINE_VERSION=3.21.2
 ARG GO_VERSION=1.23.6
 
 FROM gsoci.azurecr.io/giantswarm/golang:${GO_VERSION}-alpine${ALPINE_VERSION} as builder
