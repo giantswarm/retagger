@@ -29,18 +29,6 @@ docker.io:
       - "6.8.13"
     fluxcd/flux-cli:
       - "v0.27.0"
-    golang:
-      - "1.14.1-alpine3.11"
-      - "1.15.2-alpine3.12"
-      - "1.16-alpine3.12"
-      - "1.16.7-alpine3.14"
-      - "1.17.1-alpine3.14"
-      - "1.17.7-alpine3.14"
-      - "1.17.8-alpine3.14"
-      - "1.18.1-alpine3.15"
-      - "1.19.1-alpine3.16"
-      - "1.20.6-alpine3.17"
-      # Future `golang` versions are now handled in `renamed-images.yaml` to automatically match alpine tags via semver
     golangci/golangci-lint:
       - "v1.23.8"
     instrumenta/conftest:
