@@ -1,0 +1,12 @@
+# Docs: https://github.com/kubasobon/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
+nvcr.io:
+  images-by-semver:
+    nvcr.io/nvidia/cloud-native/gpu-operator-validator: ">= v24.9.2"
+    nvcr.io/nvidia/cloud-native/gpu-operator: ">= v24.9.2"
+    nvcr.io/nvidia/cuda: ">= 12.8.0-base-ubi9"
+    nvcr.io/nvidia/cloud-native/k8s-driver-manager: ">= v0.8.0"
+    nvcr.io/nvidia/k8s-device-plugin: ">= v0.17.0"
+    nvcr.io/nvidia/k8s/dcgm-exporter: ">= 4.1.0-4.0.2-ubuntu22.04"
+    nvcr.io/nvidia/cloud-native/k8s-mig-manager: ">= v0.11.0-ubuntu20.04"
+    nvcr.io/nvidia/cloud-native/vgpu-device-manager: ">= v0.2.8"
+    nvcr.io/nvidia/kubevirt-gpu-device-plugin": ">= v1.3.0"
