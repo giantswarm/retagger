@@ -419,7 +419,7 @@ build_and_retag: &build_and_retag
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-nvcr-io
-        filepath: images/skopeo-projects-skopeo-nvcr-io.yaml
+        filepath: images/skopeo-nvcr-io.yaml
         filters:
           branches:
             only:
