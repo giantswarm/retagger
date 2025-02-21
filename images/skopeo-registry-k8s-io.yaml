@@ -32,6 +32,7 @@ registry.k8s.io:
     git-sync/git-sync: ">= v3.6.8"
     kube-state-metrics/kube-state-metrics: "> v2.3.0"
     metrics-server/metrics-server: ">= v0.5.2"
+    nfd/node-feature-discovery: ">= v0.16.6"
     node-problem-detector/node-problem-detector: ">= v0.8.14"
     pause: ">= 3.1"
     pause-amd64: ">= 3.1"
