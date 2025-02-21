@@ -418,6 +418,16 @@ build_and_retag: &build_and_retag
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
+        name: filter-skopeo-nvcr-io
+        filepath: images/skopeo-projects-skopeo-nvcr-io.yaml
+        filters:
+          branches:
+            only:
+              - main
+        requires:
+          - build-and-push-docker
+    - filter-skopeo-tags:
+        context: architect
         name: filter-skopeo-public-ecr-aws
         filepath: images/skopeo-public-ecr-aws.yaml
         filters:
@@ -478,6 +488,7 @@ build_and_retag: &build_and_retag
           - filter-skopeo-gcr-io
           - filter-skopeo-ghcr-io
           - filter-skopeo-mcr-microsoft-com
+          - filter-skopeo-nvcr-io
           - filter-skopeo-public-ecr-aws
           - filter-skopeo-quay-io
           - filter-skopeo-k8s-io
@@ -491,6 +502,7 @@ build_and_retag: &build_and_retag
               - images/skopeo-gcr-io.yaml.filtered
               - images/skopeo-ghcr-io.yaml.filtered
               - images/skopeo-mcr-microsoft-com.yaml.filtered
+              - images/skopeo-nvcr-io.yaml.filtered
               - images/skopeo-public-ecr-aws.yaml.filtered
               - images/skopeo-quay-io.yaml.filtered
               - images/skopeo-registry-k8s-io.yaml.filtered
@@ -509,6 +521,7 @@ build_and_retag: &build_and_retag
           - filter-skopeo-ghcr-io
           - filter-skopeo-mcr-microsoft-com
           - filter-skopeo-public-ecr-aws
+          - filter-skopeo-nvcr-io
           - filter-skopeo-quay-io
           - filter-skopeo-k8s-io
           - filter-skopeo-k8s-io-kubernetes
@@ -520,6 +533,7 @@ build_and_retag: &build_and_retag
               - images/skopeo-gcr-io.yaml.filtered
               - images/skopeo-ghcr-io.yaml.filtered
               - images/skopeo-mcr-microsoft-com.yaml.filtered
+              - images/skopeo-nvcr-io.yaml.filtered
               - images/skopeo-public-ecr-aws.yaml.filtered
               - images/skopeo-quay-io.yaml.filtered
               - images/skopeo-registry-k8s-io.yaml.filtered
@@ -536,6 +550,7 @@ build_and_retag: &build_and_retag
           - filter-skopeo-gcr-io
           - filter-skopeo-ghcr-io
           - filter-skopeo-mcr-microsoft-com
+          - filter-skopeo-nvcr-io
           - filter-skopeo-public-ecr-aws
           - filter-skopeo-quay-io
           - filter-skopeo-k8s-io
@@ -549,6 +564,7 @@ build_and_retag: &build_and_retag
               - images/skopeo-gcr-io.yaml.filtered
               - images/skopeo-ghcr-io.yaml.filtered
               - images/skopeo-mcr-microsoft-com.yaml.filtered
+              - images/skopeo-nvcr-io.yaml.filtered
               - images/skopeo-public-ecr-aws.yaml.filtered
               - images/skopeo-quay-io.yaml.filtered
               - images/skopeo-registry-k8s-io.yaml.filtered
