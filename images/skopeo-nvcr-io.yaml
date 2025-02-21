@@ -1,7 +1,7 @@
 # Docs: https://github.com/kubasobon/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
 nvcr.io:
   images:
-    nvidia/cloud-native/k8s-mig-manager: 
+    nvidia/cloud-native/k8s-mig-manager:
       - "v0.10.0-ubuntu20.04"
     nvidia/k8s/dcgm-exporter:
       - "3.3.9-3.6.1-ubuntu22.04"
