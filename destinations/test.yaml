@@ -1,0 +1,3 @@
+destinations:
+  - name: honeybadger
+    url: honeybadger.azurecr.io/giantswarm

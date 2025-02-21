@@ -30,11 +30,12 @@ var (
 	skopeoSyncOutputPattern = regexp.MustCompile(`Would have copied image.*?from="docker://(.*?)[@:](.*?)".*`)
 	temporaryWorkingDir     = path.Join(os.TempDir(), "retagger")
 
-	flagFile             string
-	flagLogLevel         string
-	flagExecutorCount    int
-	flagExecutorID       int
-	flagSkipExistingTags bool
+	flagFile                  string
+	destinationRegistriesFile string
+	flagLogLevel              string
+	flagExecutorCount         int
+	flagExecutorID            int
+	flagSkipExistingTags      bool
 
 	logStdOut = logrus.New()
 	logStdErr = logrus.New()
@@ -149,6 +150,15 @@ func (img *RenamedImage) RetagUsingSHA() error {
 // img.Semver, retags, and pushes them to Quay and Aliyun container registries.
 // Any optional parameters configured will be applied as well, e.g. tag suffix.
 func (img *RenamedImage) RetagUsingTags() error {
+	// Parse destination registries
+	destinationRegistries, err := ParseDestinationRegistries(destinationRegistriesFile)
+	if err != nil {
+		logrus.Fatalf("failed to parse destination registries file %q: %v", destinationRegistriesFile, err)
+		os.Exit(1)
+	}
+
+	logrus.WithField("destinationRegistries", destinationRegistries).Println("successfully parsed destination registries")
+
 	// List available image tags
 	tags, err := listTags(img.Image)
 	if err != nil {
@@ -169,19 +179,9 @@ func (img *RenamedImage) RetagUsingTags() error {
 
 	// Exclude tags existing in all registries
 	if flagSkipExistingTags {
-		quayTags, err := listTags(fmt.Sprintf("%s/%s", quayURL, destinationName))
-		if err != nil {
-			logrus.Warnf("error getting Quay.io tags: %w", err)
-		}
-		azureTags, err := listTags(fmt.Sprintf("%s/%s", azureURL, destinationName))
-		if err != nil {
-			logrus.Warnf("error getting AzureCR tags: %w", err)
-		}
-		aliyunTags, err := listTags(fmt.Sprintf("%s/%s", aliyunURL, destinationName))
-		if err != nil {
-			logrus.Warnf("error getting Aliyun tags: %w", err)
-		}
-		tags = img.FindMissingTags(tags, quayTags, azureTags, aliyunTags)
+		tagsFromTargets := CollectTagsFromTargetRegistries(destinationRegistries, destinationName)
+
+		tags = img.FindMissingTags(tags, tagsFromTargets...)
 		logrus.Infof("Found %d missing tags for image %q", len(tags), img.Image)
 	}
 
@@ -291,6 +291,45 @@ func (img *RenamedImage) FilterTags(tags []string) ([]string, error) {
 	}
 
 	return filteredTags, nil
+}
+
+type DestinationRegistries struct {
+	Destinations []DestinationRegistry `yaml:"destinations"`
+}
+
+type DestinationRegistry struct {
+	Name string `yaml:"name"`
+	Url  string `yaml:"url"`
+}
+
+func ParseDestinationRegistries(filePath string) (DestinationRegistries, error) {
+	content, err := os.ReadFile(filePath)
+	if err != nil {
+		return DestinationRegistries{Destinations: []DestinationRegistry{}}, err
+	}
+
+	var destinationRegistries DestinationRegistries
+	err = yaml.Unmarshal(content, &destinationRegistries)
+	if err != nil {
+		return DestinationRegistries{Destinations: []DestinationRegistry{}}, err
+	}
+
+	return destinationRegistries, nil
+}
+
+func CollectTagsFromTargetRegistries(destinations DestinationRegistries, imageName string) [][]string {
+	var tagsPerRegistry [][]string
+
+	for _, destination := range destinations.Destinations {
+		tags, err := listTags(fmt.Sprintf("%s/%s", destination.Url, imageName))
+		if err != nil {
+			logStdErr.WithField("image", imageName).Errorf("error listing %s tags: %v", destination.Name, err)
+			continue
+		}
+		tagsPerRegistry = append(tagsPerRegistry, tags)
+	}
+
+	return tagsPerRegistry
 }
 
 // findMissingTags returns a list of items of the 'tags' slice that are missing
@@ -424,6 +463,8 @@ func command(name string, args ...string) (*exec.Cmd, *bytes.Buffer, *bytes.Buff
 func init() {
 	flag.StringVar(&flagFile, "filename", renamedImagesFile, "Sets the file to use for renaming")
 	flag.StringVar(&flagLogLevel, "log-level", "debug", "Sets log level")
+	// destination registries file
+	flag.StringVar(&destinationRegistriesFile, "destination-registries", "destinations/empty.yaml", "Sets the file to use for destination registries")
 	// `retagger run` flags
 	flag.IntVar(&flagExecutorCount, "executor-count", 1, "Number of executors in a parallelized run. Used with 'retagger run'.")
 	flag.IntVar(&flagExecutorID, "executor-id", 0, "ID of the executor in a parallelized run. Used with 'retagger run'.")
@@ -523,6 +564,14 @@ func commandRun() {
 // it is added to the list of tags to be synced. The list is stored in a file next
 // to the input file, with the name suffixed with `.filtered`.
 func commandFilter(filepath string) {
+	destinationRegistries, err := ParseDestinationRegistries(destinationRegistriesFile)
+	if err != nil {
+		logrus.Fatalf("failed to parse destination registries file %q: %v", destinationRegistriesFile, err)
+		os.Exit(1)
+	}
+
+	logrus.WithField("destinationRegistries", destinationRegistries).Println("successfully parsed destination registries")
+
 	if filepath == "" {
 		logrus.Fatal("You need to specify filepath: 'retagger filter <path>'")
 	}
@@ -557,21 +606,8 @@ func commandFilter(filepath string) {
 		missingTagCount := 0
 		for image, tags := range tagsPerImage {
 			logStdOut.WithField("image", image).Debugf("searching for missing tags")
-			quayTags, err := listTags(fmt.Sprintf("%s/%s", quayURL, imageBaseName(image)))
-			if err != nil {
-				logStdErr.WithField("image", image).Errorf("error listing Quay tags: %v", err)
-				continue
-			}
-			azureTags, err := listTags(fmt.Sprintf("%s/%s", azureURL, imageBaseName(image)))
-			if err != nil {
-				logStdErr.WithField("image", image).Errorf("error listing AzureCR tags: %v", err)
-				continue
-			}
-			aliyunTags, err := listTags(fmt.Sprintf("%s/%s", aliyunURL, imageBaseName(image)))
-			if err != nil {
-				logStdErr.WithField("image", image).Errorf("error listing Aliyun tags: %v", err)
-				continue
-			}
+
+			tagsFromTargets := CollectTagsFromTargetRegistries(destinationRegistries, imageBaseName(image))
 			/*
 				Context: https://github.com/giantswarm/giantswarm/issues/31283
 
@@ -608,7 +644,7 @@ func commandFilter(filepath string) {
 				the same.
 			*/
 			i := &RenamedImage{}
-			missingTags := i.FindMissingTags(tags, quayTags, azureTags, aliyunTags)
+			missingTags := i.FindMissingTags(tags, tagsFromTargets...)
 			missingTagCount += len(missingTags)
 			missingTagsPerImage[image] = missingTags
 		}
