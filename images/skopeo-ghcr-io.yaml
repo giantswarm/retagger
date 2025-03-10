@@ -23,6 +23,7 @@ ghcr.io:
     kedacore/keda-admission-webhooks: ">= 2.10.1"
     kedacore/keda: ">= 2.10.1"
     kedacore/keda-metrics-apiserver: ">= 2.10.1"
+    caas-team/kube-downscaler: ">= 25.2.0"
     kube-vip/kube-vip: ">= v0.6.3"
     kube-vip/kube-vip-cloud-provider: ">= v0.0.4"
     kyverno/background-controller: ">= v1.10.1"
