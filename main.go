@@ -13,6 +13,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"sync"
@@ -171,15 +172,15 @@ func (img *RenamedImage) RetagUsingTags() error {
 	if flagSkipExistingTags {
 		quayTags, err := listTags(fmt.Sprintf("%s/%s", quayURL, destinationName))
 		if err != nil {
-			logrus.Warnf("error getting Quay.io tags: %w", err)
+			logrus.Warnf("error getting Quay.io tags: %s", err)
 		}
 		azureTags, err := listTags(fmt.Sprintf("%s/%s", azureURL, destinationName))
 		if err != nil {
-			logrus.Warnf("error getting AzureCR tags: %w", err)
+			logrus.Warnf("error getting AzureCR tags: %s", err)
 		}
 		aliyunTags, err := listTags(fmt.Sprintf("%s/%s", aliyunURL, destinationName))
 		if err != nil {
-			logrus.Warnf("error getting Aliyun tags: %w", err)
+			logrus.Warnf("error getting Aliyun tags: %s", err)
 		}
 		tags = img.FindMissingTags(tags, quayTags, azureTags, aliyunTags)
 		logrus.Infof("Found %d missing tags for image %q", len(tags), img.Image)
@@ -399,7 +400,7 @@ func imageBaseName(name string) string {
 // copyImage is a helper function used to invoke `skopeo copy`. Please note the
 // `--all`, which makes skopeo include ALL SHAs included in the tag's digest,
 // ensuring builds for all available platforms.
-func copyImage(wg *sync.WaitGroup, errorCounter *atomic.Int64, source, destination string) {
+func copyImage(wg *sync.WaitGroup, _ *atomic.Int64, source, destination string) {
 	defer wg.Done()
 	c, _, stderr := command("skopeo", "copy", "--all", "--retry-times", "3", source, destination)
 	logrus.Debugf("copying %q to %q", source, destination)
@@ -461,7 +462,7 @@ func commandRun() {
 		logrus.Warnf("%q is set to %d, are you sure that's on purpose?", "executor-count", flagExecutorCount)
 	}
 
-	if err := os.MkdirAll(temporaryWorkingDir, 0777); err != nil {
+	if err := os.MkdirAll(temporaryWorkingDir, 0750); err != nil {
 		logrus.Fatal(err)
 	}
 
@@ -472,6 +473,7 @@ func commandRun() {
 	// Load renamed image definitions from a file
 	var renamedImages []RenamedImage
 	{
+		flagFile = filepath.Clean(flagFile)
 		b, err := os.ReadFile(flagFile)
 		if err != nil {
 			logger.Fatalf("error reading %q: %s", flagFile, err)
@@ -522,18 +524,18 @@ func commandRun() {
 // against Quay, AzureCR, and Aliyun. If a tag is missing in any of the registries,
 // it is added to the list of tags to be synced. The list is stored in a file next
 // to the input file, with the name suffixed with `.filtered`.
-func commandFilter(filepath string) {
-	if filepath == "" {
+func commandFilter(filePath string) {
+	if filePath == "" {
 		logrus.Fatal("You need to specify filepath: 'retagger filter <path>'")
 	}
-	logStdOut.WithField("file", filepath)
-	logStdErr.WithField("file", filepath)
+	logStdOut.WithField("file", filePath)
+	logStdErr.WithField("file", filePath)
 
 	logStdOut.Infof("Listing images & tags")
 	missingTagsPerImage := map[string][]string{}
 	{
 		filterPrefix := "auniqueprefixa"
-		c, _, stderr := command("skopeo", "sync", "--all", "--dry-run", "--src", "yaml", "--dest", "docker", filepath, filterPrefix)
+		c, _, stderr := command("skopeo", "sync", "--all", "--dry-run", "--src", "yaml", "--dest", "docker", filePath, filterPrefix)
 		if err := c.Run(); err != nil {
 			logStdErr.WithField("stderr", stderr.String())
 			logStdErr.Fatalf("error running 'skopeo sync --dry-run': %v", err)
@@ -618,7 +620,8 @@ func commandFilter(filepath string) {
 	logStdOut.Debugf("Saving filtered file")
 	filteredFile := skopeoFile{}
 	{
-		b, err := os.ReadFile(filepath)
+		filePath = filepath.Clean(filePath)
+		b, err := os.ReadFile(filePath)
 		if err != nil {
 			logStdErr.Fatalf("error reading file: %v", err)
 		}
@@ -646,7 +649,7 @@ func commandFilter(filepath string) {
 	if err != nil {
 		logStdErr.Fatalf("error marshaling file: %v", err)
 	}
-	err = os.WriteFile(filepath+filteredFileSuffix, b, 0644)
+	err = os.WriteFile(filePath+filteredFileSuffix, b, 0600)
 	if err != nil {
 		logStdErr.Fatalf("error writing file: %v", err)
 	}
@@ -655,7 +658,8 @@ func commandFilter(filepath string) {
 
 func main() {
 	if len(flag.Args()) == 0 {
-		fmt.Println("retagger run             Retag images\nretagger filter <path>   Filter missing tags for skopeo YAML file\n\n")
+		fmt.Println("retagger run             Retag images\nretagger filter <path>   Filter missing tags for skopeo YAML file")
+		fmt.Println("")
 		flag.Usage()
 		os.Exit(0)
 	}
