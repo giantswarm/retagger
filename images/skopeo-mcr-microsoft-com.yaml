@@ -4,6 +4,7 @@ mcr.microsoft.com:
     k8s/azureserviceoperator: ">= v2.4.0"
     oss/azure/aad-pod-identity/mic: ">= 1.8.10"
     oss/azure/aad-pod-identity/nmi: ">= 1.8.10"
+    oss/azure/workload-identity/webhook: ">= v1.4.1"
     oss/kubernetes-csi/azuredisk-csi: ">= v1.25.0"
     oss/kubernetes-csi/azurefile-csi: ">= v1.25.0"
     oss/kubernetes/azure-cloud-controller-manager: ">= v1.24.5"
