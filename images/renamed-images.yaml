@@ -55,7 +55,7 @@
   semver: ">= 15.6"
 - image: ghcr.io/kyverno/policy-reporter/kyverno-plugin
   override_repo_name: kyverno-plugin
-  semver: ">= 0.4.0"
+  filter: '^(\d+\..*)'
 - image: ghcr.io/linkerd/cni-plugin
   override_repo_name: linkerd2-cni-plugin
   semver: ">= v1.1.1"
