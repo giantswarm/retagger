@@ -80,7 +80,7 @@ jobs:
 
   filter-skopeo-tags:
     docker:
-      - image: quay.io/giantswarm/retagger:7a00c473e4835d1836f3ae50733075cc7451f86e
+      - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
     resource_class: small
     shell: /bin/bash
     parameters:
@@ -132,7 +132,7 @@ jobs:
 
   retag-image-name:
     docker:
-      - image: quay.io/giantswarm/retagger:7a00c473e4835d1836f3ae50733075cc7451f86e
+      - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
     resource_class: small
     shell: /bin/bash
     parameters:
@@ -181,7 +181,7 @@ jobs:
 
   retag-registry:
     docker:
-      - image: quay.io/giantswarm/retagger:7a00c473e4835d1836f3ae50733075cc7451f86e
+      - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
     resource_class: small
     shell: /bin/bash
     parameters:
@@ -230,7 +230,7 @@ jobs:
 
   retag-renamed-images:
     docker:
-      - image: quay.io/giantswarm/retagger:7a00c473e4835d1836f3ae50733075cc7451f86e
+      - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
     resource_class: small
     shell: /bin/bash
     parameters:
@@ -357,15 +357,15 @@ build_and_retag: &build_and_retag
         name: validate-skopeo
         requires:
           - validate-images-yaml
-#    - build-and-push-docker:
-#        context: architect
-#        name: build-and-push-docker
-#        username: ${QUAY_USERNAME}
-#        password: ${QUAY_PASSWORD}
-#        registry: "quay.io"
-#        tag: ${CIRCLE_TAG:-$CIRCLE_SHA1}
-#        requires:
-#          - validate-skopeo
+    - build-and-push-docker:
+        context: architect
+        name: build-and-push-docker
+        username: ${QUAY_USERNAME}
+        password: ${QUAY_PASSWORD}
+        registry: "quay.io"
+        tag: ${CIRCLE_TAG:-$CIRCLE_SHA1}
+        requires:
+          - validate-skopeo
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-docker-io
@@ -375,7 +375,7 @@ build_and_retag: &build_and_retag
             only:
               - main
         requires:
-          - validate-skopeo
+          - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-eu-gcr-io
@@ -385,7 +385,7 @@ build_and_retag: &build_and_retag
             only:
               - main
         requires:
-          - validate-skopeo
+          - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-gcr-io
@@ -395,7 +395,7 @@ build_and_retag: &build_and_retag
             only:
               - main
         requires:
-          - validate-skopeo
+          - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-ghcr-io
@@ -405,7 +405,7 @@ build_and_retag: &build_and_retag
             only:
               - main
         requires:
-          - validate-skopeo
+          - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-mcr-microsoft-com
@@ -415,7 +415,7 @@ build_and_retag: &build_and_retag
             only:
               - main
         requires:
-          - validate-skopeo
+          - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-nvcr-io
@@ -425,7 +425,7 @@ build_and_retag: &build_and_retag
             only:
               - main
         requires:
-          - validate-skopeo
+          - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-public-ecr-aws
@@ -435,7 +435,7 @@ build_and_retag: &build_and_retag
             only:
               - main
         requires:
-          - validate-skopeo
+          - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-quay-io
@@ -445,7 +445,7 @@ build_and_retag: &build_and_retag
             only:
               - main
         requires:
-          - validate-skopeo
+          - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-k8s-io
@@ -455,7 +455,7 @@ build_and_retag: &build_and_retag
             only:
               - main
         requires:
-          - validate-skopeo
+          - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-k8s-io-kubernetes
@@ -465,7 +465,7 @@ build_and_retag: &build_and_retag
             only:
               - main
         requires:
-          - validate-skopeo
+          - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-projects-registry-vmware-com
@@ -475,39 +475,39 @@ build_and_retag: &build_and_retag
             only:
               - main
         requires:
-          - validate-skopeo
-#    - retag-registry:
-#        context: architect
-#        name: retag-quay-<<matrix.images_file>>
-#        username: ${QUAY_USERNAME}
-#        password: ${QUAY_PASSWORD}
-#        registry: "quay.io"
-#        requires:
-#          - filter-skopeo-docker-io
-#          - filter-skopeo-eu-gcr-io
-#          - filter-skopeo-gcr-io
-#          - filter-skopeo-ghcr-io
-#          - filter-skopeo-mcr-microsoft-com
-#          - filter-skopeo-nvcr-io
-#          - filter-skopeo-public-ecr-aws
-#          - filter-skopeo-quay-io
-#          - filter-skopeo-k8s-io
-#          - filter-skopeo-k8s-io-kubernetes
-#          - filter-skopeo-projects-registry-vmware-com
-#        matrix:
-#          parameters:
-#            images_file:
-#              - images/skopeo-docker-io.yaml.filtered
-#              - images/skopeo-eu-gcr-io.yaml.filtered
-#              - images/skopeo-gcr-io.yaml.filtered
-#              - images/skopeo-ghcr-io.yaml.filtered
-#              - images/skopeo-mcr-microsoft-com.yaml.filtered
-#              - images/skopeo-nvcr-io.yaml.filtered
-#              - images/skopeo-public-ecr-aws.yaml.filtered
-#              - images/skopeo-quay-io.yaml.filtered
-#              - images/skopeo-registry-k8s-io.yaml.filtered
-#              - images/skopeo-registry-k8s-io-kubernetes.yaml.filtered
-#              - images/skopeo-projects-registry-vmware-com.yaml.filtered
+          - build-and-push-docker
+    - retag-registry:
+        context: architect
+        name: retag-quay-<<matrix.images_file>>
+        username: ${QUAY_USERNAME}
+        password: ${QUAY_PASSWORD}
+        registry: "quay.io"
+        requires:
+          - filter-skopeo-docker-io
+          - filter-skopeo-eu-gcr-io
+          - filter-skopeo-gcr-io
+          - filter-skopeo-ghcr-io
+          - filter-skopeo-mcr-microsoft-com
+          - filter-skopeo-nvcr-io
+          - filter-skopeo-public-ecr-aws
+          - filter-skopeo-quay-io
+          - filter-skopeo-k8s-io
+          - filter-skopeo-k8s-io-kubernetes
+          - filter-skopeo-projects-registry-vmware-com
+        matrix:
+          parameters:
+            images_file:
+              - images/skopeo-docker-io.yaml.filtered
+              - images/skopeo-eu-gcr-io.yaml.filtered
+              - images/skopeo-gcr-io.yaml.filtered
+              - images/skopeo-ghcr-io.yaml.filtered
+              - images/skopeo-mcr-microsoft-com.yaml.filtered
+              - images/skopeo-nvcr-io.yaml.filtered
+              - images/skopeo-public-ecr-aws.yaml.filtered
+              - images/skopeo-quay-io.yaml.filtered
+              - images/skopeo-registry-k8s-io.yaml.filtered
+              - images/skopeo-registry-k8s-io-kubernetes.yaml.filtered
+              - images/skopeo-projects-registry-vmware-com.yaml.filtered
     - retag-registry:
         context: architect
         name: retag-aliyun-<<matrix.images_file>>
@@ -574,7 +574,7 @@ build_and_retag: &build_and_retag
         context: architect
         name: retag-renamed-images
         requires:
-          - validate-skopeo
+          - build-and-push-docker
         executor_count: 5
         filters:
           branches:
