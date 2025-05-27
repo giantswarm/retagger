@@ -139,8 +139,8 @@ docker.io:
     fluent/fluent-bit: ">= 1.7.1"
     golang: ">= 1.19.0"
     grafana/alloy: ">= v1.2.0"
-    grafana/grafana: ">= 9.1.1"
-    grafana/loki: ">= 2.7.3"
+    grafana/grafana: ">= 11.0.0"
+    grafana/loki: ">= 3.0.0"
     grafana/loki-canary: ">= v2.1.0"
     grafana/mimir: ">= v2.7.0"
     grafana/mimir-continuous-test: ">= v2.7.0"
@@ -169,3 +169,5 @@ docker.io:
     alpine: ^3\.[123][0-9]\.[0-9]+$
     memcached: ^1\.[6-9]\.[0-9]+-alpine$
     nginx: ^1\.2[3-9]-alpine$
+    # grafana security images for grafana 10+ - tag looks like `12.0.0-security-01`
+    grafana/grafana: ^[1-9][0-9]\.[0-9]+\.[0-9]+-security-[0-9]+$
