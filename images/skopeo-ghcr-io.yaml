@@ -38,6 +38,7 @@ ghcr.io:
     kyverno/reports-controller: ">= 1.10.1"
     # used for https://github.com/giantswarm/event-exporter-app
     resmoio/kubernetes-event-exporter: ">= v1.7"
+    pfnet-research/alertmanager-to-github: ">= v0.1.0"
     project-zot/zot-linux-amd64: ">= v2.0.0"
     project-zot/zot: ">= v2.0.0"
     sergelogvinov/proxmox-cloud-controller-manager: ">= v0.7.0"
