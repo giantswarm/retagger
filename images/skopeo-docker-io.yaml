@@ -95,11 +95,7 @@ docker.io:
       - "0.11.0"
     peaceiris/hugo:
       - "v0.139.3-full"
-      - "v0.125.5-full"
-      - "v0.125.5-mod"
-      - "v0.121.0-full"
-      - "v0.121.0-mod"
-      - "v0.120.2-mod"
+      - "v0.146.4-full"
     python:
       - "3.13.5-alpine"
       - "3.13.5-slim"
