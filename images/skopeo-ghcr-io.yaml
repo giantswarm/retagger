@@ -17,8 +17,8 @@ ghcr.io:
     cloudnative-pg/cloudnative-pg: ">= 1.22.2"
     dexidp/dex: ">=v2.40.0"
     external-secrets/external-secrets: ">= v0.7.0"
-    falcosecurity/falco: ">= 0.35.0"                   
-    falcosecurity/falco-driver-loader: ">= 0.35.0" 
+    falcosecurity/falco: ">= 0.35.0"                 
+    falcosecurity/falco-driver-loader: ">= 0.35.0"
     # giantswarm/staticjscms-hugo-standalone: ">= v0.0.1" -- commented out as this is a private package breaking the job. To be clarfified with @lyind
     ionos-cloud/cluster-api-provider-proxmox: ">= v0.6.1"
     jimmidyson/configmap-reload: ">= v0.10.0"
