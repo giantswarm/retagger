@@ -176,6 +176,18 @@
 - image: quay.io/jiralert/jiralert-linux-amd64
   override_repo_name: jiralert
   semver: ">= 1.0"
+- image: kubescape/kubevuln
+  semver: ">= v0.3.80"
+  override_repo_name: kubescape-kubevuln
+- image: kubescape/node-agent
+  semver: ">= v0.2.345"
+  override_repo_name: kubescape-node-agent
+- image: kubescape/operator
+  semver: ">= v0.2.91"
+  override_repo_name: kubescape-operator
+- image: kubescape/storage
+  semver: ">= v0.0.185"
+  override_repo_name: kubescape-storage
 - image: registry.k8s.io/etcd
   semver: ">= v3.5.4-0"
   add_tag_suffix: k8s
