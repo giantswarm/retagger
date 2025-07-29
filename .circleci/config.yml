@@ -622,10 +622,4 @@ workflows:
 
   # Runs every 12 hours at 09:08 and 21:08 UTC
   trivy_databases:
-    triggers:
-      - schedule:
-          cron: "08 09,21 * * *"
-          filters:
-            branches:
-              only: main
     <<: *trivy_databases
