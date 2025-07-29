@@ -317,7 +317,7 @@ trivy_databases: &trivy_databases
         username: ${ACR_GSOCI_RETAGGER_USERNAME}
         password: ${ACR_GSOCI_RETAGGER_PASSWORD}
         registry: "gsoci.azurecr.io"
-        image_name: "ghcr.io/aquasecurity/trivy-db"
+        image_name: "mirror.gcr.io/aquasec/trivy-db"
         requires:
           - build-and-push-docker
     - retag-image-name:
@@ -326,7 +326,16 @@ trivy_databases: &trivy_databases
         username: ${ACR_GSOCI_RETAGGER_USERNAME}
         password: ${ACR_GSOCI_RETAGGER_PASSWORD}
         registry: "gsoci.azurecr.io"
-        image_name: "ghcr.io/aquasecurity/trivy-java-db"
+        image_name: "mirror.gcr.io/aquasec/trivy-java-db"
+        requires:
+          - build-and-push-docker
+    - retag-image-name:
+        context: architect
+        name: retag-gsoci-trivy-checks
+        username: ${ACR_GSOCI_RETAGGER_USERNAME}
+        password: ${ACR_GSOCI_RETAGGER_PASSWORD}
+        registry: "gsoci.azurecr.io"
+        image_name: "mirror.gcr.io/aquasec/trivy-checks"
         requires:
           - build-and-push-docker
     - retag-image-name:
@@ -335,7 +344,7 @@ trivy_databases: &trivy_databases
         username: ${ALIYUN_USERNAME}
         password: ${ALIYUN_PASSWORD}
         registry: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com"
-        image_name: "ghcr.io/aquasecurity/trivy-db"
+        image_name: "mirror.gcr.io/aquasec/trivy-db"
         requires:
           - build-and-push-docker
     - retag-image-name:
@@ -344,7 +353,7 @@ trivy_databases: &trivy_databases
         username: ${ALIYUN_USERNAME}
         password: ${ALIYUN_PASSWORD}
         registry: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com"
-        image_name: "ghcr.io/aquasecurity/trivy-java-db"
+        image_name: "mirror.gcr.io/aquasec/trivy-java-db"
         requires:
           - build-and-push-docker
 
