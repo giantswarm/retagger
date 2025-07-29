@@ -10,7 +10,6 @@ ghcr.io:
     ahrtr/etcd-defrag: ">= v0.22.0"
     aquasecurity/node-collector: ">= 0.0.6"
     aquasecurity/trivy: ">= 0.37.2"
-    aquasecurity/trivy-operator: ">= 0.16.1"
     aquasecurity/trivy-checks: ">= 0.10.0"
     aquasecurity/trivy-db: ">= 2"
     aquasecurity/trivy-java-db: ">= 1"

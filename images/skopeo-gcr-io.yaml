@@ -1,4 +1,8 @@
 # Docs: https://github.com/kubasobon/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
+mirror.gcr.io:
+  images-by-semver:
+    aquasec/trivy-operator: ">= v0.27.0"
+    aquasec/trivy: ">= v0.64.0"
 gcr.io:
   images:
     google-containers/startup-script:
