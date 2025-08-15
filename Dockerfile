@@ -1,12 +1,12 @@
 ARG ALPINE_VERSION=3.22
 ARG GO_VERSION=1.25.0
+ARG SKOPEO_VERSION=v1.19.0
 
 FROM gsoci.azurecr.io/giantswarm/golang:${GO_VERSION}-alpine${ALPINE_VERSION} as builder
 
 RUN apk add --no-cache git make bash curl
 
 # Build a static skopeo binary
-ARG SKOPEO_VERSION=v1.19.0
 WORKDIR /build
 RUN git clone --branch ${SKOPEO_VERSION} --depth 1 https://github.com/containers/skopeo.git
 WORKDIR /build/skopeo
@@ -22,7 +22,7 @@ WORKDIR /build/docker
 ARG DOCKER_VERSION=25.0.5
 RUN curl -O https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz && tar -xvf docker-${DOCKER_VERSION}.tgz
 
-FROM gsoci.azurecr.io/giantswarm/skopeo:${SKOPEO_VERSION} as skopeo
+FROM gsoci.azurecr.io/giantswarm/skopeo:${SKOPEO_VERSION} AS skopeo
 
 # Add all binaries to a fresh image
 FROM gsoci.azurecr.io/giantswarm/alpine:${ALPINE_VERSION}
