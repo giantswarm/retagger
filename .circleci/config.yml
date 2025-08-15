@@ -50,7 +50,7 @@ jobs:
 
   build-and-push-docker:
     machine:
-      image: ubuntu-2204:2024.01.2
+      image: ubuntu-2404:2024.11.1
     parameters:
       username:
         type: string
