@@ -25,7 +25,7 @@ RUN curl -O https://download.docker.com/linux/static/stable/x86_64/docker-${DOCK
 FROM gsoci.azurecr.io/giantswarm/skopeo:${SKOPEO_VERSION} AS skopeo
 
 # Add all binaries to a fresh image
-FROM gsoci.azurecr.io/giantswarm/alpine:${ALPINE_VERSION}
+FROM gsoci.azurecr.io/giantswarm/alpine:${ALPINE_VERSION}.1
 
 # We need bash for CircleCI script execution
 RUN apk add --no-cache bash
