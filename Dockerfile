@@ -6,7 +6,7 @@ FROM gsoci.azurecr.io/giantswarm/golang:${GO_VERSION}-alpine${ALPINE_VERSION} as
 RUN apk add --no-cache git make bash curl
 
 # Build a static skopeo binary
-ARG SKOPEO_VERSION=v1.15.0
+ARG SKOPEO_VERSION=v1.20.0
 WORKDIR /build
 RUN git clone --branch ${SKOPEO_VERSION} --depth 1 https://github.com/containers/skopeo.git
 WORKDIR /build/skopeo
