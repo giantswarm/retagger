@@ -2,13 +2,13 @@ ARG ALPINE_VERSION=3.22
 ARG GO_VERSION=1.25.0
 ARG SKOPEO_VERSION=v1.19.0
 
-FROM gsoci.azurecr.io/giantswarm/golang:${GO_VERSION}-alpine${ALPINE_VERSION} as builder
+FROM gsoci.azurecr.io/giantswarm/golang:${GO_VERSION}-alpine${ALPINE_VERSION} AS builder
 
 RUN apk add --no-cache git make bash curl
 
 # Build a static skopeo binary
 WORKDIR /build
-RUN git clone --branch "${SKOPEO_VERSION}" --depth 1 https://github.com/containers/skopeo.git
+RUN git clone --branch v1.19.0 --depth 1 https://github.com/containers/skopeo.git
 WORKDIR /build/skopeo
 RUN BUILDTAGS=containers_image_openpgp DISABLE_CGO=1 CGO_ENABLED=0 make bin/skopeo
 
