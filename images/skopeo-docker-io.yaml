@@ -121,7 +121,6 @@ docker.io:
     busybox: ">= 1.31.0"
     crossplane/crossplane: ">= v1.9.1"
     curlimages/curl: ">= 7.67.0"
-    cytopia/yamllint: ">= 1.9"
     ealen/echo-server: ">=0.5.0"
     envoyproxy/envoy: ">= 1.18.4"
     falcosecurity/falco: ">= 0.36.1"
