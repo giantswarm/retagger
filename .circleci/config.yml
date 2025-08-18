@@ -22,7 +22,7 @@ jobs:
 
   validate-skopeo:
     docker:
-      - image: gsoci.azurecr.io/giantswarm/skopeo:v1.15.0
+      - image: gsoci.azurecr.io/giantswarm/skopeo:v1.19.0
     resource_class: small
     steps:
       - checkout
@@ -50,7 +50,7 @@ jobs:
 
   build-and-push-docker:
     machine:
-      image: ubuntu-2204:2024.01.2
+      image: ubuntu-2404:2024.11.1
     parameters:
       username:
         type: string
