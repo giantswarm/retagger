@@ -14,10 +14,6 @@
   override_repo_name: bitnami-memcached-exporter
   tag_or_pattern: "0.13.0"
   sha: ed4cb413c2074a2ac62005d0da61d5a6872382f318c206506b3f200fa8900442
-- image: bitnami/redis
-  override_repo_name: bitnami-redis
-  tag_or_pattern: "4.0.9"
-  sha: 1b56b1c2c5d737bd8029f2e2e80852c0c1ef342e36ca0940dd313d4d8a786311
 - image: bitnami/postgresql
   override_repo_name: postgresql-bitnami
   tag_or_pattern: "13.6.0-debian-10-r52"
