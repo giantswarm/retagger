@@ -87,9 +87,6 @@ docker.io:
       - "0.3.2-dd13538"
     madnight/alpine-wkhtmltopdf-builder:
       - "0.12.5-alpine3.10-606718795"
-    nginxinc/nginx-unprivileged:
-      - "mainline"
-      - "latest"
     node:
       - "20"
       - "21"
@@ -163,5 +160,6 @@ docker.io:
     alpine: ^3\.[123][0-9]\.[0-9]+$
     memcached: ^1\.[6-9]\.[0-9]+-alpine$
     nginx: ^1\.2[3-9]-alpine$
+    nginxinc/nginx-unprivileged: ^1\.2[3-9]-alpine$
     # grafana security images for grafana 10+ - tag looks like `12.0.0-security-01`
     grafana/grafana: ^[1-9][0-9]\.[0-9]+\.[0-9]+-security-[0-9]+$
