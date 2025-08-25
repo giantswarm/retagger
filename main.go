@@ -48,7 +48,6 @@ const (
 
 	aliyunURL = "giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm"
 	azureURL  = "gsoci.azurecr.io/giantswarm"
-	quayURL   = "quay.io/giantswarm"
 )
 
 // RenamedImage represents a set of rules used to rebuild/retag multiple tags of
@@ -127,12 +126,9 @@ func (img *RenamedImage) RetagUsingSHA() error {
 	// We'll use skopeo copy for this, because it's awesome.
 	source := fmt.Sprintf("%s%s@sha256:%s", dockerTransport, img.Image, img.SHA)
 	wg := sync.WaitGroup{}
-	wg.Add(3)
-	// Quay
-	destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, quayURL, destinationName, destinationTag)
-	go copyImage(&wg, errorCounter, source, destination)
+	wg.Add(2)
 	// AzureCR
-	destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, azureURL, destinationName, destinationTag)
+	destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, azureURL, destinationName, destinationTag)
 	go copyImage(&wg, errorCounter, source, destination)
 	// Aliyun
 	destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, aliyunURL, destinationName, destinationTag)
@@ -146,7 +142,7 @@ func (img *RenamedImage) RetagUsingSHA() error {
 }
 
 // RetagUsingTags finds all tags matching the img.TagOrPattern or
-// img.Semver, retags, and pushes them to Quay and Aliyun container registries.
+// img.Semver, retags, and pushes them to the Aliyun container registry.
 // Any optional parameters configured will be applied as well, e.g. tag suffix.
 func (img *RenamedImage) RetagUsingTags() error {
 	// List available image tags
@@ -169,10 +165,6 @@ func (img *RenamedImage) RetagUsingTags() error {
 
 	// Exclude tags existing in all registries
 	if flagSkipExistingTags {
-		quayTags, err := listTags(fmt.Sprintf("%s/%s", quayURL, destinationName))
-		if err != nil {
-			logrus.Warnf("error getting Quay.io tags: %s", err)
-		}
 		azureTags, err := listTags(fmt.Sprintf("%s/%s", azureURL, destinationName))
 		if err != nil {
 			logrus.Warnf("error getting AzureCR tags: %s", err)
@@ -181,7 +173,7 @@ func (img *RenamedImage) RetagUsingTags() error {
 		if err != nil {
 			logrus.Warnf("error getting Aliyun tags: %s", err)
 		}
-		tags = img.FindMissingTags(tags, quayTags, azureTags, aliyunTags)
+		tags = img.FindMissingTags(tags, azureTags, aliyunTags)
 		logrus.Infof("Found %d missing tags for image %q", len(tags), img.Image)
 	}
 
@@ -201,12 +193,9 @@ func (img *RenamedImage) RetagUsingTags() error {
 		// We'll use skopeo copy for this, because it's awesome.
 		source := fmt.Sprintf("%s%s:%s", dockerTransport, img.Image, tag)
 		wg := sync.WaitGroup{}
-		wg.Add(3)
-		// Quay
-		destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, quayURL, destinationName, destinationTag)
-		go copyImage(&wg, errorCounter, source, destination)
+		wg.Add(2)
 		// Azure
-		destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, azureURL, destinationName, destinationTag)
+		destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, azureURL, destinationName, destinationTag)
 		go copyImage(&wg, errorCounter, source, destination)
 		// Aliyun
 		destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, aliyunURL, destinationName, destinationTag)
@@ -558,11 +547,6 @@ func commandFilter(filePath string) {
 		missingTagCount := 0
 		for image, tags := range tagsPerImage {
 			logStdOut.WithField("image", image).Debugf("searching for missing tags")
-			quayTags, err := listTags(fmt.Sprintf("%s/%s", quayURL, imageBaseName(image)))
-			if err != nil {
-				logStdErr.WithField("image", image).Errorf("error listing Quay tags: %v", err)
-				continue
-			}
 			azureTags, err := listTags(fmt.Sprintf("%s/%s", azureURL, imageBaseName(image)))
 			if err != nil {
 				logStdErr.WithField("image", image).Errorf("error listing AzureCR tags: %v", err)
@@ -581,7 +565,7 @@ func commandFilter(filePath string) {
 				list of tags to be synced.`, what means in order to proceed with a given image we need
 				to establish the truth of:
 
-				ImgTagsMissingIn(Quay) ∨ ImgTagsMissingIn(Azure) ∨ ImgTagsMissingIn(Aliyun) ≡ T
+				ImgTagsMissingIn(Azure) ∨ ImgTagsMissingIn(Aliyun) ≡ T
 
 				In case any of the disjuncts is undefined, when error is returned, then obviously the
 				predicate is undefined and the image is skipped, so the code meets specification.
@@ -589,7 +573,7 @@ func commandFilter(filePath string) {
 				On the other hand, maybe the undefined state could be treated as false, what would change
 				the postcondition to:
 
-				ImgTagsMissingIn(Quay) = T ∨ ImgTagsMissingIn(Azure) = T ∨ ImgTagsMissingIn(Aliyun) = T ≡ T
+				ImgTagsMissingIn(Azure) = T ∨ ImgTagsMissingIn(Aliyun) = T ≡ T
 
 				The question of whether that's possible or not boils down to the question: does it pose
 				any danger to include an image if we do not know its state in the final registry? The
@@ -609,7 +593,7 @@ func commandFilter(filePath string) {
 				the same.
 			*/
 			i := &RenamedImage{}
-			missingTags := i.FindMissingTags(tags, quayTags, azureTags, aliyunTags)
+			missingTags := i.FindMissingTags(tags, azureTags, aliyunTags)
 			missingTagCount += len(missingTags)
 			missingTagsPerImage[image] = missingTags
 		}
