@@ -43,7 +43,6 @@ var (
 
 const (
 	renamedImagesFile  = "images/renamed-images.yaml"
-	defaultPlatform    = "linux/amd64"
 	dockerTransport    = "docker://"
 	filteredFileSuffix = ".filtered"
 
