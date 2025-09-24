@@ -16,7 +16,6 @@ quay.io:
     pusher/oauth2_proxy:
       - "v5.1.0"
   images-by-semver:
-    argoproj/argocd: ">= v2.0.1"
     calico/cni: ">= v3.9.5"
     calico/kube-controllers: ">= v3.9.5"
     calico/node: ">= v3.9.5"
