@@ -30,6 +30,8 @@ docker.io:
       - "v0.27.0"
     golangci/golangci-lint:
       - "v1.23.8"
+    grafana/tempo-vulture:
+      - "2.9.0-rc.0"
     instrumenta/conftest:
       - "v0.18.1"
       - "v0.21.0"
