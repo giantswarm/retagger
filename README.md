@@ -2,13 +2,13 @@
 
 # retagger
 
-> A tool to handle the retagging of third party docker images and make them
-  available in own registries.
+> A tool to handle the retagging of third-party docker images and make them
+  available in their own registries.
 
 ## What does retagger do, exactly?
 
 `retagger` is first and foremost a CircleCI workflow that runs every day at 21:30
-UTC and on every merge to master branch. It utilizes [skopeo][skopeo] and
+UTC and on every merge to the main branch. It utilizes [skopeo][skopeo] and
 [custom golang code](main.go) to take upstream docker images, rename them if
 necessary, and push them to Giant Swarm's container registries: `quay.io` and
 `giantswarm-registry.cn-shanghai.cr.aliyuncs.com`. It is capable of working
@@ -20,8 +20,7 @@ images.
 
 ## How to add your image to the job
 
-You've come to the right place. Pick one of the below methods. For both methods first make sure
-the repository exists in the desired container registry.
+You've come to the right place. Pick one of the following methods. For both methods, ensure that the repository exists in the desired container registry first.
 
 ### Plain copy
 
@@ -30,10 +29,9 @@ You do **not** need any customizations. Great!
    container registry's name. Create a new one, if necessary.
 2. Add a tag, SHA, or a semantic version constraint for your image. Refer to
    [Skopeo](#skopeo) section or existing files for format definition.
-3. Create the registry for the image on [quay.io](https://quay.io/organization/giantswarm).
-4. If you haven't created a new file, that's it. You're set. Otherwise continue
+3. If you haven't created a new file, that's it. You're set. Otherwise, continue
    following the steps.
-5. Open [CircleCI config][ciconf] and add your file to both `retag-registry`
+4. Open [CircleCI config][ciconf] and add your file to both `retag-registry`
    steps under `matrix.parameters.images_file`.
 
 ### Manual copy
@@ -72,8 +70,7 @@ Custom container image builds were moved to: https://github.com/giantswarm/custo
 
 ### Renamed images
 
-Renamed images are represented as an array of `RenamedImages` objects. Please
-see the below definition:
+Renamed images are represented as an array of `RenamedImages` objects. Please see the definition below:
 
 ```golang
 type RenamedImage struct {
