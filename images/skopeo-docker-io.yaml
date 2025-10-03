@@ -39,8 +39,6 @@ docker.io:
       - "2.2.3"
     justwatch/elasticsearch_exporter:
       - "1.1.0"
-    k8spin/loki-multi-tenant-proxy:
-      - "v1.0.0"
     koalaman/shellcheck-alpine:
       - "v0.6.0"
     kong/kong-gateway:
@@ -132,12 +130,12 @@ docker.io:
     grafana/alloy: ">= v1.2.0"
     grafana/grafana: ">= 11.0.0"
     grafana/loki: ">= 3.0.0"
-    grafana/loki-canary: ">= v2.1.0"
+    grafana/loki-canary: ">= v3.0.0"
     grafana/mimir: ">= v2.7.0"
     grafana/mimir-continuous-test: ">= v2.7.0"
     grafana/promtail: ">= v2.5.0"
     grafana/pyroscope: ">= 1.2.1"
-    grafana/tempo: ">= v2.3.0"
+    grafana/tempo: ">= v2.8.0"
     jimmidyson/configmap-reload: ">= v0.8.0"
     jdkato/vale: ">= v3.4.0"
     k8scloudprovider/cinder-csi-plugin: ">= 1.20.0"
@@ -145,6 +143,8 @@ docker.io:
     k8scloudprovider/openstack-cloud-controller-manager: ">= 1.20.0"
     kiwigrid/k8s-sidecar: ">= 1.24.3"
     kong: ">= 2.8.1"
+    # Used in giantswarm/aws-resolver-rules-operator for testing AWS calls.
+    localstack/localstack: ">= 4.7.0"
     mikefarah/yq: ">= 4.31.2"
     mintel/dex-k8s-authenticator: ">= 1.4.0"
     openpolicyagent/conftest: ">= v0.25.0"
@@ -163,3 +163,4 @@ docker.io:
     nginxinc/nginx-unprivileged: ^1\.2[3-9]-alpine$
     # grafana security images for grafana 10+ - tag looks like `12.0.0-security-01`
     grafana/grafana: ^[1-9][0-9]\.[0-9]+\.[0-9]+-security-[0-9]+$
+    grafana/tempo-vulture: ^v[2-9].[0-9].[0-9](-rc\.[0.9])*$

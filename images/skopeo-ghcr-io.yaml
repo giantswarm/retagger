@@ -45,5 +45,6 @@ ghcr.io:
     sergelogvinov/proxmox-csi-controller: ">= v0.10.0"
     sergelogvinov/proxmox-csi-node: ">= v0.10.0"
     slok/sloth: ">= v0.11.0"
+    vmware/pinniped/pinniped-server: ">= v0.40.0"
   images-by-tag-regex:
     nginxinc/nginx-unprivileged: ^1\.2[3-9]-alpine$
