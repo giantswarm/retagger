@@ -31,6 +31,7 @@ registry.k8s.io:
     external-dns/external-dns: ">= v0.11.0"
     git-sync/git-sync: ">= v3.6.8"
     kube-state-metrics/kube-state-metrics: "> v2.3.0"
+    kubectl: "> v1.33.4"
     metrics-server/metrics-server: ">= v0.5.2"
     nfd/node-feature-discovery: ">= v0.16.6"
     node-problem-detector/node-problem-detector: ">= v0.8.14"
