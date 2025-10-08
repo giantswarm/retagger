@@ -12,7 +12,7 @@ jobs:
             docker run --rm -it \
              -v $PWD:/workdir \
              -w /workdir \
-             gsoci.azurecr.io/giantswarm/yamllint:1.0.0 \
+             gsoci.azurecr.io/giantswarm/yamllint:1.37.1 \
              --config-file /workdir/.yamllint \
              images/*.yaml
       - persist_to_workspace:
