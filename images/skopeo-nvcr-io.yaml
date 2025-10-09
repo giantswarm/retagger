@@ -1,4 +1,5 @@
 # Docs: https://github.com/kubasobon/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
+
 nvcr.io:
   images-by-semver:
     nvidia/cloud-native/gpu-operator-validator: ">= v24.9.2"
