@@ -80,7 +80,7 @@ jobs:
 
   filter-skopeo-tags:
     docker:
-      - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
+      - image: gsoci.azurecr.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
     resource_class: small
     shell: /bin/bash
     parameters:
@@ -132,7 +132,7 @@ jobs:
 
   retag-image-name:
     docker:
-      - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
+      - image: gsoci.azurecr.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
     resource_class: small
     shell: /bin/bash
     parameters:
@@ -181,7 +181,7 @@ jobs:
 
   retag-registry:
     docker:
-      - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
+      - image: gsoci.azurecr.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
     resource_class: small
     shell: /bin/bash
     parameters:
@@ -230,7 +230,7 @@ jobs:
 
   retag-renamed-images:
     docker:
-      - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
+      - image: gsoci.azurecr.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
     resource_class: small
     shell: /bin/bash
     parameters:
