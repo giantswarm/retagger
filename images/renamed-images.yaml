@@ -31,10 +31,10 @@
 - image: cloudflare/cloudflared
   semver: ">= 2023.8.2"
   filter: "^(.+)-amd64$"
-- image: cloudnative-pg/plugin-barman-cloud
+- image: ghcr.io/cloudnative-pg/plugin-barman-cloud
   override_repo_name: cnpg-plugin-barman-cloud
   semver: ">= v0.7.0"
-- image: cloudnative-pg/plugin-barman-cloud-sidecar
+- image: ghcr.io/cloudnative-pg/plugin-barman-cloud-sidecar
   override_repo_name: cnpg-plugin-barman-cloud-sidecar
   semver: ">= v0.7.0"
 - image: docker.io/grafana/agent
