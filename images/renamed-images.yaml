@@ -731,6 +731,9 @@
 - image: quay.io/skopeo/stable
   override_repo_name: skopeo
   semver: ">= v1.15.0"
+- image: us-central1-docker.pkg.dev/k8s-staging-images/kueue/kueue
+  override_repo_name: kueue
+  semver: ">= v0.14.1"
 - image: xpkg.upbound.io/crossplane-contrib/provider-aws
   override_repo_name: crossplane-provider-aws
   semver: ">= v0.33.0"
