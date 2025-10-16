@@ -49,6 +49,12 @@
 - image: ghcr.io/cloudnative-pg/postgresql
   override_repo_name: postgresql-cnpg
   semver: ">= 15.6"
+- image: ghcr.io/cloudnative-pg/plugin-barman-cloud
+  override_repo_name: cnpg-plugin-barman-cloud
+  semver: ">= v0.7.0"
+- image: ghcr.io/cloudnative-pg/plugin-barman-cloud-sidecar
+  override_repo_name: cnpg-plugin-barman-cloud-sidecar
+  semver: ">= v0.7.0"
 - image: ghcr.io/kyverno/policy-reporter/kyverno-plugin
   override_repo_name: kyverno-plugin
   semver: ">= 0.4.0"
