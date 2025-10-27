@@ -8,7 +8,7 @@ nvcr.io:
     nvidia/cloud-native/vgpu-device-manager: ">= v0.2.8"
     nvidia/kubevirt-gpu-device-plugin: ">= v1.2.10"
   images-by-tag-regex:
-    nvidia/cloud-native/k8s-mig-manager: ^v[0-9]+\.[0-9]+\.[0-9]+-ubuntu.+$
-    nvidia/k8s/dcgm-exporter: ^[0-9]+\.[0-9]+\.[0-9]+-[0-9]+\.[0-9]+\.[0-9]+-ubuntu.+$
-    nvidia/cuda: ^[0-9]+\.[0-9]+\.[0-9]+-base-ubi.+$
-    nvidia/k8s-device-plugin: ^v[0-9]+\.[0-9]+\.[0-9]+(-ubi.+)?$
+    nvidia/cloud-native/k8s-mig-manager: ^v[0-9]+\.[0-9]+\.[0-9]+-.+$
+    nvidia/k8s/dcgm-exporter: ^[0-9]+\.[0-9]+\.[0-9]+-[0-9]+\.[0-9]+\.[0-9]+-.+$
+    nvidia/cuda: ^[0-9]+\.[0-9]+\.[0-9]+-.+$
+    nvidia/k8s-device-plugin: ^v[0-9]+\.[0-9]+\.[0-9]+(-.+)?$
