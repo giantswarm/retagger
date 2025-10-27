@@ -137,6 +137,7 @@ docker.io:
     grafana/promtail: ">= v2.5.0"
     grafana/pyroscope: ">= 1.2.1"
     grafana/tempo: ">= v2.8.0"
+    grafana/tempo-vulture: ">= v2.8.0"
     jimmidyson/configmap-reload: ">= v0.8.0"
     jdkato/vale: ">= v3.4.0"
     k8scloudprovider/cinder-csi-plugin: ">= 1.20.0"
@@ -165,4 +166,3 @@ docker.io:
     nginxinc/nginx-unprivileged: ^1\.2[3-9]-alpine$
     # grafana security images for grafana 10+ - tag looks like `12.0.0-security-01`
     grafana/grafana: ^[1-9][0-9]\.[0-9]+\.[0-9]+-security-[0-9]+$
-    grafana/tempo-vulture: ^v[2-9].[0-9].[0-9](-rc\.[0.9])*$
