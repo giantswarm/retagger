@@ -9,14 +9,11 @@
 
 `retagger` is first and foremost a CircleCI workflow that runs every day at 21:30
 UTC and on every merge to the main branch. It utilizes [skopeo][skopeo] and
-[custom golang code](main.go) to take upstream docker images, rename them if
-necessary, and push them to Giant Swarm's container registries: `quay.io` and
+[custom golang code](main.go) to take upstream container images, rename them if
+necessary, and push them to Giant Swarm's container registries: `gsoci.azurecr.io` and
 `giantswarm-registry.cn-shanghai.cr.aliyuncs.com`. It is capable of working
 with `v1`, `v2`, and `OCI` registries, as well as retagging multi-architecture
 images.
-
-> 💡Please note it **is not responsible** for pushing images to neither
-`docker.io/giantswarm`, nor `azurecr.io/giantswarm` container registries.
 
 ## How to add your image to the job
 
@@ -100,7 +97,7 @@ type RenamedImage struct {
 	AddTagSuffix string `yaml:"add_tag_suffix,omitempty"`
 	// OverrideRepoName allows user to rewrite the name of the image entirely.
 	// Example: "alpinegit", so "alpine" would become
-	// "quay.io/giantswarm/alpinegit"
+	// "gsoci.azurecr.io/giantswarm/alpinegit"
 	OverrideRepoName string `yaml:"override_repo_name,omitempty"`
 	// StripSemverPrefix removes the initial 'v' in 'v1.2.3' if enabled. Works
 	// only when Semver is defined.

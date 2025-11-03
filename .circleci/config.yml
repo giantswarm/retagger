@@ -93,7 +93,6 @@ jobs:
           name: "Log in to registries: docker"
           command: |
             docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
-            docker login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
             docker login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} gsoci.azurecr.io
             max_retry=5
             counter=1
@@ -109,7 +108,6 @@ jobs:
           name: "Log in to registries: skopeo"
           command: |
             skopeo login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
-            skopeo login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
             skopeo login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} gsoci.azurecr.io
             max_retry=5
             counter=1
@@ -254,7 +252,6 @@ jobs:
           name: "Log in to registries: docker"
           command: |
             docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
-            docker login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
             docker login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} gsoci.azurecr.io
             max_retry=5
             counter=1
@@ -269,7 +266,6 @@ jobs:
           name: "Log in to registries: skopeo"
           command: |
             skopeo login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
-            skopeo login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
             skopeo login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} gsoci.azurecr.io
             max_retry=5
             counter=1
@@ -304,13 +300,6 @@ jobs:
 # Define 'trivy_databases' workflow so we can reuse it.
 trivy_databases: &trivy_databases
   jobs:
-    - build-and-push-docker:
-        context: architect
-        name: build-and-push-docker
-        username: ${QUAY_USERNAME}
-        password: ${QUAY_PASSWORD}
-        registry: "quay.io"
-        tag: ${CIRCLE_TAG:-$CIRCLE_SHA1}
     - retag-image-name:
         context: architect
         name: retag-gsoci-trivy-database
@@ -318,8 +307,6 @@ trivy_databases: &trivy_databases
         password: ${ACR_GSOCI_RETAGGER_PASSWORD}
         registry: "gsoci.azurecr.io"
         image_name: "mirror.gcr.io/aquasec/trivy-db"
-        requires:
-          - build-and-push-docker
     - retag-image-name:
         context: architect
         name: retag-gsoci-trivy-java-database
@@ -327,8 +314,6 @@ trivy_databases: &trivy_databases
         password: ${ACR_GSOCI_RETAGGER_PASSWORD}
         registry: "gsoci.azurecr.io"
         image_name: "mirror.gcr.io/aquasec/trivy-java-db"
-        requires:
-          - build-and-push-docker
     - retag-image-name:
         context: architect
         name: retag-gsoci-trivy-checks
@@ -336,8 +321,6 @@ trivy_databases: &trivy_databases
         password: ${ACR_GSOCI_RETAGGER_PASSWORD}
         registry: "gsoci.azurecr.io"
         image_name: "mirror.gcr.io/aquasec/trivy-checks"
-        requires:
-          - build-and-push-docker
     - retag-image-name:
         context: architect
         name: retag-aliyun-trivy-database
@@ -345,8 +328,6 @@ trivy_databases: &trivy_databases
         password: ${ALIYUN_PASSWORD}
         registry: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com"
         image_name: "mirror.gcr.io/aquasec/trivy-db"
-        requires:
-          - build-and-push-docker
     - retag-image-name:
         context: architect
         name: retag-aliyun-trivy-java-database
@@ -354,8 +335,6 @@ trivy_databases: &trivy_databases
         password: ${ALIYUN_PASSWORD}
         registry: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com"
         image_name: "mirror.gcr.io/aquasec/trivy-java-db"
-        requires:
-          - build-and-push-docker
 
 # Define 'build_and_retag' workflow steps, so we can reuse it.
 build_and_retag: &build_and_retag
@@ -366,15 +345,6 @@ build_and_retag: &build_and_retag
         name: validate-skopeo
         requires:
           - validate-images-yaml
-    - build-and-push-docker:
-        context: architect
-        name: build-and-push-docker
-        username: ${QUAY_USERNAME}
-        password: ${QUAY_PASSWORD}
-        registry: "quay.io"
-        tag: ${CIRCLE_TAG:-$CIRCLE_SHA1}
-        requires:
-          - validate-skopeo
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-docker-io
@@ -384,7 +354,7 @@ build_and_retag: &build_and_retag
             only:
               - main
         requires:
-          - build-and-push-docker
+          - validate-skopeo
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-eu-gcr-io
@@ -394,7 +364,7 @@ build_and_retag: &build_and_retag
             only:
               - main
         requires:
-          - build-and-push-docker
+          - validate-skopeo
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-gcr-io
@@ -404,7 +374,7 @@ build_and_retag: &build_and_retag
             only:
               - main
         requires:
-          - build-and-push-docker
+          - validate-skopeo
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-ghcr-io
@@ -414,7 +384,7 @@ build_and_retag: &build_and_retag
             only:
               - main
         requires:
-          - build-and-push-docker
+          - validate-skopeo
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-mcr-microsoft-com
@@ -424,7 +394,7 @@ build_and_retag: &build_and_retag
             only:
               - main
         requires:
-          - build-and-push-docker
+          - validate-skopeo
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-nvcr-io
@@ -434,7 +404,7 @@ build_and_retag: &build_and_retag
             only:
               - main
         requires:
-          - build-and-push-docker
+          - validate-skopeo
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-public-ecr-aws
@@ -444,7 +414,7 @@ build_and_retag: &build_and_retag
             only:
               - main
         requires:
-          - build-and-push-docker
+          - validate-skopeo
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-quay-io
@@ -454,7 +424,7 @@ build_and_retag: &build_and_retag
             only:
               - main
         requires:
-          - build-and-push-docker
+          - validate-skopeo
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-k8s-io
@@ -464,7 +434,7 @@ build_and_retag: &build_and_retag
             only:
               - main
         requires:
-          - build-and-push-docker
+          - validate-skopeo
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-k8s-io-kubernetes
@@ -474,7 +444,7 @@ build_and_retag: &build_and_retag
             only:
               - main
         requires:
-          - build-and-push-docker
+          - validate-skopeo
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-projects-registry-vmware-com
@@ -484,39 +454,7 @@ build_and_retag: &build_and_retag
             only:
               - main
         requires:
-          - build-and-push-docker
-    - retag-registry:
-        context: architect
-        name: retag-quay-<<matrix.images_file>>
-        username: ${QUAY_USERNAME}
-        password: ${QUAY_PASSWORD}
-        registry: "quay.io"
-        requires:
-          - filter-skopeo-docker-io
-          - filter-skopeo-eu-gcr-io
-          - filter-skopeo-gcr-io
-          - filter-skopeo-ghcr-io
-          - filter-skopeo-mcr-microsoft-com
-          - filter-skopeo-nvcr-io
-          - filter-skopeo-public-ecr-aws
-          - filter-skopeo-quay-io
-          - filter-skopeo-k8s-io
-          - filter-skopeo-k8s-io-kubernetes
-          - filter-skopeo-projects-registry-vmware-com
-        matrix:
-          parameters:
-            images_file:
-              - images/skopeo-docker-io.yaml.filtered
-              - images/skopeo-eu-gcr-io.yaml.filtered
-              - images/skopeo-gcr-io.yaml.filtered
-              - images/skopeo-ghcr-io.yaml.filtered
-              - images/skopeo-mcr-microsoft-com.yaml.filtered
-              - images/skopeo-nvcr-io.yaml.filtered
-              - images/skopeo-public-ecr-aws.yaml.filtered
-              - images/skopeo-quay-io.yaml.filtered
-              - images/skopeo-registry-k8s-io.yaml.filtered
-              - images/skopeo-registry-k8s-io-kubernetes.yaml.filtered
-              - images/skopeo-projects-registry-vmware-com.yaml.filtered
+          - validate-skopeo
     - retag-registry:
         context: architect
         name: retag-aliyun-<<matrix.images_file>>
