@@ -17,6 +17,8 @@ gcr.io:
       - "latest"
     k8s-staging-sig-storage/nfsplugin:
       - "canary"
+    distroless/base-debian12:
+      - "nonroot"
   images-by-semver:
     cadvisor/cadvisor: ">= v0.44.0"
     k8s-staging-cloud-provider-gcp/gcp-compute-persistent-disk-csi-driver: "1.8.0"
