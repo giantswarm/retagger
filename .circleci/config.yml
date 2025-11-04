@@ -307,9 +307,9 @@ trivy_databases: &trivy_databases
     - build-and-push-docker:
         context: architect
         name: build-and-push-docker
-        username: ${QUAY_USERNAME}
-        password: ${QUAY_PASSWORD}
-        registry: "quay.io"
+        username: ${ACR_GSOCI_RETAGGER_USERNAME}
+        password: ${ACR_GSOCI_RETAGGER_PASSWORD}
+        registry: "gsoci.azurecr.io"
         tag: ${CIRCLE_TAG:-$CIRCLE_SHA1}
     - retag-image-name:
         context: architect
@@ -369,9 +369,9 @@ build_and_retag: &build_and_retag
     - build-and-push-docker:
         context: architect
         name: build-and-push-docker
-        username: ${QUAY_USERNAME}
-        password: ${QUAY_PASSWORD}
-        registry: "quay.io"
+        username: ${ACR_GSOCI_RETAGGER_USERNAME}
+        password: ${ACR_GSOCI_RETAGGER_PASSWORD}
+        registry: "gsoci.azurecr.io"
         tag: ${CIRCLE_TAG:-$CIRCLE_SHA1}
         requires:
           - validate-skopeo
