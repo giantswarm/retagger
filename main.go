@@ -79,7 +79,7 @@ type RenamedImage struct {
 	AddTagSuffix string `yaml:"add_tag_suffix,omitempty"`
 	// OverrideRepoName allows user to rewrite the name of the image entirely.
 	// Example: "alpinegit", so "alpine" would become
-	// "quay.io/giantswarm/alpinegit"
+	// "gsoci.azurecr.io/giantswarm/alpinegit"
 	OverrideRepoName string `yaml:"override_repo_name,omitempty"`
 	// StripSemverPrefix removes the initial 'v' in 'v1.2.3' if enabled. Works
 	// only when Semver is defined.
@@ -105,8 +105,7 @@ func (img *RenamedImage) Validate() error {
 	return nil
 }
 
-// RetagUsingSHA pulls an image matching the SHA, retags, and pushes it to
-// Quay, AzureCR and Aliyun.
+// RetagUsingSHA pulls an image matching the SHA, retags, and pushes it to AzureCR and Aliyun.
 // Any optional parameters configured will be applied as well, e.g. tag suffix.
 // The pushed image will be tagged with the value of image.TagOrPattern.
 func (img *RenamedImage) RetagUsingSHA() error {
@@ -333,7 +332,7 @@ type skopeoFileRegistry struct {
 }
 
 // listTags gets a list of available tags for a given registry+image, for
-// example 'quay.io/giantswarm/curl'.
+// example 'gsoci.azurecr.io/giantswarm/curl'.
 func listTags(image string) ([]string, error) {
 	var tags []string
 	var err error
@@ -509,7 +508,7 @@ func commandRun() {
 //
 // The function reads a skopeo configuration file and runs `skopeo sync --dry-run`
 // with it. The output is processed for image tags to be synced. Each tag checked
-// against Quay, AzureCR, and Aliyun. If a tag is missing in any of the registries,
+// against AzureCR and Aliyun. If a tag is missing in any of the registries,
 // it is added to the list of tags to be synced. The list is stored in a file next
 // to the input file, with the name suffixed with `.filtered`.
 func commandFilter(filePath string) {
