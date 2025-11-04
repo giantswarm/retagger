@@ -483,38 +483,6 @@ build_and_retag: &build_and_retag
           - build-and-push-docker
     - retag-registry:
         context: architect
-        name: retag-quay-<<matrix.images_file>>
-        username: ${QUAY_USERNAME}
-        password: ${QUAY_PASSWORD}
-        registry: "quay.io"
-        requires:
-          - filter-skopeo-docker-io
-          - filter-skopeo-eu-gcr-io
-          - filter-skopeo-gcr-io
-          - filter-skopeo-ghcr-io
-          - filter-skopeo-mcr-microsoft-com
-          - filter-skopeo-nvcr-io
-          - filter-skopeo-public-ecr-aws
-          - filter-skopeo-quay-io
-          - filter-skopeo-k8s-io
-          - filter-skopeo-k8s-io-kubernetes
-          - filter-skopeo-projects-registry-vmware-com
-        matrix:
-          parameters:
-            images_file:
-              - images/skopeo-docker-io.yaml.filtered
-              - images/skopeo-eu-gcr-io.yaml.filtered
-              - images/skopeo-gcr-io.yaml.filtered
-              - images/skopeo-ghcr-io.yaml.filtered
-              - images/skopeo-mcr-microsoft-com.yaml.filtered
-              - images/skopeo-nvcr-io.yaml.filtered
-              - images/skopeo-public-ecr-aws.yaml.filtered
-              - images/skopeo-quay-io.yaml.filtered
-              - images/skopeo-registry-k8s-io.yaml.filtered
-              - images/skopeo-registry-k8s-io-kubernetes.yaml.filtered
-              - images/skopeo-projects-registry-vmware-com.yaml.filtered
-    - retag-registry:
-        context: architect
         name: retag-aliyun-<<matrix.images_file>>
         username: ${ALIYUN_USERNAME}
         password: ${ALIYUN_PASSWORD}
