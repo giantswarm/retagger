@@ -4,6 +4,7 @@ public.ecr.aws:
     eks/aws-load-balancer-controller: ">= 2.6.1"
     gravitational/teleport: ">= 14.1.1"
     gravitational/teleport-distroless: ">= 14"
+    gravitational/teleport-distroless-debug: ">= 18.0.0"
     gravitational/tbot-distroless: ">= 14"
     aws-ec2/aws-node-termination-handler: ">= v1.17.2"
     ebs-csi-driver/volume-modifier-for-k8s: ">= 0.4"
