@@ -24,12 +24,12 @@ docker.io:
       - "1.13.1"
     docker:
       - "18.09.1"
-    edgedb/edgedb:
-      - "5.7"
     elasticsearch:
       - "6.8.13"
     fluxcd/flux-cli:
       - "v0.27.0"
+    geldata/gel:
+      - "7.0"
     golangci/golangci-lint:
       - "v1.23.8"
     instrumenta/conftest:
