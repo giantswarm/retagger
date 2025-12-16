@@ -22,14 +22,15 @@ docker.io:
       - "1.12.3"
       - "1.13.0"
       - "1.13.1"
+      - "1.13.2"
     docker:
       - "18.09.1"
-    edgedb/edgedb:
-      - "5.7"
     elasticsearch:
       - "6.8.13"
     fluxcd/flux-cli:
       - "v0.27.0"
+    geldata/gel:
+      - "7.0"
     golangci/golangci-lint:
       - "v1.23.8"
     instrumenta/conftest:
@@ -137,6 +138,7 @@ docker.io:
     grafana/promtail: ">= v2.5.0"
     grafana/pyroscope: ">= 1.2.1"
     grafana/tempo: ">= v2.8.0"
+    grafana/tempo-vulture: ">= v2.8.0"
     jimmidyson/configmap-reload: ">= v0.8.0"
     jdkato/vale: ">= v3.4.0"
     k8scloudprovider/cinder-csi-plugin: ">= 1.20.0"
@@ -155,6 +157,8 @@ docker.io:
     # Used in akv2k8s
     spvest/azure-keyvault-controller: ">= 1.3.0"
     spvest/azure-keyvault-webhook: ">= 1.3.0"
+    # Valkey is an open-source Redis alternative used by valkey-app
+    valkey/valkey: ">= 8.0.0"
     vault: ">= v1.5.4"
     velero/velero: ">= v1.4.3"
     zricethezav/gitleaks: ">=v7.4.0"
@@ -165,4 +169,4 @@ docker.io:
     nginxinc/nginx-unprivileged: ^1\.2[3-9]-alpine$
     # grafana security images for grafana 10+ - tag looks like `12.0.0-security-01`
     grafana/grafana: ^[1-9][0-9]\.[0-9]+\.[0-9]+-security-[0-9]+$
-    grafana/tempo-vulture: ^v[2-9].[0-9].[0-9](-rc\.[0.9])*$
+    envoyproxy/envoy: ^distroless-v1\.[0-9]+\.[0-9]+$
