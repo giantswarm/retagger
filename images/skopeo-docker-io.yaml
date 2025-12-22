@@ -116,6 +116,7 @@ docker.io:
     aquasec/kube-bench: ">= 0.2"
     bash: ">= 5"
     busybox: ">= 1.31.0"
+    clastix/cluster-api-control-plane-provider-kamaji: ">= v0.16.0"
     crossplane/crossplane: ">= v1.9.1"
     curlimages/curl: ">= 7.67.0"
     ealen/echo-server: ">=0.5.0"
