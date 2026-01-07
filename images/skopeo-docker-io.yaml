@@ -142,6 +142,7 @@ docker.io:
     grafana/tempo-vulture: ">= v2.8.0"
     jimmidyson/configmap-reload: ">= v0.8.0"
     jdkato/vale: ">= v3.4.0"
+    clastix/kamaji: ">= 25.12.3"
     k8scloudprovider/cinder-csi-plugin: ">= 1.20.0"
     k8scloudprovider/octavia-ingress-controller: ">= 1.20.0"
     k8scloudprovider/openstack-cloud-controller-manager: ">= 1.20.0"
@@ -166,6 +167,8 @@ docker.io:
     zricethezav/gitleaks: ">=v7.4.0"
   images-by-tag-regex:
     alpine: ^3\.[123][0-9]\.[0-9]+$
+    # tags look like `edge-26.1.2`, we match anything above 26.0.0.
+    clastix/kamaji: ^edge-((26\.[0-9]+\.[0-9]+)|(2[7-9]\.[0-9]+\.[0-9]+)|([3-9][0-9]+\.[0-9]+\.[0-9]+))$
     memcached: ^1\.[6-9]\.[0-9]+-alpine$
     nginx: ^1\.2[3-9]-alpine$
     nginxinc/nginx-unprivileged: ^1\.2[3-9]-alpine$
