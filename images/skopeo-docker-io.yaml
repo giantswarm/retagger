@@ -142,7 +142,6 @@ docker.io:
     grafana/tempo-vulture: ">= v2.8.0"
     jimmidyson/configmap-reload: ">= v0.8.0"
     jdkato/vale: ">= v3.4.0"
-    clastix/kamaji: ">= 25.12.3"
     k8scloudprovider/cinder-csi-plugin: ">= 1.20.0"
     k8scloudprovider/octavia-ingress-controller: ">= 1.20.0"
     k8scloudprovider/openstack-cloud-controller-manager: ">= 1.20.0"
