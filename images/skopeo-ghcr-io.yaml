@@ -13,6 +13,7 @@ ghcr.io:
     aquasecurity/trivy-checks: ">= 0.10.0"
     aquasecurity/trivy-db: ">= 2"
     aquasecurity/trivy-java-db: ">= 1"
+    cloudflare/cfssl: ">= 1.6.5"
     cloudnative-pg/cloudnative-pg: ">= 1.22.2"
     controlplaneio-fluxcd/flux-operator: ">= 0.26.0"
     dexidp/dex: ">=v2.40.0"
