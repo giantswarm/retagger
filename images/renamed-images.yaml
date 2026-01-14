@@ -40,6 +40,9 @@
 - image: docker.io/envoyproxy/ai-gateway-extproc
   override_repo_name: envoyproxy-ai-gateway-extproc
   semver: ">= v0.4.0"
+- image: docker.io/envoyproxy/ai-gateway-controller
+  override_repo_name: envoyproxy-ai-gateway-controller
+  semver: ">= v0.4.0"
 - image: gcr.io/cloud-provider-vsphere/csi/release/driver
   semver: ">= v2.7.1"
   override_repo_name: csi-vsphere-driver
