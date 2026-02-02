@@ -1,0 +1,222 @@
+- image: xpkg.upbound.io/upbound/provider-family-gcp
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-family-gcp
+- image: xpkg.upbound.io/upbound/provider-gcp-binaryauthorization
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-binaryauthorization
+- image: xpkg.upbound.io/upbound/provider-gcp-cloudfunctions
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-cloudfunctions
+- image: xpkg.upbound.io/upbound/provider-gcp-sql
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-sql
+- image: xpkg.upbound.io/upbound/provider-gcp-cloudtasks
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-cloudtasks
+- image: xpkg.upbound.io/upbound/provider-gcp-appengine
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-appengine
+- image: xpkg.upbound.io/upbound/provider-gcp-apigee
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-apigee
+- image: xpkg.upbound.io/upbound/provider-gcp-datastore
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-datastore
+- image: xpkg.upbound.io/upbound/provider-gcp-certificatemanager
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-certificatemanager
+- image: xpkg.upbound.io/upbound/provider-gcp-cloudrun
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-cloudrun
+- image: xpkg.upbound.io/upbound/provider-gcp-mlengine
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-mlengine
+- image: xpkg.upbound.io/upbound/provider-gcp-cloudscheduler
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-cloudscheduler
+- image: xpkg.upbound.io/upbound/provider-gcp-storage
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-storage
+- image: xpkg.upbound.io/upbound/provider-gcp-cloudfunctions2
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-cloudfunctions2
+- image: xpkg.upbound.io/upbound/provider-gcp-artifact
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-artifact
+- image: xpkg.upbound.io/upbound/provider-gcp-cloud
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-cloud
+- image: xpkg.upbound.io/upbound/provider-gcp-healthcare
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-healthcare
+- image: xpkg.upbound.io/upbound/provider-gcp-pubsub
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-pubsub
+- image: xpkg.upbound.io/upbound/provider-gcp-beyondcorp
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-beyondcorp
+- image: xpkg.upbound.io/upbound/provider-gcp-filestore
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-filestore
+- image: xpkg.upbound.io/upbound/provider-gcp-documentai
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-documentai
+- image: xpkg.upbound.io/upbound/provider-gcp-kms
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-kms
+- image: xpkg.upbound.io/upbound/provider-gcp-memcache
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-memcache
+- image: xpkg.upbound.io/upbound/provider-gcp-vertexai
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-vertexai
+- image: xpkg.upbound.io/upbound/provider-gcp-alloydb
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-alloydb
+- image: xpkg.upbound.io/upbound/provider-gcp-dataflow
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-dataflow
+- image: xpkg.upbound.io/upbound/provider-gcp-datacatalog
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-datacatalog
+- image: xpkg.upbound.io/upbound/provider-gcp-essentialcontacts
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-essentialcontacts
+- image: xpkg.upbound.io/upbound/provider-gcp-cloudbuild
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-cloudbuild
+- image: xpkg.upbound.io/upbound/provider-gcp-secretmanager
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-secretmanager
+- image: xpkg.upbound.io/upbound/provider-gcp-containerazure
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-containerazure
+- image: xpkg.upbound.io/upbound/provider-gcp-datafusion
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-datafusion
+- image: xpkg.upbound.io/upbound/provider-gcp-redis
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-redis
+- image: xpkg.upbound.io/upbound/provider-gcp-cloudplatform
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-cloudplatform
+- image: xpkg.upbound.io/upbound/provider-gcp-sourcerepo
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-sourcerepo
+- image: xpkg.upbound.io/upbound/provider-gcp-container
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-container
+- image: xpkg.upbound.io/upbound/provider-gcp-composer
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-composer
+- image: xpkg.upbound.io/upbound/provider-gcp-monitoring
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-monitoring
+- image: xpkg.upbound.io/upbound/provider-gcp-activedirectory
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-activedirectory
+- image: xpkg.upbound.io/upbound/provider-gcp-logging
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-logging
+- image: xpkg.upbound.io/upbound/provider-gcp-identityplatform
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-identityplatform
+- image: xpkg.upbound.io/upbound/provider-gcp-iap
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-iap
+- image: xpkg.upbound.io/upbound/provider-gcp-oslogin
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-oslogin
+- image: xpkg.upbound.io/upbound/provider-gcp-firebaserules
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-firebaserules
+- image: xpkg.upbound.io/upbound/provider-gcp-vpcaccess
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-vpcaccess
+- image: xpkg.upbound.io/upbound/provider-gcp-networkmanagement
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-networkmanagement
+- image: xpkg.upbound.io/upbound/provider-gcp-bigtable
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-bigtable
+- image: xpkg.upbound.io/upbound/provider-gcp-osconfig
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-osconfig
+- image: xpkg.upbound.io/upbound/provider-gcp-dns
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-dns
+- image: xpkg.upbound.io/upbound/provider-gcp-containeraws
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-containeraws
+- image: xpkg.upbound.io/upbound/provider-gcp-dialogflowcx
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-dialogflowcx
+- image: xpkg.upbound.io/upbound/provider-gcp-containeranalysis
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-containeranalysis
+- image: xpkg.upbound.io/upbound/provider-gcp-dataproc
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-dataproc
+- image: xpkg.upbound.io/upbound/provider-gcp-privateca
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-privateca
+- image: xpkg.upbound.io/upbound/provider-gcp-tags
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-tags
+- image: xpkg.upbound.io/upbound/provider-gcp-workflows
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-workflows
+- image: xpkg.upbound.io/upbound/provider-gcp-datalossprevention
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-datalossprevention
+- image: xpkg.upbound.io/upbound/provider-gcp-bigquery
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-bigquery
+- image: xpkg.upbound.io/upbound/provider-gcp-servicenetworking
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-servicenetworking
+- image: xpkg.upbound.io/upbound/provider-gcp-gkehub
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-gkehub
+- image: xpkg.upbound.io/upbound/provider-gcp-datastream
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-datastream
+- image: xpkg.upbound.io/upbound/provider-gcp-spanner
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-spanner
+- image: xpkg.upbound.io/upbound/provider-gcp-orgpolicy
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-orgpolicy
+- image: xpkg.upbound.io/upbound/provider-gcp-dataplex
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-dataplex
+- image: xpkg.upbound.io/upbound/provider-gcp-iam
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-iam
+- image: xpkg.upbound.io/upbound/provider-gcp-eventarc
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-eventarc
+- image: xpkg.upbound.io/upbound/provider-gcp-gke
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-gke
+- image: xpkg.upbound.io/upbound/provider-gcp-containerattached
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-containerattached
+- image: xpkg.upbound.io/upbound/provider-gcp-tpu
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-tpu
+- image: xpkg.upbound.io/upbound/provider-gcp-networkconnectivity
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-networkconnectivity
+- image: xpkg.upbound.io/upbound/provider-gcp-accesscontextmanager
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-accesscontextmanager
+- image: xpkg.upbound.io/upbound/provider-gcp-compute
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-compute
+- image: xpkg.upbound.io/upbound/provider-gcp-notebooks
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-notebooks
+- image: xpkg.upbound.io/upbound/provider-gcp-storagetransfer
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-gcp-storagetransfer

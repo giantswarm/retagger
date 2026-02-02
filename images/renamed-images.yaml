@@ -14,10 +14,6 @@
   override_repo_name: bitnami-memcached-exporter
   tag_or_pattern: "0.13.0"
   sha: ed4cb413c2074a2ac62005d0da61d5a6872382f318c206506b3f200fa8900442
-- image: bitnami/redis
-  override_repo_name: bitnami-redis
-  tag_or_pattern: "4.0.9"
-  sha: 1b56b1c2c5d737bd8029f2e2e80852c0c1ef342e36ca0940dd313d4d8a786311
 - image: bitnami/postgresql
   override_repo_name: postgresql-bitnami
   tag_or_pattern: "13.6.0-debian-10-r52"
@@ -32,9 +28,6 @@
 - image: caicloud/event-exporter
   override_repo_name: caicloud-event-exporter
   tag_or_pattern: "v1.0.0"
-- image: docker.io/circleci/runner-agent
-  override_repo_name: "circleci-runner-agent"
-  tag_or_pattern: "kubernetes-3$"
 - image: cloudflare/cloudflared
   semver: ">= 2023.8.2"
   filter: "^(.+)-amd64$"
@@ -50,6 +43,12 @@
 - image: docker.io/envoyproxy/ratelimit
   override_repo_name: envoyproxy-ratelimit
   tag_or_pattern: "3fb70258"
+- image: docker.io/envoyproxy/ai-gateway-extproc
+  override_repo_name: envoyproxy-ai-gateway-extproc
+  semver: ">= v0.4.0"
+- image: docker.io/envoyproxy/ai-gateway-controller
+  override_repo_name: envoyproxy-ai-gateway-controller
+  semver: ">= v0.4.0"
 - image: gcr.io/cloud-provider-vsphere/csi/release/driver
   semver: ">= v2.7.1"
   override_repo_name: csi-vsphere-driver
@@ -57,11 +56,20 @@
   semver: ">= v2.7.1"
   override_repo_name: csi-vsphere-syncer
 - image: golang
-  semver: ">= 1.21.6"
-  filter: "(.+)-alpine3.19"
+  semver: ">= 1.23.0"
+  filter: "(.+)-alpine3.2[0-9]"
 - image: ghcr.io/cloudnative-pg/postgresql
   override_repo_name: postgresql-cnpg
   semver: ">= 15.6"
+- image: ghcr.io/cloudnative-pg/plugin-barman-cloud
+  override_repo_name: cnpg-plugin-barman-cloud
+  semver: ">= v0.7.0"
+- image: ghcr.io/cloudnative-pg/plugin-barman-cloud-sidecar
+  override_repo_name: cnpg-plugin-barman-cloud-sidecar
+  semver: ">= v0.7.0"
+- image: ghcr.io/kyverno/policy-reporter/kyverno-plugin
+  override_repo_name: kyverno-plugin
+  semver: ">= 0.4.0"
 - image: ghcr.io/linkerd/cni-plugin
   override_repo_name: linkerd2-cni-plugin
   semver: ">= v1.1.1"
@@ -182,6 +190,36 @@
 - image: quay.io/jiralert/jiralert-linux-amd64
   override_repo_name: jiralert
   semver: ">= 1.0"
+- image: quay.io/kubescape/kubevuln
+  semver: ">= v0.3.80"
+  override_repo_name: kubescape-kubevuln
+- image: quay.io/kubescape/node-agent
+  semver: ">= v0.2.345"
+  override_repo_name: kubescape-node-agent
+- image: quay.io/kubescape/operator
+  semver: ">= v0.2.91"
+  override_repo_name: kubescape-operator
+- image: quay.io/kubescape/storage
+  semver: ">= v0.0.185"
+  override_repo_name: kubescape-storage
+- image: quay.io/kubescape/host-scanner
+  semver: ">= v1.0.73"
+  override_repo_name: kubescape-host-scanner
+- image: quay.io/kubescape/klamav
+  tag_or_pattern: "1.3.1-34_alpha"
+  override_repo_name: kubescape-klamav
+- image: quay.io/kubescape/synchronizer
+  semver: ">= v0.0.110"
+  override_repo_name: kubescape-synchronizer
+- image: quay.io/kubescape/http-request
+  semver: ">= v0.2.11"
+  override_repo_name: kubescape-http-request
+- image: quay.io/kubescape/opentelemetry-collector
+  semver: ">= 0.108.0"
+  override_repo_name: kubescape-opentelemetry-collector
+- image: quay.io/kubescape/prometheus-exporter
+  semver: ">= v0.2.4"
+  override_repo_name: kubescape-prometheus-exporter
 - image: registry.k8s.io/etcd
   semver: ">= v3.5.4-0"
   add_tag_suffix: k8s
@@ -310,6 +348,10 @@
   sha: c84d11b1f7bd14ebbf49918a7f0dc01b31c0c6e757e0129520ea93453096315c
   override_repo_name: ingress-nginx-controller
 - image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.10.6"
+  sha: b6fbd102255edb3ba8e5421feebe14fd3e94cf53d199af9e40687f536152189c
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
   tag_or_pattern: "v1.11.0"
   sha: a886e56d532d1388c77c8340261149d974370edca1093af4c97a96fb1467cb39
   override_repo_name: ingress-nginx-controller
@@ -324,6 +366,110 @@
 - image: registry.k8s.io/ingress-nginx/controller
   tag_or_pattern: "v1.11.3"
   sha: d56f135b6462cfc476447cfe564b83a45e8bb7da2774963b00d12161112270b7
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.11.4"
+  sha: 981a97d78bee3109c0b149946c07989f8f1478a9265031d2d23dea839ba05b52
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.11.5"
+  sha: a1cbad75b0a7098bf9325132794dddf9eef917e8a7fe246749a4cea7ff6f01eb
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.11.6"
+  sha: 4f04fad99f00e604ab488cf0945b4eaa2a93f603f97d2a45fc610ff0f3cad0f9
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.11.7"
+  sha: 016a25cf89bf7f930869ccd7cb3dd4acbe106cd4da1419804951ef9c8636f053
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.11.8"
+  sha: 695d79381ee6af00c7f5c9fd434f50851d7d32838ad5b2c507e416cf2084fc79
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.12.0"
+  sha: e6b8de175acda6ca913891f0f727bca4527e797d52688cbe9fec9040d6f6b6fa
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.12.1"
+  sha: d2fbc4ec70d8aa2050dd91a91506e998765e86c96f32cffb56c503c9c34eed5b
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.12.2"
+  sha: 03497ee984628e95eca9b2279e3f3a3c1685dd48635479e627d219f00c8eefa9
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.12.3"
+  sha: ac444cd9515af325ba577b596fe4f27a34be1aa330538e8b317ad9d6c8fb94ee
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.12.4"
+  sha: 05890cb25d37aa5cfe086614104f798f55e1eeec8dda26d9fd6f6acf0e1554a0
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.12.5"
+  sha: f4a204a39ce99e7d297c54b02e64e421d872675c5ee29ab1b6edb62d4d69be5c
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.12.6"
+  sha: c371fbf42b4f23584ce879d99303463131f4f31612f0875482b983354eeca7e6
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.12.7"
+  sha: 6ca5f62d18ac6b2e57484ecde310dccd3079b545acecff01c4c71eb5fb222438
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.12.8"
+  sha: 8f8343060688fb2a85752b7345a988d0d3c890d774e18e80b9e8730756e5b530
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.13.0"
+  sha: dc75a7baec7a3b827a5d7ab0acd10ab507904c7dad692365b3e3b596eca1afd2
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.13.1"
+  sha: 37e489b22ac77576576e52e474941cd7754238438847c1ee795ad6d59c02b12a
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.13.2"
+  sha: 1f7eaeb01933e719c8a9f4acd8181e555e582330c7d50f24484fb64d2ba9b2ef
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.13.3"
+  sha: 1b044f6dcac3afbb59e05d98463f1dec6f3d3fb99940bc12ca5d80270358e3bd
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.13.4"
+  sha: 4042ae3c512c5d7bcf9682b0fdff96cd7b46a23dcbe15a762349094cd8087be7
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.13.5"
+  sha: 5b346855be6752fa2a40f91983fa35a0c004b41493f36be6068a3d4350e69db8
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.13.6"
+  sha: 4b85724d716a545f38338cb99f0e07c83d16780adb0911e0e4d6218c7e5944a8
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.13.7"
+  sha: 13db2f8aca4bb71ae7f727288620c4569b01bab4911b01fa3917995ff7755de8
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.14.0"
+  sha: e4127065d0317bd11dc64c4dd38dcf7fb1c3d72e468110b4086e636dbaac943d
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.14.1"
+  sha: f95a79b85fb93ac3de752c71a5c27d5ceae10a18b61904dec224c1c6a4581e47
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.14.2"
+  sha: fb3e5c0bdff6a498dd5192b11a09ace0739baa9fe6ba519bf5b22425871ce490
+  override_repo_name: ingress-nginx-controller
+- image: registry.k8s.io/ingress-nginx/controller
+  tag_or_pattern: "v1.14.3"
+  sha: 82917be97c0939f6ada1717bb39aa7e66c229d6cfb10dcfc8f1bd42f9efe0f81
   override_repo_name: ingress-nginx-controller
 - image: registry.k8s.io/ingress-nginx/controller-chroot
   tag_or_pattern: "v1.3.0"
@@ -446,6 +592,10 @@
   sha: 030a43bdd5f0212a7e135cc4da76b15a6706ef65a6824eb4cc401f87a81c2987
   override_repo_name: ingress-nginx-controller-chroot
 - image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.10.6"
+  sha: 44ceedafc0e04a75521b5d472c1b6b5cc08afb8038b5bbfd79c21d066ccf300e
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
   tag_or_pattern: "v1.11.0"
   sha: f16dfed1c94d216b65e5dcb7508ab46148641a99649c5a700749db6f01a7039e
   override_repo_name: ingress-nginx-controller-chroot
@@ -460,6 +610,110 @@
 - image: registry.k8s.io/ingress-nginx/controller-chroot
   tag_or_pattern: "v1.11.3"
   sha: 22701f0fc0f2dd209ef782f4e281bfe2d8cccd50ededa00aec88e0cdbe7edd14
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.11.4"
+  sha: f29d0f9e7a9ef4947eda59ed0c09ec13380b13639d1518cf1ab8ec09c3e22ef8
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.11.5"
+  sha: ec9df3eb6b06563a079ee46045da94cbf750f7dbb16fdbcb9e3265b551ed72ad
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.11.6"
+  sha: 596f8b9ae4773d3b00dfd65855561419c7e70ecb23569a7a2998b47e160b4f85
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.11.7"
+  sha: 62d251b0e402fd4b3b06196c9a8c5639f9eba06999499851d1b449fe4be562b1
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.11.8"
+  sha: aa8719c133a0b491586341aa19d3ec9afe61bb6210cb295e752df1daa31f2df1
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.12.0"
+  sha: 87c88e1c38a6c8d4483c8f70b69e2cca49853bb3ec3124b9b1be648edf139af3
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.12.1"
+  sha: 90155c86548e0bb95b3abf1971cd687d8f5d43f340cfca0ad3484e2b8351096e
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.12.2"
+  sha: a697e2bfa419768315250d079ccbbca45f6099c60057769702b912d20897a574
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.12.3"
+  sha: d830fba93e9e0f5ef1462f5fe8a7cd7b167178b79e6c10c041c7da19f1ac66ab
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.12.4"
+  sha: 0873534e85a765ef4958ba4fbc5c970a3644dca0f5eee7caff93d830b9a8bb8b
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.12.5"
+  sha: 5bee417e81f5478b166e35b66b62824275fba150cb737adf665ba05c61ff4632
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.12.6"
+  sha: 7ff9cdb081b18f9431b84d4c3ccd3db9d921ed5f5b7682a45f6a351bfc4ceed4
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.12.7"
+  sha: 1d20779a1f805fa2820a2631929fb53da59cb9ce023395fae681a60b17ed771f
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.12.8"
+  sha: 07c743429b823dfba7c2e5d399351ef0e43816abab48343ca7c01d00fd6517e3
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.13.0"
+  sha: af6264394cfa61d21f644d87372823064804e64de737b0747e86c86348b29c9f
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.13.1"
+  sha: cace9bc8ad1914e817e5b461d691a00caab652347002ba811077189b85009d7f
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.13.2"
+  sha: 2beb2139c53d6bcb9c8b11d68b412a6a1aa1de3a7e6040695848b0ce997b2be8
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.13.3"
+  sha: 27de15aea4ec7639f7cec6ae96bff11ce57bb1171040351a0b0eedf66655d0dd
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.13.4"
+  sha: 49fc51d0767efb4d5c871bcd9bd70684fdcbdd34f9e4164bdf9c9d890db19791
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.13.5"
+  sha: eb6665ca10761ac2b5d1b94959b5cf77e2f6d2bb54178fca16c194933b44c770
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.13.6"
+  sha: 819eed119e9c4c735ae1762679e439ada1e3ef1b47b6cdc1b22e5f36578e476b
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.13.7"
+  sha: ecc934a4653d3b8c17100882b58cc16c59a697930c3598acda02227edfc41c34
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.14.0"
+  sha: d0158a50630981a945325c15a638e52c2d0691bc528caf5c04d2cf2051c5665f
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.14.1"
+  sha: 29840e06768457b82ef0a9f70bdde03b3b9c42e84a9d78dd6f179326848c1a88
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.14.2"
+  sha: c46f14a73fb06f2ac2d85d2e576a39563c874fa182076c1ced8b44e24247a80b
+  override_repo_name: ingress-nginx-controller-chroot
+- image: registry.k8s.io/ingress-nginx/controller-chroot
+  tag_or_pattern: "v1.14.3"
+  sha: ffdab64d0e0556f810d82d618a0fa97c4fc8dc2bc5717c51bfe83b5d4252c73e
   override_repo_name: ingress-nginx-controller-chroot
 - image: registry.k8s.io/ingress-nginx/opentelemetry
   tag_or_pattern: "v20230721-3e2062ee5"
@@ -509,6 +763,61 @@
   tag_or_pattern: "v1.4.4"
   sha: a9f03b34a3cbfbb26d103a14046ab2c5130a80c3d69d526ff8063d2b37b9fd3f
   override_repo_name: ingress-nginx-kube-webhook-certgen
+- image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
+  tag_or_pattern: "v1.5.0"
+  sha: aaafd456bda110628b2d4ca6296f38731a3aaf0bf7581efae824a41c770a8fc4
+  override_repo_name: ingress-nginx-kube-webhook-certgen
+- image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
+  tag_or_pattern: "v1.5.1"
+  sha: 0de05718b59dc33b57ddfb4d8ad5f637cefd13eafdec0e1579d782b3483c27c3
+  override_repo_name: ingress-nginx-kube-webhook-certgen
+- image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
+  tag_or_pattern: "v1.5.2"
+  sha: e8825994b7a2c7497375a9b945f386506ca6a3eda80b89b74ef2db743f66a5ea
+  override_repo_name: ingress-nginx-kube-webhook-certgen
+- image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
+  tag_or_pattern: "v1.5.3"
+  sha: 2cf4ebfa82a37c357455458f6dfc334aea1392d508270b2517795a9933a02524
+  override_repo_name: ingress-nginx-kube-webhook-certgen
+- image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
+  tag_or_pattern: "v1.5.4"
+  sha: 7a38cf0f8480775baaee71ab519c7465fd1dfeac66c421f28f087786e631456e
+  override_repo_name: ingress-nginx-kube-webhook-certgen
+- image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
+  tag_or_pattern: "v1.6.0"
+  sha: c9f76a75fd00e975416ea1b73300efd413116de0de8570346ed90766c5b5cefb
+  override_repo_name: ingress-nginx-kube-webhook-certgen
+- image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
+  tag_or_pattern: "v1.6.1"
+  sha: e63459ec5965840af34d6d6a2f4c017eb6e212db83e054908d0bd148e1f35489
+  override_repo_name: ingress-nginx-kube-webhook-certgen
+- image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
+  tag_or_pattern: "v1.6.2"
+  sha: 050a34002d5bb4966849c880c56c91f5320372564245733b33d4b3461b4dbd24
+  override_repo_name: ingress-nginx-kube-webhook-certgen
+- image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
+  tag_or_pattern: "v1.6.3"
+  sha: 3d671cf20a35cd94efc5dcd484970779eb21e7938c98fbc3673693b8a117cf39
+  override_repo_name: ingress-nginx-kube-webhook-certgen
+- image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
+  tag_or_pattern: "v1.6.4"
+  sha: bcfc926ed57831edf102d62c5c0e259572591df4796ef1420b87f9cf6092497f
+  override_repo_name: ingress-nginx-kube-webhook-certgen
+- image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
+  tag_or_pattern: "v1.6.5"
+  sha: 03a00eb0e255e8a25fa49926c24cde0f7e12e8d072c445cdf5136ec78b546285
+  override_repo_name: ingress-nginx-kube-webhook-certgen
+- image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
+  tag_or_pattern: "v1.6.6"
+  sha: b28e0688be7d1e15fe385053bd4c6b631bc7708c9220632de1b95867e5e7da11
+  override_repo_name: ingress-nginx-kube-webhook-certgen
+- image: registry.k8s.io/ingress-nginx/kube-webhook-certgen
+  tag_or_pattern: "v1.6.7"
+  sha: 7c74a715af2c94cb734785b4d3ea1357b4f02b88e1e123c622a9cb68b62f669c
+  override_repo_name: ingress-nginx-kube-webhook-certgen
+- image: jkroepke/kube-webhook-certgen
+  override_repo_name: jkroepke-kube-webhook-certgen
+  semver: ">= 1.7.3"
 - image: registry.k8s.io/defaultbackend-amd64
   tag_or_pattern: "1.5"
   override_repo_name: defaultbackend
@@ -525,6 +834,9 @@
 - image: quay.io/skopeo/stable
   override_repo_name: skopeo
   semver: ">= v1.15.0"
+- image: us-central1-docker.pkg.dev/k8s-staging-images/kueue/kueue
+  override_repo_name: kueue
+  semver: ">= v0.14.1"
 - image: xpkg.upbound.io/crossplane-contrib/provider-aws
   override_repo_name: crossplane-provider-aws
   semver: ">= v0.33.0"
@@ -544,3 +856,24 @@
   override_repo_name: karpenter-controller
   semver: ">= 0.29.0"
   filter: '^(\d+\.\d+\.\d+)$'
+- image: xpkg.upbound.io/crossplane-contrib/provider-kubernetes
+  semver: ">= 0.9.0"
+  override_repo_name: crossplane-contrib-provider-kubernetes
+- image: xpkg.upbound.io/crossplane-contrib/provider-sql
+  semver: ">= 0.0.1"
+  override_repo_name: crossplane-contrib-provider-sql
+- image: xpkg.upbound.io/crossplane-contrib/function-auto-ready
+  semver: ">= 0.2.0"
+  override_repo_name: crossplane-contrib-function-auto-ready
+- image: xpkg.upbound.io/crossplane-contrib/function-kcl
+  semver: ">= v0.9.0"
+  override_repo_name: crossplane-contrib-function-kcl
+- image: xpkg.upbound.io/crossplane-contrib/function-patch-and-transform
+  semver: ">= 0.6.0"
+  override_repo_name: crossplane-contrib-function-patch-and-transform
+- image: xpkg.upbound.io/crossplane-contrib/function-shell
+  semver: ">= v0.2.0"
+  override_repo_name: crossplane-contrib-function-shell
+- image: xpkg.upbound.io/upbound/function-cidr
+  semver: ">= 0.5.0"
+  override_repo_name: crossplane-contrib-function-cidr

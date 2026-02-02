@@ -5,8 +5,6 @@ quay.io:
       - "v0.3.2"
     coreos/flannel:
       - "v0.11.0-amd64"
-    giantswarm/docker-strongswan:
-      - "d432793577e07bfe6856d3739e6bca3d91db71e4"
     giantswarm/k8s-api-healthz:
       - "1c0cdf1ed5ee18fdf59063ecdd84bf3787f80fac"
     giantswarm/k8s-setup-network-environment:
@@ -41,6 +39,7 @@ quay.io:
     jetstack/cert-manager-controller: ">= v1.7.3"
     jetstack/cert-manager-ctl: ">= v1.7.3"
     jetstack/cert-manager-webhook: ">= v1.7.3"
+    kubescape/kubescape: ">= v3.0.34"
     oauth2-proxy/oauth2-proxy: ">= v7.2.1"
     prometheus-operator/prometheus-config-reloader: ">= v0.62.0"
     prometheus-operator/prometheus-operator: ">= 0.63.0"

@@ -13,6 +13,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"sync"
@@ -30,6 +31,7 @@ var (
 	skopeoSyncOutputPattern = regexp.MustCompile(`Would have copied image.*?from="docker://(.*?)[@:](.*?)".*`)
 	temporaryWorkingDir     = path.Join(os.TempDir(), "retagger")
 
+	flagFile             string
 	flagLogLevel         string
 	flagExecutorCount    int
 	flagExecutorID       int
@@ -41,13 +43,11 @@ var (
 
 const (
 	renamedImagesFile  = "images/renamed-images.yaml"
-	defaultPlatform    = "linux/amd64"
 	dockerTransport    = "docker://"
 	filteredFileSuffix = ".filtered"
 
 	aliyunURL = "giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm"
 	azureURL  = "gsoci.azurecr.io/giantswarm"
-	quayURL   = "quay.io/giantswarm"
 )
 
 // RenamedImage represents a set of rules used to rebuild/retag multiple tags of
@@ -79,7 +79,7 @@ type RenamedImage struct {
 	AddTagSuffix string `yaml:"add_tag_suffix,omitempty"`
 	// OverrideRepoName allows user to rewrite the name of the image entirely.
 	// Example: "alpinegit", so "alpine" would become
-	// "quay.io/giantswarm/alpinegit"
+	// "gsoci.azurecr.io/giantswarm/alpinegit"
 	OverrideRepoName string `yaml:"override_repo_name,omitempty"`
 	// StripSemverPrefix removes the initial 'v' in 'v1.2.3' if enabled. Works
 	// only when Semver is defined.
@@ -105,8 +105,7 @@ func (img *RenamedImage) Validate() error {
 	return nil
 }
 
-// RetagUsingSHA pulls an image matching the SHA, retags, and pushes it to
-// Quay, AzureCR and Aliyun.
+// RetagUsingSHA pulls an image matching the SHA, retags, and pushes it to AzureCR and Aliyun.
 // Any optional parameters configured will be applied as well, e.g. tag suffix.
 // The pushed image will be tagged with the value of image.TagOrPattern.
 func (img *RenamedImage) RetagUsingSHA() error {
@@ -126,12 +125,9 @@ func (img *RenamedImage) RetagUsingSHA() error {
 	// We'll use skopeo copy for this, because it's awesome.
 	source := fmt.Sprintf("%s%s@sha256:%s", dockerTransport, img.Image, img.SHA)
 	wg := sync.WaitGroup{}
-	wg.Add(3)
-	// Quay
-	destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, quayURL, destinationName, destinationTag)
-	go copyImage(&wg, errorCounter, source, destination)
+	wg.Add(2)
 	// AzureCR
-	destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, azureURL, destinationName, destinationTag)
+	destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, azureURL, destinationName, destinationTag)
 	go copyImage(&wg, errorCounter, source, destination)
 	// Aliyun
 	destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, aliyunURL, destinationName, destinationTag)
@@ -145,7 +141,7 @@ func (img *RenamedImage) RetagUsingSHA() error {
 }
 
 // RetagUsingTags finds all tags matching the img.TagOrPattern or
-// img.Semver, retags, and pushes them to Quay and Aliyun container registries.
+// img.Semver, retags, and pushes them to the Aliyun container registry.
 // Any optional parameters configured will be applied as well, e.g. tag suffix.
 func (img *RenamedImage) RetagUsingTags() error {
 	// List available image tags
@@ -168,19 +164,15 @@ func (img *RenamedImage) RetagUsingTags() error {
 
 	// Exclude tags existing in all registries
 	if flagSkipExistingTags {
-		quayTags, err := listTags(fmt.Sprintf("%s/%s", quayURL, destinationName))
-		if err != nil {
-			logrus.Warnf("error getting Quay.io tags: %w", err)
-		}
 		azureTags, err := listTags(fmt.Sprintf("%s/%s", azureURL, destinationName))
 		if err != nil {
-			logrus.Warnf("error getting AzureCR tags: %w", err)
+			logrus.Warnf("error getting AzureCR tags: %s", err)
 		}
 		aliyunTags, err := listTags(fmt.Sprintf("%s/%s", aliyunURL, destinationName))
 		if err != nil {
-			logrus.Warnf("error getting Aliyun tags: %w", err)
+			logrus.Warnf("error getting Aliyun tags: %s", err)
 		}
-		tags = img.FindMissingTags(tags, quayTags, azureTags, aliyunTags)
+		tags = img.FindMissingTags(tags, azureTags, aliyunTags)
 		logrus.Infof("Found %d missing tags for image %q", len(tags), img.Image)
 	}
 
@@ -200,12 +192,9 @@ func (img *RenamedImage) RetagUsingTags() error {
 		// We'll use skopeo copy for this, because it's awesome.
 		source := fmt.Sprintf("%s%s:%s", dockerTransport, img.Image, tag)
 		wg := sync.WaitGroup{}
-		wg.Add(3)
-		// Quay
-		destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, quayURL, destinationName, destinationTag)
-		go copyImage(&wg, errorCounter, source, destination)
+		wg.Add(2)
 		// Azure
-		destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, azureURL, destinationName, destinationTag)
+		destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, azureURL, destinationName, destinationTag)
 		go copyImage(&wg, errorCounter, source, destination)
 		// Aliyun
 		destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, aliyunURL, destinationName, destinationTag)
@@ -343,7 +332,7 @@ type skopeoFileRegistry struct {
 }
 
 // listTags gets a list of available tags for a given registry+image, for
-// example 'quay.io/giantswarm/curl'.
+// example 'gsoci.azurecr.io/giantswarm/curl'.
 func listTags(image string) ([]string, error) {
 	var tags []string
 	var err error
@@ -398,7 +387,7 @@ func imageBaseName(name string) string {
 // copyImage is a helper function used to invoke `skopeo copy`. Please note the
 // `--all`, which makes skopeo include ALL SHAs included in the tag's digest,
 // ensuring builds for all available platforms.
-func copyImage(wg *sync.WaitGroup, errorCounter *atomic.Int64, source, destination string) {
+func copyImage(wg *sync.WaitGroup, _ *atomic.Int64, source, destination string) {
 	defer wg.Done()
 	c, _, stderr := command("skopeo", "copy", "--all", "--retry-times", "3", source, destination)
 	logrus.Debugf("copying %q to %q", source, destination)
@@ -421,6 +410,7 @@ func command(name string, args ...string) (*exec.Cmd, *bytes.Buffer, *bytes.Buff
 }
 
 func init() {
+	flag.StringVar(&flagFile, "filename", renamedImagesFile, "Sets the file to use for renaming")
 	flag.StringVar(&flagLogLevel, "log-level", "debug", "Sets log level")
 	// `retagger run` flags
 	flag.IntVar(&flagExecutorCount, "executor-count", 1, "Number of executors in a parallelized run. Used with 'retagger run'.")
@@ -459,21 +449,24 @@ func commandRun() {
 		logrus.Warnf("%q is set to %d, are you sure that's on purpose?", "executor-count", flagExecutorCount)
 	}
 
-	if err := os.MkdirAll(temporaryWorkingDir, 0777); err != nil {
+	if err := os.MkdirAll(temporaryWorkingDir, 0750); err != nil {
 		logrus.Fatal(err)
 	}
 
 	logger := logrus.WithField("executor", flagExecutorID)
 
+	logger.Infof("Using file %q", flagFile)
+
 	// Load renamed image definitions from a file
 	var renamedImages []RenamedImage
 	{
-		b, err := os.ReadFile(renamedImagesFile)
+		flagFile = filepath.Clean(flagFile)
+		b, err := os.ReadFile(flagFile)
 		if err != nil {
-			logger.Fatalf("error reading %q: %s", renamedImagesFile, err)
+			logger.Fatalf("error reading %q: %s", flagFile, err)
 		}
 		if err := yaml.Unmarshal(b, &renamedImages); err != nil {
-			logger.Fatalf("error unmarshaling %q: %s", renamedImagesFile, err)
+			logger.Fatalf("error unmarshaling %q: %s", flagFile, err)
 		}
 	}
 
@@ -515,21 +508,21 @@ func commandRun() {
 //
 // The function reads a skopeo configuration file and runs `skopeo sync --dry-run`
 // with it. The output is processed for image tags to be synced. Each tag checked
-// against Quay, AzureCR, and Aliyun. If a tag is missing in any of the registries,
+// against AzureCR and Aliyun. If a tag is missing in any of the registries,
 // it is added to the list of tags to be synced. The list is stored in a file next
 // to the input file, with the name suffixed with `.filtered`.
-func commandFilter(filepath string) {
-	if filepath == "" {
+func commandFilter(filePath string) {
+	if filePath == "" {
 		logrus.Fatal("You need to specify filepath: 'retagger filter <path>'")
 	}
-	logStdOut.WithField("file", filepath)
-	logStdErr.WithField("file", filepath)
+	logStdOut.WithField("file", filePath)
+	logStdErr.WithField("file", filePath)
 
 	logStdOut.Infof("Listing images & tags")
 	missingTagsPerImage := map[string][]string{}
 	{
 		filterPrefix := "auniqueprefixa"
-		c, _, stderr := command("skopeo", "sync", "--all", "--dry-run", "--src", "yaml", "--dest", "docker", filepath, filterPrefix)
+		c, _, stderr := command("skopeo", "sync", "--all", "--dry-run", "--src", "yaml", "--dest", "docker", filePath, filterPrefix)
 		if err := c.Run(); err != nil {
 			logStdErr.WithField("stderr", stderr.String())
 			logStdErr.Fatalf("error running 'skopeo sync --dry-run': %v", err)
@@ -553,11 +546,6 @@ func commandFilter(filepath string) {
 		missingTagCount := 0
 		for image, tags := range tagsPerImage {
 			logStdOut.WithField("image", image).Debugf("searching for missing tags")
-			quayTags, err := listTags(fmt.Sprintf("%s/%s", quayURL, imageBaseName(image)))
-			if err != nil {
-				logStdErr.WithField("image", image).Errorf("error listing Quay tags: %v", err)
-				continue
-			}
 			azureTags, err := listTags(fmt.Sprintf("%s/%s", azureURL, imageBaseName(image)))
 			if err != nil {
 				logStdErr.WithField("image", image).Errorf("error listing AzureCR tags: %v", err)
@@ -576,7 +564,7 @@ func commandFilter(filepath string) {
 				list of tags to be synced.`, what means in order to proceed with a given image we need
 				to establish the truth of:
 
-				ImgTagsMissingIn(Quay) ∨ ImgTagsMissingIn(Azure) ∨ ImgTagsMissingIn(Aliyun) ≡ T
+				ImgTagsMissingIn(Azure) ∨ ImgTagsMissingIn(Aliyun) ≡ T
 
 				In case any of the disjuncts is undefined, when error is returned, then obviously the
 				predicate is undefined and the image is skipped, so the code meets specification.
@@ -584,7 +572,7 @@ func commandFilter(filepath string) {
 				On the other hand, maybe the undefined state could be treated as false, what would change
 				the postcondition to:
 
-				ImgTagsMissingIn(Quay) = T ∨ ImgTagsMissingIn(Azure) = T ∨ ImgTagsMissingIn(Aliyun) = T ≡ T
+				ImgTagsMissingIn(Azure) = T ∨ ImgTagsMissingIn(Aliyun) = T ≡ T
 
 				The question of whether that's possible or not boils down to the question: does it pose
 				any danger to include an image if we do not know its state in the final registry? The
@@ -604,7 +592,7 @@ func commandFilter(filepath string) {
 				the same.
 			*/
 			i := &RenamedImage{}
-			missingTags := i.FindMissingTags(tags, quayTags, azureTags, aliyunTags)
+			missingTags := i.FindMissingTags(tags, azureTags, aliyunTags)
 			missingTagCount += len(missingTags)
 			missingTagsPerImage[image] = missingTags
 		}
@@ -614,7 +602,8 @@ func commandFilter(filepath string) {
 	logStdOut.Debugf("Saving filtered file")
 	filteredFile := skopeoFile{}
 	{
-		b, err := os.ReadFile(filepath)
+		filePath = filepath.Clean(filePath)
+		b, err := os.ReadFile(filePath)
 		if err != nil {
 			logStdErr.Fatalf("error reading file: %v", err)
 		}
@@ -642,7 +631,7 @@ func commandFilter(filepath string) {
 	if err != nil {
 		logStdErr.Fatalf("error marshaling file: %v", err)
 	}
-	err = os.WriteFile(filepath+filteredFileSuffix, b, 0644)
+	err = os.WriteFile(filePath+filteredFileSuffix, b, 0600)
 	if err != nil {
 		logStdErr.Fatalf("error writing file: %v", err)
 	}
@@ -651,7 +640,8 @@ func commandFilter(filepath string) {
 
 func main() {
 	if len(flag.Args()) == 0 {
-		fmt.Println("retagger run             Retag images\nretagger filter <path>   Filter missing tags for skopeo YAML file\n\n")
+		fmt.Println("retagger run             Retag images\nretagger filter <path>   Filter missing tags for skopeo YAML file")
+		fmt.Println("")
 		flag.Usage()
 		os.Exit(0)
 	}

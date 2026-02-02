@@ -12,7 +12,7 @@ jobs:
             docker run --rm -it \
              -v $PWD:/workdir \
              -w /workdir \
-             gsoci.azurecr.io/giantswarm/yamllint:1.26@sha256:1bf8270a671a2e5f2fea8ac2e80164d627e0c5fa083759862bbde80628f942b2 \
+             gsoci.azurecr.io/giantswarm/yamllint:1.37.1 \
              --config-file /workdir/.yamllint \
              images/*.yaml
       - persist_to_workspace:
@@ -22,7 +22,7 @@ jobs:
 
   validate-skopeo:
     docker:
-      - image: gsoci.azurecr.io/giantswarm/skopeo:v1.15.0
+      - image: gsoci.azurecr.io/giantswarm/skopeo:v1.19.0
     resource_class: small
     steps:
       - checkout
@@ -50,7 +50,7 @@ jobs:
 
   build-and-push-docker:
     machine:
-      image: ubuntu-2204:2024.01.2
+      image: ubuntu-2404:2024.11.1
     parameters:
       username:
         type: string
@@ -80,7 +80,7 @@ jobs:
 
   filter-skopeo-tags:
     docker:
-      - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
+      - image: gsoci.azurecr.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
     resource_class: small
     shell: /bin/bash
     parameters:
@@ -93,7 +93,6 @@ jobs:
           name: "Log in to registries: docker"
           command: |
             docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
-            docker login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
             docker login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} gsoci.azurecr.io
             max_retry=5
             counter=1
@@ -109,7 +108,6 @@ jobs:
           name: "Log in to registries: skopeo"
           command: |
             skopeo login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
-            skopeo login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
             skopeo login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} gsoci.azurecr.io
             max_retry=5
             counter=1
@@ -120,7 +118,7 @@ jobs:
                 echo "Attempt $counter: trying again..."
                 ((counter++))
             done
-      - run :
+      - run:
           name: Filter tags in Skopeo YAML
           command: |
             retagger filter "<<parameters.filepath>>" 2> >(tee "<<parameters.filepath>>.filtered.errlog" >&2)
@@ -132,7 +130,7 @@ jobs:
 
   retag-image-name:
     docker:
-      - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
+      - image: gsoci.azurecr.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
     resource_class: small
     shell: /bin/bash
     parameters:
@@ -181,7 +179,7 @@ jobs:
 
   retag-registry:
     docker:
-      - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
+      - image: gsoci.azurecr.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
     resource_class: small
     shell: /bin/bash
     parameters:
@@ -230,7 +228,7 @@ jobs:
 
   retag-renamed-images:
     docker:
-      - image: quay.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
+      - image: gsoci.azurecr.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
     resource_class: small
     shell: /bin/bash
     parameters:
@@ -243,6 +241,8 @@ jobs:
       executor_id:
         type: integer
         default: 0
+      filename:
+        type: string
     steps:
       - setup_remote_docker:
           docker_layer_caching: true
@@ -252,7 +252,6 @@ jobs:
           name: "Log in to registries: docker"
           command: |
             docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
-            docker login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
             docker login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} gsoci.azurecr.io
             max_retry=5
             counter=1
@@ -267,7 +266,6 @@ jobs:
           name: "Log in to registries: skopeo"
           command: |
             skopeo login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
-            skopeo login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
             skopeo login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} gsoci.azurecr.io
             max_retry=5
             counter=1
@@ -283,10 +281,10 @@ jobs:
           no_output_timeout: 1h
           command: |
             retagger run --log-level "<<parameters.log_level>>" \
-              --executor-count <<parameters.executor_count>> --executor-id <<parameters.executor_id>> | tee /tmp/retagger.log
+              --executor-count <<parameters.executor_count>> --executor-id <<parameters.executor_id>> --filename <<parameters.filename>> | tee /tmp/retagger.log
       - store_artifacts:
           path: /tmp/retagger.log
-          destination: "retagger-<<parameters.executor_id>>-of-<<parameters.executor_count>>.log"
+          destination: "retagger-<<parameters.filename>>-<<parameters.executor_id>>-of-<<parameters.executor_count>>.log"
 
   ping-heartbeat:
     docker:
@@ -305,9 +303,9 @@ trivy_databases: &trivy_databases
     - build-and-push-docker:
         context: architect
         name: build-and-push-docker
-        username: ${QUAY_USERNAME}
-        password: ${QUAY_PASSWORD}
-        registry: "quay.io"
+        username: ${ACR_GSOCI_RETAGGER_USERNAME}
+        password: ${ACR_GSOCI_RETAGGER_PASSWORD}
+        registry: "gsoci.azurecr.io"
         tag: ${CIRCLE_TAG:-$CIRCLE_SHA1}
     - retag-image-name:
         context: architect
@@ -315,7 +313,7 @@ trivy_databases: &trivy_databases
         username: ${ACR_GSOCI_RETAGGER_USERNAME}
         password: ${ACR_GSOCI_RETAGGER_PASSWORD}
         registry: "gsoci.azurecr.io"
-        image_name: "ghcr.io/aquasecurity/trivy-db"
+        image_name: "mirror.gcr.io/aquasec/trivy-db"
         requires:
           - build-and-push-docker
     - retag-image-name:
@@ -324,7 +322,16 @@ trivy_databases: &trivy_databases
         username: ${ACR_GSOCI_RETAGGER_USERNAME}
         password: ${ACR_GSOCI_RETAGGER_PASSWORD}
         registry: "gsoci.azurecr.io"
-        image_name: "ghcr.io/aquasecurity/trivy-java-db"
+        image_name: "mirror.gcr.io/aquasec/trivy-java-db"
+        requires:
+          - build-and-push-docker
+    - retag-image-name:
+        context: architect
+        name: retag-gsoci-trivy-checks
+        username: ${ACR_GSOCI_RETAGGER_USERNAME}
+        password: ${ACR_GSOCI_RETAGGER_PASSWORD}
+        registry: "gsoci.azurecr.io"
+        image_name: "mirror.gcr.io/aquasec/trivy-checks"
         requires:
           - build-and-push-docker
     - retag-image-name:
@@ -333,7 +340,7 @@ trivy_databases: &trivy_databases
         username: ${ALIYUN_USERNAME}
         password: ${ALIYUN_PASSWORD}
         registry: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com"
-        image_name: "ghcr.io/aquasecurity/trivy-db"
+        image_name: "mirror.gcr.io/aquasec/trivy-db"
         requires:
           - build-and-push-docker
     - retag-image-name:
@@ -342,7 +349,7 @@ trivy_databases: &trivy_databases
         username: ${ALIYUN_USERNAME}
         password: ${ALIYUN_PASSWORD}
         registry: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com"
-        image_name: "ghcr.io/aquasecurity/trivy-java-db"
+        image_name: "mirror.gcr.io/aquasec/trivy-java-db"
         requires:
           - build-and-push-docker
 
@@ -358,9 +365,9 @@ build_and_retag: &build_and_retag
     - build-and-push-docker:
         context: architect
         name: build-and-push-docker
-        username: ${QUAY_USERNAME}
-        password: ${QUAY_PASSWORD}
-        registry: "quay.io"
+        username: ${ACR_GSOCI_RETAGGER_USERNAME}
+        password: ${ACR_GSOCI_RETAGGER_PASSWORD}
+        registry: "gsoci.azurecr.io"
         tag: ${CIRCLE_TAG:-$CIRCLE_SHA1}
         requires:
           - validate-skopeo
@@ -408,6 +415,16 @@ build_and_retag: &build_and_retag
         context: architect
         name: filter-skopeo-mcr-microsoft-com
         filepath: images/skopeo-mcr-microsoft-com.yaml
+        filters:
+          branches:
+            only:
+              - main
+        requires:
+          - build-and-push-docker
+    - filter-skopeo-tags:
+        context: architect
+        name: filter-skopeo-nvcr-io
+        filepath: images/skopeo-nvcr-io.yaml
         filters:
           branches:
             only:
@@ -466,36 +483,6 @@ build_and_retag: &build_and_retag
           - build-and-push-docker
     - retag-registry:
         context: architect
-        name: retag-quay-<<matrix.images_file>>
-        username: ${QUAY_USERNAME}
-        password: ${QUAY_PASSWORD}
-        registry: "quay.io"
-        requires:
-          - filter-skopeo-docker-io
-          - filter-skopeo-eu-gcr-io
-          - filter-skopeo-gcr-io
-          - filter-skopeo-ghcr-io
-          - filter-skopeo-mcr-microsoft-com
-          - filter-skopeo-public-ecr-aws
-          - filter-skopeo-quay-io
-          - filter-skopeo-k8s-io
-          - filter-skopeo-k8s-io-kubernetes
-          - filter-skopeo-projects-registry-vmware-com
-        matrix:
-          parameters:
-            images_file:
-              - images/skopeo-docker-io.yaml.filtered
-              - images/skopeo-eu-gcr-io.yaml.filtered
-              - images/skopeo-gcr-io.yaml.filtered
-              - images/skopeo-ghcr-io.yaml.filtered
-              - images/skopeo-mcr-microsoft-com.yaml.filtered
-              - images/skopeo-public-ecr-aws.yaml.filtered
-              - images/skopeo-quay-io.yaml.filtered
-              - images/skopeo-registry-k8s-io.yaml.filtered
-              - images/skopeo-registry-k8s-io-kubernetes.yaml.filtered
-              - images/skopeo-projects-registry-vmware-com.yaml.filtered
-    - retag-registry:
-        context: architect
         name: retag-aliyun-<<matrix.images_file>>
         username: ${ALIYUN_USERNAME}
         password: ${ALIYUN_PASSWORD}
@@ -507,6 +494,7 @@ build_and_retag: &build_and_retag
           - filter-skopeo-ghcr-io
           - filter-skopeo-mcr-microsoft-com
           - filter-skopeo-public-ecr-aws
+          - filter-skopeo-nvcr-io
           - filter-skopeo-quay-io
           - filter-skopeo-k8s-io
           - filter-skopeo-k8s-io-kubernetes
@@ -518,6 +506,7 @@ build_and_retag: &build_and_retag
               - images/skopeo-gcr-io.yaml.filtered
               - images/skopeo-ghcr-io.yaml.filtered
               - images/skopeo-mcr-microsoft-com.yaml.filtered
+              - images/skopeo-nvcr-io.yaml.filtered
               - images/skopeo-public-ecr-aws.yaml.filtered
               - images/skopeo-quay-io.yaml.filtered
               - images/skopeo-registry-k8s-io.yaml.filtered
@@ -534,6 +523,7 @@ build_and_retag: &build_and_retag
           - filter-skopeo-gcr-io
           - filter-skopeo-ghcr-io
           - filter-skopeo-mcr-microsoft-com
+          - filter-skopeo-nvcr-io
           - filter-skopeo-public-ecr-aws
           - filter-skopeo-quay-io
           - filter-skopeo-k8s-io
@@ -547,6 +537,7 @@ build_and_retag: &build_and_retag
               - images/skopeo-gcr-io.yaml.filtered
               - images/skopeo-ghcr-io.yaml.filtered
               - images/skopeo-mcr-microsoft-com.yaml.filtered
+              - images/skopeo-nvcr-io.yaml.filtered
               - images/skopeo-public-ecr-aws.yaml.filtered
               - images/skopeo-quay-io.yaml.filtered
               - images/skopeo-registry-k8s-io.yaml.filtered
@@ -564,6 +555,11 @@ build_and_retag: &build_and_retag
               - main
         matrix:
           parameters:
+            filename:
+              - images/renamed-images.yaml
+              - images/renamed-upbound-aws.yaml
+              - images/renamed-upbound-azure.yaml
+              - images/renamed-upbound-gcp.yaml
             # i in range(executor_count)
             executor_id: [0, 1, 2, 3, 4]
 

@@ -1,41 +1,38 @@
 # Docs: https://github.com/kubasobon/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
 docker.io:
   images:
+    1password/scim:
+      - "v2.9.9"
     alpine/socat:
       - "1.7.4.4"
+    # Redis is used by 1password/scim.
+    bitnami/redis:
+      - "6.0.9-debian-10-r13"
     centos:
       - "8.1.1911"
     cibuilds/github:
       - "0.12"
     coredns/coredns:
-      - "1.8.3"
-      - "1.8.6"
-      - "1.8.7"
-      - "1.9.3"
       - "1.11.1"
       - "1.11.3"
       - "1.11.4"
       - "1.12.0"
+      - "1.12.1"
+      - "1.12.2"
+      - "1.12.3"
+      - "1.13.0"
+      - "1.13.1"
+      - "1.13.2"
+      - "1.14.0"
+      - "1.14.1"
     docker:
       - "18.09.1"
-    edgedb/edgedb:
-      - "5.7"
     elasticsearch:
       - "6.8.13"
     fluxcd/flux-cli:
       - "v0.27.0"
-    golang:
-      - "1.14.1-alpine3.11"
-      - "1.15.2-alpine3.12"
-      - "1.16-alpine3.12"
-      - "1.16.7-alpine3.14"
-      - "1.17.1-alpine3.14"
-      - "1.17.7-alpine3.14"
-      - "1.17.8-alpine3.14"
-      - "1.18.1-alpine3.15"
-      - "1.19.1-alpine3.16"
-      - "1.20.6-alpine3.17"
-      # Future `golang` versions are now handled in `renamed-images.yaml` to automatically match alpine tags via semver
+    geldata/gel:
+      - "7.0"
     golangci/golangci-lint:
       - "v1.23.8"
     instrumenta/conftest:
@@ -47,8 +44,6 @@ docker.io:
       - "2.2.3"
     justwatch/elasticsearch_exporter:
       - "1.1.0"
-    k8spin/loki-multi-tenant-proxy:
-      - "v1.0.0"
     koalaman/shellcheck-alpine:
       - "v0.6.0"
     kong/kong-gateway:
@@ -81,15 +76,20 @@ docker.io:
       - "3.7.1.0-debian"
       - "3.7.1.1-debian"
       - "3.7.1.2-debian"
+      - "3.7.1.5"
       - "3.8.1.0-debian"
-      - "3.6.1.8-debian"
+      - "3.8.1.1"
+      - "3.8.1.1-debian"
+      - "3.9.1.2"
+      - "3.9.1.2-debian"
+      - "3.10.0.3"
+      - "3.10.0.3-debian"
+      - "3.11.0.0"
+      - "3.11.0.0-debian"
     looztra/kubesplit:
       - "0.3.2-dd13538"
     madnight/alpine-wkhtmltopdf-builder:
       - "0.12.5-alpine3.10-606718795"
-    nginxinc/nginx-unprivileged:
-      - "mainline"
-      - "latest"
     node:
       - "20"
       - "21"
@@ -98,18 +98,10 @@ docker.io:
       - "0.11.0"
     peaceiris/hugo:
       - "v0.139.3-full"
-      - "v0.125.5-full"
-      - "v0.125.5-mod"
-      - "v0.121.0-full"
-      - "v0.121.0-mod"
-      - "v0.120.2-mod"
+      - "v0.146.4-full"
     python:
-      - "3.8.12-slim"
-      - "3.9-alpine3.13"
-      - "3.10.3-slim"
-      - "3.12.0-alpine3.18"
-      - "3.12.3-alpine"
-      - "3.12.7-slim"
+      - "3.13.5-alpine"
+      - "3.13.5-slim"
     redis:
       - "3.2.11-alpine"
       - "4.0.9"
@@ -121,16 +113,15 @@ docker.io:
       - "master-5b2a6e5"
   images-by-semver:
     amazon/amazon-eks-pod-identity-webhook: ">= v0.3.0"
-    amazon/aws-efs-csi-driver: ">= 1.0.0"
     amazon/opendistro-for-elasticsearch: ">= 1.3.3"
     amazon/opendistro-for-elasticsearch-kibana: ">= 1.3.2"
     aquasec/kube-bench: ">= 0.2"
     bash: ">= 5"
-    bitnami/kubectl: ">= 1.16"
     busybox: ">= 1.31.0"
+    cfssl/cfssl: ">= 1.6.1"
+    clastix/cluster-api-control-plane-provider-kamaji: ">= v0.16.0"
     crossplane/crossplane: ">= v1.9.1"
     curlimages/curl: ">= 7.67.0"
-    cytopia/yamllint: ">= 1.9"
     ealen/echo-server: ">=0.5.0"
     envoyproxy/envoy: ">= 1.18.4"
     falcosecurity/falco: ">= 0.36.1"
@@ -143,14 +134,15 @@ docker.io:
     fluent/fluent-bit: ">= 1.7.1"
     golang: ">= 1.19.0"
     grafana/alloy: ">= v1.2.0"
-    grafana/grafana: ">= 9.1.1"
-    grafana/loki: ">= 2.7.3"
-    grafana/loki-canary: ">= v2.1.0"
+    grafana/grafana: ">= 11.0.0"
+    grafana/loki: ">= 3.0.0"
+    grafana/loki-canary: ">= v3.0.0"
     grafana/mimir: ">= v2.7.0"
     grafana/mimir-continuous-test: ">= v2.7.0"
     grafana/promtail: ">= v2.5.0"
     grafana/pyroscope: ">= 1.2.1"
-    grafana/tempo: ">= v2.3.0"
+    grafana/tempo: ">= v2.8.0"
+    grafana/tempo-vulture: ">= v2.8.0"
     jimmidyson/configmap-reload: ">= v0.8.0"
     jdkato/vale: ">= v3.4.0"
     k8scloudprovider/cinder-csi-plugin: ">= 1.20.0"
@@ -158,19 +150,30 @@ docker.io:
     k8scloudprovider/openstack-cloud-controller-manager: ">= 1.20.0"
     kiwigrid/k8s-sidecar: ">= 1.24.3"
     kong: ">= 2.8.1"
-    hjacobs/kube-downscaler: ">= 23.2.0"
+    # Used in giantswarm/aws-resolver-rules-operator for testing AWS calls.
+    localstack/localstack: ">= 4.7.0"
     mikefarah/yq: ">= 4.31.2"
     mintel/dex-k8s-authenticator: ">= 1.4.0"
     openpolicyagent/conftest: ">= v0.25.0"
+    opensearchproject/opensearch: ">= v3.2.0"
     prom/blackbox-exporter: ">= v0.23.0"
     prom/prometheus: ">= 2.41.0"
+    rancher/local-path-provisioner: ">= v0.0.32"
     # Used in akv2k8s
     spvest/azure-keyvault-controller: ">= 1.3.0"
     spvest/azure-keyvault-webhook: ">= 1.3.0"
+    # Valkey is an open-source Redis alternative used by valkey-app
+    valkey/valkey: ">= 8.0.0"
     vault: ">= v1.5.4"
     velero/velero: ">= v1.4.3"
     zricethezav/gitleaks: ">=v7.4.0"
   images-by-tag-regex:
     alpine: ^3\.[123][0-9]\.[0-9]+$
+    # tags look like `edge-26.1.2`, we match anything above 25.12.0.
+    clastix/kamaji: ^edge-((25\.(1[2-9]|[2-9][0-9]+)\.[0-9]+)|(2[6-9]|[3-9][0-9]|[1-9][0-9]{2,})\.[0-9]+\.[0-9]+)$
     memcached: ^1\.[6-9]\.[0-9]+-alpine$
     nginx: ^1\.2[3-9]-alpine$
+    nginxinc/nginx-unprivileged: ^1\.2[3-9]-alpine$
+    # grafana security images for grafana 10+ - tag looks like `12.0.0-security-01`
+    grafana/grafana: ^[1-9][0-9]\.[0-9]+\.[0-9]+-security-[0-9]+$
+    envoyproxy/envoy: ^distroless-v1\.[0-9]+\.[0-9]+$

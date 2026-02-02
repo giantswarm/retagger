@@ -1,0 +1,279 @@
+- image: xpkg.upbound.io/upbound/provider-family-azure
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-family-azure
+- image: xpkg.upbound.io/upbound/provider-azure-storagesync
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-storagesync
+- image: xpkg.upbound.io/upbound/provider-azure-purview
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-purview
+- image: xpkg.upbound.io/upbound/provider-azure-servicefabric
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-servicefabric
+- image: xpkg.upbound.io/upbound/provider-azure-keyvault
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-keyvault
+- image: xpkg.upbound.io/upbound/provider-azure-databoxedge
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-databoxedge
+- image: xpkg.upbound.io/upbound/provider-azure-logic
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-logic
+- image: xpkg.upbound.io/upbound/provider-azure-cdn
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-cdn
+- image: xpkg.upbound.io/upbound/provider-azure-sql
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-sql
+- image: xpkg.upbound.io/upbound/provider-azure-maps
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-maps
+- image: xpkg.upbound.io/upbound/provider-azure-consumption
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-consumption
+- image: xpkg.upbound.io/upbound/provider-azure-spring
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-spring
+- image: xpkg.upbound.io/upbound/provider-azure-hdinsight
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-hdinsight
+- image: xpkg.upbound.io/upbound/provider-azure-authorization
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-authorization
+- image: xpkg.upbound.io/upbound/provider-azure-powerbidedicated
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-powerbidedicated
+- image: xpkg.upbound.io/upbound/provider-azure-loadtestservice
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-loadtestservice
+- image: xpkg.upbound.io/upbound/provider-azure-confidentialledger
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-confidentialledger
+- image: xpkg.upbound.io/upbound/provider-azure-storage
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-storage
+- image: xpkg.upbound.io/upbound/provider-azure-timeseriesinsights
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-timeseriesinsights
+- image: xpkg.upbound.io/upbound/provider-azure-policyinsights
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-policyinsights
+- image: xpkg.upbound.io/upbound/provider-azure-recoveryservices
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-recoveryservices
+- image: xpkg.upbound.io/upbound/provider-azure-devices
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-devices
+- image: xpkg.upbound.io/upbound/provider-azure-media
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-media
+- image: xpkg.upbound.io/upbound/provider-azure-cosmosdb
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-cosmosdb
+- image: xpkg.upbound.io/upbound/provider-azure-certificateregistration
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-certificateregistration
+- image: xpkg.upbound.io/upbound/provider-azure-solutions
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-solutions
+- image: xpkg.upbound.io/upbound/provider-azure-healthcareapis
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-healthcareapis
+- image: xpkg.upbound.io/upbound/provider-azure-attestation
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-attestation
+- image: xpkg.upbound.io/upbound/provider-azure-datamigration
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-datamigration
+- image: xpkg.upbound.io/upbound/provider-azure-analysisservices
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-analysisservices
+- image: xpkg.upbound.io/upbound/provider-azure-kusto
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-kusto
+- image: xpkg.upbound.io/upbound/provider-azure-mixedreality
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-mixedreality
+- image: xpkg.upbound.io/upbound/provider-azure-iotcentral
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-iotcentral
+- image: xpkg.upbound.io/upbound/provider-azure-security
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-security
+- image: xpkg.upbound.io/upbound/provider-azure-automation
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-automation
+- image: xpkg.upbound.io/upbound/provider-azure-databricks
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-databricks
+- image: xpkg.upbound.io/upbound/provider-azure-notificationhubs
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-notificationhubs
+- image: xpkg.upbound.io/upbound/provider-azure-orbital
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-orbital
+- image: xpkg.upbound.io/upbound/provider-azure-customproviders
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-customproviders
+- image: xpkg.upbound.io/upbound/provider-azure-labservices
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-labservices
+- image: xpkg.upbound.io/upbound/provider-azure-cache
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-cache
+- image: xpkg.upbound.io/upbound/provider-azure-deviceupdate
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-deviceupdate
+- image: xpkg.upbound.io/upbound/provider-azure-fluidrelay
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-fluidrelay
+- image: xpkg.upbound.io/upbound/provider-azure-network
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-network
+- image: xpkg.upbound.io/upbound/provider-azure-botservice
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-botservice
+- image: xpkg.upbound.io/upbound/provider-azure-resources
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-resources
+- image: xpkg.upbound.io/upbound/provider-azure-dbformariadb
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-dbformariadb
+- image: xpkg.upbound.io/upbound/provider-azure-signalrservice
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-signalrservice
+- image: xpkg.upbound.io/upbound/provider-azure-healthbot
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-healthbot
+- image: xpkg.upbound.io/upbound/provider-azure-dataprotection
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-dataprotection
+- image: xpkg.upbound.io/upbound/provider-azure-containerapp
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-containerapp
+- image: xpkg.upbound.io/upbound/provider-azure-servicelinker
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-servicelinker
+- image: xpkg.upbound.io/upbound/provider-azure-maintenance
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-maintenance
+- image: xpkg.upbound.io/upbound/provider-azure-streamanalytics
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-streamanalytics
+- image: xpkg.upbound.io/upbound/provider-azure-search
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-search
+- image: xpkg.upbound.io/upbound/provider-azure-storagecache
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-storagecache
+- image: xpkg.upbound.io/upbound/provider-azure-appconfiguration
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-appconfiguration
+- image: xpkg.upbound.io/upbound/provider-azure-servicebus
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-servicebus
+- image: xpkg.upbound.io/upbound/provider-azure-azurestackhci
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-azurestackhci
+- image: xpkg.upbound.io/upbound/provider-azure-managedidentity
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-managedidentity
+- image: xpkg.upbound.io/upbound/provider-azure-storagepool
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-storagepool
+- image: xpkg.upbound.io/upbound/provider-azure-digitaltwins
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-digitaltwins
+- image: xpkg.upbound.io/upbound/provider-azure-logz
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-logz
+- image: xpkg.upbound.io/upbound/provider-azure-communication
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-communication
+- image: xpkg.upbound.io/upbound/provider-azure-securityinsights
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-securityinsights
+- image: xpkg.upbound.io/upbound/provider-azure-eventhub
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-eventhub
+- image: xpkg.upbound.io/upbound/provider-azure-management
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-management
+- image: xpkg.upbound.io/upbound/provider-azure-relay
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-relay
+- image: xpkg.upbound.io/upbound/provider-azure-dbformysql
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-dbformysql
+- image: xpkg.upbound.io/upbound/provider-azure-machinelearningservices
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-machinelearningservices
+- image: xpkg.upbound.io/upbound/provider-azure-cognitiveservices
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-cognitiveservices
+- image: xpkg.upbound.io/upbound/provider-azure-dbforpostgresql
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-dbforpostgresql
+- image: xpkg.upbound.io/upbound/provider-azure-datafactory
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-datafactory
+- image: xpkg.upbound.io/upbound/provider-azure-appplatform
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-appplatform
+- image: xpkg.upbound.io/upbound/provider-azure-guestconfiguration
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-guestconfiguration
+- image: xpkg.upbound.io/upbound/provider-azure-containerregistry
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-containerregistry
+- image: xpkg.upbound.io/upbound/provider-azure-containerservice
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-containerservice
+- image: xpkg.upbound.io/upbound/provider-azure-operationalinsights
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-operationalinsights
+- image: xpkg.upbound.io/upbound/provider-azure-operationsmanagement
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-operationsmanagement
+- image: xpkg.upbound.io/upbound/provider-azure-alertsmanagement
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-alertsmanagement
+- image: xpkg.upbound.io/upbound/provider-azure-web
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-web
+- image: xpkg.upbound.io/upbound/provider-azure-elastic
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-elastic
+- image: xpkg.upbound.io/upbound/provider-azure-apimanagement
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-apimanagement
+- image: xpkg.upbound.io/upbound/provider-azure-devtestlab
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-devtestlab
+- image: xpkg.upbound.io/upbound/provider-azure-eventgrid
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-eventgrid
+- image: xpkg.upbound.io/upbound/provider-azure-compute
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-compute
+- image: xpkg.upbound.io/upbound/provider-azure-datashare
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-datashare
+- image: xpkg.upbound.io/upbound/provider-azure-marketplaceordering
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-marketplaceordering
+- image: xpkg.upbound.io/upbound/provider-azure-costmanagement
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-costmanagement
+- image: xpkg.upbound.io/upbound/provider-azure-netapp
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-netapp
+- image: xpkg.upbound.io/upbound/provider-azure-portal
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-portal
+- image: xpkg.upbound.io/upbound/provider-azure-insights
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-insights
+- image: xpkg.upbound.io/upbound/provider-azure-synapse
+  semver: ">= 1.0.0"
+  override_repo_name: upbound-provider-azure-synapse
