@@ -46,7 +46,10 @@
   semver: ">= v1.0.2"
 - image: docker.io/envoyproxy/ratelimit
   override_repo_name: envoyproxy-ratelimit
-  semver: "master"
+  tag_or_pattern: "99d85510"
+- image: docker.io/envoyproxy/ratelimit
+  override_repo_name: envoyproxy-ratelimit
+  tag_or_pattern: "3fb70258"
 - image: gcr.io/cloud-provider-vsphere/csi/release/driver
   semver: ">= v2.7.1"
   override_repo_name: csi-vsphere-driver
