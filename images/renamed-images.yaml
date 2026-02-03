@@ -70,6 +70,9 @@
 - image: ghcr.io/kyverno/policy-reporter/kyverno-plugin
   override_repo_name: kyverno-plugin
   semver: ">= 0.4.0"
+- image: ghcr.io/kyverno/readiness-checker
+  override_repo_name: kyverno-readiness-checker
+  semver: ">= v0.1.0"
 - image: ghcr.io/linkerd/cni-plugin
   override_repo_name: linkerd2-cni-plugin
   semver: ">= v1.1.1"
