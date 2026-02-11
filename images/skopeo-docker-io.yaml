@@ -158,6 +158,7 @@ docker.io:
     opensearchproject/opensearch: ">= v3.2.0"
     prom/blackbox-exporter: ">= v0.23.0"
     prom/prometheus: ">= 2.41.0"
+    prom/memcached-exporter: ">= v0.15.3"
     rancher/local-path-provisioner: ">= v0.0.32"
     # Used in akv2k8s
     spvest/azure-keyvault-controller: ">= 1.3.0"
