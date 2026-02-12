@@ -5,7 +5,7 @@ ghcr.io:
       - "v3.9-thick-amd64"
       - "v3.9-amd64"
     kyverno/reports-server:
-      - "v0.1.0-alpha.1"
+      - "v0.1.6"
   images-by-semver:
     ahrtr/etcd-defrag: ">= v0.22.0"
     aquasecurity/node-collector: ">= 0.0.6"
