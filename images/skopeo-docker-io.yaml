@@ -135,6 +135,7 @@ docker.io:
     golang: ">= 1.19.0"
     grafana/alloy: ">= v1.2.0"
     grafana/grafana: ">= 11.0.0"
+    grafana/k6: ">= 1.6.0"
     grafana/loki: ">= 3.0.0"
     grafana/loki-canary: ">= v3.0.0"
     grafana/mimir: ">= v2.7.0"
