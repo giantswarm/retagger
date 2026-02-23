@@ -31,6 +31,9 @@
 - image: cloudflare/cloudflared
   semver: ">= 2023.8.2"
   filter: "^(.+)-amd64$"
+- image: docker.io/alpine/kubectl
+  override_repo_name: alpine-kubectl
+  semver: ">= 1.34.0"
 - image: docker.io/grafana/agent
   override_repo_name: grafana-agent
   semver: ">= v0.37.2"
