@@ -51,3 +51,4 @@ ghcr.io:
     vmware/pinniped/pinniped-server: ">= v0.40.0"
   images-by-tag-regex:
     nginxinc/nginx-unprivileged: ^1\.2[3-9]-alpine$
+    k8snetworkplumbingwg/multus-cni: v([0-9].){2}[0-9]-thick$
