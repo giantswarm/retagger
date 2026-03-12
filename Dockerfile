@@ -2,7 +2,7 @@ ARG ALPINE_VERSION=3.22
 ARG GO_VERSION=1.25.0
 ARG SKOPEO_VERSION=v1.19.0
 
-FROM gsoci.azurecr.io/giantswarm/golang:${GO_VERSION}-alpine${ALPINE_VERSION} AS builder
+FROM golang:${GO_VERSION}-alpine${ALPINE_VERSION} AS builder
 
 RUN apk add --no-cache git make bash curl
 
