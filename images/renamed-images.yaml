@@ -55,9 +55,6 @@
 - image: gcr.io/cloud-provider-vsphere/csi/release/syncer
   semver: ">= v2.7.1"
   override_repo_name: csi-vsphere-syncer
-- image: golang
-  semver: ">= 1.23.0"
-  filter: "(.+)-alpine3.2[0-9]"
 - image: ghcr.io/cloudnative-pg/postgresql
   override_repo_name: postgresql-cnpg
   semver: ">= 15.6"

@@ -132,7 +132,6 @@ docker.io:
     falcosecurity/falcosidekick: ">= 2.28.0"
     falcosecurity/k8s-metacollector: ">= 0.1.1"
     fluent/fluent-bit: ">= 1.7.1"
-    golang: ">= 1.21.0"
     grafana/alloy: ">= v1.2.0"
     grafana/grafana: ">= 11.0.0"
     grafana/k6: ">= 1.6.0"
@@ -173,6 +172,8 @@ docker.io:
     alpine: ^3\.[123][0-9]\.[0-9]+$
     # tags look like `edge-26.1.2`, we match anything above 25.12.0.
     clastix/kamaji: ^edge-((25\.(1[2-9]|[2-9][0-9]+)\.[0-9]+)|(2[6-9]|[3-9][0-9]|[1-9][0-9]{2,})\.[0-9]+\.[0-9]+)$
+    # this will fail with release of go 1.100. Hopefully not soon.
+    golang: "^1.[2-9][0-9].[0-9]+(-alpine.+)?$"
     memcached: ^1\.[6-9]\.[0-9]+-alpine$
     nginx: ^1\.2[3-9]-alpine$
     nginxinc/nginx-unprivileged: ^1\.2[3-9]-alpine$
