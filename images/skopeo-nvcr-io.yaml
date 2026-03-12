@@ -10,5 +10,4 @@ nvcr.io:
   images-by-tag-regex:
     nvidia/cloud-native/k8s-mig-manager: ^v[0-9]+\.[0-9]+\.[0-9]+-.+$
     nvidia/k8s/dcgm-exporter: ^[0-9]+\.[0-9]+\.[0-9]+-[0-9]+\.[0-9]+\.[0-9]+-.+$
-    nvidia/cuda-sample: ^[0-9]+\.[0-9]+\.[0-9]+-.+$
     nvidia/k8s-device-plugin: ^v[0-9]+\.[0-9]+\.[0-9]+(-.+)?$
