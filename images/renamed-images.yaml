@@ -893,6 +893,28 @@
 - image: quay.io/skopeo/stable
   override_repo_name: skopeo
   semver: ">= v1.15.0"
+# Strimzi operator and related components. All versioned with the operator version (e.g. 0.51.0).
+- image: quay.io/strimzi/buildah
+  override_repo_name: strimzi/buildah
+  semver: ">= 0.51.0"
+- image: quay.io/strimzi/kafka
+  override_repo_name: strimzi/kafka
+  semver: ">= 0.51.0"
+  # Tags are formatted as "<operator-version>-kafka-<kafka-version>" (e.g. 0.51.0-kafka-4.1.0).
+  # The filter extracts the operator version for semver comparison.
+  filter: "^(\\d+\\.\\d+\\.\\d+)-kafka-.*"
+- image: quay.io/strimzi/kafka-bridge
+  override_repo_name: strimzi/kafka-bridge
+  semver: ">= 0.33.1"
+- image: quay.io/strimzi/kaniko-executor
+  override_repo_name: strimzi/kaniko-executor
+  semver: ">= 0.51.0"
+- image: quay.io/strimzi/maven-builder
+  override_repo_name: strimzi/maven-builder
+  semver: ">= 0.51.0"
+- image: quay.io/strimzi/operator
+  override_repo_name: strimzi/operator
+  semver: ">= 0.51.0"
 - image: us-central1-docker.pkg.dev/k8s-staging-images/kueue/kueue
   override_repo_name: kueue
   semver: ">= v0.14.1"
