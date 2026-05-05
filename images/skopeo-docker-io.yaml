@@ -173,8 +173,8 @@ docker.io:
     # this will fail with release of go 1.100. Hopefully not soon.
     golang: "^1.[2-9][0-9].[0-9]+(-alpine.+)?$"
     memcached: ^1\.[6-9]\.[0-9]+-alpine$
-    nginx: ^1\.2[3-9]-alpine$
-    nginxinc/nginx-unprivileged: ^1\.2[3-9]-alpine$
+    nginx: ^1\.(2[3-9]|[3-9][0-9])-alpine$
+    nginxinc/nginx-unprivileged: ^1\.(2[3-9]|[3-9][0-9])-alpine$
     # grafana security images for grafana 10+ - tag looks like `12.0.0-security-01`
     grafana/grafana: ^[1-9][0-9]\.[0-9]+\.[0-9]+-security-[0-9]+$
     envoyproxy/envoy: ^distroless-v1\.[0-9]+\.[0-9]+$
