@@ -557,6 +557,7 @@ build_and_retag: &build_and_retag
           parameters:
             filename:
               - images/renamed-images.yaml
+              - images/renamed-cilium-prereleases.yaml
               - images/renamed-upbound-aws.yaml
               - images/renamed-upbound-azure.yaml
               - images/renamed-upbound-gcp.yaml
