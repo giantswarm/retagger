@@ -6,6 +6,8 @@ ghcr.io:
       - "v3.9-amd64"
     kyverno/reports-server:
       - "v0.1.6"
+    grafana/k6-operator:
+      - "controller-v1.4.0"
   images-by-semver:
     ahrtr/etcd-defrag: ">= v0.22.0"
     aquasecurity/node-collector: ">= 0.0.6"
@@ -37,7 +39,6 @@ ghcr.io:
     # kyverno/policy-reporter-kyverno-plugin: ">= 1.5.0"
     kyverno/policy-reporter-ui: ">= 1.7.2"
     kyverno/reports-controller: ">= 1.10.1"
-    grafana/k6-operator: ">= controller-v1.4.0"
     # Redis/Valkey metrics exporter, used by valkey-app
     oliver006/redis_exporter: ">= v1.70.0"
     # used for https://github.com/giantswarm/event-exporter-app
