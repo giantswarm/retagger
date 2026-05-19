@@ -1,0 +1,6 @@
+- image: cr.agentgateway.dev/controller
+  override_repo_name: agentgateway-controller
+  semver: ">= v1.2.0"
+- image: cr.agentgateway.dev/agentgateway
+  override_repo_name: agentgateway
+  semver: ">= v1.2.0"

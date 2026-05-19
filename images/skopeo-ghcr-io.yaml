@@ -6,6 +6,8 @@ ghcr.io:
       - "v3.9-amd64"
     kyverno/reports-server:
       - "v0.1.6"
+    grafana/k6-operator:
+      - "controller-v1.4.0"
   images-by-semver:
     ahrtr/etcd-defrag: ">= v0.22.0"
     aquasecurity/node-collector: ">= 0.0.6"
@@ -36,8 +38,8 @@ ghcr.io:
     kyverno/policy-reporter: ">= 2.12.0"
     # kyverno/policy-reporter-kyverno-plugin: ">= 1.5.0"
     kyverno/policy-reporter-ui: ">= 1.7.2"
+    kyverno/readiness-checker: ">= v1.17.2"
     kyverno/reports-controller: ">= 1.10.1"
-    grafana/k6-operator: ">= 1.2.0"
     # Redis/Valkey metrics exporter, used by valkey-app
     oliver006/redis_exporter: ">= v1.70.0"
     # used for https://github.com/giantswarm/event-exporter-app
@@ -51,5 +53,5 @@ ghcr.io:
     slok/sloth: ">= v0.11.0"
     vmware/pinniped/pinniped-server: ">= v0.40.0"
   images-by-tag-regex:
-    nginxinc/nginx-unprivileged: ^1\.2[3-9]-alpine$
+    nginxinc/nginx-unprivileged: ^1\.(2[3-9]|[3-9][0-9])-alpine$
     k8snetworkplumbingwg/multus-cni: v([0-9].){2}[0-9]-thick$
