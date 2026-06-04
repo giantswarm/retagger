@@ -1,0 +1,6 @@
+- image: cr.kagent.dev/kagent-dev/kagent/controller
+  override_repo_name: kagent-controller
+  semver: ">= v0.9.4"
+- image: cr.kagent.dev/kagent-dev/kagent/ui
+  override_repo_name: kagent-ui
+  semver: ">= v0.9.4"
