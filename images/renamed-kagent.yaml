@@ -4,3 +4,9 @@
 - image: cr.kagent.dev/kagent-dev/kagent/ui
   override_repo_name: kagent-ui
   semver: ">= v0.9.4"
+- image: cr.kagent.dev/kagent-dev/kagent/app
+  override_repo_name: kagent-app
+  semver: ">= v0.9.4"
+- image: cr.kagent.dev/kagent-dev/kagent/skills-init
+  override_repo_name: kagent-skills-init
+  semver: ">= v0.9.4"
