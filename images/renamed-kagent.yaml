@@ -10,3 +10,13 @@
 - image: cr.kagent.dev/kagent-dev/kagent/skills-init
   override_repo_name: kagent-skills-init
   semver: ">= v0.9.4"
+# golang-adk is the Go ADK runtime image used by declarative agents with runtime: go.
+# The controller derives the go image repo by replacing the last path segment of
+# agentImage.repository with "golang-adk", so the destination name must be bare "golang-adk".
+# Two entries: plain semver tags (0.9.x) and the -full variants (used when git skills are present).
+- image: cr.kagent.dev/kagent-dev/kagent/golang-adk
+  override_repo_name: golang-adk
+  semver: ">= v0.9.4"
+- image: cr.kagent.dev/kagent-dev/kagent/golang-adk
+  override_repo_name: golang-adk
+  tag_or_pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+-full$"
