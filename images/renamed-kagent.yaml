@@ -7,6 +7,9 @@
 - image: cr.kagent.dev/kagent-dev/kagent/app
   override_repo_name: kagent-app
   semver: ">= v0.9.4"
+- image: cr.kagent.dev/kagent-dev/kagent/golang-adk
+  override_repo_name: kagent-golang-adk
+  semver: ">= v0.9.6"
 - image: cr.kagent.dev/kagent-dev/kagent/skills-init
   override_repo_name: kagent-skills-init
   semver: ">= v0.9.4"
