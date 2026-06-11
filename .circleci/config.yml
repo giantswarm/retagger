@@ -563,7 +563,6 @@ build_and_retag: &build_and_retag
               - images/renamed-upbound-aws.yaml
               - images/renamed-upbound-azure.yaml
               - images/renamed-upbound-gcp.yaml
-              - images/renamed-kagent.yaml
             # i in range(executor_count)
             executor_id: [0, 1, 2, 3, 4]
 
