@@ -20,3 +20,6 @@
 - image: cr.kagent.dev/kagent-dev/kagent/golang-adk
   override_repo_name: kagent-golang-adk
   tag_or_pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+-full$"
+- image: ghcr.io/kagent-dev/doc2vec/mcp
+  override_repo_name: kagent-doc2vec-mcp
+  semver: ">= 1.1.14"
