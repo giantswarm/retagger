@@ -1,0 +1,7 @@
+# agent-sandbox controller, mirrored from the upstream Kubernetes SIG registry to
+# gsoci with a flat repo name so the giantswarm/agent-sandbox chart can pull it as
+# gsoci.azurecr.io/giantswarm/agent-sandbox-controller. semver tracks stable
+# releases (upstream rc pre-releases are excluded), matching renamed-kagent.yaml.
+- image: registry.k8s.io/agent-sandbox/agent-sandbox-controller
+  override_repo_name: agent-sandbox-controller
+  semver: ">= v0.4.6"
