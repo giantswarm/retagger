@@ -29,4 +29,4 @@
 # the restrict-image-registries Kyverno policy (see giantswarm/kagent helm/kagent).
 - image: ghcr.io/kagent-dev/kagent/tools
   override_repo_name: kagent-tools
-  semver: ">= 0.2.1"
+  semver: ">= 0.1.3"
