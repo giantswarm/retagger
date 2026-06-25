@@ -27,14 +27,23 @@ docker.io:
       - "1.14.1"
       - "1.14.2"
       - "1.14.3"
+      - "1.14.4"
     docker:
       - "18.09.1"
     elasticsearch:
       - "6.8.13"
     fluxcd/flux-cli:
       - "v0.27.0"
+      - "v2.6.4"
+      - "v2.7.5"
+      - "v2.8.8"
     geldata/gel:
       - "7.0"
+    # TLS-termination sidecar for tunnelport-rendered tbot pods. Mirrored so
+    # the chart can pull from gsoci and satisfy the restrict-image-registries
+    # Kyverno policy (see giantswarm/tunnelport helm/tunnelport).
+    ghostunnel/ghostunnel:
+      - "v1.10.0"
     golangci/golangci-lint:
       - "v1.23.8"
     instrumenta/conftest:

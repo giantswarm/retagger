@@ -10,3 +10,23 @@
 - image: cr.kagent.dev/kagent-dev/kagent/skills-init
   override_repo_name: kagent-skills-init
   semver: ">= v0.9.4"
+# golang-adk is the Go ADK runtime image used by declarative agents with runtime: go.
+# The controller derives the go image repo by replacing the last path segment of
+# agentImage.repository with "golang-adk", so the destination name must be bare "golang-adk".
+# Two entries: plain semver tags (0.9.x) and the -full variants (used when git skills are present).
+# See https://github.com/kagent-dev/kagent/issues/2018
+- image: cr.kagent.dev/kagent-dev/kagent/golang-adk
+  override_repo_name: golang-adk
+  semver: ">= v0.9.4"
+- image: cr.kagent.dev/kagent-dev/kagent/golang-adk
+  override_repo_name: golang-adk
+  tag_or_pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+-full$"
+- image: ghcr.io/kagent-dev/doc2vec/mcp
+  override_repo_name: kagent-doc2vec-mcp
+  semver: ">= 1.1.14"
+# kagent-tools is the upstream tool-server image used by the kagent chart's
+# kagent-tools subchart. Mirrored so the chart can pull from gsoci and satisfy
+# the restrict-image-registries Kyverno policy (see giantswarm/kagent helm/kagent).
+- image: ghcr.io/kagent-dev/kagent/tools
+  override_repo_name: kagent-tools
+  semver: ">= 0.1.3"
