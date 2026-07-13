@@ -46,6 +46,9 @@
 - image: docker.io/envoyproxy/ratelimit
   override_repo_name: envoyproxy-ratelimit
   tag_or_pattern: "ff287602"
+- image: docker.io/envoyproxy/ratelimit
+  override_repo_name: envoyproxy-ratelimit
+  tag_or_pattern: "1e50889b"
 - image: docker.io/envoyproxy/ai-gateway-extproc
   override_repo_name: envoyproxy-ai-gateway-extproc
   semver: ">= v0.4.0"
