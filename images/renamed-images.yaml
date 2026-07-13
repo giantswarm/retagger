@@ -25,9 +25,6 @@
 - image: bobrik/curator
   override_repo_name: bobrik-curator
   tag_or_pattern: "5.8.1"
-- image: caicloud/event-exporter
-  override_repo_name: caicloud-event-exporter
-  tag_or_pattern: "v1.0.0"
 - image: cloudflare/cloudflared
   semver: ">= 2023.8.2"
   filter: "^(.+)-amd64$"
