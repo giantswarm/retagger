@@ -964,3 +964,8 @@
 - image: xpkg.upbound.io/upbound/function-cidr
   semver: ">= 0.5.0"
   override_repo_name: crossplane-contrib-function-cidr
+# DiceBear avatar API, self-hosted to render agent avatar icons.
+# See giantswarm/giantswarm#37211.
+- image: docker.io/dicebear/api
+  override_repo_name: dicebear-api
+  semver: ">= 4.9.0"
