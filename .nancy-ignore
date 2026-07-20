@@ -1,1 +1,1 @@
-CVE-2026-39824 until=2026-06-27 # golang.org/x/sys@v0.14.0
+CVE-2026-39824 until=2026-08-12 # golang.org/x/sys@v0.14.0
