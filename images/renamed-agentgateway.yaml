@@ -4,3 +4,11 @@
 - image: cr.agentgateway.dev/agentgateway
   override_repo_name: agentgateway
   semver: ">= v1.2.0"
+# Data-plane proxy image for the kgateway-based agentgateway v2 control plane.
+# kgateway v2.2.1's deployer pins the agentgateway proxy to the 0.x tag line
+# (AgentgatewayDefaultTag, e.g. 0.12.0 in v2.2.1); these do not match the
+# ">= v1.2.0" rule above. Mirror the 0.x data-plane tags so Giant Swarm clusters
+# can pull the proxy from gsoci. See giantswarm/agentgateway (v2 migration).
+- image: cr.agentgateway.dev/agentgateway
+  override_repo_name: agentgateway
+  semver: ">= 0.12.0 < 1.0.0"

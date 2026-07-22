@@ -40,6 +40,7 @@ quay.io:
     prometheus-operator/prometheus-operator: ">= 0.63.0"
     prometheus/alertmanager: ">= v0.25.0"
     prometheus/node-exporter: ">= v1.8.2"
+    prometheuscommunity/yet-another-cloudwatch-exporter: ">= v0.65.0"
     uswitch/kiam: ">= v4.2.0"
   images-by-tag-regex:
     # Tags look like `v3.11.3-distroless`, we match v3.11 and above
