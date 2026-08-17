@@ -36,19 +36,7 @@
   semver: ">= v1.0.2"
 - image: docker.io/envoyproxy/ratelimit
   override_repo_name: envoyproxy-ratelimit
-  tag_or_pattern: "99d85510"
-- image: docker.io/envoyproxy/ratelimit
-  override_repo_name: envoyproxy-ratelimit
-  tag_or_pattern: "3fb70258"
-- image: docker.io/envoyproxy/ratelimit
-  override_repo_name: envoyproxy-ratelimit
-  tag_or_pattern: "c8765e89"
-- image: docker.io/envoyproxy/ratelimit
-  override_repo_name: envoyproxy-ratelimit
-  tag_or_pattern: "ff287602"
-- image: docker.io/envoyproxy/ratelimit
-  override_repo_name: envoyproxy-ratelimit
-  tag_or_pattern: "1e50889b"
+  tag_or_pattern: "(.*)"
 - image: docker.io/envoyproxy/ai-gateway-extproc
   override_repo_name: envoyproxy-ai-gateway-extproc
   semver: ">= v0.4.0"
