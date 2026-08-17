@@ -12,19 +12,6 @@ registry.k8s.io:
     cluster-api-azure/cluster-api-azure-controller: ">= v0.5.0"
     cluster-api-gcp/cluster-api-gcp-controller: ">= v1.0.2"
     cluster-proportional-autoscaler-amd64: ">= 1.6.0"
-    # We have to ensure that etcd is available to CAPI clusters - we set
-    # `clusterConfiguration.imageRepository=docker.io/giantswarm` (e.g. in
-    # cluster-aws:
-    # https://github.com/giantswarm/cluster-aws/search?q=imageRepository%3A) and
-    # that means `kubeadm join` will use the images from our Docker Hub repo.
-    # Kubernetes does not support tag suffixes, so we must publish images as
-    # `docker.io/giantswarm/coredns:v1.10.0`. And those must not conflict with the
-    # `coreos/coreos` tags - since those use a suffix, we're fine here.
-    #
-    # Once https://github.com/kubernetes/kubeadm/issues/2603 (kubeadm shouldn't
-    # pull the coredns image at all since we skip the coredns addon and instead
-    # install it using our app platform) is fixed, we can remove this:
-    coredns/coredns: ">= v1.8.0"
     descheduler/descheduler: ">= v0.31.0"
     dns/k8s-dns-node-cache: ">= 1.21.1"
     etcd: ">= v3.5.4-0"

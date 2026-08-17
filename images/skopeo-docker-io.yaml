@@ -12,22 +12,6 @@ docker.io:
       - "8.1.1911"
     cibuilds/github:
       - "0.12"
-    coredns/coredns:
-      - "1.11.1"
-      - "1.11.3"
-      - "1.11.4"
-      - "1.12.0"
-      - "1.12.1"
-      - "1.12.2"
-      - "1.12.3"
-      - "1.13.0"
-      - "1.13.1"
-      - "1.13.2"
-      - "1.14.0"
-      - "1.14.1"
-      - "1.14.2"
-      - "1.14.3"
-      - "1.14.4"
     docker:
       - "18.09.1"
     elasticsearch:
@@ -129,6 +113,7 @@ docker.io:
     busybox: ">= 1.31.0"
     cfssl/cfssl: ">= 1.6.1"
     clastix/cluster-api-control-plane-provider-kamaji: ">= v0.16.0"
+    coredns/coredns: ">= 1.14.0"
     crossplane/crossplane: ">= v1.9.1"
     curlimages/curl: ">= 7.67.0"
     ealen/echo-server: ">=0.5.0"
