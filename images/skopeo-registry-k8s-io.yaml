@@ -26,6 +26,7 @@ registry.k8s.io:
     pause: ">= 3.1"
     pause-amd64: ">= 3.1"
     provider-aws/aws-ebs-csi-driver: ">= 1.6.2"
+    security-profiles-operator/security-profiles-operator: ">= v1.0.0"
     sig-storage/csi-attacher: ">= v3.4.0"
     sig-storage/csi-node-driver-registrar: ">= v2.5.0"
     sig-storage/csi-provisioner: ">= v3.1.0"
