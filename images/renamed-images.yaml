@@ -960,3 +960,8 @@
 - image: docker.io/dicebear/api
   override_repo_name: dicebear-api
   semver: ">= 4.9.0"
+- image: quay.io/security-profiles-operator/selinuxd-el9
+  override_repo_name: selinuxd
+  # Destination tag (upstream has no tags, image is pinned by sha)
+  tag_or_pattern: "v0.0.0-cddbd306c48ee8d19b8fb07b2acda1ee99cb3f1d9c3988f828d24b4f2de5ad3c"
+  sha: cddbd306c48ee8d19b8fb07b2acda1ee99cb3f1d9c3988f828d24b4f2de5ad3c
