@@ -10,10 +10,14 @@
 - image: cr.kagent.dev/kagent-dev/kagent/skills-init
   override_repo_name: kagent-skills-init
   semver: ">= v0.9.4"
-# golang-adk is the Go ADK runtime image used by declarative agents with runtime: go.
-# The controller derives the go image repo by replacing the last path segment of
-# agentImage.repository with "golang-adk", so the destination name must be bare "golang-adk".
-# Two entries: plain semver tags (0.9.x) and the -full variants (used when git skills are present).
+# golang-adk is the Go ADK runtime image used by declarative agents with runtime: go
+# (the default since kagent 0.10.0). Since 0.10.0 the controller reads that image
+# from the chart's controller.goAgentImage values (GO_IMAGE_REGISTRY/REPOSITORY/TAG
+# in its ConfigMap); the giantswarm/kagent wrapper maps goAgentImage.repository to
+# the bare "golang-adk" that this mirror publishes (before 0.10.0 the controller
+# derived it by replacing the last path segment of agentImage.repository, which
+# is why the destination name is bare and must stay so).
+# Two entries: plain semver tags and the -full variants (used when git skills are present).
 # See https://github.com/kagent-dev/kagent/issues/2018
 # Source is ghcr.io: upstream stopped publishing golang-adk to cr.kagent.dev
 # after 0.9.9 (the other kagent images still live there), which silently
