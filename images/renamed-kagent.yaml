@@ -7,6 +7,14 @@
 - image: cr.kagent.dev/kagent-dev/kagent/app
   override_repo_name: kagent-app
   semver: ">= v0.9.4"
+# kagent >= 0.10.0 resolves Python-runtime declarative agents that carry skills to
+# the `-full` variant of the app image (kagent-app:<controller version>-full), the
+# same way it already does for the Go runtime (golang-adk:<version>-full below).
+# The semver entry above excludes suffixed tags, so mirror the -full tags with
+# their own pattern; upstream publishes them from 0.10.0 on.
+- image: cr.kagent.dev/kagent-dev/kagent/app
+  override_repo_name: kagent-app
+  tag_or_pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+-full$"
 - image: cr.kagent.dev/kagent-dev/kagent/skills-init
   override_repo_name: kagent-skills-init
   semver: ">= v0.9.4"
