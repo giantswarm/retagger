@@ -126,6 +126,9 @@
 - image: fluxcd/source-controller
   override_repo_name: fluxcd-source-controller
   semver: ">= v0.17.0"
+- image: fluxcd/source-watcher
+  override_repo_name: fluxcd-source-watcher
+  semver: ">= v2.1.1"
 - image: registry.k8s.io/cluster-api-vsphere/cluster-api-vsphere-controller
   override_repo_name: cluster-api-vsphere-controller
   semver: ">= v1.5.1"
