@@ -34,6 +34,9 @@
 # (4.1.1) exist next to the s3proxy-4.1.1 aliases; multi-arch (amd64, arm64).
 - image: docker.io/andrewgaul/s3proxy
   override_repo_name: s3proxy
+  # Only x.y.z tags: the repository also publishes digit-only commit tags
+  # (e.g. 03549270) that the semver parser reads as a huge major version.
+  filter: "^([0-9]+\\.[0-9]+\\.[0-9]+)$"
   semver: ">= 4.1.1"
 - image: docker.io/grafana/agent
   override_repo_name: grafana-agent
