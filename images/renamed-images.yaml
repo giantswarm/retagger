@@ -28,6 +28,13 @@
 - image: cloudflare/cloudflared
   semver: ">= 2023.8.2"
   filter: "^(.+)-amd64$"
+# S3 façade in front of Azure Blob for Agent Substrate's snapshot store on CAPZ
+# installations (giantswarm/agent-platform#417): Substrate speaks S3 only; s3proxy's
+# azureblob backend authenticates with Azure Workload Identity. Plain semver tags
+# (4.1.1) exist next to the s3proxy-4.1.1 aliases; multi-arch (amd64, arm64).
+- image: docker.io/andrewgaul/s3proxy
+  override_repo_name: s3proxy
+  semver: ">= 4.1.1"
 - image: docker.io/grafana/agent
   override_repo_name: grafana-agent
   semver: ">= v0.37.2"
