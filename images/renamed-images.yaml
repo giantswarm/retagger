@@ -53,6 +53,12 @@
 - image: docker.io/envoyproxy/ai-gateway-controller
   override_repo_name: envoyproxy-ai-gateway-controller
   semver: ">= v0.4.0"
+- image: docker.io/rancher/fleet
+  override_repo_name: rancher-fleet
+  semver: ">= v0.16.0"
+- image: docker.io/rancher/fleet-agent
+  override_repo_name: rancher-fleet-agent
+  semver: ">= v0.16.0"
 - image: registry.k8s.io/csi-vsphere/driver
   semver: ">= v3.7.2"
   override_repo_name: csi-vsphere-driver
