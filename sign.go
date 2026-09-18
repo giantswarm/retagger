@@ -1,7 +1,9 @@
 package main
 
 import (
+	"crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -136,27 +138,37 @@ func identityFromToken(token string) (string, error) {
 }
 
 // manifestDigest resolves a tag at the registry to the digest the registry
-// addresses the manifest by (the index, for a multi-architecture image). It is
-// skopeo's reported digest, not a hash of the raw bytes: for a Docker schema 1
-// manifest (old mirrors such as etcd v3.3 or flannel v0.11) the registry's
-// digest covers the payload without the signatures, so hashing the raw manifest
-// yields a digest the registry does not know. errManifestUnknown reports a tag
-// or repository that does not exist.
-var errManifestUnknown = errors.New("manifest unknown")
+// addresses the manifest by: the sha256 of the raw manifest bytes, which is the
+// registry's content address for schema 2 and OCI manifests, image indexes and
+// OCI artifacts alike. (`skopeo inspect` without --raw picks a platform instance
+// instead, which fails on an index without linux/amd64 and on an artifact such
+// as a falco rules file.) A Docker schema 1 manifest is the exception, and it
+// cannot be signed at all: cosign refuses its media type, so it is reported as
+// errUnsignable. errManifestUnknown reports a tag or repository that does not exist.
+var (
+	errManifestUnknown = errors.New("manifest unknown")
+	errUnsignable      = errors.New("schema 1 manifest, which cosign cannot sign")
+)
 
 func manifestDigest(image string) (string, error) {
-	c, stdout, stderr := command("skopeo", "inspect", "--no-tags", "--format", "{{.Digest}}", "--retry-times", "3", dockerTransport+image)
+	c, stdout, stderr := command("skopeo", "inspect", "--raw", "--retry-times", "3", dockerTransport+image)
 	if err := c.Run(); err != nil {
 		if manifestUnknownPattern.MatchString(stderr.String()) {
 			return "", errManifestUnknown
 		}
 		return "", fmt.Errorf("error inspecting %q: %w\n%s", image, err, stderr.String())
 	}
-	digest := strings.TrimSpace(stdout.String())
-	if !strings.HasPrefix(digest, "sha256:") {
-		return "", fmt.Errorf("error inspecting %q: skopeo reported no digest: %q", image, digest)
+	var m struct {
+		SchemaVersion int `json:"schemaVersion"`
 	}
-	return digest, nil
+	if err := json.Unmarshal(stdout.Bytes(), &m); err != nil {
+		return "", fmt.Errorf("error parsing the manifest of %q: %w", image, err)
+	}
+	if m.SchemaVersion == 1 {
+		return "", errUnsignable
+	}
+	sum := sha256.Sum256(stdout.Bytes())
+	return "sha256:" + hex.EncodeToString(sum[:]), nil
 }
 
 // cosign runs one cosign call, retrying failures that match transient (in
@@ -215,18 +227,22 @@ const (
 	outcomeSigned signOutcome = iota
 	outcomeSkipped
 	outcomeMissing
+	outcomeUnsignable
 	outcomeFailed
 )
 
 // signTag signs one destination tag unless its digest already verifies against
 // identity. It returns outcomeMissing when the tag is not at the registry (the
-// copy did not happen) and outcomeFailed with the error otherwise.
+// copy did not happen), outcomeUnsignable for a manifest cosign cannot sign, and
+// outcomeFailed with the error otherwise.
 func signTag(image, identity string, tokens *oidcTokenSource) (signOutcome, error) {
 	digest, err := manifestDigest(image)
-	if errors.Is(err, errManifestUnknown) {
+	switch {
+	case errors.Is(err, errManifestUnknown):
 		return outcomeMissing, nil
-	}
-	if err != nil {
+	case errors.Is(err, errUnsignable):
+		return outcomeUnsignable, nil
+	case err != nil:
 		return outcomeFailed, err
 	}
 	repository := image[:strings.LastIndex(image, ":")]
@@ -248,9 +264,9 @@ func signTag(image, identity string, tokens *oidcTokenSource) (signOutcome, erro
 //
 // It lists the tags the skopeo YAML file governs (the way `retagger filter`
 // does), resolves each at the destination registry and signs every digest that
-// does not yet carry this job's signature. Tags absent from the registry are
-// reported and skipped; a signing or verification failure fails the command
-// once every tag has been attempted.
+// does not yet carry this job's signature. Tags absent from the registry and
+// manifests cosign cannot sign are reported and skipped; a signing or
+// verification failure fails the command once every tag has been attempted.
 func commandSign(filePath string) {
 	if filePath == "" {
 		logrus.Fatal("You need to specify filepath: 'retagger sign <path>'")
@@ -285,7 +301,7 @@ func commandSign(filePath string) {
 	logger.Infof("Found %d image tags to sign at %q", len(images), flagRegistry)
 
 	var (
-		counts [4]int
+		counts [5]int
 		mu     sync.Mutex
 		wg     sync.WaitGroup
 		queue  = make(chan string)
@@ -306,6 +322,8 @@ func commandSign(filePath string) {
 					logger.Debugf("already signed %q", image)
 				case outcomeMissing:
 					logger.Warnf("not at the registry, nothing to sign: %q", image)
+				case outcomeUnsignable:
+					logger.Warnf("cannot be signed (%v): %q", errUnsignable, image)
 				case outcomeFailed:
 					logger.Errorf("failed to sign %q: %v", image, err)
 				}
@@ -318,8 +336,8 @@ func commandSign(filePath string) {
 	close(queue)
 	wg.Wait()
 
-	logger.Infof("Done: %d signed, %d already signed, %d not at the registry, %d failed",
-		counts[outcomeSigned], counts[outcomeSkipped], counts[outcomeMissing], counts[outcomeFailed])
+	logger.Infof("Done: %d signed, %d already signed, %d not at the registry, %d unsignable (schema 1), %d failed",
+		counts[outcomeSigned], counts[outcomeSkipped], counts[outcomeMissing], counts[outcomeUnsignable], counts[outcomeFailed])
 	if counts[outcomeFailed] > 0 {
 		logger.Fatalf("Signing ended with %d errors", counts[outcomeFailed])
 	}
