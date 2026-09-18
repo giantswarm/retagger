@@ -49,19 +49,29 @@ const (
 	// for every signature, so a long sign-only pass needs the token renewed.
 	oidcTokenMaxAge = 30 * time.Minute
 	// cosignAttempts is how often a cosign call is tried when it fails for a
-	// transient reason (see transientErrorPattern).
-	cosignAttempts = 4
+	// transient reason (see transientErrorPattern). The backoff doubles from
+	// five seconds, so six attempts wait up to 155 s in total: long enough for
+	// the registry's per-minute throttling to pass when many jobs sign at once.
+	cosignAttempts = 6
 )
 
 var (
 	// transientErrorPattern matches transport failures and HTTP statuses of the
 	// public Sigstore services and the registry that a retry with backoff
 	// resolves. Auth and configuration errors (401, 403, 404) are not listed so
-	// that a genuine misconfiguration fails fast. Same set as the architect orb.
+	// that a genuine misconfiguration fails fast. The architect orb's set plus
+	// the registry's own throttling token: Azure Container Registry answers a
+	// burst of referrers lookups with the error code TOOMANYREQUESTS.
 	transientErrorPattern = regexp.MustCompile(`INTERNAL_ERROR|stream error|GOAWAY|connection reset|connection refused|broken pipe` +
 		`|unexpected EOF|TLS handshake timeout|i/o timeout|context deadline exceeded|Client\.Timeout` +
-		`|Internal Server Error|Bad Gateway|Service Unavailable|Gateway Timeout|Too Many Requests|Request Timeout` +
+		`|Internal Server Error|Bad Gateway|Service Unavailable|Gateway Timeout|Too Many Requests|TOOMANYREQUESTS|Request Timeout` +
 		`|[Ss]tatus:? (408|425|429|5[0-9][0-9])`)
+	// noSignaturePattern is cosign's answer when the registry lists no signature
+	// for a digest. Right after a signature was pushed it is a read-after-write
+	// race (the registry's referrers index catches up within seconds, and a
+	// throttled listing looks the same), so the verify that follows a sign
+	// retries it; before a sign it is the expected answer for an unsigned digest.
+	noSignaturePattern = regexp.MustCompile(`no signatures found|no matching signatures`)
 	// rekorDuplicatePattern matches Rekor's rejection of an entry it already
 	// holds (HTTP 409): the signature was recorded, only the client's retry of
 	// the upload was refused.
@@ -145,9 +155,10 @@ func manifestDigest(image string) (string, error) {
 	return "sha256:" + hex.EncodeToString(sum[:]), nil
 }
 
-// cosign runs one cosign call, retrying transient failures with backoff. A
-// Rekor duplicate-entry rejection counts as success: the entry exists.
-func cosign(env []string, args ...string) error {
+// cosign runs one cosign call, retrying failures that match transient (in
+// addition to transientErrorPattern) with backoff. A Rekor duplicate-entry
+// rejection counts as success: the entry exists.
+func cosign(env []string, transient *regexp.Regexp, args ...string) error {
 	var lastErr error
 	for attempt := 1; attempt <= cosignAttempts; attempt++ {
 		c, _, stderr := command("cosign", args...)
@@ -162,7 +173,8 @@ func cosign(env []string, args ...string) error {
 			return nil
 		}
 		lastErr = fmt.Errorf("cosign %s: %w\n%s", strings.Join(args, " "), err, out)
-		if !transientErrorPattern.MatchString(out) || attempt == cosignAttempts {
+		retry := transientErrorPattern.MatchString(out) || (transient != nil && transient.MatchString(out))
+		if !retry || attempt == cosignAttempts {
 			return lastErr
 		}
 		logrus.Warnf("cosign %s: transient error (attempt %d/%d), retrying", args[0], attempt, cosignAttempts)
@@ -171,9 +183,15 @@ func cosign(env []string, args ...string) error {
 	return lastErr
 }
 
-// cosignVerify checks that ref carries a valid keyless signature issued to identity.
-func cosignVerify(ref, identity string) error {
-	return cosign(nil, "verify", "--certificate-oidc-issuer", oidcIssuer, "--certificate-identity", identity, ref)
+// cosignVerify checks that ref carries a valid keyless signature issued to
+// identity. justSigned makes a "no signatures found" answer a retried
+// read-after-write race instead of the final word.
+func cosignVerify(ref, identity string, justSigned bool) error {
+	var transient *regexp.Regexp
+	if justSigned {
+		transient = noSignaturePattern
+	}
+	return cosign(nil, transient, "verify", "--certificate-oidc-issuer", oidcIssuer, "--certificate-identity", identity, ref)
 }
 
 // cosignSign signs ref with cosign keyless signing under the OIDC token; cosign
@@ -183,7 +201,7 @@ func cosignSign(ref string, tokens *oidcTokenSource) error {
 	if err != nil {
 		return err
 	}
-	return cosign([]string{"SIGSTORE_ID_TOKEN=" + token}, "sign", "--yes", ref)
+	return cosign([]string{"SIGSTORE_ID_TOKEN=" + token}, nil, "sign", "--yes", ref)
 }
 
 // signOutcome is what happened to one image tag.
@@ -210,13 +228,13 @@ func signTag(image, identity string, tokens *oidcTokenSource) (signOutcome, erro
 	repository := image[:strings.LastIndex(image, ":")]
 	ref := repository + "@" + digest
 
-	if err := cosignVerify(ref, identity); err == nil {
+	if err := cosignVerify(ref, identity, false); err == nil {
 		return outcomeSkipped, nil
 	}
 	if err := cosignSign(ref, tokens); err != nil {
 		return outcomeFailed, err
 	}
-	if err := cosignVerify(ref, identity); err != nil {
+	if err := cosignVerify(ref, identity, true); err != nil {
 		return outcomeFailed, fmt.Errorf("signed %q but the signature does not verify: %w", ref, err)
 	}
 	return outcomeSigned, nil
