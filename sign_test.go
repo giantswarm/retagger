@@ -201,6 +201,21 @@ func TestVerifyAfterSignRetriesTheReadAfterWriteRace(t *testing.T) {
 	}
 }
 
+func TestManifestDigestIsTheRegistrysDigest(t *testing.T) {
+	dir := t.TempDir()
+	// skopeo reports the digest the registry addresses the manifest by, which for
+	// a schema 1 manifest is not the hash of the raw bytes; the command takes it verbatim.
+	script := "#!/bin/sh\ncase \"$*\" in *--format*) echo sha256:4e6968ba32e055b83cb96ec21d96e07c03d1bc6e2aa48ffe77929a6b7344b2e9;; *) exit 1;; esac\n"
+	if err := os.WriteFile(filepath.Join(dir, "skopeo"), []byte(script), 0o700); err != nil { // #nosec G306 -- an executable test fixture
+		t.Fatal(err)
+	}
+	t.Setenv("PATH", dir+string(os.PathListSeparator)+os.Getenv("PATH"))
+	digest, err := manifestDigest("example.invalid/ns/etcd:v3.3")
+	if err != nil || digest != "sha256:4e6968ba32e055b83cb96ec21d96e07c03d1bc6e2aa48ffe77929a6b7344b2e9" {
+		t.Fatalf("digest = %q, err = %v", digest, err)
+	}
+}
+
 func TestSignTagReportsMissingImages(t *testing.T) {
 	dir := t.TempDir()
 	script := "#!/bin/sh\necho 'reading manifest v0.20.0 in example.invalid/ns/agent: manifest unknown' >&2\nexit 1\n"
