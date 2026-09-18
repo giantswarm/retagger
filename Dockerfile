@@ -1,14 +1,17 @@
-ARG ALPINE_VERSION=3.22
-ARG GO_VERSION=1.25.0
+# Every pin below is kept current by Renovate: the FROM tags and the skopeo ARG
+# (used in a FROM) by its Dockerfile manager, the other ARGs by the org preset's
+# comment manager, which reads the annotation line above each of them.
 ARG SKOPEO_VERSION=v1.19.0
 
-FROM gsoci.azurecr.io/giantswarm/golang:${GO_VERSION}-alpine${ALPINE_VERSION} AS builder
+FROM gsoci.azurecr.io/giantswarm/golang:1.25.0-alpine3.22 AS builder
 
 RUN apk add --no-cache git make bash curl
 
-# Build a static skopeo binary
+# Build a static skopeo binary from the release whose trust policies the final
+# image copies below (the same SKOPEO_VERSION).
 WORKDIR /build
-RUN git clone --branch v1.19.0 --depth 1 https://github.com/containers/skopeo.git
+ARG SKOPEO_VERSION
+RUN git clone --branch "${SKOPEO_VERSION}" --depth 1 https://github.com/containers/skopeo.git
 WORKDIR /build/skopeo
 RUN BUILDTAGS=containers_image_openpgp DISABLE_CGO=1 CGO_ENABLED=0 make bin/skopeo
 
@@ -19,6 +22,7 @@ RUN CGO_ENABLED=0 go build -o retagger .
 
 # Fetch docker binary
 WORKDIR /build/docker
+# renovate: datasource=docker depName=docker
 ARG DOCKER_VERSION=25.0.5
 RUN curl -O https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz && tar -xvf docker-${DOCKER_VERSION}.tgz
 
@@ -35,7 +39,7 @@ RUN curl -sSLO https://github.com/sigstore/cosign/releases/download/${COSIGN_VER
 FROM gsoci.azurecr.io/giantswarm/skopeo:${SKOPEO_VERSION} AS skopeo
 
 # Add all binaries to a fresh image
-FROM gsoci.azurecr.io/giantswarm/alpine:${ALPINE_VERSION}.1
+FROM gsoci.azurecr.io/giantswarm/alpine:3.22.1
 
 # We need bash for CircleCI script execution
 RUN apk add --no-cache bash
