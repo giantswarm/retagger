@@ -5,8 +5,9 @@
 //   - `retagger filter <path>` - Processes skopeo YAML files in images/skopeo-* and creates a
 //     list of image syncing tasks to be performed. This is simple copying of images from one
 //     repository to another.
-//   - `retagger sign <path>` - Signs the images a skopeo YAML file governs at the destination
-//     registry with cosign keyless signing under the CircleCI job's OIDC identity (see sign.go).
+//   - `retagger sign <path>` - Signs the images a skopeo YAML file or a renamed-images file
+//     governs at the destination registry with cosign keyless signing under the CircleCI job's
+//     OIDC identity (see sign.go). `retagger run --sign` signs each tag right after its copy.
 package main
 
 import (
@@ -19,7 +20,6 @@ import (
 	"regexp"
 	"strings"
 	"sync"
-	"sync/atomic"
 
 	"github.com/Masterminds/semver/v3"
 	"github.com/sirupsen/logrus"
@@ -38,6 +38,7 @@ var (
 	flagExecutorCount    int
 	flagExecutorID       int
 	flagSkipExistingTags bool
+	flagSign             bool
 	flagRegistry         string
 	flagSignWorkers      int
 
@@ -110,70 +111,79 @@ func (img *RenamedImage) Validate() error {
 	return nil
 }
 
-// RetagUsingSHA pulls an image matching the SHA, retags, and pushes it to AzureCR and Aliyun.
-// Any optional parameters configured will be applied as well, e.g. tag suffix.
-// The pushed image will be tagged with the value of image.TagOrPattern.
-func (img *RenamedImage) RetagUsingSHA() error {
-	// Overwrite image name if applicable
-	destinationName := imageBaseName(img.Image)
+// DestinationName is the repository the image is copied to under the
+// destination registry's namespace: the override, else the source's basename.
+func (img *RenamedImage) DestinationName() string {
 	if img.OverrideRepoName != "" {
-		destinationName = img.OverrideRepoName
+		return img.OverrideRepoName
 	}
-	// Add tag suffix if applicable
-	destinationTag := img.TagOrPattern
+	return imageBaseName(img.Image)
+}
+
+// DestinationTag is the tag a source tag is copied to: the suffix appended and,
+// for a semver rule that says so, the 'v' prefix stripped.
+func (img *RenamedImage) DestinationTag(tag string) string {
 	if img.AddTagSuffix != "" {
-		destinationTag = img.TagOrPattern + "-" + img.AddTagSuffix
+		tag = tag + "-" + img.AddTagSuffix
 	}
+	if img.Semver != "" && img.StripSemverPrefix {
+		tag = strings.TrimPrefix(tag, "v")
+	}
+	return tag
+}
 
-	errorCounter := &atomic.Int64{}
+// copyTag copies one source reference to its destination in AzureCR and Aliyun
+// at the same time. The AzureCR copy is signed right after it lands when a
+// signer is given; a copy that failed is logged by copyImage and not signed.
+func (img *RenamedImage) copyTag(source, destinationTag string, signer *signer) {
+	azure := fmt.Sprintf("%s/%s:%s", azureURL, img.DestinationName(), destinationTag)
+	aliyun := fmt.Sprintf("%s/%s:%s", aliyunURL, img.DestinationName(), destinationTag)
 
-	// We'll use skopeo copy for this, because it's awesome.
-	source := fmt.Sprintf("%s%s@sha256:%s", dockerTransport, img.Image, img.SHA)
-	wg := sync.WaitGroup{}
+	var wg sync.WaitGroup
+	var azureErr error
 	wg.Add(2)
-	// AzureCR
-	destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, azureURL, destinationName, destinationTag)
-	go copyImage(&wg, errorCounter, source, destination)
-	// Aliyun
-	destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, aliyunURL, destinationName, destinationTag)
-	go copyImage(&wg, errorCounter, source, destination)
+	go func() {
+		defer wg.Done()
+		azureErr = copyImage(source, dockerTransport+azure)
+	}()
+	go func() {
+		defer wg.Done()
+		_ = copyImage(source, dockerTransport+aliyun)
+	}()
 	wg.Wait()
 
-	if errorCount := errorCounter.Load(); errorCount > 0 {
-		return fmt.Errorf("finished %q with %d errors", img.Image, errorCount)
+	if signer != nil && azureErr == nil {
+		signer.Sign(azure)
 	}
-	return nil
+}
+
+// RetagUsingSHA pulls an image matching the SHA, retags, and pushes it to AzureCR and Aliyun.
+// Any optional parameters configured will be applied as well, e.g. tag suffix.
+// The pushed image will be tagged with the value of image.TagOrPattern. The
+// AzureCR copy is signed when a signer is given.
+func (img *RenamedImage) RetagUsingSHA(signer *signer) {
+	// We'll use skopeo copy for this, because it's awesome.
+	source := fmt.Sprintf("%s%s@sha256:%s", dockerTransport, img.Image, img.SHA)
+	img.copyTag(source, img.DestinationTag(img.TagOrPattern), signer)
 }
 
 // RetagUsingTags finds all tags matching the img.TagOrPattern or
-// img.Semver, retags, and pushes them to the Aliyun container registry.
+// img.Semver, retags, and pushes them to AzureCR and Aliyun.
 // Any optional parameters configured will be applied as well, e.g. tag suffix.
-func (img *RenamedImage) RetagUsingTags() error {
-	// List available image tags
-	tags, err := listTags(img.Image)
+// Each AzureCR copy is signed when a signer is given.
+func (img *RenamedImage) RetagUsingTags(signer *signer) error {
+	tags, err := img.SourceTags()
 	if err != nil {
 		return err
 	}
 
-	// Overwrite image name if applicable
-	destinationName := imageBaseName(img.Image)
-	if img.OverrideRepoName != "" {
-		destinationName = img.OverrideRepoName
-	}
-
-	// Filter the tags using TagOrPattern or Semver+Filter.
-	tags, err = img.FilterTags(tags)
-	if err != nil {
-		return fmt.Errorf("error filtering tags: %w", err)
-	}
-
 	// Exclude tags existing in all registries
 	if flagSkipExistingTags {
-		azureTags, err := listTags(fmt.Sprintf("%s/%s", azureURL, destinationName))
+		azureTags, err := listTags(fmt.Sprintf("%s/%s", azureURL, img.DestinationName()))
 		if err != nil {
 			logrus.Warnf("error getting AzureCR tags: %s", err)
 		}
-		aliyunTags, err := listTags(fmt.Sprintf("%s/%s", aliyunURL, destinationName))
+		aliyunTags, err := listTags(fmt.Sprintf("%s/%s", aliyunURL, img.DestinationName()))
 		if err != nil {
 			logrus.Warnf("error getting Aliyun tags: %s", err)
 		}
@@ -181,39 +191,44 @@ func (img *RenamedImage) RetagUsingTags() error {
 		logrus.Infof("Found %d missing tags for image %q", len(tags), img.Image)
 	}
 
-	errorCounter := &atomic.Int64{}
-
-	// Iterate through all found tags and retag ones matching the semver/pattern
 	for _, tag := range tags {
-		// Add tag suffix if applicable
-		destinationTag := tag
-		if img.AddTagSuffix != "" {
-			destinationTag = tag + "-" + img.AddTagSuffix
-		}
-		if img.Semver != "" && img.StripSemverPrefix {
-			destinationTag = strings.TrimPrefix(destinationTag, "v")
-		}
-
 		// We'll use skopeo copy for this, because it's awesome.
 		source := fmt.Sprintf("%s%s:%s", dockerTransport, img.Image, tag)
-		wg := sync.WaitGroup{}
-		wg.Add(2)
-		// Azure
-		destination := fmt.Sprintf("%s%s/%s:%s", dockerTransport, azureURL, destinationName, destinationTag)
-		go copyImage(&wg, errorCounter, source, destination)
-		// Aliyun
-		destination = fmt.Sprintf("%s%s/%s:%s", dockerTransport, aliyunURL, destinationName, destinationTag)
-		go copyImage(&wg, errorCounter, source, destination)
-		wg.Wait()
-
-		// We'll skip to the next tag
-		continue
-	}
-
-	if errorCount := errorCounter.Load(); errorCount > 0 {
-		return fmt.Errorf("finished %q with %d errors", img.Image, errorCount)
+		img.copyTag(source, img.DestinationTag(tag), signer)
 	}
 	return nil
+}
+
+// SourceTags lists the tags of the source image the rule selects: every tag
+// the registry has, filtered by TagOrPattern or Semver+Filter.
+func (img *RenamedImage) SourceTags() ([]string, error) {
+	tags, err := listTags(img.Image)
+	if err != nil {
+		return nil, err
+	}
+	tags, err = img.FilterTags(tags)
+	if err != nil {
+		return nil, fmt.Errorf("error filtering tags: %w", err)
+	}
+	return tags, nil
+}
+
+// DestinationReferences lists the references the rule governs at the
+// destination registry (registry/namespace/name:tag): one for a SHA rule,
+// one per selected source tag otherwise.
+func (img *RenamedImage) DestinationReferences(registry string) ([]string, error) {
+	if img.SHA != "" {
+		return []string{fmt.Sprintf("%s/%s:%s", registry, img.DestinationName(), img.DestinationTag(img.TagOrPattern))}, nil
+	}
+	tags, err := img.SourceTags()
+	if err != nil {
+		return nil, err
+	}
+	references := make([]string, 0, len(tags))
+	for _, tag := range tags {
+		references = append(references, fmt.Sprintf("%s/%s:%s", registry, img.DestinationName(), img.DestinationTag(tag)))
+	}
+	return references, nil
 }
 
 // FilterTags returns a trimmed down list of tags, based on defined rules. It
@@ -292,14 +307,7 @@ func (img *RenamedImage) FindMissingTags(tags []string, present ...[]string) []s
 	var filteredTags []string
 	for _, tag := range tags {
 		tagIsMissing := false
-
-		destinationTag := tag
-		if img.AddTagSuffix != "" {
-			destinationTag = tag + "-" + img.AddTagSuffix
-		}
-		if img.Semver != "" && img.StripSemverPrefix {
-			destinationTag = strings.TrimPrefix(destinationTag, "v")
-		}
+		destinationTag := img.DestinationTag(tag)
 
 		for _, existingTags := range present {
 			if !slices.Contains(existingTags, destinationTag) {
@@ -391,16 +399,17 @@ func imageBaseName(name string) string {
 
 // copyImage is a helper function used to invoke `skopeo copy`. Please note the
 // `--all`, which makes skopeo include ALL SHAs included in the tag's digest,
-// ensuring builds for all available platforms.
-func copyImage(wg *sync.WaitGroup, _ *atomic.Int64, source, destination string) {
-	defer wg.Done()
+// ensuring builds for all available platforms. A failed copy is logged and
+// returned; it does not fail the run.
+func copyImage(source, destination string) error {
 	c, _, stderr := command("skopeo", "copy", "--all", "--retry-times", "3", source, destination)
 	logrus.Debugf("copying %q to %q", source, destination)
 	if err := c.Run(); err != nil {
 		logrus.Errorf("error copying %q to %q: %v\n%s", source, destination, err, stderr.String())
-		return
+		return err
 	}
 	logrus.Debugf("copied %q to %q", source, destination)
+	return nil
 }
 
 // command is a helper function so I don't have to manually plug bytes.Buffer
@@ -418,9 +427,10 @@ func init() {
 	flag.StringVar(&flagFile, "filename", renamedImagesFile, "Sets the file to use for renaming")
 	flag.StringVar(&flagLogLevel, "log-level", "debug", "Sets log level")
 	// `retagger run` flags
-	flag.IntVar(&flagExecutorCount, "executor-count", 1, "Number of executors in a parallelized run. Used with 'retagger run'.")
-	flag.IntVar(&flagExecutorID, "executor-id", 0, "ID of the executor in a parallelized run. Used with 'retagger run'.")
+	flag.IntVar(&flagExecutorCount, "executor-count", 1, "Number of executors in a parallelized run. Used with 'retagger run' and, for a renamed-images file, 'retagger sign'.")
+	flag.IntVar(&flagExecutorID, "executor-id", 0, "ID of the executor in a parallelized run. Used with 'retagger run' and, for a renamed-images file, 'retagger sign'.")
 	flag.BoolVar(&flagSkipExistingTags, "skip-existing-tags", true, "Skip tags which are already present in the target container registry. Used with 'retagger run'.")
+	flag.BoolVar(&flagSign, "sign", false, "Sign every tag copied to AzureCR right after the copy, with cosign keyless signing under the CircleCI job's OIDC identity. Used with 'retagger run'.")
 	// `retagger sign` flags
 	flag.StringVar(&flagRegistry, "registry", azureURL, "Registry and namespace whose mirrored images are signed. Used with 'retagger sign'.")
 	flag.IntVar(&flagSignWorkers, "sign-workers", 4, "Number of images signed concurrently. Used with 'retagger sign'.")
@@ -444,18 +454,66 @@ func init() {
 	logStdErr.Out = os.Stderr
 }
 
-// commandRun is invoked when `retagger run` is called.
-func commandRun() {
-	// Validate commandRun-specific flags
-	if flagExecutorID < 0 || flagExecutorID >= flagExecutorCount {
-		logrus.Fatalf("%q flag has to be greater than 0 and lower than %q", "executor-id", "executor-count")
-	}
+// validateExecutorFlags checks the sharding flags `retagger run` and, for a
+// renamed-images file, `retagger sign` share.
+func validateExecutorFlags() {
 	if flagExecutorCount < 1 {
 		logrus.Fatalf("%q cannot be lower than 1", "executor-count")
+	}
+	if flagExecutorID < 0 || flagExecutorID >= flagExecutorCount {
+		logrus.Fatalf("%q flag has to be greater than 0 and lower than %q", "executor-id", "executor-count")
 	}
 	if flagExecutorCount > 10 {
 		logrus.Warnf("%q is set to %d, are you sure that's on purpose?", "executor-count", flagExecutorCount)
 	}
+}
+
+// executorOwns tells whether the rule at index i of a renamed-images file is
+// this executor's share of the work.
+func executorOwns(i int) bool {
+	return i%flagExecutorCount == flagExecutorID
+}
+
+// loadRenamedImages reads the rules of a renamed-images file.
+func loadRenamedImages(filePath string) ([]RenamedImage, error) {
+	b, err := os.ReadFile(filepath.Clean(filePath))
+	if err != nil {
+		return nil, fmt.Errorf("error reading %q: %w", filePath, err)
+	}
+	var renamedImages []RenamedImage
+	if err := yaml.Unmarshal(b, &renamedImages); err != nil {
+		return nil, fmt.Errorf("error unmarshaling %q: %w", filePath, err)
+	}
+	return renamedImages, nil
+}
+
+// isRenamedImagesFile tells a renamed-images file (a YAML sequence of rules)
+// from a skopeo YAML file (a mapping of registries) by the document's shape.
+func isRenamedImagesFile(filePath string) (bool, error) {
+	b, err := os.ReadFile(filepath.Clean(filePath))
+	if err != nil {
+		return false, fmt.Errorf("error reading %q: %w", filePath, err)
+	}
+	var document yaml.Node
+	if err := yaml.Unmarshal(b, &document); err != nil {
+		return false, fmt.Errorf("error parsing %q: %w", filePath, err)
+	}
+	if document.Kind != yaml.DocumentNode || len(document.Content) != 1 {
+		return false, fmt.Errorf("%q does not hold one YAML document", filePath)
+	}
+	switch document.Content[0].Kind {
+	case yaml.SequenceNode:
+		return true, nil
+	case yaml.MappingNode:
+		return false, nil
+	default:
+		return false, fmt.Errorf("%q is neither a renamed-images file nor a skopeo YAML file", filePath)
+	}
+}
+
+// commandRun is invoked when `retagger run` is called.
+func commandRun() {
+	validateExecutorFlags()
 
 	if err := os.MkdirAll(temporaryWorkingDir, 0750); err != nil {
 		logrus.Fatal(err)
@@ -465,26 +523,23 @@ func commandRun() {
 
 	logger.Infof("Using file %q", flagFile)
 
-	// Load renamed image definitions from a file
-	var renamedImages []RenamedImage
-	{
-		flagFile = filepath.Clean(flagFile)
-		b, err := os.ReadFile(flagFile)
-		if err != nil {
-			logger.Fatalf("error reading %q: %s", flagFile, err)
-		}
-		if err := yaml.Unmarshal(b, &renamedImages); err != nil {
-			logger.Fatalf("error unmarshaling %q: %s", flagFile, err)
+	renamedImages, err := loadRenamedImages(flagFile)
+	if err != nil {
+		logger.Fatal(err)
+	}
+	logger.Infof("Found %d images to rename and copy", len(renamedImages))
+
+	var tagSigner *signer
+	if flagSign {
+		if tagSigner, err = newSigner(logger); err != nil {
+			logger.Fatal(err)
 		}
 	}
-
-	logger.Infof("Found %d images to rename and copy", len(renamedImages))
 
 	// Iterate over every image x tag and retag/rebuild it
 	errorCounter := 0
 	for i, image := range renamedImages {
-		// Skip images meant for other executors
-		if i%flagExecutorCount != flagExecutorID {
+		if !executorOwns(i) {
 			continue
 		}
 		if err := image.Validate(); err != nil {
@@ -494,18 +549,17 @@ func commandRun() {
 		}
 		logger.Printf("[%d/%d] Retagging %q", i+1, len(renamedImages), image.Image)
 		if image.SHA != "" {
-			if err := image.RetagUsingSHA(); err != nil {
-				logger.Errorf("got error: %v", err)
-				errorCounter++
-			}
-		} else {
-			if err := image.RetagUsingTags(); err != nil {
-				logger.Errorf("got error: %v", err)
-				errorCounter++
-			}
+			image.RetagUsingSHA(tagSigner)
+		} else if err := image.RetagUsingTags(tagSigner); err != nil {
+			logger.Errorf("got error: %v", err)
+			errorCounter++
 		}
 	}
 
+	if tagSigner != nil {
+		logger.Info(tagSigner.Summary())
+		errorCounter += tagSigner.Failed()
+	}
 	if errorCounter > 0 {
 		logger.Fatalf("Retagging ended with %d errors", errorCounter)
 	}
@@ -657,7 +711,7 @@ func commandFilter(filePath string) {
 
 func main() {
 	if len(flag.Args()) == 0 {
-		fmt.Println("retagger run             Retag images\nretagger filter <path>   Filter missing tags for skopeo YAML file\nretagger sign <path>     Sign the images of a skopeo YAML file at the destination registry")
+		fmt.Println("retagger run             Retag images\nretagger filter <path>   Filter missing tags for skopeo YAML file\nretagger sign <path>     Sign the images a skopeo or renamed-images YAML file governs at the destination registry")
 		fmt.Println("")
 		flag.Usage()
 		os.Exit(0)

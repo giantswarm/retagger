@@ -17,20 +17,23 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// `retagger sign <path>` signs the images a skopeo YAML file governs at their
-// destination registry with cosign keyless signing (Sigstore: Fulcio
-// certificate, Rekor transparency log, signature stored next to the image as an
-// OCI referrer). The signing identity is the CircleCI job's OIDC identity, the
-// same identity shape the architect orb signs Giant Swarm-built images with, so
-// one keyless attestor admits mirrored and built images alike:
+// `retagger sign <path>` signs the images a skopeo YAML file or a renamed-images
+// file governs at their destination registry with cosign keyless signing
+// (Sigstore: Fulcio certificate, Rekor transparency log, signature stored next
+// to the image as an OCI referrer). The signing identity is the CircleCI job's
+// OIDC identity, the same identity shape the architect orb signs Giant
+// Swarm-built images with, so one keyless attestor admits mirrored and built
+// images alike:
 //
 //	issuer:  https://oidc.circleci.com
 //	subject: https://circleci.com/api/v2/projects/<project-id>/pipeline-definitions/<pipeline-definition-id>
 //
-// The command is idempotent: a digest that already verifies against this job's
-// identity is skipped, so it runs after every copy (over the `.filtered` file)
-// and, given the unfiltered file, as a sign-only pass over every tag the file
-// governs.
+// Signing is idempotent: a digest that already verifies against this job's
+// identity is skipped. The skopeo path signs after every copy (over the
+// `.filtered` file) and, given the unfiltered file, as a sign-only pass over
+// every tag the file governs; `retagger run --sign` signs each renamed tag right
+// after its copy, and `retagger sign` over a renamed-images file is the pass over
+// every tag its rules govern, sharded by executor like `retagger run`.
 const (
 	// oidcIssuer is the issuer of the CircleCI OIDC tokens Fulcio federates with
 	// (the root issuer, not the organisation-scoped one).
@@ -260,73 +263,64 @@ func signTag(image, identity string, tokens *oidcTokenSource) (signOutcome, erro
 	return outcomeSigned, nil
 }
 
-// commandSign is invoked when `retagger sign <path>` is called.
-//
-// It lists the tags the skopeo YAML file governs (the way `retagger filter`
-// does), resolves each at the destination registry and signs every digest that
-// does not yet carry this job's signature. Tags absent from the registry and
-// manifests cosign cannot sign are reported and skipped; a signing or
-// verification failure fails the command once every tag has been attempted.
-func commandSign(filePath string) {
-	if filePath == "" {
-		logrus.Fatal("You need to specify filepath: 'retagger sign <path>'")
-	}
-	if flagSignWorkers < 1 {
-		logrus.Fatalf("%q cannot be lower than 1", "sign-workers")
-	}
-	logger := logrus.WithField("file", filePath)
+// signer signs destination references under the job's identity and keeps the
+// tally of outcomes for the summary line. It is safe for concurrent use.
+type signer struct {
+	identity string
+	tokens   *oidcTokenSource
+	logger   *logrus.Entry
+	mu       sync.Mutex
+	counts   [5]int
+}
 
+// newSigner mints the job's OIDC token, derives the identity Fulcio issues for
+// it and logs that identity once.
+func newSigner(logger *logrus.Entry) (*signer, error) {
 	tokens := &oidcTokenSource{}
 	token, err := tokens.Token()
 	if err != nil {
-		logger.Fatal(err)
+		return nil, err
 	}
 	identity, err := identityFromToken(token)
 	if err != nil {
-		logger.Fatal(err)
+		return nil, err
 	}
 	logger.Infof("Signing as %q (issuer %q)", identity, oidcIssuer)
+	return &signer{identity: identity, tokens: tokens, logger: logger}, nil
+}
 
-	tagsPerImage, err := skopeoSyncTags(filePath)
-	if err != nil {
-		logger.Fatal(err)
+// Sign signs one destination reference (registry/namespace/name:tag) unless it
+// already carries the job's signature, logs the outcome and counts it.
+func (s *signer) Sign(image string) signOutcome {
+	outcome, err := signTag(image, s.identity, s.tokens)
+	s.mu.Lock()
+	s.counts[outcome]++
+	s.mu.Unlock()
+	switch outcome {
+	case outcomeSigned:
+		s.logger.Infof("signed %q", image)
+	case outcomeSkipped:
+		s.logger.Debugf("already signed %q", image)
+	case outcomeMissing:
+		s.logger.Warnf("not at the registry, nothing to sign: %q", image)
+	case outcomeUnsignable:
+		s.logger.Warnf("cannot be signed (%v): %q", errUnsignable, image)
+	case outcomeFailed:
+		s.logger.Errorf("failed to sign %q: %v", image, err)
 	}
-	var images []string
-	for image, tags := range tagsPerImage {
-		for _, tag := range tags {
-			images = append(images, fmt.Sprintf("%s/%s:%s", flagRegistry, imageBaseName(image), tag))
-		}
-	}
-	sort.Strings(images)
-	logger.Infof("Found %d image tags to sign at %q", len(images), flagRegistry)
+	return outcome
+}
 
-	var (
-		counts [5]int
-		mu     sync.Mutex
-		wg     sync.WaitGroup
-		queue  = make(chan string)
-	)
-	for w := 0; w < flagSignWorkers; w++ {
+// SignAll signs images with workers concurrent signers.
+func (s *signer) SignAll(images []string, workers int) {
+	var wg sync.WaitGroup
+	queue := make(chan string)
+	for w := 0; w < workers; w++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
 			for image := range queue {
-				outcome, err := signTag(image, identity, tokens)
-				mu.Lock()
-				counts[outcome]++
-				mu.Unlock()
-				switch outcome {
-				case outcomeSigned:
-					logger.Infof("signed %q", image)
-				case outcomeSkipped:
-					logger.Debugf("already signed %q", image)
-				case outcomeMissing:
-					logger.Warnf("not at the registry, nothing to sign: %q", image)
-				case outcomeUnsignable:
-					logger.Warnf("cannot be signed (%v): %q", errUnsignable, image)
-				case outcomeFailed:
-					logger.Errorf("failed to sign %q: %v", image, err)
-				}
+				s.Sign(image)
 			}
 		}()
 	}
@@ -335,10 +329,116 @@ func commandSign(filePath string) {
 	}
 	close(queue)
 	wg.Wait()
+}
 
-	logger.Infof("Done: %d signed, %d already signed, %d not at the registry, %d unsignable (schema 1), %d failed",
-		counts[outcomeSigned], counts[outcomeSkipped], counts[outcomeMissing], counts[outcomeUnsignable], counts[outcomeFailed])
-	if counts[outcomeFailed] > 0 {
-		logger.Fatalf("Signing ended with %d errors", counts[outcomeFailed])
+// Failed is the number of references whose signing or verification failed.
+func (s *signer) Failed() int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.counts[outcomeFailed]
+}
+
+// Summary is the one-line tally of the outcomes so far.
+func (s *signer) Summary() string {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return fmt.Sprintf("Done: %d signed, %d already signed, %d not at the registry, %d unsignable (schema 1), %d failed",
+		s.counts[outcomeSigned], s.counts[outcomeSkipped], s.counts[outcomeMissing], s.counts[outcomeUnsignable], s.counts[outcomeFailed])
+}
+
+// governedReferences lists the references a file governs at flagRegistry,
+// sorted: for a skopeo YAML file the tags `skopeo sync --dry-run` reports, the
+// way `retagger filter` does; for a renamed-images file the destinations its
+// rules select from the source registries, the way `retagger run` does, for
+// this executor's share of the rules. A rule whose source cannot be listed is
+// reported in the returned error while the other rules' references are still
+// returned.
+func governedReferences(filePath string) ([]string, error) {
+	renamed, err := isRenamedImagesFile(filePath)
+	if err != nil {
+		return nil, err
 	}
+	var references []string
+	var errs []error
+	if renamed {
+		renamedImages, err := loadRenamedImages(filePath)
+		if err != nil {
+			return nil, err
+		}
+		for i, image := range renamedImages {
+			if !executorOwns(i) {
+				continue
+			}
+			if err := image.Validate(); err != nil {
+				errs = append(errs, fmt.Errorf("%q: %w", image.Image, err))
+				continue
+			}
+			imageReferences, err := image.DestinationReferences(flagRegistry)
+			if err != nil {
+				errs = append(errs, fmt.Errorf("%q: %w", image.Image, err))
+				continue
+			}
+			references = append(references, imageReferences...)
+		}
+	} else {
+		tagsPerImage, err := skopeoSyncTags(filePath)
+		if err != nil {
+			return nil, err
+		}
+		for image, tags := range tagsPerImage {
+			for _, tag := range tags {
+				references = append(references, fmt.Sprintf("%s/%s:%s", flagRegistry, imageBaseName(image), tag))
+			}
+		}
+	}
+	sort.Strings(references)
+	return references, errors.Join(errs...)
+}
+
+// commandSign is invoked when `retagger sign <path>` is called.
+//
+// It lists the references the file governs at the destination registry
+// (governedReferences), resolves each and signs every digest that does not yet
+// carry this job's signature. Tags absent from the registry and manifests
+// cosign cannot sign are reported and skipped; a rule that could not be
+// resolved, a signing failure or a verification failure fails the command once
+// every reference has been attempted.
+func commandSign(filePath string) {
+	if filePath == "" {
+		logrus.Fatal("You need to specify filepath: 'retagger sign <path>'")
+	}
+	if flagSignWorkers < 1 {
+		logrus.Fatalf("%q cannot be lower than 1", "sign-workers")
+	}
+	validateExecutorFlags()
+	logger := logrus.WithField("file", filePath)
+
+	signer, err := newSigner(logger)
+	if err != nil {
+		logger.Fatal(err)
+	}
+
+	images, listErr := governedReferences(filePath)
+	if listErr != nil {
+		logger.Errorf("some rules could not be resolved: %v", listErr)
+	}
+	logger.Infof("Found %d image tags to sign at %q", len(images), flagRegistry)
+
+	signer.SignAll(images, flagSignWorkers)
+
+	logger.Info(signer.Summary())
+	if signer.Failed() > 0 || listErr != nil {
+		logger.Fatalf("Signing ended with %d errors", signer.Failed()+len(multiErrors(listErr)))
+	}
+}
+
+// multiErrors unwraps an errors.Join result into its parts (none for nil).
+func multiErrors(err error) []error {
+	if err == nil {
+		return nil
+	}
+	if joined, ok := err.(interface{ Unwrap() []error }); ok {
+		return joined.Unwrap()
+	}
+	return []error{err}
 }
