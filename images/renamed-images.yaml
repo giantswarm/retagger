@@ -2,6 +2,15 @@
   override_repo_name: alpine-helm
   semver: ">= 3.9.3"
   filter: '(\d+\..*)'
+# kubectl, helm, jq and a shell in one image, and openssl: the agent-platform
+# charts' hook Jobs run them (giantswarm/agent-platform#575) and pull the gsoci
+# copies once they resolve.
+- image: alpine/k8s
+  override_repo_name: alpine-k8s
+  semver: ">= 1.37.0"
+- image: alpine/openssl
+  override_repo_name: alpine-openssl
+  semver: ">= 3.5.8"
 - image: amazon/aws-cli
   override_repo_name: awscli
   tag_or_pattern: "2.7.35"
