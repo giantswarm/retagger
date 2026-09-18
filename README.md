@@ -90,14 +90,18 @@ attestors:
             url: https://rekor.sigstore.dev
 ```
 
-`retagger sign <skopeo yaml>` does the signing (see [`sign.go`](sign.go)): it lists
-the tags the file governs the way `retagger filter` does, resolves each at the
-registry and signs every digest that does not already verify against the job's
-own identity, so it is idempotent. The `retag-registry` job runs it over the
-`.filtered` file, the tags the run copied. The pipeline parameter `sign-all`
-runs it over the unfiltered files instead, every tag they govern: that is the
-one-off pass for tags mirrored before signing existed, and the repair of a run
-whose signing failed. Trigger it on `main`:
+`retagger sign <images file>` does the signing (see [`sign.go`](sign.go)): it lists
+the tags the file governs (a skopeo file the way `retagger filter` does, a
+[renamed images](#renamed-images) file from its rules the way `retagger run`
+does), resolves each at the registry and signs every digest that does not
+already verify against the job's own identity, so it is idempotent. The
+`retag-registry` job runs it over the `.filtered` file, the tags the run copied;
+the `retag-renamed-images` job runs `retagger run --sign`, which signs each tag
+right after its copy. The pipeline parameter `sign-all` signs every tag the
+files govern instead (the unfiltered skopeo files, and the renamed-images files
+sharded by executor like the copies): that is the one-off pass for tags
+mirrored before signing existed, and the repair of a run whose signing failed.
+Trigger it on `main`:
 
 ```bash
 curl -X POST -H "Circle-Token: $CIRCLE_TOKEN" -H "Content-Type: application/json" \
@@ -105,11 +109,11 @@ curl -X POST -H "Circle-Token: $CIRCLE_TOKEN" -H "Content-Type: application/json
   https://circleci.com/api/v2/project/gh/giantswarm/retagger/pipeline
 ```
 
-The copies in the Aliyun registry are not signed; the images renamed through
-`retagger run` ([renamed images](#renamed-images)) are not signed yet either.
-Mirrors in the Docker schema 1 manifest format (a few images from before 2019,
-`etcd:v3.3` for one) cannot carry a cosign signature at all; `retagger sign`
-reports them as unsignable and moves on.
+The copies in the Aliyun registry are not signed, and neither are the Trivy
+vulnerability databases the `retag-image-name` jobs copy: OCI artifacts no pod
+runs. Mirrors in the Docker schema 1 manifest format (a few images from before
+2019, `etcd:v3.3` for one) cannot carry a cosign signature at all; `retagger
+sign` reports them as unsignable and moves on.
 
 ## Image list formats
 

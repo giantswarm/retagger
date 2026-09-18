@@ -1,12 +1,9 @@
 package main
 
 import (
-	"os"
 	"path/filepath"
 	"reflect"
 	"testing"
-
-	"gopkg.in/yaml.v3"
 )
 
 const tagLatest = "latest"
@@ -101,13 +98,9 @@ func TestRenamedImagesFiles(t *testing.T) {
 	}
 	for _, file := range files {
 		t.Run(filepath.Base(file), func(t *testing.T) {
-			b, err := os.ReadFile(file) // #nosec G304 -- file names come from the glob over images/ above
+			images, err := loadRenamedImages(file)
 			if err != nil {
 				t.Fatal(err)
-			}
-			var images []RenamedImage
-			if err := yaml.Unmarshal(b, &images); err != nil {
-				t.Fatalf("unmarshal: %v", err)
 			}
 			if len(images) == 0 {
 				t.Fatal("no entries")

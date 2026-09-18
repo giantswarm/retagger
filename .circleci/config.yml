@@ -5,9 +5,10 @@ parameters:
     type: boolean
     default: false
     description: |
-      Sign every tag the skopeo YAML files govern at gsoci, not only the tags this run copies:
-      the one-off pass over tags mirrored before signing existed, and the repair of a run whose
-      signing failed. Idempotent. Trigger a pipeline on main with this parameter set to true.
+      Sign every tag the image files govern at gsoci (the skopeo YAML files and the renamed-images
+      files), not only the tags this run copies: the one-off pass over tags mirrored before signing
+      existed, and the repair of a run whose signing failed. Idempotent. Trigger a pipeline on main
+      with this parameter set to true.
 
 jobs:
   validate:
@@ -282,6 +283,15 @@ jobs:
         default: 0
       filename:
         type: string
+      sign:
+        type: boolean
+        default: false
+        description: |
+          Sign every tag copied to gsoci right after its copy, with cosign keyless signing under
+          this job's CircleCI OIDC identity (README, "Signed images"); with the pipeline parameter
+          `sign-all`, also every tag this executor's share of the file governs. Needs the
+          `architect` context for the OIDC token. cosign reads the registry credentials
+          `docker login` stores.
     steps:
       - setup_remote_docker:
           docker_layer_caching: true
@@ -319,11 +329,29 @@ jobs:
           name: "Run retagger"
           no_output_timeout: 1h
           command: |
-            retagger run --log-level "<<parameters.log_level>>" \
+            set -o pipefail
+            retagger run --log-level "<<parameters.log_level>>" --sign=<<parameters.sign>> \
               --executor-count <<parameters.executor_count>> --executor-id <<parameters.executor_id>> --filename <<parameters.filename>> | tee /tmp/retagger.log
       - store_artifacts:
           path: /tmp/retagger.log
           destination: "retagger-<<parameters.filename>>-<<parameters.executor_id>>-of-<<parameters.executor_count>>.log"
+      - when:
+          condition:
+            and:
+              - <<parameters.sign>>
+              - <<pipeline.parameters.sign-all>>
+          steps:
+            - run:
+                name: Sign every governed image
+                no_output_timeout: 1h
+                command: |
+                  # One worker: forty of these jobs share the registry's per-identity referrers rate limit.
+                  set -o pipefail
+                  retagger sign --sign-workers 1 \
+                    --executor-count <<parameters.executor_count>> --executor-id <<parameters.executor_id>> <<parameters.filename>> | tee /tmp/retagger-sign.log
+            - store_artifacts:
+                path: /tmp/retagger-sign.log
+                destination: "retagger-<<parameters.filename>>-<<parameters.executor_id>>-of-<<parameters.executor_count>>-sign.log"
 
   ping-heartbeat:
     docker:
@@ -589,6 +617,7 @@ build_and_retag: &build_and_retag
         requires:
           - build-and-push-docker
         executor_count: 5
+        sign: true
         filters:
           branches:
             only:
