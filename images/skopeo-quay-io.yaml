@@ -17,6 +17,10 @@ quay.io:
       - "v5.1.0"
   images-by-semver:
     argoproj/argocd: ">= v2.0.1"
+    # kube-rbac-proxy moved from gcr.io/kubebuilder (mirrored up to v0.16.0
+    # from images/skopeo-gcr-io.yaml) to quay.io/brancz; the KServe controller
+    # runs this line as its metrics sidecar. Same destination name, disjoint tags.
+    brancz/kube-rbac-proxy: ">= v0.22.1"
     ceph/ceph: "v16.2.5-20210708"
     cephcsi/cephcsi: "v3.1.1 - v3.4.0"
     cilium/cilium: ">= v1.11.2"

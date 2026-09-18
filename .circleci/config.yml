@@ -1,5 +1,14 @@
 version: 2.1
 
+parameters:
+  sign-all:
+    type: boolean
+    default: false
+    description: |
+      Sign every tag the skopeo YAML files govern at gsoci, not only the tags this run copies:
+      the one-off pass over tags mirrored before signing existed, and the repair of a run whose
+      signing failed. Idempotent. Trigger a pipeline on main with this parameter set to true.
+
 jobs:
   validate:
     machine:
@@ -182,6 +191,11 @@ jobs:
       - image: gsoci.azurecr.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
     resource_class: small
     shell: /bin/bash
+    environment:
+      # One `skopeo login` serves skopeo (REGISTRY_AUTH_FILE) and cosign (DOCKER_CONFIG):
+      # the same file in the same format.
+      DOCKER_CONFIG: /tmp/.registry-auth
+      REGISTRY_AUTH_FILE: /tmp/.registry-auth/config.json
     parameters:
       username:
         type: string
@@ -191,12 +205,20 @@ jobs:
         type: string
       images_file:
         type: string
+      sign:
+        type: boolean
+        default: false
+        description: |
+          Sign the copied images at the registry with cosign keyless signing under this job's
+          CircleCI OIDC identity (README, "Signed images"). Needs the `architect` context for the
+          OIDC token.
     steps:
       - attach_workspace:
           at: .
       - run:
           name: Log in to Docker registry
           command: |
+            mkdir -p "${DOCKER_CONFIG}"
             skopeo login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
             max_retry=5
             counter=1
@@ -216,6 +238,23 @@ jobs:
       - store_artifacts:
           path: /tmp/skopeo.log
           destination: "<<parameters.registry>>-<<parameters.images_file>>.log"
+      - when:
+          condition: <<parameters.sign>>
+          steps:
+            - run:
+                name: Sign copied images
+                no_output_timeout: 1h
+                command: |
+                  set -o pipefail
+                  images_file="<<parameters.images_file>>"
+                  if [[ "<<pipeline.parameters.sign-all>>" == "true" ]]; then
+                    # The unfiltered file: every tag it governs, not only this run's copies.
+                    images_file="${images_file%.filtered}"
+                  fi
+                  retagger sign --registry "<<parameters.registry>>/giantswarm" "${images_file}" | tee /tmp/retagger-sign.log
+            - store_artifacts:
+                path: /tmp/retagger-sign.log
+                destination: "<<parameters.registry>>-<<parameters.images_file>>-sign.log"
       - run:
           name: Validate success
           command: |
@@ -517,6 +556,7 @@ build_and_retag: &build_and_retag
         username: ${ACR_GSOCI_RETAGGER_USERNAME}
         password: ${ACR_GSOCI_RETAGGER_PASSWORD}
         registry: "gsoci.azurecr.io"
+        sign: true
         requires:
           - filter-skopeo-docker-io
           - filter-skopeo-eu-gcr-io

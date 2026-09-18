@@ -1,10 +1,12 @@
 // Package main is the retagger program.
 //
-// The program provides two commands:
+// The program provides three commands:
 //   - `retagger run` - Performs retagging / renaming of the images defined in images/renamed-images.yaml.
 //   - `retagger filter <path>` - Processes skopeo YAML files in images/skopeo-* and creates a
-//     list of image syncing tasks to be performed. This is simple copyingf of images from one
+//     list of image syncing tasks to be performed. This is simple copying of images from one
 //     repository to another.
+//   - `retagger sign <path>` - Signs the images a skopeo YAML file governs at the destination
+//     registry with cosign keyless signing under the CircleCI job's OIDC identity (see sign.go).
 package main
 
 import (
@@ -36,6 +38,8 @@ var (
 	flagExecutorCount    int
 	flagExecutorID       int
 	flagSkipExistingTags bool
+	flagRegistry         string
+	flagSignWorkers      int
 
 	logStdOut = logrus.New()
 	logStdErr = logrus.New()
@@ -403,7 +407,7 @@ func copyImage(wg *sync.WaitGroup, _ *atomic.Int64, source, destination string) 
 func command(name string, args ...string) (*exec.Cmd, *bytes.Buffer, *bytes.Buffer) {
 	stdout := &bytes.Buffer{}
 	stderr := &bytes.Buffer{}
-	c := exec.Command(name, args...)
+	c := exec.Command(name, args...) // #nosec G204 -- callers name a fixed binary (skopeo, docker, cosign, circleci); only the arguments are computed
 	c.Stdout = stdout
 	c.Stderr = stderr
 	return c, stdout, stderr
@@ -416,6 +420,9 @@ func init() {
 	flag.IntVar(&flagExecutorCount, "executor-count", 1, "Number of executors in a parallelized run. Used with 'retagger run'.")
 	flag.IntVar(&flagExecutorID, "executor-id", 0, "ID of the executor in a parallelized run. Used with 'retagger run'.")
 	flag.BoolVar(&flagSkipExistingTags, "skip-existing-tags", true, "Skip tags which are already present in the target container registry. Used with 'retagger run'.")
+	// `retagger sign` flags
+	flag.StringVar(&flagRegistry, "registry", azureURL, "Registry and namespace whose mirrored images are signed. Used with 'retagger sign'.")
+	flag.IntVar(&flagSignWorkers, "sign-workers", 4, "Number of images signed concurrently. Used with 'retagger sign'.")
 	flag.Parse()
 
 	logrus.SetFormatter(&logrus.TextFormatter{})
@@ -504,6 +511,28 @@ func commandRun() {
 	logger.Infof("Done retagging %d images with no errors", len(renamedImages))
 }
 
+// skopeoSyncTags lists the image tags a skopeo YAML file governs, resolved
+// against the source registry the way `skopeo sync` will: it runs
+// `skopeo sync --dry-run` and reads the images and tags it would copy. The
+// result maps the image name, without the registry, to its tags.
+func skopeoSyncTags(filePath string) (map[string][]string, error) {
+	c, _, stderr := command("skopeo", "sync", "--all", "--dry-run", "--src", "yaml", "--dest", "docker", filePath, "dry-run.invalid")
+	if err := c.Run(); err != nil {
+		return nil, fmt.Errorf("error running 'skopeo sync --dry-run': %w\n%s", err, stderr.String())
+	}
+	return parseSkopeoSyncOutput(stderr.String()), nil
+}
+
+// parseSkopeoSyncOutput reads the images and tags `skopeo sync --dry-run` reports.
+func parseSkopeoSyncOutput(output string) map[string][]string {
+	tagsPerImage := map[string][]string{}
+	for _, m := range skopeoSyncOutputPattern.FindAllStringSubmatch(output, -1) {
+		// by index: 0 - entire line, 1 - image name, 2 - tag
+		tagsPerImage[m[1]] = append(tagsPerImage[m[1]], m[2])
+	}
+	return tagsPerImage
+}
+
 // commandFilter is invoked when `retagger filter` is called.
 //
 // The function reads a skopeo configuration file and runs `skopeo sync --dry-run`
@@ -521,25 +550,12 @@ func commandFilter(filePath string) {
 	logStdOut.Infof("Listing images & tags")
 	missingTagsPerImage := map[string][]string{}
 	{
-		filterPrefix := "auniqueprefixa"
-		c, _, stderr := command("skopeo", "sync", "--all", "--dry-run", "--src", "yaml", "--dest", "docker", filePath, filterPrefix)
-		if err := c.Run(); err != nil {
-			logStdErr.WithField("stderr", stderr.String())
-			logStdErr.Fatalf("error running 'skopeo sync --dry-run': %v", err)
+		tagsPerImage, err := skopeoSyncTags(filePath)
+		if err != nil {
+			logStdErr.Fatal(err)
 		}
-
-		tagsPerImage := map[string][]string{}
-
-		matches := skopeoSyncOutputPattern.FindAllStringSubmatch(stderr.String(), -1)
-		if matches == nil {
-			logStdErr.WithField("stderr", stderr.String())
+		if len(tagsPerImage) == 0 {
 			logStdErr.Fatalf("found no images or tags in 'skopeo sync' output")
-		}
-		for _, m := range matches {
-			// by index: 0 - entire line, 1 - image name, 2 - tag
-			image := strings.TrimPrefix(m[1], filterPrefix+"/")
-			tag := m[2]
-			tagsPerImage[image] = append(tagsPerImage[image], tag)
 		}
 
 		logStdOut.Infof("Found %d images, checking how many tags are missing", len(tagsPerImage))
@@ -640,7 +656,7 @@ func commandFilter(filePath string) {
 
 func main() {
 	if len(flag.Args()) == 0 {
-		fmt.Println("retagger run             Retag images\nretagger filter <path>   Filter missing tags for skopeo YAML file")
+		fmt.Println("retagger run             Retag images\nretagger filter <path>   Filter missing tags for skopeo YAML file\nretagger sign <path>     Sign the images of a skopeo YAML file at the destination registry")
 		fmt.Println("")
 		flag.Usage()
 		os.Exit(0)
@@ -651,6 +667,8 @@ func main() {
 		commandRun()
 	case "filter":
 		commandFilter(flag.Arg(1))
+	case "sign":
+		commandSign(flag.Arg(1))
 	default:
 		logrus.Fatalf("unknown command: %v", flag.Args())
 	}

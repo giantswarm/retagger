@@ -14,13 +14,23 @@ RUN BUILDTAGS=containers_image_openpgp DISABLE_CGO=1 CGO_ENABLED=0 make bin/skop
 
 # Build retagger binary
 WORKDIR /build/retagger
-COPY main.go go.mod go.sum /build/retagger/
+COPY *.go go.mod go.sum /build/retagger/
 RUN CGO_ENABLED=0 go build -o retagger .
 
 # Fetch docker binary
 WORKDIR /build/docker
 ARG DOCKER_VERSION=25.0.5
 RUN curl -O https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz && tar -xvf docker-${DOCKER_VERSION}.tgz
+
+# Fetch cosign, which `retagger sign` signs the mirrored images with. The same
+# version the architect image carries, so mirrored and built images are signed alike.
+WORKDIR /build/cosign
+# renovate: datasource=github-releases depName=sigstore/cosign
+ARG COSIGN_VERSION=v3.1.3
+RUN curl -sSLO https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64 && \
+    curl -sSLO https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign_checksums.txt && \
+    grep ' cosign-linux-amd64$' cosign_checksums.txt | sha256sum -c - && \
+    install -m 0755 cosign-linux-amd64 cosign
 
 FROM gsoci.azurecr.io/giantswarm/skopeo:${SKOPEO_VERSION} AS skopeo
 
@@ -33,6 +43,7 @@ RUN apk add --no-cache bash
 COPY --from=builder /build/skopeo/bin/skopeo /usr/local/bin/skopeo
 COPY --from=builder /build/retagger/retagger /usr/local/bin/retagger
 COPY --from=builder /build/docker/docker/docker /usr/local/bin/docker
+COPY --from=builder /build/cosign/cosign /usr/local/bin/cosign
 
 # Copy trust policies
 COPY --from=skopeo /etc/containers /etc/containers
