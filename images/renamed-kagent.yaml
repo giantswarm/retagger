@@ -46,3 +46,28 @@
 - image: ghcr.io/kagent-dev/kagent/tools
   override_repo_name: kagent-tools
   semver: ">= 0.1.3"
+# The Giant Swarm line of kagent (github.com/giantswarm/kagent-upstream, FORK.md):
+# upstream release + carried patches, built and published there under
+# ghcr.io/giantswarm/kagent/<image>. Only its release tags (X.Y.Z-gs.N) are
+# mirrored; dev builds (X.Y.Z-dev.…) stay in ghcr. The destination keeps the
+# upstream path, gsoci.azurecr.io/giantswarm/kagent/<image>, so a consumer
+# switches the registry alone and keeps the repositories the chart publishes.
+# golang-adk and claude-harness are referenced by digest, stamped into the kagent
+# chart at publish; `skopeo copy --all` copies the image index unchanged, so the
+# stamped digest resolves at the destination too.
+- image: ghcr.io/giantswarm/kagent/controller
+  override_repo_name: kagent/controller
+  filter: '^([0-9]+\.[0-9]+\.[0-9]+-gs\.[0-9]+)$'
+  semver: ">= 0.11.0-gs.16"
+- image: ghcr.io/giantswarm/kagent/ui
+  override_repo_name: kagent/ui
+  filter: '^([0-9]+\.[0-9]+\.[0-9]+-gs\.[0-9]+)$'
+  semver: ">= 0.11.0-gs.16"
+- image: ghcr.io/giantswarm/kagent/golang-adk
+  override_repo_name: kagent/golang-adk
+  filter: '^([0-9]+\.[0-9]+\.[0-9]+-gs\.[0-9]+)$'
+  semver: ">= 0.11.0-gs.16"
+- image: ghcr.io/giantswarm/kagent/claude-harness
+  override_repo_name: kagent/claude-harness
+  filter: '^([0-9]+\.[0-9]+\.[0-9]+-gs\.[0-9]+)$'
+  semver: ">= 0.11.0-gs.16"

@@ -1,0 +1,30 @@
+# The Giant Swarm line of Agent Substrate (github.com/giantswarm/substrate, FORK.md):
+# upstream release + carried patches, built and published there under
+# ghcr.io/giantswarm/substrate/<component>. Only its release tags (X.Y.Z-gs.N) are
+# mirrored; SBOM and signature tags (sha256-….sbom) stay in ghcr. The destination
+# keeps the upstream path, gsoci.azurecr.io/giantswarm/substrate/<component>, so a
+# consumer switches the registry alone and keeps the repositories the chart names.
+- image: ghcr.io/giantswarm/substrate/ateapi
+  override_repo_name: substrate/ateapi
+  filter: '^([0-9]+\.[0-9]+\.[0-9]+-gs\.[0-9]+)$'
+  semver: ">= 0.0.30-gs.4"
+- image: ghcr.io/giantswarm/substrate/atecontroller
+  override_repo_name: substrate/atecontroller
+  filter: '^([0-9]+\.[0-9]+\.[0-9]+-gs\.[0-9]+)$'
+  semver: ">= 0.0.30-gs.4"
+- image: ghcr.io/giantswarm/substrate/atelet
+  override_repo_name: substrate/atelet
+  filter: '^([0-9]+\.[0-9]+\.[0-9]+-gs\.[0-9]+)$'
+  semver: ">= 0.0.30-gs.4"
+- image: ghcr.io/giantswarm/substrate/atenet
+  override_repo_name: substrate/atenet
+  filter: '^([0-9]+\.[0-9]+\.[0-9]+-gs\.[0-9]+)$'
+  semver: ">= 0.0.30-gs.4"
+- image: ghcr.io/giantswarm/substrate/podcertcontroller
+  override_repo_name: substrate/podcertcontroller
+  filter: '^([0-9]+\.[0-9]+\.[0-9]+-gs\.[0-9]+)$'
+  semver: ">= 0.0.30-gs.4"
+- image: ghcr.io/giantswarm/substrate/ateom-gvisor
+  override_repo_name: substrate/ateom-gvisor
+  filter: '^([0-9]+\.[0-9]+\.[0-9]+-gs\.[0-9]+)$'
+  semver: ">= 0.0.30-gs.4"

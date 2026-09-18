@@ -154,6 +154,16 @@
 - image: fluxcd/source-watcher
   override_repo_name: fluxcd-source-watcher
   semver: ">= v2.1.1"
+# The same two controllers under their upstream path, gsoci.azurecr.io/giantswarm/fluxcd/<controller>:
+# the flux-operator composes a controller image as <registry>/<controller>:<tag> from the one
+# registry value of a FluxInstance (spec.distribution.registry), which the flattened fluxcd-*
+# names above cannot serve. From the Flux 2.9 line on (source-controller v1.9, helm-controller v1.6).
+- image: ghcr.io/fluxcd/helm-controller
+  override_repo_name: fluxcd/helm-controller
+  semver: ">= v1.6.0"
+- image: ghcr.io/fluxcd/source-controller
+  override_repo_name: fluxcd/source-controller
+  semver: ">= v1.9.0"
 - image: registry.k8s.io/cluster-api-vsphere/cluster-api-vsphere-controller
   override_repo_name: cluster-api-vsphere-controller
   semver: ">= v1.5.1"

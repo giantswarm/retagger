@@ -168,7 +168,8 @@ type RenamedImage struct {
 	AddTagSuffix string `yaml:"add_tag_suffix,omitempty"`
 	// OverrideRepoName allows user to rewrite the name of the image entirely.
 	// Example: "alpinegit", so "alpine" would become
-	// "gsoci.azurecr.io/giantswarm/alpinegit"
+	// "gsoci.azurecr.io/giantswarm/alpinegit". A slash keeps a nested path:
+	// "kagent/controller" becomes "gsoci.azurecr.io/giantswarm/kagent/controller".
 	OverrideRepoName string `yaml:"override_repo_name,omitempty"`
 	// StripSemverPrefix removes the initial 'v' in 'v1.2.3' if enabled. Works
 	// only when Semver is defined.
