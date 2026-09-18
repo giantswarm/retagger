@@ -1,7 +1,9 @@
 package main
 
 import (
+	"crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -201,18 +203,37 @@ func TestVerifyAfterSignRetriesTheReadAfterWriteRace(t *testing.T) {
 	}
 }
 
-func TestManifestDigestIsTheRegistrysDigest(t *testing.T) {
+// fakeSkopeo puts a `skopeo` script on PATH whose `inspect --raw` prints manifest.
+func fakeSkopeo(t *testing.T, manifest string) {
+	t.Helper()
 	dir := t.TempDir()
-	// skopeo reports the digest the registry addresses the manifest by, which for
-	// a schema 1 manifest is not the hash of the raw bytes; the command takes it verbatim.
-	script := "#!/bin/sh\ncase \"$*\" in *--format*) echo sha256:4e6968ba32e055b83cb96ec21d96e07c03d1bc6e2aa48ffe77929a6b7344b2e9;; *) exit 1;; esac\n"
+	script := "#!/bin/sh\ncase \"$*\" in *--raw*) printf '%s' \"$MANIFEST\";; *) exit 1;; esac\n"
 	if err := os.WriteFile(filepath.Join(dir, "skopeo"), []byte(script), 0o700); err != nil { // #nosec G306 -- an executable test fixture
 		t.Fatal(err)
 	}
+	t.Setenv("MANIFEST", manifest)
 	t.Setenv("PATH", dir+string(os.PathListSeparator)+os.Getenv("PATH"))
-	digest, err := manifestDigest("example.invalid/ns/etcd:v3.3")
-	if err != nil || digest != "sha256:4e6968ba32e055b83cb96ec21d96e07c03d1bc6e2aa48ffe77929a6b7344b2e9" {
+}
+
+func TestManifestDigestIsTheHashOfTheRawManifest(t *testing.T) {
+	// An OCI index without a linux/amd64 instance: content-addressed like any other manifest.
+	index := `{"schemaVersion":2,"mediaType":"application/vnd.oci.image.index.v1+json","manifests":[{"mediaType":"application/vnd.oci.image.manifest.v1+json","digest":"sha256:a","size":1,"platform":{"os":"linux","architecture":"arm64"}}]}`
+	fakeSkopeo(t, index)
+	sum := sha256.Sum256([]byte(index))
+	digest, err := manifestDigest("example.invalid/ns/img:v1")
+	if err != nil || digest != "sha256:"+hex.EncodeToString(sum[:]) {
 		t.Fatalf("digest = %q, err = %v", digest, err)
+	}
+}
+
+func TestSchema1ManifestsAreUnsignable(t *testing.T) {
+	fakeSkopeo(t, `{"schemaVersion":1,"name":"giantswarm/etcd","tag":"v3.3","fsLayers":[],"history":[],"signatures":[]}`)
+	if _, err := manifestDigest("example.invalid/ns/etcd:v3.3"); !errors.Is(err, errUnsignable) {
+		t.Fatalf("err = %v, want errUnsignable", err)
+	}
+	outcome, err := signTag("example.invalid/ns/etcd:v3.3", "https://circleci.com/api/v2/projects/p/pipeline-definitions/d", &oidcTokenSource{})
+	if err != nil || outcome != outcomeUnsignable {
+		t.Fatalf("outcome = %v, err = %v; want unsignable, nil", outcome, err)
 	}
 }
 

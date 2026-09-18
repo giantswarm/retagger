@@ -107,6 +107,9 @@ curl -X POST -H "Circle-Token: $CIRCLE_TOKEN" -H "Content-Type: application/json
 
 The copies in the Aliyun registry are not signed; the images renamed through
 `retagger run` ([renamed images](#renamed-images)) are not signed yet either.
+Mirrors in the Docker schema 1 manifest format (a few images from before 2019,
+`etcd:v3.3` for one) cannot carry a cosign signature at all; `retagger sign`
+reports them as unsignable and moves on.
 
 ## Image list formats
 
