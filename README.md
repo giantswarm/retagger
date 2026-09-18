@@ -18,6 +18,9 @@ images.
 > 💡Please note it **is not responsible** for pushing images to neither
 `docker.io/giantswarm`, nor `azurecr.io/giantswarm` container registries.
 
+Every image it copies to `gsoci.azurecr.io` is signed after the copy, see
+[Signed images](#signed-images).
+
 ## How to add your image to the job
 
 You've come to the right place. Pick one of the following methods. For both methods, ensure that the repository exists in the desired container registry first.
@@ -42,6 +45,68 @@ pull/docker tag/docker push` combination or the below `skopeo` snippet:
 ```bash
 $ skopeo sync --src docker --dest docker --all --keep-going crossplane/crossplane:v1.11.0 docker.io/giantswarm/
 ```
+
+## Signed images
+
+Every tag retagger copies to `gsoci.azurecr.io/giantswarm/` is signed right after
+the copy with [cosign](https://github.com/sigstore/cosign) keyless signing: a
+short-lived certificate from Fulcio for the CircleCI job's OIDC identity, the
+signature recorded in the Rekor transparency log and stored next to the image as
+an OCI referrer (cosign v3's bundle format, the same the architect orb uses for
+images Giant Swarm builds). What is signed is the digest of the manifest the
+registry serves for the tag, the image index for a multi-architecture image.
+
+The signatures carry this identity:
+
+| | |
+|---|---|
+| Issuer | `https://oidc.circleci.com` |
+| Subject | `https://circleci.com/api/v2/projects/0a65bbac-fae8-4aca-bc8c-23d51903006b/pipeline-definitions/b8ddcac6-0699-5c43-a349-7906ac0d4a36` |
+
+The subject is the CircleCI pipeline definition of this repository, the shape
+Fulcio issues for every CircleCI job. Images built by the architect orb carry
+the same shape with their own project, so one keyless attestor admits mirrored
+and built images alike: issuer `https://oidc.circleci.com`, subject matching
+`^https://circleci\.com/api/v2/projects/[a-f0-9-]+/pipeline-definitions/[a-f0-9-]+$`.
+
+Verify a mirrored image (cosign v3 or newer):
+
+```bash
+cosign verify \
+  --certificate-oidc-issuer https://oidc.circleci.com \
+  --certificate-identity-regexp '^https://circleci\.com/api/v2/projects/[a-f0-9-]+/pipeline-definitions/[a-f0-9-]+$' \
+  gsoci.azurecr.io/giantswarm/storage-initializer:v0.20.0
+```
+
+Admit mirrored and built images with one Kyverno `verifyImages` attestor:
+
+```yaml
+attestors:
+  - entries:
+      - keyless:
+          issuer: https://oidc.circleci.com
+          subjectRegExp: ^https://circleci\.com/api/v2/projects/[a-f0-9-]+/pipeline-definitions/[a-f0-9-]+$
+          rekor:
+            url: https://rekor.sigstore.dev
+```
+
+`retagger sign <skopeo yaml>` does the signing (see [`sign.go`](sign.go)): it lists
+the tags the file governs the way `retagger filter` does, resolves each at the
+registry and signs every digest that does not already verify against the job's
+own identity, so it is idempotent. The `retag-registry` job runs it over the
+`.filtered` file, the tags the run copied. The pipeline parameter `sign-all`
+runs it over the unfiltered files instead, every tag they govern: that is the
+one-off pass for tags mirrored before signing existed, and the repair of a run
+whose signing failed. Trigger it on `main`:
+
+```bash
+curl -X POST -H "Circle-Token: $CIRCLE_TOKEN" -H "Content-Type: application/json" \
+  -d '{"branch": "main", "parameters": {"sign-all": true}}' \
+  https://circleci.com/api/v2/project/gh/giantswarm/retagger/pipeline
+```
+
+The copies in the Aliyun registry are not signed; the images renamed through
+`retagger run` ([renamed images](#renamed-images)) are not signed yet either.
 
 ## Image list formats
 
@@ -118,4 +183,3 @@ Please refer to [CONTRIBUTING.md](CONTRIBUTING.md).
 
 [ciconf]: .circleci/config.yml
 [renamed]: images/renamed-images.yaml
-

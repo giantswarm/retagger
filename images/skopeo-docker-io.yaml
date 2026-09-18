@@ -5,6 +5,11 @@ docker.io:
       - "v2.9.13"
     alpine/socat:
       - "1.7.4.4"
+    # The AWS CLI Agent Substrate's bundled snapshot store creates its bucket
+    # with, at the version the Substrate chart pins. Upstream publishes a tag
+    # every workday (500+ since this one), too many to mirror as a range.
+    amazon/aws-cli:
+      - "2.17.0"
     # Redis is used by 1password/scim.
     bitnami/redis:
       - "6.0.9-debian-10-r13"
@@ -142,6 +147,15 @@ docker.io:
     k8scloudprovider/openstack-cloud-controller-manager: ">= 1.20.0"
     kiwigrid/k8s-sidecar: ">= 1.24.3"
     kong: ">= 2.8.1"
+    # KServe's sidecar, router, storage initializer, explainer and local-model
+    # images, from the line the giantswarm/kserve charts pin (the controllers
+    # are built there). Multi-arch as upstream ships them.
+    kserve/agent: ">= v0.20.0"
+    kserve/art-explainer: ">= v0.20.0"
+    kserve/kserve-localmodel-controller: ">= v0.20.0"
+    kserve/kserve-localmodelnode-agent: ">= v0.20.0"
+    kserve/router: ">= v0.20.0"
+    kserve/storage-initializer: ">= v0.20.0"
     # Used in giantswarm/aws-resolver-rules-operator for testing AWS calls.
     localstack/localstack: ">= 4.7.0"
     mikefarah/yq: ">= 4.31.2"
@@ -174,3 +188,10 @@ docker.io:
     envoyproxy/envoy: ^distroless-v1\.[0-9]+\.[0-9]+$
     # Python based on Alpine with tags like '3.15-alpine3.22'
     python: ^3\.(13|14|15|16|17)-alpine3\.[0-9]+$
+    # PostgreSQL for Agent Substrate's bundled control-plane database: the 18
+    # line on Alpine, versioned tags only (the chart pins 18-alpine by digest,
+    # which is one of these).
+    postgres: ^18\.[0-9]+-alpine$
+    # RustFS, Agent Substrate's bundled S3-compatible snapshot store: the 1.x
+    # line with its beta and rc tags (the chart pins a beta), musl builds only.
+    rustfs/rustfs: ^1\.[0-9]+\.[0-9]+(-(beta|rc)\.[0-9]+)?$
