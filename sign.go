@@ -1,9 +1,7 @@
 package main
 
 import (
-	"crypto/sha256"
 	"encoding/base64"
-	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -137,22 +135,28 @@ func identityFromToken(token string) (string, error) {
 	return fmt.Sprintf(identityFormat, projectID, pipelineDefinitionID), nil
 }
 
-// manifestDigest resolves a tag at the registry to the digest of the manifest
-// (the index, for a multi-architecture image) the registry serves for it. The
-// digest is computed over the raw manifest bytes, which is how the registry
-// computes it. errManifestUnknown reports a tag or repository that does not exist.
+// manifestDigest resolves a tag at the registry to the digest the registry
+// addresses the manifest by (the index, for a multi-architecture image). It is
+// skopeo's reported digest, not a hash of the raw bytes: for a Docker schema 1
+// manifest (old mirrors such as etcd v3.3 or flannel v0.11) the registry's
+// digest covers the payload without the signatures, so hashing the raw manifest
+// yields a digest the registry does not know. errManifestUnknown reports a tag
+// or repository that does not exist.
 var errManifestUnknown = errors.New("manifest unknown")
 
 func manifestDigest(image string) (string, error) {
-	c, stdout, stderr := command("skopeo", "inspect", "--raw", "--retry-times", "3", dockerTransport+image)
+	c, stdout, stderr := command("skopeo", "inspect", "--no-tags", "--format", "{{.Digest}}", "--retry-times", "3", dockerTransport+image)
 	if err := c.Run(); err != nil {
 		if manifestUnknownPattern.MatchString(stderr.String()) {
 			return "", errManifestUnknown
 		}
 		return "", fmt.Errorf("error inspecting %q: %w\n%s", image, err, stderr.String())
 	}
-	sum := sha256.Sum256(stdout.Bytes())
-	return "sha256:" + hex.EncodeToString(sum[:]), nil
+	digest := strings.TrimSpace(stdout.String())
+	if !strings.HasPrefix(digest, "sha256:") {
+		return "", fmt.Errorf("error inspecting %q: skopeo reported no digest: %q", image, digest)
+	}
+	return digest, nil
 }
 
 // cosign runs one cosign call, retrying failures that match transient (in
