@@ -14,6 +14,7 @@ registry.k8s.io:
     cluster-proportional-autoscaler-amd64: ">= 1.6.0"
     descheduler/descheduler: ">= v0.31.0"
     dns/k8s-dns-node-cache: ">= 1.21.1"
+    dra-driver-nvidia/dra-driver-nvidia-gpu: ">= v0.5.0"
     etcd: ">= v3.5.4-0"
     external-dns/external-dns: ">= v0.11.0"
     git-sync/git-sync: ">= v3.6.8"
