@@ -629,7 +629,6 @@ build_and_retag: &build_and_retag
               - images/renamed-agentgateway.yaml
               - images/renamed-agent-sandbox.yaml
               - images/renamed-kagent.yaml
-              - images/renamed-substrate.yaml
               - images/renamed-cilium-prereleases.yaml
               - images/renamed-upbound-aws.yaml
               - images/renamed-upbound-azure.yaml

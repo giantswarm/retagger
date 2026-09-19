@@ -1,3 +1,5 @@
+# These two repositories carry upstream's releases; the Giant Swarm line publishes
+# under gsoci.azurecr.io/giantswarm/agentgateway-upstream/ from its own pipeline.
 - image: cr.agentgateway.dev/controller
   override_repo_name: agentgateway-controller
   semver: ">= v1.2.0"
@@ -12,16 +14,3 @@
 - image: cr.agentgateway.dev/agentgateway
   override_repo_name: agentgateway
   semver: ">= 0.12.0 < 1.0.0"
-# The Giant Swarm line of agentgateway (github.com/giantswarm/agentgateway-upstream,
-# FORK.md): upstream release + carried patches, built and scanned there. Only its
-# release tags (vX.Y.Z-gs.N) are mirrored, next to upstream's tags above, so the
-# packaging chart giantswarm/agentgateway and the agent-platform connectivity
-# chart can pin them from gsoci. Dev builds (v…-dev.giantswarm.…) stay in ghcr.
-- image: ghcr.io/giantswarm/agentgateway-upstream/agentgateway
-  override_repo_name: agentgateway
-  filter: '^(v[0-9]+\.[0-9]+\.[0-9]+-gs\.[0-9]+)$'
-  semver: ">= 1.5.1-0"
-- image: ghcr.io/giantswarm/agentgateway-upstream/controller
-  override_repo_name: agentgateway-controller
-  filter: '^(v[0-9]+\.[0-9]+\.[0-9]+-gs\.[0-9]+)$'
-  semver: ">= 1.5.1-0"
