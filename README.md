@@ -55,6 +55,10 @@ signature recorded in the Rekor transparency log and stored next to the image as
 an OCI referrer (cosign v3's bundle format, the same the architect orb uses for
 images Giant Swarm builds). What is signed is the digest of the manifest the
 registry serves for the tag, the image index for a multi-architecture image.
+The signature is made the moment the gsoci copy lands, independent of the copy
+to the Aliyun mirror that runs next to it: the Aliyun copy is bounded (skopeo's
+`--command-timeout`, 45 minutes) and its failure or stall only affects that
+mirror, never whether the gsoci copy is signed.
 
 The signatures carry this identity:
 
