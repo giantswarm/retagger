@@ -1,9 +1,13 @@
 package main
 
 import (
+	"errors"
 	"path/filepath"
 	"reflect"
+	"strings"
+	"sync"
 	"testing"
+	"time"
 )
 
 const tagLatest = "latest"
@@ -119,5 +123,92 @@ func TestRenamedImagesFiles(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+// recordingSigner records the references it was asked to sign.
+type recordingSigner struct {
+	mu    sync.Mutex
+	calls []string
+	seen  chan string
+}
+
+func (r *recordingSigner) Sign(image string) signOutcome {
+	r.mu.Lock()
+	r.calls = append(r.calls, image)
+	r.mu.Unlock()
+	r.seen <- image
+	return outcomeSigned
+}
+
+// TestCopyTagSignsAzureBeforeAliyunReturns pins the ordering copyTag has to
+// keep: the AzureCR copy is signed as soon as it lands, while the Aliyun copy is
+// still running (a stalled Aliyun push must never hold back the signature), the
+// Aliyun copy runs under aliyunCopyTimeout and the AzureCR copy unbounded, and a
+// failed AzureCR copy is not signed.
+func TestCopyTagSignsAzureBeforeAliyunReturns(t *testing.T) {
+	defer func(orig func(string, string, time.Duration) error) { copyFn = orig }(copyFn)
+
+	release := make(chan struct{})
+	var mu sync.Mutex
+	timeouts := map[string]time.Duration{}
+	copyFn = func(source, destination string, timeout time.Duration) error {
+		mu.Lock()
+		timeouts[destination] = timeout
+		mu.Unlock()
+		if strings.Contains(destination, aliyunURL) {
+			<-release // the Aliyun push stalls until the test lets it go
+			return errors.New("stalled")
+		}
+		return nil
+	}
+	img := &RenamedImage{Image: "ghcr.io/example/app", OverrideRepoName: "example/app"}
+	signer := &recordingSigner{seen: make(chan string, 1)}
+
+	done := make(chan struct{})
+	go func() {
+		img.copyTag("docker://ghcr.io/example/app:1.2.3", "1.2.3", signer)
+		close(done)
+	}()
+
+	want := azureURL + "/example/app:1.2.3"
+	select {
+	case got := <-signer.seen:
+		if got != want {
+			t.Fatalf("signed %q, want %q", got, want)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("the AzureCR copy was not signed while the Aliyun copy was still running")
+	}
+	select {
+	case <-done:
+		t.Fatal("copyTag returned before the Aliyun copy did")
+	default:
+	}
+	close(release)
+	<-done
+
+	mu.Lock()
+	defer mu.Unlock()
+	if got := timeouts[dockerTransport+want]; got != 0 {
+		t.Errorf("AzureCR copy timeout = %v, want unbounded", got)
+	}
+	if got := timeouts[dockerTransport+aliyunURL+"/example/app:1.2.3"]; got != aliyunCopyTimeout {
+		t.Errorf("Aliyun copy timeout = %v, want %v", got, aliyunCopyTimeout)
+	}
+	if len(signer.calls) != 1 {
+		t.Errorf("signed %d times, want once: %v", len(signer.calls), signer.calls)
+	}
+}
+
+// TestCopyTagDoesNotSignAFailedAzureCopy: a copy that did not land is not signed.
+func TestCopyTagDoesNotSignAFailedAzureCopy(t *testing.T) {
+	defer func(orig func(string, string, time.Duration) error) { copyFn = orig }(copyFn)
+	copyFn = func(source, destination string, timeout time.Duration) error { return errors.New("push failed") }
+	img := &RenamedImage{Image: "ghcr.io/example/app", OverrideRepoName: "example/app"}
+	signer := &recordingSigner{seen: make(chan string, 1)}
+	img.copyTag("docker://ghcr.io/example/app:1.2.3", "1.2.3", signer)
+	if len(signer.calls) != 0 {
+		t.Errorf("signed a failed copy: %v", signer.calls)
 	}
 }

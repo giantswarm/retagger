@@ -20,6 +20,7 @@ import (
 	"regexp"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/Masterminds/semver/v3"
 	"github.com/sirupsen/logrus"
@@ -132,29 +133,44 @@ func (img *RenamedImage) DestinationTag(tag string) string {
 	return tag
 }
 
+// tagSigner signs one destination reference; *signer implements it, a test
+// can record calls instead.
+type tagSigner interface {
+	Sign(image string) signOutcome
+}
+
+// aliyunCopyTimeout bounds the copy to the Aliyun mirror (skopeo's own
+// --command-timeout): a push the mirror stops answering ends with an error for
+// that tag instead of holding the job until CircleCI's no-output timeout kills
+// it. The AzureCR copy is not bounded; it is the copy the job exists for.
+const aliyunCopyTimeout = 45 * time.Minute
+
+// copyFn copies one reference to one destination; a test replaces it.
+var copyFn = copyImage
+
 // copyTag copies one source reference to its destination in AzureCR and Aliyun
-// at the same time. The AzureCR copy is signed right after it lands when a
-// signer is given; a copy that failed is logged by copyImage and not signed.
-func (img *RenamedImage) copyTag(source, destinationTag string, signer *signer) {
+// at the same time. The AzureCR copy is signed the moment it lands when a
+// signer is given, without waiting for the Aliyun copy: an Aliyun push that
+// stalls used to hold the sign until the job's no-output timeout ended the job,
+// leaving the AzureCR copy unsigned. A copy that failed is logged by copyImage
+// and not signed.
+func (img *RenamedImage) copyTag(source, destinationTag string, signer tagSigner) {
 	azure := fmt.Sprintf("%s/%s:%s", azureURL, img.DestinationName(), destinationTag)
 	aliyun := fmt.Sprintf("%s/%s:%s", aliyunURL, img.DestinationName(), destinationTag)
 
 	var wg sync.WaitGroup
-	var azureErr error
 	wg.Add(2)
 	go func() {
 		defer wg.Done()
-		azureErr = copyImage(source, dockerTransport+azure)
+		if err := copyFn(source, dockerTransport+azure, 0); err == nil && signer != nil {
+			signer.Sign(azure)
+		}
 	}()
 	go func() {
 		defer wg.Done()
-		_ = copyImage(source, dockerTransport+aliyun)
+		_ = copyFn(source, dockerTransport+aliyun, aliyunCopyTimeout)
 	}()
 	wg.Wait()
-
-	if signer != nil && azureErr == nil {
-		signer.Sign(azure)
-	}
 }
 
 // RetagUsingSHA pulls an image matching the SHA, retags, and pushes it to AzureCR and Aliyun.
@@ -401,8 +417,16 @@ func imageBaseName(name string) string {
 // `--all`, which makes skopeo include ALL SHAs included in the tag's digest,
 // ensuring builds for all available platforms. A failed copy is logged and
 // returned; it does not fail the run.
-func copyImage(source, destination string) error {
-	c, _, stderr := command("skopeo", "copy", "--all", "--retry-times", "3", source, destination)
+// copyImage copies source to destination with skopeo, every platform of an
+// index, the digests preserved. A timeout above zero bounds the whole command
+// (skopeo --command-timeout); zero leaves it unbounded.
+func copyImage(source, destination string, timeout time.Duration) error {
+	args := []string{}
+	if timeout > 0 {
+		args = append(args, "--command-timeout", timeout.String())
+	}
+	args = append(args, "copy", "--all", "--retry-times", "3", source, destination)
+	c, _, stderr := command("skopeo", args...)
 	logrus.Debugf("copying %q to %q", source, destination)
 	if err := c.Run(); err != nil {
 		logrus.Errorf("error copying %q to %q: %v\n%s", source, destination, err, stderr.String())
