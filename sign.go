@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
@@ -14,6 +15,9 @@ import (
 	"sync"
 	"time"
 
+	"github.com/google/go-containerregistry/pkg/authn"
+	"github.com/google/go-containerregistry/pkg/name"
+	"github.com/google/go-containerregistry/pkg/v1/remote"
 	"github.com/sirupsen/logrus"
 )
 
@@ -29,7 +33,9 @@ import (
 //	subject: https://circleci.com/api/v2/projects/<project-id>/pipeline-definitions/<pipeline-definition-id>
 //
 // Signing is idempotent: a digest that already verifies against this job's
-// identity is skipped. The skopeo path signs after every copy (over the
+// identity is skipped, and cosign's answer that a digest is unsigned is trusted
+// only once the registry confirms it lists no signature bundle for it (see
+// existingSignature). The skopeo path signs after every copy (over the
 // `.filtered` file) and, given the unfiltered file, as a sign-only pass over
 // every tag the file governs; `retagger run --sign` signs each renamed tag right
 // after its copy, and `retagger sign` over a renamed-images file is the pass over
@@ -56,6 +62,11 @@ const (
 	// five seconds, so six attempts wait up to 155 s in total: long enough for
 	// the registry's per-minute throttling to pass when many jobs sign at once.
 	cosignAttempts = 6
+	// signatureBundleArtifactType is the artifact type cosign v3 stores a
+	// signature under: a Sigstore bundle, an OCI referrer of the signed digest.
+	signatureBundleArtifactType = "application/vnd.dev.sigstore.bundle.v0.3+json"
+	// registryTimeout bounds one referrers listing at the registry.
+	registryTimeout = 2 * time.Minute
 )
 
 var (
@@ -63,18 +74,27 @@ var (
 	// public Sigstore services and the registry that a retry with backoff
 	// resolves. Auth and configuration errors (401, 403, 404) are not listed so
 	// that a genuine misconfiguration fails fast. The architect orb's set plus
-	// the registry's own throttling token: Azure Container Registry answers a
-	// burst of referrers lookups with the error code TOOMANYREQUESTS.
+	// the registry's own throttling token (Azure Container Registry answers a
+	// burst of referrers lookups with the error code TOOMANYREQUESTS) and the
+	// race between concurrent cosign processes refreshing the shared TUF cache
+	// ("failed to persist metadata"), which the next attempt does not hit.
 	transientErrorPattern = regexp.MustCompile(`INTERNAL_ERROR|stream error|GOAWAY|connection reset|connection refused|broken pipe` +
 		`|unexpected EOF|TLS handshake timeout|i/o timeout|context deadline exceeded|Client\.Timeout` +
 		`|Internal Server Error|Bad Gateway|Service Unavailable|Gateway Timeout|Too Many Requests|TOOMANYREQUESTS|Request Timeout` +
-		`|[Ss]tatus:? (408|425|429|5[0-9][0-9])`)
-	// noSignaturePattern is cosign's answer when the registry lists no signature
-	// for a digest. Right after a signature was pushed it is a read-after-write
-	// race (the registry's referrers index catches up within seconds, and a
-	// throttled listing looks the same), so the verify that follows a sign
-	// retries it; before a sign it is the expected answer for an unsigned digest.
-	noSignaturePattern = regexp.MustCompile(`no signatures found|no matching signatures`)
+		`|[Ss]tatus:? (408|425|429|5[0-9][0-9])` +
+		`|failed to persist metadata`)
+	// unsignedPattern is cosign's answer when it finds no signature for a digest.
+	// Before a sign it is the expected answer for an unsigned digest, but also
+	// what cosign says when its referrers listing failed (see existingSignature);
+	// right after a sign it is a read-after-write race the verify waits out.
+	unsignedPattern = regexp.MustCompile(`no signatures found`)
+	// foreignSignaturePattern is cosign's answer when the digest carries
+	// signatures, none of them issued to the expected identity.
+	foreignSignaturePattern = regexp.MustCompile(`no matching (signatures|attestations)`)
+	// noSignaturePattern is either answer: what the verify right after a sign
+	// retries until the registry lists the new signature (its referrers index
+	// catches up within seconds).
+	noSignaturePattern = regexp.MustCompile(unsignedPattern.String() + `|` + foreignSignaturePattern.String())
 	// rekorDuplicatePattern matches Rekor's rejection of an entry it already
 	// holds (HTTP 409): the signature was recorded, only the client's retry of
 	// the upload was refused.
@@ -174,12 +194,31 @@ func manifestDigest(image string) (string, error) {
 	return "sha256:" + hex.EncodeToString(sum[:]), nil
 }
 
+// retrying runs attempt until it succeeds, cosignAttempts times with backoff,
+// as long as its error is transient: transientErrorPattern or, when given, also
+// transient. what names the operation in the retry log line.
+func retrying(what string, transient *regexp.Regexp, attempt func() error) error {
+	var err error
+	for n := 1; n <= cosignAttempts; n++ {
+		if err = attempt(); err == nil {
+			return nil
+		}
+		msg := err.Error()
+		retry := transientErrorPattern.MatchString(msg) || (transient != nil && transient.MatchString(msg))
+		if !retry || n == cosignAttempts {
+			return err
+		}
+		logrus.Warnf("%s: transient error (attempt %d/%d), retrying", what, n, cosignAttempts)
+		backoff(n)
+	}
+	return err
+}
+
 // cosign runs one cosign call, retrying failures that match transient (in
 // addition to transientErrorPattern) with backoff. A Rekor duplicate-entry
 // rejection counts as success: the entry exists.
 func cosign(env []string, transient *regexp.Regexp, args ...string) error {
-	var lastErr error
-	for attempt := 1; attempt <= cosignAttempts; attempt++ {
+	return retrying("cosign "+args[0], transient, func() error {
 		c, _, stderr := command("cosign", args...)
 		c.Env = append(os.Environ(), env...)
 		err := c.Run()
@@ -191,15 +230,37 @@ func cosign(env []string, transient *regexp.Regexp, args ...string) error {
 			logrus.Debugf("cosign %s: Rekor already holds this entry", strings.Join(args, " "))
 			return nil
 		}
-		lastErr = fmt.Errorf("cosign %s: %w\n%s", strings.Join(args, " "), err, out)
-		retry := transientErrorPattern.MatchString(out) || (transient != nil && transient.MatchString(out))
-		if !retry || attempt == cosignAttempts {
-			return lastErr
-		}
-		logrus.Warnf("cosign %s: transient error (attempt %d/%d), retrying", args[0], attempt, cosignAttempts)
-		backoff(attempt)
+		return fmt.Errorf("cosign %s: %w\n%s", strings.Join(args, " "), err, out)
+	})
+}
+
+// hasSignatureBundle asks the registry whether it lists a signature bundle
+// among the referrers of ref, a digest reference. The listing uses the
+// credentials cosign uses (DOCKER_CONFIG) and retries the registry's
+// throttling the way a cosign call does; a listing that fails for good is an
+// error, never "unsigned".
+func hasSignatureBundle(ref string) (bool, error) {
+	digest, err := name.NewDigest(ref)
+	if err != nil {
+		return false, err
 	}
-	return lastErr
+	var found bool
+	err = retrying("referrers of "+ref, nil, func() error {
+		ctx, cancel := context.WithTimeout(context.Background(), registryTimeout)
+		defer cancel()
+		index, err := remote.Referrers(digest, remote.WithContext(ctx), remote.WithAuthFromKeychain(authn.DefaultKeychain),
+			remote.WithFilter("artifactType", signatureBundleArtifactType))
+		if err != nil {
+			return fmt.Errorf("listing the referrers of %q: %w", ref, err)
+		}
+		manifest, err := index.IndexManifest()
+		if err != nil {
+			return fmt.Errorf("reading the referrers of %q: %w", ref, err)
+		}
+		found = len(manifest.Manifests) > 0
+		return nil
+	})
+	return found, err
 }
 
 // cosignVerify checks that ref carries a valid keyless signature issued to
@@ -234,6 +295,42 @@ const (
 	outcomeFailed
 )
 
+// existingSignature reports whether ref already carries a signature issued to
+// identity. false with a nil error means the digest is unsigned, or signed by
+// another identity only, and is to be signed; an error means the question could
+// not be answered, which is not a reason to sign.
+//
+// cosign's "no signatures found" is trusted only once the registry confirms it
+// lists no signature bundle for the digest: cosign detects the bundle format
+// with a referrers listing and, when that listing fails (the registry
+// throttling the per-identity referrers lookups of a busy pass), falls back
+// silently to the legacy signature tag and reports the digest unsigned. Signing
+// it again then adds a duplicate signature and Rekor entry.
+func existingSignature(ref, identity string) (bool, error) {
+	for attempt := 1; ; attempt++ {
+		err := cosignVerify(ref, identity, false)
+		if err == nil {
+			return true, nil
+		}
+		logrus.Debugf("%s: not verified: %v", ref, err)
+		switch {
+		case foreignSignaturePattern.MatchString(err.Error()):
+			return false, nil
+		case !unsignedPattern.MatchString(err.Error()):
+			return false, fmt.Errorf("checking %q for an existing signature: %w", ref, err)
+		}
+		signed, err := hasSignatureBundle(ref)
+		if err != nil || !signed {
+			return false, err
+		}
+		if attempt == cosignAttempts {
+			return false, fmt.Errorf("the registry lists a signature bundle for %q but cosign verify found none in %d attempts", ref, attempt)
+		}
+		logrus.Warnf("cosign verify %s: the registry lists a signature bundle but cosign found none, a throttled lookup (attempt %d/%d), retrying", ref, attempt, cosignAttempts)
+		backoff(attempt)
+	}
+}
+
 // signTag signs one destination tag unless its digest already verifies against
 // identity. It returns outcomeMissing when the tag is not at the registry (the
 // copy did not happen), outcomeUnsignable for a manifest cosign cannot sign, and
@@ -251,7 +348,10 @@ func signTag(image, identity string, tokens *oidcTokenSource) (signOutcome, erro
 	repository := image[:strings.LastIndex(image, ":")]
 	ref := repository + "@" + digest
 
-	if err := cosignVerify(ref, identity, false); err == nil {
+	switch signed, err := existingSignature(ref, identity); {
+	case err != nil:
+		return outcomeFailed, err
+	case signed:
 		return outcomeSkipped, nil
 	}
 	if err := cosignSign(ref, tokens); err != nil {

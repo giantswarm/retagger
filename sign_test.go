@@ -7,10 +7,23 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"strings"
+	"sync/atomic"
 	"testing"
+	"time"
+
+	"github.com/google/go-containerregistry/pkg/name"
+	"github.com/google/go-containerregistry/pkg/registry"
+	v1 "github.com/google/go-containerregistry/pkg/v1"
+	"github.com/google/go-containerregistry/pkg/v1/empty"
+	"github.com/google/go-containerregistry/pkg/v1/mutate"
+	"github.com/google/go-containerregistry/pkg/v1/remote"
+	"github.com/google/go-containerregistry/pkg/v1/static"
+	"github.com/google/go-containerregistry/pkg/v1/types"
 )
 
 // fakeJWT builds an unsigned JWT with the given claims; identityFromToken
@@ -81,6 +94,8 @@ func TestErrorPatterns(t *testing.T) {
 		"Error: PUT https://gsoci.azurecr.io/v2/giantswarm/x/manifests/sha256-...: unexpected status code 503 Service Unavailable",
 		"error: [POST /api/v1/log/entries][429] createLogEntry default &{Code:429 Message:Too Many Requests}",
 		"Error: signing [gsoci.azurecr.io/giantswarm/x@sha256:1a3a]: signing digest: failed to upload manifest: GET https://gsoci.azurecr.io/v2/giantswarm/x/referrers/sha256:1a3a: TOOMANYREQUESTS",
+		"Error: GET https://gsoci.azurecr.io/v2/giantswarm/x/referrers/sha256:1a3a: TOOMANYREQUESTS: Identity x exceeded the per-identity ListReferrers rate limit of 1000 requests in a 60 second window.",
+		"Error: setting trusted material: getting trusted root from TUF for new bundle verification: error getting live trusted root: failed to create TUF client failed to load metadata: tuf refresh failed: failed to persist metadata",
 	}
 	for _, s := range transient {
 		if !transientErrorPattern.MatchString(s) {
@@ -99,6 +114,13 @@ func TestErrorPatterns(t *testing.T) {
 	}
 	if transientErrorPattern.MatchString("Error: no signatures found") || !noSignaturePattern.MatchString("Error: no signatures found") {
 		t.Error("an unsigned digest is not a transient error, but the read-after-write pattern must recognise it")
+	}
+	if !unsignedPattern.MatchString("Error: no signatures found") || foreignSignaturePattern.MatchString("Error: no signatures found") {
+		t.Error("\"no signatures found\" is the unsigned answer, not a foreign signature")
+	}
+	foreign := `Error: no matching attestations: failed to verify certificate identity: no matching CertificateIdentity found, last error: expected SAN value "https://circleci.com/api/v2/projects/p/pipeline-definitions/d", got "https://circleci.com/api/v2/projects/q/pipeline-definitions/e"`
+	if !foreignSignaturePattern.MatchString(foreign) || unsignedPattern.MatchString(foreign) || !noSignaturePattern.MatchString(foreign) {
+		t.Error("another identity's signature must be recognised as foreign, and retried by the verify after a sign")
 	}
 	if !rekorDuplicatePattern.MatchString("error: [POST /api/v1/log/entries][409] createLogEntryConflict  &{Code:409 Message:an equivalent entry already exists in the transparency log}") {
 		t.Error("Rekor 409 not recognised")
@@ -251,5 +273,168 @@ func TestSignTagReportsMissingImages(t *testing.T) {
 	}
 	if _, err := manifestDigest("example.invalid/ns/agent:v0.20.0"); !errors.Is(err, errManifestUnknown) {
 		t.Fatalf("err = %v, want errManifestUnknown", err)
+	}
+}
+
+// fakeRegistry is an in-memory registry with the referrers API behind a
+// handler that answers the first throttled referrers listings the way the
+// registry throttles a busy pass, and counts the listings it saw. DOCKER_CONFIG
+// points at an empty directory so the machine's credentials stay out of the test.
+type fakeRegistry struct {
+	host      string
+	listings  atomic.Int64
+	throttled atomic.Int64
+}
+
+func newFakeRegistry(t *testing.T, throttled int) *fakeRegistry {
+	t.Helper()
+	f := &fakeRegistry{}
+	f.throttled.Store(int64(throttled))
+	backend := registry.New(registry.WithReferrersSupport(true))
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.Contains(r.URL.Path, "/referrers/") {
+			f.listings.Add(1)
+			if f.throttled.Add(-1) >= 0 {
+				http.Error(w, `{"errors":[{"code":"TOOMANYREQUESTS","message":"Identity x exceeded the per-identity ListReferrers rate limit of 1000 requests in a 60 second window."}]}`, http.StatusTooManyRequests)
+				return
+			}
+		}
+		backend.ServeHTTP(w, r)
+	}))
+	t.Cleanup(srv.Close)
+	t.Setenv("DOCKER_CONFIG", t.TempDir())
+	f.host = strings.TrimPrefix(srv.URL, "http://")
+	return f
+}
+
+// rawManifest is a manifest to push as it is.
+type rawManifest []byte
+
+func (m rawManifest) RawManifest() ([]byte, error) { return m, nil }
+
+// image pushes manifest as repository:tag and returns the tag's reference.
+func (f *fakeRegistry) image(t *testing.T, repository, tag, manifest string) string {
+	t.Helper()
+	ref, err := name.NewTag(f.host + "/" + repository + ":" + tag)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := remote.Put(ref, rawManifest(manifest)); err != nil {
+		t.Fatal(err)
+	}
+	return ref.String()
+}
+
+// referrer pushes a referrer of digest into repository of the shape cosign v3
+// stores a signature in when artifactType is signatureBundleArtifactType.
+func (f *fakeRegistry) referrer(t *testing.T, repository, digest, artifactType string) {
+	t.Helper()
+	subject, err := v1.NewHash(digest)
+	if err != nil {
+		t.Fatal(err)
+	}
+	img := mutate.ConfigMediaType(mutate.MediaType(empty.Image, types.OCIManifestSchema1), types.MediaType(artifactType))
+	img, err = mutate.AppendLayers(img, static.NewLayer([]byte("{}"), types.MediaType(artifactType)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	img = mutate.Subject(img, v1.Descriptor{MediaType: types.OCIManifestSchema1, Digest: subject, Size: 1}).(v1.Image)
+	repo, err := name.NewRepository(f.host + "/" + repository)
+	if err != nil {
+		t.Fatal(err)
+	}
+	referrerDigest, err := img.Digest()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := remote.Write(repo.Digest(referrerDigest.String()), img); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func digestOf(manifest string) string {
+	sum := sha256.Sum256([]byte(manifest))
+	return "sha256:" + hex.EncodeToString(sum[:])
+}
+
+const testManifest = `{"schemaVersion":2,"mediaType":"application/vnd.oci.image.manifest.v1+json","config":{"mediaType":"application/vnd.oci.image.config.v1+json","digest":"sha256:0","size":1},"layers":[]}`
+
+func TestHasSignatureBundle(t *testing.T) {
+	backoff = func(int) {}
+	digest := digestOf(testManifest)
+
+	reg := newFakeRegistry(t, 0)
+	reg.image(t, "ns/img", "v1", testManifest)
+	ref := reg.host + "/ns/img@" + digest
+	if signed, err := hasSignatureBundle(ref); err != nil || signed {
+		t.Fatalf("no referrers: signed = %v, err = %v; want false, nil", signed, err)
+	}
+	reg.referrer(t, "ns/img", digest, "application/vnd.example.sbom")
+	if signed, err := hasSignatureBundle(ref); err != nil || signed {
+		t.Fatalf("a referrer of another artifact type: signed = %v, err = %v; want false, nil", signed, err)
+	}
+	reg.referrer(t, "ns/img", digest, signatureBundleArtifactType)
+	if signed, err := hasSignatureBundle(ref); err != nil || !signed {
+		t.Fatalf("a signature bundle: signed = %v, err = %v; want true, nil", signed, err)
+	}
+
+	// The registry's throttling of the listing is retried, not read as "unsigned".
+	throttled := newFakeRegistry(t, 2)
+	throttled.image(t, "ns/img", "v1", testManifest)
+	throttled.referrer(t, "ns/img", digest, signatureBundleArtifactType)
+	if signed, err := hasSignatureBundle(throttled.host + "/ns/img@" + digest); err != nil || !signed {
+		t.Fatalf("throttled listing: signed = %v, err = %v; want true, nil", signed, err)
+	}
+	if n := throttled.listings.Load(); n < 3 {
+		t.Errorf("the throttled listing was tried %d times, want at least 3", n)
+	}
+}
+
+// TestSignTagTrustsAnUnsignedAnswerOnlyWithTheRegistry pins the pre-check:
+// cosign's "no signatures found" leads to a sign only when the registry lists
+// no signature bundle; when it lists one, the verify is retried; another
+// identity's signature is signed over without asking the registry; a verify
+// that cannot be completed fails the tag instead of signing it.
+func TestSignTagTrustsAnUnsignedAnswerOnlyWithTheRegistry(t *testing.T) {
+	backoff = func(int) {}
+	identity := "https://circleci.com/api/v2/projects/p/pipeline-definitions/d"
+	tokens := &oidcTokenSource{token: "token", mintedAt: time.Now()} // #nosec G101 -- a test fixture, no token is minted
+	digest := digestOf(testManifest)
+
+	for _, tc := range []struct {
+		name         string
+		verifyError  string
+		bundle       bool
+		wantOutcome  signOutcome
+		wantErr      bool
+		wantCosign   int
+		wantListings int64
+	}{
+		{"unsigned: the registry lists no bundle, the digest is signed", "Error: no signatures found", false, outcomeSigned, false, 3, 1},
+		{"a throttled lookup: the registry lists a bundle, the verify is retried", "Error: no signatures found", true, outcomeSkipped, false, 2, 1},
+		{"another identity's signature: signed over without asking the registry", "Error: no matching attestations: failed to verify certificate identity", true, outcomeSigned, false, 3, 0},
+		{"a verify that cannot be completed is not a reason to sign", "Error: GET https://example.invalid/v2/ns/img/manifests/sha256:0: UNAUTHORIZED: authentication required", true, outcomeFailed, true, 1, 0},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			reg := newFakeRegistry(t, 0)
+			image := reg.image(t, "ns/img", "v1", testManifest)
+			if tc.bundle {
+				reg.referrer(t, "ns/img", digest, signatureBundleArtifactType)
+			}
+			fakeSkopeo(t, testManifest)
+			calls := fakeCosign(t, 1, tc.verifyError)
+			reg.listings.Store(0) // pushing the fixtures lists the referrers too
+
+			outcome, err := signTag(image, identity, tokens)
+			if outcome != tc.wantOutcome || (err != nil) != tc.wantErr {
+				t.Fatalf("outcome = %v, err = %v; want %v, error %v", outcome, err, tc.wantOutcome, tc.wantErr)
+			}
+			if n := callCount(t, calls); n != tc.wantCosign {
+				t.Errorf("cosign called %d times, want %d", n, tc.wantCosign)
+			}
+			if n := reg.listings.Load(); n != tc.wantListings {
+				t.Errorf("the registry's referrers were listed %d times, want %d", n, tc.wantListings)
+			}
+		})
 	}
 }
