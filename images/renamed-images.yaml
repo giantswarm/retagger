@@ -83,6 +83,13 @@
 - image: ghcr.io/cloudnative-pg/plugin-barman-cloud-sidecar
   override_repo_name: cnpg-plugin-barman-cloud-sidecar
   semver: ">= v0.7.0"
+# The upstream CloudNativePG operator chart (an OCI Helm chart, not an image),
+# under its upstream path: oci://gsoci.azurecr.io/giantswarm/cloudnative-pg/charts/cloudnative-pg.
+# The agent-platform meta chart installs the operator from it (giantswarm/agent-platform#580);
+# the operator image is copied as giantswarm/cloudnative-pg (skopeo-ghcr-io.yaml).
+- image: ghcr.io/cloudnative-pg/charts/cloudnative-pg
+  override_repo_name: cloudnative-pg/charts/cloudnative-pg
+  semver: ">= 0.29.0"
 - image: ghcr.io/kyverno/policy-reporter/kyverno-plugin
   override_repo_name: kyverno-plugin
   semver: ">= 0.4.0"
