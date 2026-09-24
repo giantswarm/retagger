@@ -15,6 +15,15 @@
   override_repo_name: awscli
   tag_or_pattern: "2.7.35"
   sha: e5988c45f13ec9c9500e9fb6742e19de642a5bdc2750f2cc0482a857f13c30ea
+# vLLM's own OpenAI server image, pinned by its index digest (linux/amd64 and
+# linux/arm64): the runtime of a serving preset whose model needs a vLLM newer
+# than the llm-d release carries (the preset's own template image,
+# giantswarm/agent-platform#597: Muse Glimmer needs vLLM >= 0.28.0; llm-d
+# v0.9.0 ships 0.26). One tag, not a semver range: every release is ~20 GB.
+- image: vllm/vllm-openai
+  override_repo_name: vllm-openai
+  tag_or_pattern: "v0.30.0"
+  sha: 8a69ffad015f138d7170c4ddc429e230a3bc1c1719f67e14324749df200a4b90
 - image: bitnami/memcached
   override_repo_name: bitnami-memcached
   tag_or_pattern: "1.6.21"
