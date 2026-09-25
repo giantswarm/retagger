@@ -236,8 +236,17 @@ jobs:
           name: Retag images
           no_output_timeout: 1h
           command: |
+            # --digestfile records one line per image that landed in the registry,
+            # "<digest> docker://<registry>/giantswarm/<name>:<tag>", and only for the copies
+            # that succeeded. That record, not the images file, is what `mirror-to-aliyun`
+            # reads: it copies on from this registry instead of pulling from upstream again.
             skopeo sync --all --keep-going --retry-times 3 --src yaml --dest docker \
+              --digestfile "<<parameters.images_file>>.copied" \
               "<<parameters.images_file>>" "<<parameters.registry>>/giantswarm" | tee /tmp/skopeo.log
+      - persist_to_workspace:
+          root: .
+          paths:
+            - "<<parameters.images_file>>.copied"
       - store_artifacts:
           path: /tmp/skopeo.log
           destination: "<<parameters.registry>>-<<parameters.images_file>>.log"
@@ -258,14 +267,142 @@ jobs:
             - store_artifacts:
                 path: /tmp/retagger-sign.log
                 destination: "<<parameters.registry>>-<<parameters.images_file>>-sign.log"
+
+  # Reports the errors the `filter-skopeo-tags` jobs left in `<file>.filtered.errlog`, all of
+  # them at once.
+  #
+  # This used to be the last step of every `retag-registry` run, which meant a filter error
+  # failed the GSOCI job. Now when the Aliyun mirror requires that job, that would have stopped
+  # the mirror over an error that has nothing to do with it, and stopped it entirely, where
+  # before it merely turned the Aliyun job red after the images had been copied. So the check
+  # lives in a job of its own and the whole picture is in one place instead of being split
+  # across twenty-one job logs.
+  validate-filter-errors:
+    docker:
+      - image: gsoci.azurecr.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
+    resource_class: small
+    shell: /bin/bash
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Report the errors the filter jobs recorded
+          command: |
+            shopt -s nullglob
+
+            failed=()
+            for errlog in images/skopeo-*.yaml.filtered.errlog; do
+              if [[ -s "${errlog}" ]]; then
+                failed+=("${errlog}")
+              fi
+            done
+
+            if [[ ${#failed[@]} -eq 0 ]]; then
+              echo "The filter jobs recorded no errors."
+              exit 0
+            fi
+
+            echo "Errors have been encountered on the \"filter-skopeo-tags\" jobs, what could lead to some images and tags not being processed correctly."
+            echo "These errors could be to multiple reasons, e.g. connectivity problems, malfunctioning code, etc., for more details see the logs below."
+            echo "Note, one common source of problems is when a target repository, for the image being retagged, does not exists in a target registries, e.g. Aliyun."
+            for errlog in "${failed[@]}"; do
+              echo ""
+              echo "--- ${errlog} ---"
+              cat "${errlog}"
+            done
+            exit 1
+
+  # The Aliyun half of the mirror, run on the self-hosted CircleCI runner inside China that
+  # `architect/sync-china-registry` uses (architect-orb#724).
+  #
+  # It does not sync the images file. It reads the `.copied` record that the GSOCI
+  # `retag-registry` run of the same file left in the workspace and copies each of those
+  # images on from GSOCI, which is why it requires that job.
+  mirror-to-aliyun:
+    docker:
+      - image: giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm/skopeo:v1.22.3
+        entrypoint: ["/bin/bash"]
+    resource_class: giantswarm/galaxy-runner
+    shell: /bin/bash
+    environment:
+      SOURCE_REGISTRY: gsoci.azurecr.io
+      TARGET_REGISTRY: giantswarm-registry.cn-shanghai.cr.aliyuncs.com
+    parameters:
+      images_file:
+        type: string
+      dry_run:
+        type: boolean
+        default: false
+        description: |
+          Print what would be copied and copy nothing. `skopeo copy` has no dry-run of its
+          own, so this skips the command rather than passing a flag to it. Everything around
+          it still runs for real: the job is scheduled on the runner, pulls its image from
+          Aliyun, logs in to both registries and reads the record from the workspace.
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Log in to registries
+          command: |
+            skopeo login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} ${SOURCE_REGISTRY}
+            max_retry=5
+            counter=1
+            until skopeo login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} ${TARGET_REGISTRY}
+            do
+                sleep $((10 * $counter))
+                [[ counter -eq $max_retry ]] && echo "Failed by exhausting $max_retry retries" && exit 1
+                echo "Attempt $counter: trying again..."
+                ((counter++))
+            done
+      - run:
+          name: Copy the images gsoci received on to Aliyun
+          no_output_timeout: 1h
+          command: |
+            record="<<parameters.images_file>>.copied"
+            if [[ ! -f "${record}" ]]; then
+              echo "No record at ${record}. The gsoci job writes it with 'skopeo sync --digestfile'."
+              exit 1
+            fi
+
+            rm -f /tmp/failed
+            {
+              if [[ "<<parameters.dry_run>>" == "true" ]]; then
+                echo "DRY RUN: listing the copies only, nothing is written to ${TARGET_REGISTRY}."
+              fi
+              echo "Copying $(grep -c . "${record}") image(s) recorded in ${record}"
+              while read -r _ source; do
+                if [[ -z "${source}" ]]; then
+                  continue
+                fi
+                # "docker://gsoci.azurecr.io/giantswarm/alpine:3.18" -> "giantswarm/alpine:3.18".
+                # 'skopeo sync' flattens the repository path to its last element, so both
+                # registries hold the image under the same name and only the host changes.
+                image="${source#docker://${SOURCE_REGISTRY}/}"
+                destination="docker://${TARGET_REGISTRY}/${image}"
+                echo ""
+                if [[ "<<parameters.dry_run>>" == "true" ]]; then
+                  echo "Would copy: skopeo copy --all --retry-times 3 ${source} ${destination}"
+                  continue
+                fi
+                echo "Copying ${image}"
+                if ! skopeo copy --all --retry-times 3 "${source}" "${destination}"; then
+                  echo "${image}" >> /tmp/failed
+                fi
+              done < "${record}"
+            } 2>&1 | tee /tmp/skopeo.log
+      - store_artifacts:
+          path: /tmp/skopeo.log
+          destination: "aliyun-<<parameters.images_file>>.log"
       - run:
           name: Validate success
           command: |
-            [[ -s <<parameters.images_file>>.errlog ]] || exit 0
-            echo "Errors have been encountered on the \"filter-skopeo-tags\" job, what could lead to some images and tags not being processed correctly."
-            echo "These errors could be to multiple reasons, e.g. connectivity problems, malfunctioning code, etc., for more details see the logs below.\n"
-            echo "Note, one common source of problems is when a target repository, for the image being retagged, does not exists in a target registries, e.g. Aliyun.\n"
-            cat  <<parameters.images_file>>.errlog
+            # Like 'skopeo sync --keep-going': one image that cannot be copied does not stop
+            # the rest, but the job still reports it.
+            [[ -s /tmp/failed ]] || exit 0
+            echo "Failed to copy the following images to ${TARGET_REGISTRY}:"
+            cat /tmp/failed
+            echo ""
+            echo "Note, one common source of problems is when a target repository, for the image being retagged, does not exists in a target registries, e.g. Aliyun."
             exit 1
 
   retag-renamed-images:
@@ -560,24 +697,43 @@ build_and_retag: &build_and_retag
               - main
         requires:
           - build-and-push-docker
-    - retag-registry:
+    - validate-filter-errors:
         context: architect
-        name: retag-aliyun-<<matrix.images_file>>
-        username: ${ALIYUN_USERNAME}
-        password: ${ALIYUN_PASSWORD}
-        registry: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com"
+        name: validate-filter-errors
         requires:
           - filter-skopeo-docker-io
           - filter-skopeo-eu-gcr-io
           - filter-skopeo-gcr-io
           - filter-skopeo-ghcr-io
           - filter-skopeo-mcr-microsoft-com
-          - filter-skopeo-public-ecr-aws
           - filter-skopeo-nvcr-io
+          - filter-skopeo-public-ecr-aws
           - filter-skopeo-gsoci-azurecr-io
           - filter-skopeo-quay-io
           - filter-skopeo-k8s-io
           - filter-skopeo-k8s-io-kubernetes
+          - filter-skopeo-projects-registry-vmware-com
+    # Reads what the gsoci jobs recorded, so it waits for all of them rather than for the
+    # filter jobs. CircleCI cannot express a per-matrix-instance dependency, hence the full
+    # list: every Aliyun copy waits for every gsoci copy, not just for its own file.
+    - mirror-to-aliyun:
+        context: architect
+        name: retag-aliyun-<<matrix.images_file>>
+        # TODO: drop once the job has been watched run on the China runner. Until then it
+        # lists the copies it would make and writes nothing to Aliyun, which means Aliyun
+        # receives nothing from this workflow at all.
+        dry_run: true
+        requires:
+          - retag-gsoci-images/skopeo-docker-io.yaml.filtered
+          - retag-gsoci-images/skopeo-eu-gcr-io.yaml.filtered
+          - retag-gsoci-images/skopeo-gcr-io.yaml.filtered
+          - retag-gsoci-images/skopeo-ghcr-io.yaml.filtered
+          - retag-gsoci-images/skopeo-mcr-microsoft-com.yaml.filtered
+          - retag-gsoci-images/skopeo-nvcr-io.yaml.filtered
+          - retag-gsoci-images/skopeo-public-ecr-aws.yaml.filtered
+          - retag-gsoci-images/skopeo-quay-io.yaml.filtered
+          - retag-gsoci-images/skopeo-registry-k8s-io.yaml.filtered
+          - retag-gsoci-images/skopeo-registry-k8s-io-kubernetes.yaml.filtered
         matrix:
           parameters:
             images_file:
