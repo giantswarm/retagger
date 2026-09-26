@@ -24,6 +24,14 @@
   override_repo_name: vllm-openai
   tag_or_pattern: "v0.30.0"
   sha: 8a69ffad015f138d7170c4ddc429e230a3bc1c1719f67e14324749df200a4b90
+# vLLM's CPU server image, pinned by its index digest (linux/amd64 and
+# linux/arm64): the tokenizer sidecar of KServe v0.21.0's well-known
+# kserve-config-llm-tokenizer preset, which the giantswarm/kserve charts
+# point at this copy.
+- image: vllm/vllm-openai-cpu
+  override_repo_name: vllm-openai-cpu
+  tag_or_pattern: "v0.23.0"
+  sha: 89e1fbe829038b1a560601990c8ec89625c622a969fcbc8f10ce48b6139795be
 - image: bitnami/memcached
   override_repo_name: bitnami-memcached
   tag_or_pattern: "1.6.21"
