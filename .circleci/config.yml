@@ -367,7 +367,7 @@ jobs:
               if [[ "<<parameters.dry_run>>" == "true" ]]; then
                 echo "DRY RUN: listing the copies only, nothing is written to ${TARGET_REGISTRY}."
               fi
-              echo "Copying $(grep -c . "${record}") image(s) recorded in ${record}"
+              echo "Copying $(grep -c . "${record}") image(s) recorded in ${record} from ${SOURCE_REGISTRY} to ${TARGET_REGISTRY}"
               while read -r _ source; do
                 if [[ -z "${source}" ]]; then
                   continue
@@ -382,8 +382,9 @@ jobs:
                   echo "Would copy: skopeo copy --all --retry-times 3 ${source} ${destination}"
                   continue
                 fi
-                echo "Copying ${image}"
+                echo "Copying ${source} to ${destination}"
                 if ! skopeo copy --all --retry-times 3 "${source}" "${destination}"; then
+                  echo "Failed to copy ${source} to ${destination}"
                   echo "${image}" >> /tmp/failed
                 fi
               done < "${record}"
@@ -563,7 +564,7 @@ retag_branches: &retag_branches
   branches:
     only:
       - main
-      - use-china-runners-for-aliyun
+      #- use-china-runners-for-aliyun
 
 # Define 'build_and_retag' workflow steps, so we can reuse it.
 build_and_retag: &build_and_retag
