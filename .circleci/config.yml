@@ -358,25 +358,36 @@ jobs:
           name: Copy the images gsoci received on to Aliyun
           no_output_timeout: 1h
           command: |
-            record="<<parameters.images_file>>.copied"
-            if [[ ! -f "${record}" ]]; then
-              echo "No record at ${record}. The gsoci job writes it with 'skopeo sync --digestfile'."
+            # One record for a skopeo file, which one `retag-gsoci` job syncs whole and
+            # `skopeo sync --digestfile` records; several for a renamed-images file, whose
+            # rules are split across five `retag-renamed-images` executors that each record
+            # their own share.
+            shopt -s nullglob
+            records=( "<<parameters.images_file>>"*.copied )
+            if [[ ${#records[@]} -eq 0 ]]; then
+              echo "No <<parameters.images_file>>*.copied in the workspace. The gsoci job writes the record; see its log."
               exit 1
             fi
+            echo "Reading ${#records[@]} record(s): ${records[*]}"
+            cat "${records[@]}" > /tmp/record
 
             rm -f /tmp/failed
             {
               if [[ "<<parameters.dry_run>>" == "true" ]]; then
                 echo "DRY RUN: listing the copies only, nothing is written to ${TARGET_REGISTRY}."
               fi
-              echo "Copying $(grep -c . "${record}") image(s) recorded in ${record} from ${SOURCE_REGISTRY} to ${TARGET_REGISTRY}"
-              while read -r _ source; do
-                if [[ -z "${source}" ]]; then
+              echo "Copying $(grep -c . /tmp/record) image(s) from ${SOURCE_REGISTRY} to ${TARGET_REGISTRY}"
+              while read -r line; do
+                if [[ -z "${line}" ]]; then
                   continue
                 fi
+                # 'skopeo sync --digestfile' writes "<digest> <reference>", 'retagger run'
+                # writes just the reference; the last field reads either.
+                source="${line##* }"
                 # "docker://gsoci.azurecr.io/giantswarm/alpine:3.18" -> "giantswarm/alpine:3.18".
-                # 'skopeo sync' flattens the repository path to its last element, so both
-                # registries hold the image under the same name and only the host changes.
+                # Both registries hold the image under the same name -- 'skopeo sync' flattens
+                # the repository path to its last element, and a renamed-images rule names the
+                # one destination repository -- so only the host changes here.
                 image="${source#docker://${SOURCE_REGISTRY}/}"
                 destination="docker://${TARGET_REGISTRY}/${image}"
                 echo ""
@@ -389,7 +400,7 @@ jobs:
                   echo "Failed to copy ${source} to ${destination}"
                   echo "${image}" >> /tmp/failed
                 fi
-              done < "${record}"
+              done < /tmp/record
             } 2>&1 | tee /tmp/skopeo.log
       - store_artifacts:
           path: /tmp/skopeo.log
@@ -472,6 +483,13 @@ jobs:
             set -o pipefail
             retagger run --log-level "<<parameters.log_level>>" --sign=<<parameters.sign>> \
               --executor-count <<parameters.executor_count>> --executor-id <<parameters.executor_id>> --filename <<parameters.filename>> | tee /tmp/retagger.log
+      # `retagger run` writes one reference per line, every tag this executor copied to gsoci.
+      # The Aliyun mirror reads the records of all the executors of this file and copies them
+      # on from gsoci, the same way it does for the skopeo files' `--digestfile` records.
+      - persist_to_workspace:
+          root: .
+          paths:
+            - "<<parameters.filename>>.<<parameters.executor_id>>.copied"
       - store_artifacts:
           path: /tmp/retagger.log
           destination: "retagger-<<parameters.filename>>-<<parameters.executor_id>>-of-<<parameters.executor_count>>.log"
@@ -755,7 +773,7 @@ build_and_retag: &build_and_retag
               - images/skopeo-projects-registry-vmware-com.yaml.filtered
     - retag-renamed-images:
         context: architect
-        name: retag-renamed-images
+        name: retag-renamed-images-<<matrix.filename>>-<<matrix.executor_id>>
         requires:
           - build-and-push-docker
         executor_count: 5
@@ -777,6 +795,73 @@ build_and_retag: &build_and_retag
               - images/renamed-upbound-gcp.yaml
             # i in range(executor_count)
             executor_id: [0, 1, 2, 3, 4]
+
+    # The Aliyun half of the renamed-images mirror. Same job as for the skopeo files: it reads
+    # the records the gsoci copies left in the workspace and copies those references on from
+    # gsoci, on the runner inside China. A renamed-images file is split across five executors,
+    # so it has five records; the job globs them.
+    #
+    # CircleCI cannot express a per-matrix-instance dependency, so every mirror waits for every
+    # `retag-renamed-images` job rather than just for the five that share its file.
+    - mirror-to-aliyun:
+        context: architect
+        name: retag-aliyun-<<matrix.images_file>>
+        requires:
+          - retag-renamed-images-images/renamed-images.yaml-0
+          - retag-renamed-images-images/renamed-images.yaml-1
+          - retag-renamed-images-images/renamed-images.yaml-2
+          - retag-renamed-images-images/renamed-images.yaml-3
+          - retag-renamed-images-images/renamed-images.yaml-4
+          - retag-renamed-images-images/renamed-agentgateway.yaml-0
+          - retag-renamed-images-images/renamed-agentgateway.yaml-1
+          - retag-renamed-images-images/renamed-agentgateway.yaml-2
+          - retag-renamed-images-images/renamed-agentgateway.yaml-3
+          - retag-renamed-images-images/renamed-agentgateway.yaml-4
+          - retag-renamed-images-images/renamed-agent-sandbox.yaml-0
+          - retag-renamed-images-images/renamed-agent-sandbox.yaml-1
+          - retag-renamed-images-images/renamed-agent-sandbox.yaml-2
+          - retag-renamed-images-images/renamed-agent-sandbox.yaml-3
+          - retag-renamed-images-images/renamed-agent-sandbox.yaml-4
+          - retag-renamed-images-images/renamed-kagent.yaml-0
+          - retag-renamed-images-images/renamed-kagent.yaml-1
+          - retag-renamed-images-images/renamed-kagent.yaml-2
+          - retag-renamed-images-images/renamed-kagent.yaml-3
+          - retag-renamed-images-images/renamed-kagent.yaml-4
+          - retag-renamed-images-images/renamed-cilium-prereleases.yaml-0
+          - retag-renamed-images-images/renamed-cilium-prereleases.yaml-1
+          - retag-renamed-images-images/renamed-cilium-prereleases.yaml-2
+          - retag-renamed-images-images/renamed-cilium-prereleases.yaml-3
+          - retag-renamed-images-images/renamed-cilium-prereleases.yaml-4
+          - retag-renamed-images-images/renamed-upbound-aws.yaml-0
+          - retag-renamed-images-images/renamed-upbound-aws.yaml-1
+          - retag-renamed-images-images/renamed-upbound-aws.yaml-2
+          - retag-renamed-images-images/renamed-upbound-aws.yaml-3
+          - retag-renamed-images-images/renamed-upbound-aws.yaml-4
+          - retag-renamed-images-images/renamed-upbound-azure.yaml-0
+          - retag-renamed-images-images/renamed-upbound-azure.yaml-1
+          - retag-renamed-images-images/renamed-upbound-azure.yaml-2
+          - retag-renamed-images-images/renamed-upbound-azure.yaml-3
+          - retag-renamed-images-images/renamed-upbound-azure.yaml-4
+          - retag-renamed-images-images/renamed-upbound-gcp.yaml-0
+          - retag-renamed-images-images/renamed-upbound-gcp.yaml-1
+          - retag-renamed-images-images/renamed-upbound-gcp.yaml-2
+          - retag-renamed-images-images/renamed-upbound-gcp.yaml-3
+          - retag-renamed-images-images/renamed-upbound-gcp.yaml-4
+        filters:
+          branches:
+            only:
+              - main
+        matrix:
+          parameters:
+            images_file:
+              - images/renamed-images.yaml
+              - images/renamed-agentgateway.yaml
+              - images/renamed-agent-sandbox.yaml
+              - images/renamed-kagent.yaml
+              - images/renamed-cilium-prereleases.yaml
+              - images/renamed-upbound-aws.yaml
+              - images/renamed-upbound-azure.yaml
+              - images/renamed-upbound-gcp.yaml
 
     - ping-heartbeat:
         name: ping-heartbeat
