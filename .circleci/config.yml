@@ -681,10 +681,6 @@ build_and_retag: &build_and_retag
     - mirror-to-aliyun:
         context: architect
         name: retag-aliyun-<<matrix.images_file>>
-        # TODO: drop once the job has been watched run on the China runner. Until then it
-        # lists the copies it would make and writes nothing to Aliyun, which means Aliyun
-        # receives nothing from this workflow at all.
-        dry_run: true
         requires:
           - retag-gsoci-images/skopeo-docker-io.yaml.filtered
           - retag-gsoci-images/skopeo-eu-gcr-io.yaml.filtered
