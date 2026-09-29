@@ -559,6 +559,21 @@ trivy_databases: &trivy_databases
         requires:
           - build-and-push-docker
 
+# Branches the retagging chain runs from. The `filter-skopeo-tags` jobs are its gate: nothing
+# downstream of them runs on a branch they skip.
+#
+# TODO: drop `use-china-runners-for-aliyun` before merging. It is here to exercise the new
+# `mirror-to-aliyun` job on the China runner, which cannot be reached from a branch otherwise.
+# What that costs: the gsoci copies and their signing are real, the same writes main's nightly
+# run makes, and idempotent -- a tag already at gsoci is simply re-copied. The Aliyun side
+# writes nothing while `dry_run` is on. Anything this run misses, main's next run still sees
+# missing and picks up.
+retag_branches: &retag_branches
+  branches:
+    only:
+      - main
+      - use-china-runners-for-aliyun
+
 # Define 'build_and_retag' workflow steps, so we can reuse it.
 build_and_retag: &build_and_retag
   jobs:
@@ -581,70 +596,49 @@ build_and_retag: &build_and_retag
         context: architect
         name: filter-skopeo-docker-io
         filepath: images/skopeo-docker-io.yaml
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-eu-gcr-io
         filepath: images/skopeo-eu-gcr-io.yaml
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-gcr-io
         filepath: images/skopeo-gcr-io.yaml
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-ghcr-io
         filepath: images/skopeo-ghcr-io.yaml
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-mcr-microsoft-com
         filepath: images/skopeo-mcr-microsoft-com.yaml
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-nvcr-io
         filepath: images/skopeo-nvcr-io.yaml
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-public-ecr-aws
         filepath: images/skopeo-public-ecr-aws.yaml
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
@@ -661,40 +655,28 @@ build_and_retag: &build_and_retag
         context: architect
         name: filter-skopeo-quay-io
         filepath: images/skopeo-quay-io.yaml
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-k8s-io
         filepath: images/skopeo-registry-k8s-io.yaml
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-k8s-io-kubernetes
         filepath: images/skopeo-registry-k8s-io-kubernetes.yaml
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-projects-registry-vmware-com
         filepath: images/skopeo-projects-registry-vmware-com.yaml
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         requires:
           - build-and-push-docker
     - validate-filter-errors:
@@ -812,6 +794,13 @@ build_and_retag: &build_and_retag
         # So this is better than nothing.
         requires:
           - filter-skopeo-k8s-io-kubernetes
+        # Stays on main. It used to inherit main-only from its dependency; now that the chain
+        # also runs from a test branch, a branch run would ping the cronjob heartbeat and hide
+        # a nightly run that never happened.
+        filters:
+          branches:
+            only:
+              - main
 
 workflows:
   build_retag:
