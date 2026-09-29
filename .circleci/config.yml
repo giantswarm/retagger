@@ -559,15 +559,8 @@ trivy_databases: &trivy_databases
         requires:
           - build-and-push-docker
 
-# Branches the retagging chain runs from. The `filter-skopeo-tags` jobs are its gate: nothing
-# downstream of them runs on a branch they skip.
-#
 # TODO: drop `use-china-runners-for-aliyun` before merging. It is here to exercise the new
 # `mirror-to-aliyun` job on the China runner, which cannot be reached from a branch otherwise.
-# What that costs: the gsoci copies and their signing are real, the same writes main's nightly
-# run makes, and idempotent -- a tag already at gsoci is simply re-copied. The Aliyun side
-# writes nothing while `dry_run` is on. Anything this run misses, main's next run still sees
-# missing and picks up.
 retag_branches: &retag_branches
   branches:
     only:
