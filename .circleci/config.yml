@@ -584,6 +584,18 @@ retag_branches: &retag_branches
       - main
       #- use-china-runners-for-aliyun
 
+# The renamed-images files, shared by the jobs that copy them to gsoci and the jobs that mirror
+# those copies on to Aliyun, so a new file is added in one place.
+renamed_images_files: &renamed_images_files
+              - images/renamed-images.yaml
+              - images/renamed-agentgateway.yaml
+              - images/renamed-agent-sandbox.yaml
+              - images/renamed-kagent.yaml
+              - images/renamed-cilium-prereleases.yaml
+              - images/renamed-upbound-aws.yaml
+              - images/renamed-upbound-azure.yaml
+              - images/renamed-upbound-gcp.yaml
+
 # Define 'build_and_retag' workflow steps, so we can reuse it.
 build_and_retag: &build_and_retag
   jobs:
@@ -701,16 +713,7 @@ build_and_retag: &build_and_retag
         context: architect
         name: retag-aliyun-<<matrix.images_file>>
         requires:
-          - retag-gsoci-images/skopeo-docker-io.yaml.filtered
-          - retag-gsoci-images/skopeo-eu-gcr-io.yaml.filtered
-          - retag-gsoci-images/skopeo-gcr-io.yaml.filtered
-          - retag-gsoci-images/skopeo-ghcr-io.yaml.filtered
-          - retag-gsoci-images/skopeo-mcr-microsoft-com.yaml.filtered
-          - retag-gsoci-images/skopeo-nvcr-io.yaml.filtered
-          - retag-gsoci-images/skopeo-public-ecr-aws.yaml.filtered
-          - retag-gsoci-images/skopeo-quay-io.yaml.filtered
-          - retag-gsoci-images/skopeo-registry-k8s-io.yaml.filtered
-          - retag-gsoci-images/skopeo-registry-k8s-io-kubernetes.yaml.filtered
+          - retag-gsoci
         matrix:
           parameters:
             images_file:
@@ -744,6 +747,9 @@ build_and_retag: &build_and_retag
           - filter-skopeo-k8s-io-kubernetes
           - filter-skopeo-projects-registry-vmware-com
         matrix:
+          # Named so the Aliyun mirror can require the whole matrix rather than each of its
+          # instances -- see `retag-renamed-images` for why that matters.
+          alias: retag-gsoci
           parameters:
             images_file:
               - images/skopeo-docker-io.yaml.filtered
@@ -769,16 +775,12 @@ build_and_retag: &build_and_retag
             only:
               - main
         matrix:
+          # Named so the Aliyun mirror can require the whole matrix with one entry. Listing the
+          # instances instead would have to be rewritten every time `executor_count` changes,
+          # and forgetting to would leave the mirror reading a half-written set of records.
+          alias: retag-renamed-images
           parameters:
-            filename:
-              - images/renamed-images.yaml
-              - images/renamed-agentgateway.yaml
-              - images/renamed-agent-sandbox.yaml
-              - images/renamed-kagent.yaml
-              - images/renamed-cilium-prereleases.yaml
-              - images/renamed-upbound-aws.yaml
-              - images/renamed-upbound-azure.yaml
-              - images/renamed-upbound-gcp.yaml
+            filename: *renamed_images_files
             # i in range(executor_count)
             executor_id: [0, 1, 2, 3, 4]
 
@@ -793,61 +795,14 @@ build_and_retag: &build_and_retag
         context: architect
         name: retag-aliyun-<<matrix.images_file>>
         requires:
-          - retag-renamed-images-images/renamed-images.yaml-0
-          - retag-renamed-images-images/renamed-images.yaml-1
-          - retag-renamed-images-images/renamed-images.yaml-2
-          - retag-renamed-images-images/renamed-images.yaml-3
-          - retag-renamed-images-images/renamed-images.yaml-4
-          - retag-renamed-images-images/renamed-agentgateway.yaml-0
-          - retag-renamed-images-images/renamed-agentgateway.yaml-1
-          - retag-renamed-images-images/renamed-agentgateway.yaml-2
-          - retag-renamed-images-images/renamed-agentgateway.yaml-3
-          - retag-renamed-images-images/renamed-agentgateway.yaml-4
-          - retag-renamed-images-images/renamed-agent-sandbox.yaml-0
-          - retag-renamed-images-images/renamed-agent-sandbox.yaml-1
-          - retag-renamed-images-images/renamed-agent-sandbox.yaml-2
-          - retag-renamed-images-images/renamed-agent-sandbox.yaml-3
-          - retag-renamed-images-images/renamed-agent-sandbox.yaml-4
-          - retag-renamed-images-images/renamed-kagent.yaml-0
-          - retag-renamed-images-images/renamed-kagent.yaml-1
-          - retag-renamed-images-images/renamed-kagent.yaml-2
-          - retag-renamed-images-images/renamed-kagent.yaml-3
-          - retag-renamed-images-images/renamed-kagent.yaml-4
-          - retag-renamed-images-images/renamed-cilium-prereleases.yaml-0
-          - retag-renamed-images-images/renamed-cilium-prereleases.yaml-1
-          - retag-renamed-images-images/renamed-cilium-prereleases.yaml-2
-          - retag-renamed-images-images/renamed-cilium-prereleases.yaml-3
-          - retag-renamed-images-images/renamed-cilium-prereleases.yaml-4
-          - retag-renamed-images-images/renamed-upbound-aws.yaml-0
-          - retag-renamed-images-images/renamed-upbound-aws.yaml-1
-          - retag-renamed-images-images/renamed-upbound-aws.yaml-2
-          - retag-renamed-images-images/renamed-upbound-aws.yaml-3
-          - retag-renamed-images-images/renamed-upbound-aws.yaml-4
-          - retag-renamed-images-images/renamed-upbound-azure.yaml-0
-          - retag-renamed-images-images/renamed-upbound-azure.yaml-1
-          - retag-renamed-images-images/renamed-upbound-azure.yaml-2
-          - retag-renamed-images-images/renamed-upbound-azure.yaml-3
-          - retag-renamed-images-images/renamed-upbound-azure.yaml-4
-          - retag-renamed-images-images/renamed-upbound-gcp.yaml-0
-          - retag-renamed-images-images/renamed-upbound-gcp.yaml-1
-          - retag-renamed-images-images/renamed-upbound-gcp.yaml-2
-          - retag-renamed-images-images/renamed-upbound-gcp.yaml-3
-          - retag-renamed-images-images/renamed-upbound-gcp.yaml-4
+          - retag-renamed-images
         filters:
           branches:
             only:
               - main
         matrix:
           parameters:
-            images_file:
-              - images/renamed-images.yaml
-              - images/renamed-agentgateway.yaml
-              - images/renamed-agent-sandbox.yaml
-              - images/renamed-kagent.yaml
-              - images/renamed-cilium-prereleases.yaml
-              - images/renamed-upbound-aws.yaml
-              - images/renamed-upbound-azure.yaml
-              - images/renamed-upbound-gcp.yaml
+            images_file: *renamed_images_files
 
     - ping-heartbeat:
         name: ping-heartbeat
