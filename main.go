@@ -12,6 +12,7 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -176,9 +177,45 @@ func (img *RenamedImage) copyTag(source, destinationTag string, signer tagSigner
 // The pushed image will be tagged with the value of image.TagOrPattern. The
 // AzureCR copy is signed when a signer is given.
 func (img *RenamedImage) RetagUsingSHA(signer *signer) {
+	destinationTag := img.DestinationTag(img.TagOrPattern)
+	if flagSkipExistingTags && img.pinnedEverywhere(destinationTag) {
+		logrus.Debugf("%q already serves %q at sha256:%s everywhere, nothing to copy", img.Image, destinationTag, img.SHA)
+		return
+	}
 	// We'll use skopeo copy for this, because it's awesome.
 	source := fmt.Sprintf("%s%s@sha256:%s", dockerTransport, img.Image, img.SHA)
-	img.copyTag(source, img.DestinationTag(img.TagOrPattern), signer)
+	img.copyTag(source, destinationTag, signer)
+}
+
+// pinnedEverywhere tells whether every destination registry already serves the
+// pinned digest under the destination tag, so the rule has nothing to copy.
+//
+// A pinned rule names one immutable image, so unlike a tag rule there is nothing
+// to list: resolving the destination tag to a digest and comparing answers it.
+// `skopeo copy --all` preserves manifests, so a copy of this rule leaves the
+// destination serving the very digest the rule pins.
+//
+// Both registries are checked, and any failure to resolve counts as not pinned.
+// Checking only AzureCR would strand Aliyun: a tag already at AzureCR would stop
+// being copied, so it would never be recorded, and the mirror job would never
+// carry it across. Erring towards a copy costs a repeat of work skopeo mostly
+// skips; erring the other way loses the image.
+func (img *RenamedImage) pinnedEverywhere(destinationTag string) bool {
+	want := "sha256:" + img.SHA
+	for _, registry := range []string{azureURL, aliyunURL} {
+		image := fmt.Sprintf("%s/%s:%s", registry, img.DestinationName(), destinationTag)
+		got, err := manifestDigest(image)
+		if err != nil {
+			if !errors.Is(err, errManifestUnknown) {
+				logrus.Warnf("error resolving %q, copying anyway: %s", image, err)
+			}
+			return false
+		}
+		if got != want {
+			return false
+		}
+	}
+	return true
 }
 
 // RetagUsingTags finds all tags matching the img.TagOrPattern or
