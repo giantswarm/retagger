@@ -394,8 +394,11 @@ jobs:
               # Not an index: the manifest itself is here, and there is nothing under it to
               # check. Only an index carries child digests; a plain manifest's digests are its
               # config and layers, which are blobs rather than manifests.
-              grep -qE 'image\.index|manifest\.list' <<<"${raw}" || return 0
-              for digest in $(grep -oE 'sha256:[0-9a-f]{64}' <<<"${raw}" | sort -u); do
+              # Piped rather than fed by a bash here-string: CircleCI reads a doubled angle
+              # bracket as the start of one of its own tags and rejects the config as an
+              # unclosed tag.
+              printf '%s' "${raw}" | grep -qE 'image\.index|manifest\.list' || return 0
+              for digest in $(printf '%s' "${raw}" | grep -oE 'sha256:[0-9a-f]{64}' | sort -u); do
                 visible "${repo}@${digest}" "${repo}" || return 1
               done
             }
