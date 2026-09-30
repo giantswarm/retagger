@@ -616,7 +616,7 @@ retag_branches: &retag_branches
   branches:
     only:
       - main
-      - use-china-runners-for-aliyun
+      #- use-china-runners-for-aliyun
 
 # The renamed-images files, shared by the jobs that copy them to gsoci and the jobs that mirror
 # those copies on to Aliyun, so a new file is added in one place.
