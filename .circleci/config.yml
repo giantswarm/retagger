@@ -584,7 +584,7 @@ retag_branches: &retag_branches
   branches:
     only:
       - main
-      #- use-china-runners-for-aliyun
+      - use-china-runners-for-aliyun
 
 # The renamed-images files, shared by the jobs that copy them to gsoci and the jobs that mirror
 # those copies on to Aliyun, so a new file is added in one place.
@@ -784,10 +784,7 @@ build_and_retag: &build_and_retag
           - build-and-push-docker
         executor_count: 5
         sign: true
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         matrix:
           # Named so the Aliyun mirror can require the whole matrix with one entry. Listing the
           # instances instead would have to be rewritten every time `executor_count` changes,
@@ -810,10 +807,7 @@ build_and_retag: &build_and_retag
         name: retag-aliyun-<<matrix.images_file>>
         requires:
           - retag-renamed-images
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         matrix:
           parameters:
             images_file: *renamed_images_files
