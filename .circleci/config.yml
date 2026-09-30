@@ -104,16 +104,11 @@ jobs:
           command: |
             docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
             docker login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} gsoci.azurecr.io
-            max_retry=5
-            counter=1
-            until docker login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
-            do
-                # Total potential wait is x * ((max_retry * (max_retry - 1)) / 2), where x is the constant in the expression
-                sleep $((10 * $counter))
-                [[ counter -eq $max_retry ]] && echo "Failed by exhausting $max_retry retries" && exit 1
-                echo "Attempt $counter: trying again..."
-                ((counter++))
-            done
+            # No Aliyun login here. retagger never runs the docker CLI -- it shells out to
+            # skopeo and cosign only -- so these logins exist for what reads the docker config,
+            # which is cosign, and cosign signs gsoci alone. The Aliyun login wrote credentials
+            # nothing read, while its own timeouts failed the job; skopeo has its own login for
+            # the Aliyun tag listings, in the step below.
       - run:
           name: "Log in to registries: skopeo"
           command: |
@@ -330,16 +325,18 @@ jobs:
         type: string
       replica_wait_minutes:
         type: integer
-        default: 1
+        default: 2
         description: |
           How long to wait for an image to become visible from this runner before giving up on
           it. GSOCI is a geo-replicated Azure Container Registry behind Traffic Manager.
 
-          A minute to start with, because replication is usually quick. Raise it for a file
-          whose images are repeatedly reported as not yet visible - a big image takes longer,
-          and nothing downstream depends on this job, so a generous bound only costs runner
-          time. An image that misses the bound is reported and picked up by the next run, which
-          still sees it missing from Aliyun.
+          Polled every 30 seconds, so two minutes is four attempts. Raise it for a file whose
+          images are repeatedly reported as not yet visible - a big image takes longer, and
+          nothing downstream depends on this job, so a generous bound only costs runner time.
+          An image that misses the bound is reported and picked up by the next run, which still
+          sees it missing from Aliyun. The tags `latest`, `develop` and `debug` are the ones to
+          watch: retagger treats them as always missing, so they are re-pushed to GSOCI on every
+          run and race replication every time, where other tags are copied once and then skipped.
       dry_run:
         type: boolean
         default: false
@@ -412,8 +409,8 @@ jobs:
                   echo "Gave up after <<parameters.replica_wait_minutes>> minutes: ${ref} has not fully replicated to this runner."
                   return 1
                 fi
-                echo "Not fully replicated here yet, waiting 20s: ${ref}"
-                sleep 20
+                echo "Not fully replicated here yet, waiting 30s: ${ref}"
+                sleep 30
               done
             }
 
@@ -504,15 +501,9 @@ jobs:
           command: |
             docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
             docker login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} gsoci.azurecr.io
-            max_retry=5
-            counter=1
-            until docker login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
-            do
-                sleep $((10 * $counter))
-                [[ counter -eq $max_retry ]] && echo "Failed by exhausting $max_retry retries" && exit 1
-                echo "Attempt $counter: trying again..."
-                ((counter++))
-            done
+            # No Aliyun login here -- see the same step in `filter-skopeo-tags`. Doubly so now
+            # that `retagger run` no longer pushes to Aliyun at all: it only lists Aliyun tags,
+            # with skopeo, which logs in for itself in the step below.
       - run:
           name: "Log in to registries: skopeo"
           command: |
