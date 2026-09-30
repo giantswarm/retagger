@@ -323,20 +323,21 @@ jobs:
     parameters:
       images_file:
         type: string
-      replica_wait_minutes:
+      copy_attempts:
         type: integer
-        default: 2
+        default: 4
         description: |
-          How long to wait for an image to become visible from this runner before giving up on
-          it. GSOCI is a geo-replicated Azure Container Registry behind Traffic Manager.
+          How many times to attempt a copy before giving up, 30 seconds apart, so four attempts
+          span about two minutes.
 
-          Polled every 30 seconds, so two minutes is four attempts. Raise it for a file whose
-          images are repeatedly reported as not yet visible - a big image takes longer, and
-          nothing downstream depends on this job, so a generous bound only costs runner time.
-          An image that misses the bound is reported and picked up by the next run, which still
-          sees it missing from Aliyun. The tags `latest`, `develop` and `debug` are the ones to
-          watch: retagger treats them as always missing, so they are re-pushed to GSOCI on every
-          run and race replication every time, where other tags are copied once and then skipped.
+          GSOCI is geo-replicated and this runner does not read the replica the GSOCI job
+          wrote, so a copy can start before the image is wholly readable here. Raise this for a
+          file whose images repeatedly fail to copy; a big image takes longer to replicate, and
+          nothing downstream depends on this job. An image that exhausts the attempts is
+          reported and picked up by the next run, which still sees it missing from Aliyun.
+
+          `latest`, `develop` and `debug` are the ones to watch: retagger treats them as always
+          missing, so they are re-pushed on every run and race replication every time.
       dry_run:
         type: boolean
         default: false
@@ -378,38 +379,29 @@ jobs:
             echo "Reading ${#records[@]} record(s): ${records[*]}"
             cat "${records[@]}" > /tmp/record
 
-            # visible tells whether every manifest under a reference can be read from this
-            # runner. An index is served by the replica before the platform manifests it points
-            # at, so checking the tag alone is not enough: this walks the children, and their
-            # children, since an index can nest. A manifest only appears once its layers are
-            # across, so a readable manifest tree means the image is wholly here.
-            visible() {
-              local ref="$1" repo="$2" raw digest
-              raw=$(skopeo inspect --raw "${ref}" 2>/dev/null) || return 1
-              # Not an index: the manifest itself is here, and there is nothing under it to
-              # check. Only an index carries child digests; a plain manifest's digests are its
-              # config and layers, which are blobs rather than manifests.
-              # Piped rather than fed by a bash here-string: CircleCI reads a doubled angle
-              # bracket as the start of one of its own tags and rejects the config as an
-              # unclosed tag.
-              printf '%s' "${raw}" | grep -qE 'image\.index|manifest\.list' || return 0
-              for digest in $(printf '%s' "${raw}" | grep -oE 'sha256:[0-9a-f]{64}' | sort -u); do
-                visible "${repo}@${digest}" "${repo}" || return 1
-              done
-            }
-
-            # waitForReplica polls until the source is wholly visible, or the bound runs out.
-            waitForReplica() {
-              local ref="$1" repo="$2" deadline=$(( SECONDS + <<parameters.replica_wait_minutes>> * 60 ))
+            # copyWithRetries attempts the copy and, on failure, tries again a little later --
+            # the way the login steps retry, with nothing checked beforehand. It absorbs the
+            # source still replicating: an index is readable here before the platform manifests
+            # under it, so a copy started too early fails on a child digest and a later attempt
+            # succeeds.
+            #
+            # Do not replace this with a check that the image is visible first. That means
+            # deciding from the raw index JSON which digests are child manifests, and an index
+            # mentions digests that are not -- `crane:debug` annotates itself with
+            # `org.opencontainers.image.base.digest`, which lives in another repository, so the
+            # wait never ended. skopeo knows what it needs to read; let it try and report.
+            copyWithRetries() {
+              local source="$1" destination="$2" attempt=1
               while true; do
-                if visible "${ref}" "${repo}"; then
+                if skopeo copy --all --retry-times 3 "${source}" "${destination}"; then
                   return 0
                 fi
-                if [[ ${SECONDS} -ge ${deadline} ]]; then
-                  echo "Gave up after <<parameters.replica_wait_minutes>> minutes: ${ref} has not fully replicated to this runner."
+                if [[ ${attempt} -ge <<parameters.copy_attempts>> ]]; then
+                  echo "Giving up on ${source} after ${attempt} attempts."
                   return 1
                 fi
-                echo "Not fully replicated here yet, waiting 30s: ${ref}"
+                echo "Attempt ${attempt} failed, waiting 30s before trying again: ${source}"
+                attempt=$(( attempt + 1 ))
                 sleep 30
               done
             }
@@ -438,12 +430,8 @@ jobs:
                   echo "Would copy: skopeo copy --all --retry-times 3 ${source} ${destination}"
                   continue
                 fi
-                if ! waitForReplica "${source}" "${source%:*}"; then
-                  echo "${image}" >> /tmp/failed
-                  continue
-                fi
                 echo "Copying ${source} to ${destination}"
-                if ! skopeo copy --all --retry-times 3 "${source}" "${destination}"; then
+                if ! copyWithRetries "${source}" "${destination}"; then
                   echo "Failed to copy ${source} to ${destination}"
                   echo "${image}" >> /tmp/failed
                 fi
@@ -462,7 +450,7 @@ jobs:
             cat /tmp/failed
             echo ""
             echo "Note, one common source of problems is when a target repository, for the image being retagged, does not exists in a target registries, e.g. Aliyun."
-            echo "The other is an image still replicating to the ${SOURCE_REGISTRY} replica this runner reads; the step above says so ('has not fully replicated') and a rerun picks it up."
+            echo "The other is an image not yet readable here, still replicating from ${SOURCE_REGISTRY}; a rerun picks it up."
             exit 1
 
   retag-renamed-images:
