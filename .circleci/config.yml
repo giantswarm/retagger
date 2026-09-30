@@ -330,6 +330,18 @@ jobs:
     parameters:
       images_file:
         type: string
+      replica_wait_minutes:
+        type: integer
+        default: 1
+        description: |
+          How long to wait for an image to become visible from this runner before giving up on
+          it. GSOCI is a geo-replicated Azure Container Registry behind Traffic Manager.
+
+          A minute to start with, because replication is usually quick. Raise it for a file
+          whose images are repeatedly reported as not yet visible - a big image takes longer,
+          and nothing downstream depends on this job, so a generous bound only costs runner
+          time. An image that misses the bound is reported and picked up by the next run, which
+          still sees it missing from Aliyun.
       dry_run:
         type: boolean
         default: false
@@ -371,6 +383,39 @@ jobs:
             echo "Reading ${#records[@]} record(s): ${records[*]}"
             cat "${records[@]}" > /tmp/record
 
+            # visible tells whether every manifest under a reference can be read from this
+            # runner. An index is served by the replica before the platform manifests it points
+            # at, so checking the tag alone is not enough: this walks the children, and their
+            # children, since an index can nest. A manifest only appears once its layers are
+            # across, so a readable manifest tree means the image is wholly here.
+            visible() {
+              local ref="$1" repo="$2" raw digest
+              raw=$(skopeo inspect --raw "${ref}" 2>/dev/null) || return 1
+              # Not an index: the manifest itself is here, and there is nothing under it to
+              # check. Only an index carries child digests; a plain manifest's digests are its
+              # config and layers, which are blobs rather than manifests.
+              grep -qE 'image\.index|manifest\.list' <<<"${raw}" || return 0
+              for digest in $(grep -oE 'sha256:[0-9a-f]{64}' <<<"${raw}" | sort -u); do
+                visible "${repo}@${digest}" "${repo}" || return 1
+              done
+            }
+
+            # waitForReplica polls until the source is wholly visible, or the bound runs out.
+            waitForReplica() {
+              local ref="$1" repo="$2" deadline=$(( SECONDS + <<parameters.replica_wait_minutes>> * 60 ))
+              while true; do
+                if visible "${ref}" "${repo}"; then
+                  return 0
+                fi
+                if [[ ${SECONDS} -ge ${deadline} ]]; then
+                  echo "Gave up after <<parameters.replica_wait_minutes>> minutes: ${ref} has not fully replicated to this runner."
+                  return 1
+                fi
+                echo "Not fully replicated here yet, waiting 20s: ${ref}"
+                sleep 20
+              done
+            }
+
             rm -f /tmp/failed
             {
               if [[ "<<parameters.dry_run>>" == "true" ]]; then
@@ -395,6 +440,10 @@ jobs:
                   echo "Would copy: skopeo copy --all --retry-times 3 ${source} ${destination}"
                   continue
                 fi
+                if ! waitForReplica "${source}" "${source%:*}"; then
+                  echo "${image}" >> /tmp/failed
+                  continue
+                fi
                 echo "Copying ${source} to ${destination}"
                 if ! skopeo copy --all --retry-times 3 "${source}" "${destination}"; then
                   echo "Failed to copy ${source} to ${destination}"
@@ -415,6 +464,7 @@ jobs:
             cat /tmp/failed
             echo ""
             echo "Note, one common source of problems is when a target repository, for the image being retagged, does not exists in a target registries, e.g. Aliyun."
+            echo "The other is an image still replicating to the ${SOURCE_REGISTRY} replica this runner reads; the step above says so ('has not fully replicated') and a rerun picks it up."
             exit 1
 
   retag-renamed-images:
