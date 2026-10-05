@@ -9,6 +9,8 @@ ghcr.io:
     grafana/k6-operator:
       - "controller-v1.4.0"
   images-by-semver:
+    # Buzz's relay (giantswarm/buzz); its prerelease desktop tags stay out.
+    block/buzz: ">= 0.2.1"
     ahrtr/etcd-defrag: ">= v0.22.0"
     aquasecurity/node-collector: ">= 0.0.6"
     aquasecurity/trivy: ">= 0.37.2"
@@ -59,3 +61,6 @@ ghcr.io:
     nginxinc/nginx-unprivileged: ^1\.(2[3-9]|[3-9][0-9])-alpine$
     k8snetworkplumbingwg/multus-cni: v([0-9].){2}[0-9]-thick$
     cloudnative-pg/pgvector: ^[0-9]+\.[0-9]+\.[0-9]+-[0-9]+-bookworm$
+    # MinIO and mc for Buzz's quickstart object store: upstream's immutable
+    # per-build tags (quay.io/minio no longer serves anonymous pulls).
+    block/buzz-minio: ^sha-[0-9a-f]{40}-run-[0-9]+-[0-9]+$
