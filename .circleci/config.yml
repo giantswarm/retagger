@@ -235,6 +235,10 @@ jobs:
             # "<digest> docker://<registry>/giantswarm/<name>:<tag>", and only for the copies
             # that succeeded. That record, not the images file, is what `mirror-to-aliyun`
             # reads: it copies on from this registry instead of pulling from upstream again.
+            #
+            # Created up front, so the persist below finds it even when skopeo dies before
+            # writing it (a failed login, nothing to sync); an empty record mirrors nothing.
+            touch "<<parameters.images_file>>.copied"
             skopeo sync --all --keep-going --retry-times 3 --src yaml --dest docker \
               --digestfile "<<parameters.images_file>>.copied" \
               "<<parameters.images_file>>" "<<parameters.registry>>/giantswarm" | tee /tmp/skopeo.log
@@ -418,15 +422,28 @@ jobs:
                 if [[ -z "${line}" ]]; then
                   continue
                 fi
-                # 'skopeo sync --digestfile' writes "<digest> <reference>", 'retagger run'
-                # writes just the reference; the last field reads either.
-                source="${line##* }"
+                # 'skopeo sync --digestfile' and 'retagger run' both write
+                # "<digest> <reference>"; the last field is the reference either way.
+                reference="${line##* }"
+                digest="${line%% *}"
                 # "docker://gsoci.azurecr.io/giantswarm/alpine:3.18" -> "giantswarm/alpine:3.18".
                 # Both registries hold the image under the same name -- 'skopeo sync' flattens
                 # the repository path to its last element, and a renamed-images rule names the
                 # one destination repository -- so only the host changes here.
-                image="${source#docker://${SOURCE_REGISTRY}/}"
+                image="${reference#docker://${SOURCE_REGISTRY}/}"
                 destination="docker://${TARGET_REGISTRY}/${image}"
+                # Read the source by the digest the gsoci job wrote, not by its tag; the
+                # destination keeps the tag. This runner reads another gsoci replica than the
+                # one written to, and until it catches up that replica can still serve a moved
+                # tag (`latest`, a re-pushed version) at its previous image: a copy by tag would
+                # succeed with the stale image. By digest it fails with "manifest unknown"
+                # instead, and copyWithRetries waits for the replica. A line without a digest
+                # (none in the current formats) falls back to the tag.
+                if [[ "${digest}" == sha256:* ]]; then
+                  source="${reference%:*}@${digest}"
+                else
+                  source="${reference}"
+                fi
                 echo ""
                 if [[ "<<parameters.dry_run>>" == "true" ]]; then
                   echo "Would copy: skopeo copy --all --retry-times 3 ${source} ${destination}"
@@ -513,9 +530,18 @@ jobs:
           no_output_timeout: 1h
           command: |
             set -o pipefail
-            retagger run --log-level "<<parameters.log_level>>" --sign=<<parameters.sign>> \
-              --executor-count <<parameters.executor_count>> --executor-id <<parameters.executor_id>> --filename <<parameters.filename>> | tee /tmp/retagger.log
-      # `retagger run` writes one reference per line, every tag this executor copied to gsoci.
+            # The record must reach the workspace even when this run fails: a failed rule or
+            # signature says nothing about the copies that did land, and the Aliyun mirror
+            # still owes them. A failing step would skip the persist below, so the failure is
+            # noted here and reported by "Validate success" once the record is persisted.
+            # The touch covers a run that dies before `retagger run` creates the record.
+            touch "<<parameters.filename>>.<<parameters.executor_id>>.copied"
+            if ! retagger run --log-level "<<parameters.log_level>>" --sign=<<parameters.sign>> \
+              --executor-count <<parameters.executor_count>> --executor-id <<parameters.executor_id>> --filename <<parameters.filename>> | tee /tmp/retagger.log; then
+              touch /tmp/retagger-failed
+            fi
+      # `retagger run` writes "<digest> <reference>" per line, every tag this executor copied
+      # to gsoci.
       # The Aliyun mirror reads the records of all the executors of this file and copies them
       # on from gsoci, the same way it does for the skopeo files' `--digestfile` records.
       - persist_to_workspace:
@@ -525,6 +551,13 @@ jobs:
       - store_artifacts:
           path: /tmp/retagger.log
           destination: "retagger-<<parameters.filename>>-<<parameters.executor_id>>-of-<<parameters.executor_count>>.log"
+      - run:
+          name: Validate success
+          command: |
+            if [[ -e /tmp/retagger-failed ]]; then
+              echo "retagger run failed; see the \"Run retagger\" step or the retagger log artifact."
+              exit 1
+            fi
       - when:
           condition:
             and:
@@ -790,11 +823,15 @@ build_and_retag: &build_and_retag
     # Reads what the gsoci jobs recorded, so it waits for all of them rather than for the
     # filter jobs. CircleCI cannot express a per-matrix-instance dependency, hence the full
     # list: every Aliyun copy waits for every gsoci copy, not just for its own file.
+    #
+    # It runs when a gsoci job failed too. Only successful copies are recorded, so a failure
+    # (a sync error, a failed signature) leaves nothing wrong to mirror -- requiring success
+    # would instead let one file's failure hold back every file's mirror.
     - mirror-to-aliyun:
         context: architect
         name: retag-aliyun-<<matrix.images_file>>
         requires:
-          - retag-gsoci
+          - retag-gsoci: [success, failed]
         matrix:
           parameters:
             images_file:
@@ -833,12 +870,13 @@ build_and_retag: &build_and_retag
     # so it has five records; the job globs them.
     #
     # CircleCI cannot express a per-matrix-instance dependency, so every mirror waits for every
-    # `retag-renamed-images` job rather than just for the five that share its file.
+    # `retag-renamed-images` job rather than just for the five that share its file. It runs
+    # when one of them failed too, for the reason given at the skopeo mirror above.
     - mirror-to-aliyun:
         context: architect
         name: retag-aliyun-<<matrix.images_file>>
         requires:
-          - retag-renamed-images
+          - retag-renamed-images: [success, failed]
         filters: *retag_branches
         matrix:
           parameters:

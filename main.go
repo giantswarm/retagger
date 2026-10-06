@@ -52,8 +52,9 @@ const (
 	dockerTransport    = "docker://"
 	filteredFileSuffix = ".filtered"
 	// recordFileSuffix names the file `retagger run` writes beside a renamed-images
-	// file: one reference per line, every tag the run copied to AzureCR, for the
-	// `mirror-to-aliyun` CircleCI job to copy on to Aliyun.
+	// file: one "<digest> <reference>" line per tag the run copied to AzureCR, the
+	// format of `skopeo sync --digestfile`, for the `mirror-to-aliyun` CircleCI job
+	// to copy on to Aliyun.
 	recordFileSuffix = ".copied"
 
 	aliyunURL = "giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm"
@@ -146,9 +147,10 @@ type tagSigner interface {
 // copyFn copies one reference to one destination; a test replaces it.
 var copyFn = copyImage
 
-// recordCopy notes one reference this run copied to AzureCR. commandRun points it
-// at the run's record file; it does nothing otherwise, and a test replaces it.
-var recordCopy = func(image string) {}
+// recordCopy notes one reference this run copied to AzureCR and the digest the
+// copy wrote there. commandRun points it at the run's record file; it does
+// nothing otherwise, and a test replaces it.
+var recordCopy = func(digest, image string) {}
 
 // copyTag copies one source reference to its destination in AzureCR, records it,
 // and signs it when a signer is given. A copy that failed is logged by copyImage,
@@ -163,10 +165,11 @@ var recordCopy = func(image string) {}
 func (img *RenamedImage) copyTag(source, destinationTag string, signer tagSigner) {
 	azure := fmt.Sprintf("%s/%s:%s", azureURL, img.DestinationName(), destinationTag)
 
-	if err := copyFn(source, dockerTransport+azure, 0); err != nil {
+	digest, err := copyFn(source, dockerTransport+azure, 0)
+	if err != nil {
 		return
 	}
-	recordCopy(azure)
+	recordCopy(digest, azure)
 	if signer != nil {
 		signer.Sign(azure)
 	}
@@ -454,21 +457,35 @@ func imageBaseName(name string) string {
 // returned; it does not fail the run.
 // copyImage copies source to destination with skopeo, every platform of an
 // index, the digests preserved. A timeout above zero bounds the whole command
-// (skopeo --command-timeout); zero leaves it unbounded.
-func copyImage(source, destination string, timeout time.Duration) error {
+// (skopeo --command-timeout); zero leaves it unbounded. It returns the digest of
+// the manifest written to destination (skopeo --digestfile).
+func copyImage(source, destination string, timeout time.Duration) (string, error) {
+	digestFile, err := os.CreateTemp(temporaryWorkingDir, "digest-")
+	if err != nil {
+		logrus.Errorf("error creating the digest file for copying %q to %q: %v", source, destination, err)
+		return "", err
+	}
+	_ = digestFile.Close()
+	defer func() { _ = os.Remove(digestFile.Name()) }()
+
 	args := []string{}
 	if timeout > 0 {
 		args = append(args, "--command-timeout", timeout.String())
 	}
-	args = append(args, "copy", "--all", "--retry-times", "3", source, destination)
+	args = append(args, "copy", "--all", "--retry-times", "3", "--digestfile", digestFile.Name(), source, destination)
 	c, _, stderr := command("skopeo", args...)
 	logrus.Debugf("copying %q to %q", source, destination)
 	if err := c.Run(); err != nil {
 		logrus.Errorf("error copying %q to %q: %v\n%s", source, destination, err, stderr.String())
-		return err
+		return "", err
+	}
+	digest, err := os.ReadFile(digestFile.Name())
+	if err != nil {
+		logrus.Errorf("error reading the digest of %q: %v", destination, err)
+		return "", err
 	}
 	logrus.Debugf("copied %q to %q", source, destination)
-	return nil
+	return strings.TrimSpace(string(digest)), nil
 }
 
 // command is a helper function so I don't have to manually plug bytes.Buffer
@@ -601,8 +618,8 @@ func commandRun() {
 		}
 	}()
 	// commandRun copies one tag at a time, so this needs no locking.
-	recordCopy = func(image string) {
-		if _, err := fmt.Fprintln(record, dockerTransport+image); err != nil {
+	recordCopy = func(digest, image string) {
+		if _, err := fmt.Fprintf(record, "%s %s%s\n", digest, dockerTransport, image); err != nil {
 			logger.Errorf("error recording the copy of %q: %v", image, err)
 		}
 	}
