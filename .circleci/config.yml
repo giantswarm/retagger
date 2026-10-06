@@ -221,6 +221,8 @@ jobs:
           command: |
             mkdir -p "${DOCKER_CONFIG}"
             skopeo login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
+            # gsoci is a source registry for images/skopeo-gsoci-azurecr-io.yaml
+            skopeo login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} gsoci.azurecr.io
             max_retry=5
             counter=1
             until skopeo login -u "<<parameters.username>>" -p "<<parameters.password>>" "<<parameters.registry>>"
@@ -510,6 +512,16 @@ build_and_retag: &build_and_retag
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
+        name: filter-skopeo-gsoci-azurecr-io
+        filepath: images/skopeo-gsoci-azurecr-io.yaml
+        filters:
+          branches:
+            only:
+              - main
+        requires:
+          - build-and-push-docker
+    - filter-skopeo-tags:
+        context: architect
         name: filter-skopeo-quay-io
         filepath: images/skopeo-quay-io.yaml
         filters:
@@ -562,6 +574,7 @@ build_and_retag: &build_and_retag
           - filter-skopeo-mcr-microsoft-com
           - filter-skopeo-public-ecr-aws
           - filter-skopeo-nvcr-io
+          - filter-skopeo-gsoci-azurecr-io
           - filter-skopeo-quay-io
           - filter-skopeo-k8s-io
           - filter-skopeo-k8s-io-kubernetes
@@ -572,6 +585,7 @@ build_and_retag: &build_and_retag
               - images/skopeo-eu-gcr-io.yaml.filtered
               - images/skopeo-gcr-io.yaml.filtered
               - images/skopeo-ghcr-io.yaml.filtered
+              - images/skopeo-gsoci-azurecr-io.yaml.filtered
               - images/skopeo-mcr-microsoft-com.yaml.filtered
               - images/skopeo-nvcr-io.yaml.filtered
               - images/skopeo-public-ecr-aws.yaml.filtered
