@@ -10,13 +10,15 @@
 `retagger` is first and foremost a CircleCI workflow that runs every day at 21:30
 UTC and on every merge to master branch. It utilizes [skopeo][skopeo] and
 [custom golang code](main.go) to take upstream docker images, rename them if
-necessary, and push them to Giant Swarm's container registries: `quay.io` and
-`giantswarm-registry.cn-shanghai.cr.aliyuncs.com`. It is capable of working
-with `v1`, `v2`, and `OCI` registries, as well as retagging multi-architecture
-images.
+necessary, and push them to Giant Swarm's container registries:
+`gsoci.azurecr.io` and `giantswarm-registry.cn-shanghai.cr.aliyuncs.com`. It is
+capable of working with `v1`, `v2`, and `OCI` registries, as well as retagging
+multi-architecture images.
 
-> 💡Please note it **is not responsible** for pushing images to neither
-`docker.io/giantswarm`, nor `azurecr.io/giantswarm` container registries.
+> 💡Please note it **is not responsible** for pushing images to the
+`docker.io/giantswarm` container registry. It no longer pushes to
+`quay.io/giantswarm` either - `quay.io` is now only ever read from, as an
+upstream source.
 
 ## How to add your image to the job
 
@@ -30,7 +32,8 @@ You do **not** need any customizations. Great!
    container registry's name. Create a new one, if necessary.
 2. Add a tag, SHA, or a semantic version constraint for your image. Refer to
    [Skopeo](#skopeo) section or existing files for format definition.
-3. Create the registry for the image on [quay.io](https://quay.io/organization/giantswarm).
+3. Create the repository for the image in `gsoci.azurecr.io/giantswarm` and
+   in the Aliyun registry.
 4. If you haven't created a new file, that's it. You're set. Otherwise continue
    following the steps.
 5. Open [CircleCI config][ciconf] and add your file to both `retag-registry`
@@ -103,7 +106,7 @@ type RenamedImage struct {
 	AddTagSuffix string `yaml:"add_tag_suffix,omitempty"`
 	// OverrideRepoName allows user to rewrite the name of the image entirely.
 	// Example: "alpinegit", so "alpine" would become
-	// "quay.io/giantswarm/alpinegit"
+	// "gsoci.azurecr.io/giantswarm/alpinegit"
 	OverrideRepoName string `yaml:"override_repo_name,omitempty"`
 	// StripSemverPrefix removes the initial 'v' in 'v1.2.3' if enabled. Works
 	// only when Semver is defined.

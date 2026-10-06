@@ -5,10 +5,6 @@ quay.io:
       - "v0.3.2"
     coreos/flannel:
       - "v0.11.0-amd64"
-    giantswarm/k8s-api-healthz:
-      - "1c0cdf1ed5ee18fdf59063ecdd84bf3787f80fac"
-    giantswarm/k8s-setup-network-environment:
-      - "1f4ffc52095ac368847ce3428ea99b257003d9b9"
     jetstack/cert-manager-ingress-shim:
       - "v0.2.5"
     prometheus/haproxy-exporter:
@@ -32,7 +28,6 @@ quay.io:
     cilium/cilium-envoy: ">= v1.27.3-713b673cccf1af661efd75ca20532336517ddcb9"
     coreos/etcd: ">= v3.3"
     fairwinds/goldilocks: ">= v2.2.0"
-    giantswarm/amazon-k8s-cni: ">= v1.11.2"
     jacksontj/promxy: ">= v0.0.60"
     jetstack/cert-manager-acmesolver: ">= v1.7.3"
     jetstack/cert-manager-cainjector: ">= v1.7.3"
