@@ -1,0 +1,10 @@
+# Docs: https://github.com/kubasobon/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
+#
+# Giant Swarm's own images. gsoci.azurecr.io is the source of truth for these,
+# so this file is synced to the other registries only - never back to gsoci.
+gsoci.azurecr.io:
+  images:
+    giantswarm/k8s-api-healthz:
+      - "1c0cdf1ed5ee18fdf59063ecdd84bf3787f80fac"
+    giantswarm/k8s-setup-network-environment:
+      - "1f4ffc52095ac368847ce3428ea99b257003d9b9"
