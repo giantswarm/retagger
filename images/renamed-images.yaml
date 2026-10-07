@@ -110,6 +110,9 @@
 - image: ghcr.io/kyverno/policy-reporter/kyverno-plugin
   override_repo_name: kyverno-plugin
   semver: ">= 0.4.0"
+- image: ghcr.io/kyverno/policy-reporter/vap-plugin
+  override_repo_name: vap-plugin
+  semver: ">= 0.1.2"
 - image: ghcr.io/kyverno/playground
   override_repo_name: kyverno-playground
   semver: ">= v0.10.3"
