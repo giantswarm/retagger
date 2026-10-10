@@ -12,6 +12,7 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -19,7 +20,6 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/Masterminds/semver/v3"
@@ -51,6 +51,11 @@ const (
 	renamedImagesFile  = "images/renamed-images.yaml"
 	dockerTransport    = "docker://"
 	filteredFileSuffix = ".filtered"
+	// recordFileSuffix names the file `retagger run` writes beside a renamed-images
+	// file: one "<digest> <reference>" line per tag the run copied to AzureCR, the
+	// format of `skopeo sync --digestfile`, for the `mirror-to-aliyun` CircleCI job
+	// to copy on to Aliyun.
+	recordFileSuffix = ".copied"
 
 	aliyunURL = "giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm"
 	azureURL  = "gsoci.azurecr.io/giantswarm"
@@ -139,38 +144,35 @@ type tagSigner interface {
 	Sign(image string) signOutcome
 }
 
-// aliyunCopyTimeout bounds the copy to the Aliyun mirror (skopeo's own
-// --command-timeout): a push the mirror stops answering ends with an error for
-// that tag instead of holding the job until CircleCI's no-output timeout kills
-// it. The AzureCR copy is not bounded; it is the copy the job exists for.
-const aliyunCopyTimeout = 45 * time.Minute
-
 // copyFn copies one reference to one destination; a test replaces it.
 var copyFn = copyImage
 
-// copyTag copies one source reference to its destination in AzureCR and Aliyun
-// at the same time. The AzureCR copy is signed the moment it lands when a
-// signer is given, without waiting for the Aliyun copy: an Aliyun push that
-// stalls used to hold the sign until the job's no-output timeout ended the job,
-// leaving the AzureCR copy unsigned. A copy that failed is logged by copyImage
-// and not signed.
+// recordCopy notes one reference this run copied to AzureCR and the digest the
+// copy wrote there. commandRun points it at the run's record file; it does
+// nothing otherwise, and a test replaces it.
+var recordCopy = func(digest, image string) {}
+
+// copyTag copies one source reference to its destination in AzureCR, records it,
+// and signs it when a signer is given. A copy that failed is logged by copyImage,
+// and is neither recorded nor signed.
+//
+// This used to push the same tag to the Aliyun mirror at the same time, from
+// whichever CircleCI cloud runner happened to run the job. That push crossed the
+// Pacific and had to be bounded by a timeout of its own to stop a stalled mirror
+// from holding the job until CircleCI killed it -- which left the AzureCR copy
+// unsigned. The mirror is now fed from the record this writes: `mirror-to-aliyun`
+// copies AzureCR -> Aliyun from a runner inside China, where the hop is short.
 func (img *RenamedImage) copyTag(source, destinationTag string, signer tagSigner) {
 	azure := fmt.Sprintf("%s/%s:%s", azureURL, img.DestinationName(), destinationTag)
-	aliyun := fmt.Sprintf("%s/%s:%s", aliyunURL, img.DestinationName(), destinationTag)
 
-	var wg sync.WaitGroup
-	wg.Add(2)
-	go func() {
-		defer wg.Done()
-		if err := copyFn(source, dockerTransport+azure, 0); err == nil && signer != nil {
-			signer.Sign(azure)
-		}
-	}()
-	go func() {
-		defer wg.Done()
-		_ = copyFn(source, dockerTransport+aliyun, aliyunCopyTimeout)
-	}()
-	wg.Wait()
+	digest, err := copyFn(source, dockerTransport+azure, 0)
+	if err != nil {
+		return
+	}
+	recordCopy(digest, azure)
+	if signer != nil {
+		signer.Sign(azure)
+	}
 }
 
 // RetagUsingSHA pulls an image matching the SHA, retags, and pushes it to AzureCR and Aliyun.
@@ -178,9 +180,45 @@ func (img *RenamedImage) copyTag(source, destinationTag string, signer tagSigner
 // The pushed image will be tagged with the value of image.TagOrPattern. The
 // AzureCR copy is signed when a signer is given.
 func (img *RenamedImage) RetagUsingSHA(signer *signer) {
+	destinationTag := img.DestinationTag(img.TagOrPattern)
+	if flagSkipExistingTags && img.pinnedEverywhere(destinationTag) {
+		logrus.Debugf("%q already serves %q at sha256:%s everywhere, nothing to copy", img.Image, destinationTag, img.SHA)
+		return
+	}
 	// We'll use skopeo copy for this, because it's awesome.
 	source := fmt.Sprintf("%s%s@sha256:%s", dockerTransport, img.Image, img.SHA)
-	img.copyTag(source, img.DestinationTag(img.TagOrPattern), signer)
+	img.copyTag(source, destinationTag, signer)
+}
+
+// pinnedEverywhere tells whether every destination registry already serves the
+// pinned digest under the destination tag, so the rule has nothing to copy.
+//
+// A pinned rule names one immutable image, so unlike a tag rule there is nothing
+// to list: resolving the destination tag to a digest and comparing answers it.
+// `skopeo copy --all` preserves manifests, so a copy of this rule leaves the
+// destination serving the very digest the rule pins.
+//
+// Both registries are checked, and any failure to resolve counts as not pinned.
+// Checking only AzureCR would strand Aliyun: a tag already at AzureCR would stop
+// being copied, so it would never be recorded, and the mirror job would never
+// carry it across. Erring towards a copy costs a repeat of work skopeo mostly
+// skips; erring the other way loses the image.
+func (img *RenamedImage) pinnedEverywhere(destinationTag string) bool {
+	want := "sha256:" + img.SHA
+	for _, registry := range []string{azureURL, aliyunURL} {
+		image := fmt.Sprintf("%s/%s:%s", registry, img.DestinationName(), destinationTag)
+		got, err := manifestDigest(image)
+		if err != nil {
+			if !errors.Is(err, errManifestUnknown) {
+				logrus.Warnf("error resolving %q, copying anyway: %s", image, err)
+			}
+			return false
+		}
+		if got != want {
+			return false
+		}
+	}
+	return true
 }
 
 // RetagUsingTags finds all tags matching the img.TagOrPattern or
@@ -419,21 +457,35 @@ func imageBaseName(name string) string {
 // returned; it does not fail the run.
 // copyImage copies source to destination with skopeo, every platform of an
 // index, the digests preserved. A timeout above zero bounds the whole command
-// (skopeo --command-timeout); zero leaves it unbounded.
-func copyImage(source, destination string, timeout time.Duration) error {
+// (skopeo --command-timeout); zero leaves it unbounded. It returns the digest of
+// the manifest written to destination (skopeo --digestfile).
+func copyImage(source, destination string, timeout time.Duration) (string, error) {
+	digestFile, err := os.CreateTemp(temporaryWorkingDir, "digest-")
+	if err != nil {
+		logrus.Errorf("error creating the digest file for copying %q to %q: %v", source, destination, err)
+		return "", err
+	}
+	_ = digestFile.Close()
+	defer func() { _ = os.Remove(digestFile.Name()) }()
+
 	args := []string{}
 	if timeout > 0 {
 		args = append(args, "--command-timeout", timeout.String())
 	}
-	args = append(args, "copy", "--all", "--retry-times", "3", source, destination)
+	args = append(args, "copy", "--all", "--retry-times", "3", "--digestfile", digestFile.Name(), source, destination)
 	c, _, stderr := command("skopeo", args...)
 	logrus.Debugf("copying %q to %q", source, destination)
 	if err := c.Run(); err != nil {
 		logrus.Errorf("error copying %q to %q: %v\n%s", source, destination, err, stderr.String())
-		return err
+		return "", err
+	}
+	digest, err := os.ReadFile(digestFile.Name())
+	if err != nil {
+		logrus.Errorf("error reading the digest of %q: %v", destination, err)
+		return "", err
 	}
 	logrus.Debugf("copied %q to %q", source, destination)
-	return nil
+	return strings.TrimSpace(string(digest)), nil
 }
 
 // command is a helper function so I don't have to manually plug bytes.Buffer
@@ -535,6 +587,13 @@ func isRenamedImagesFile(filePath string) (bool, error) {
 	}
 }
 
+// recordPath is where this run records the tags it copied. Every executor of a
+// file owns a disjoint share of its rules (executorOwns) and writes its own
+// record, so the executors of one file do not overwrite each other's.
+func recordPath() string {
+	return fmt.Sprintf("%s.%d%s", flagFile, flagExecutorID, recordFileSuffix)
+}
+
 // commandRun is invoked when `retagger run` is called.
 func commandRun() {
 	validateExecutorFlags()
@@ -546,6 +605,24 @@ func commandRun() {
 	logger := logrus.WithField("executor", flagExecutorID)
 
 	logger.Infof("Using file %q", flagFile)
+
+	// Truncated up front, so the file exists for the mirror job to read even when
+	// this run copies nothing.
+	record, err := os.OpenFile(recordPath(), os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0600)
+	if err != nil {
+		logger.Fatalf("error creating %q: %v", recordPath(), err)
+	}
+	defer func() {
+		if err := record.Close(); err != nil {
+			logger.Errorf("error closing %q: %v", recordPath(), err)
+		}
+	}()
+	// commandRun copies one tag at a time, so this needs no locking.
+	recordCopy = func(digest, image string) {
+		if _, err := fmt.Fprintf(record, "%s %s%s\n", digest, dockerTransport, image); err != nil {
+			logger.Errorf("error recording the copy of %q: %v", image, err)
+		}
+	}
 
 	renamedImages, err := loadRenamedImages(flagFile)
 	if err != nil {

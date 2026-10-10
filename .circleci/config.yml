@@ -104,16 +104,11 @@ jobs:
           command: |
             docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
             docker login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} gsoci.azurecr.io
-            max_retry=5
-            counter=1
-            until docker login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
-            do
-                # Total potential wait is x * ((max_retry * (max_retry - 1)) / 2), where x is the constant in the expression
-                sleep $((10 * $counter))
-                [[ counter -eq $max_retry ]] && echo "Failed by exhausting $max_retry retries" && exit 1
-                echo "Attempt $counter: trying again..."
-                ((counter++))
-            done
+            # No Aliyun login here. retagger never runs the docker CLI -- it shells out to
+            # skopeo and cosign only -- so these logins exist for what reads the docker config,
+            # which is cosign, and cosign signs gsoci alone. The Aliyun login wrote credentials
+            # nothing read, while its own timeouts failed the job; skopeo has its own login for
+            # the Aliyun tag listings, in the step below.
       - run:
           name: "Log in to registries: skopeo"
           command: |
@@ -221,8 +216,6 @@ jobs:
           command: |
             mkdir -p "${DOCKER_CONFIG}"
             skopeo login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
-            # gsoci is a source registry for images/skopeo-gsoci-azurecr-io.yaml
-            skopeo login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} gsoci.azurecr.io
             max_retry=5
             counter=1
             until skopeo login -u "<<parameters.username>>" -p "<<parameters.password>>" "<<parameters.registry>>"
@@ -236,8 +229,21 @@ jobs:
           name: Retag images
           no_output_timeout: 1h
           command: |
+            # --digestfile records one line per image that landed in the registry,
+            # "<digest> docker://<registry>/giantswarm/<name>:<tag>", and only for the copies
+            # that succeeded. That record, not the images file, is what `mirror-to-aliyun`
+            # reads: it copies on from this registry instead of pulling from upstream again.
+            #
+            # Created up front, so the persist below finds it even when skopeo dies before
+            # writing it (a failed login, nothing to sync); an empty record mirrors nothing.
+            touch "<<parameters.images_file>>.copied"
             skopeo sync --all --keep-going --retry-times 3 --src yaml --dest docker \
+              --digestfile "<<parameters.images_file>>.copied" \
               "<<parameters.images_file>>" "<<parameters.registry>>/giantswarm" | tee /tmp/skopeo.log
+      - persist_to_workspace:
+          root: .
+          paths:
+            - "<<parameters.images_file>>.copied"
       - store_artifacts:
           path: /tmp/skopeo.log
           destination: "<<parameters.registry>>-<<parameters.images_file>>.log"
@@ -258,14 +264,210 @@ jobs:
             - store_artifacts:
                 path: /tmp/retagger-sign.log
                 destination: "<<parameters.registry>>-<<parameters.images_file>>-sign.log"
+
+  # Reports the errors the `filter-skopeo-tags` jobs left in `<file>.filtered.errlog`, all of
+  # them at once.
+  #
+  # This used to be the last step of every `retag-registry` run, which meant a filter error
+  # failed the GSOCI job. Now when the Aliyun mirror requires that job, that would have stopped
+  # the mirror over an error that has nothing to do with it, and stopped it entirely, where
+  # before it merely turned the Aliyun job red after the images had been copied. So the check
+  # lives in a job of its own and the whole picture is in one place instead of being split
+  # across twenty-one job logs.
+  validate-filter-errors:
+    docker:
+      - image: gsoci.azurecr.io/giantswarm/retagger:${CIRCLE_TAG:-$CIRCLE_SHA1}
+    resource_class: small
+    shell: /bin/bash
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Report the errors the filter jobs recorded
+          command: |
+            shopt -s nullglob
+
+            failed=()
+            for errlog in images/skopeo-*.yaml.filtered.errlog; do
+              if [[ -s "${errlog}" ]]; then
+                failed+=("${errlog}")
+              fi
+            done
+
+            if [[ ${#failed[@]} -eq 0 ]]; then
+              echo "The filter jobs recorded no errors."
+              exit 0
+            fi
+
+            echo "Errors have been encountered on the \"filter-skopeo-tags\" jobs, what could lead to some images and tags not being processed correctly."
+            echo "These errors could be to multiple reasons, e.g. connectivity problems, malfunctioning code, etc., for more details see the logs below."
+            echo "Note, one common source of problems is when a target repository, for the image being retagged, does not exists in a target registries, e.g. Aliyun."
+            for errlog in "${failed[@]}"; do
+              echo ""
+              echo "--- ${errlog} ---"
+              cat "${errlog}"
+            done
+            exit 1
+
+  # The Aliyun half of the mirror, run on the self-hosted CircleCI runner inside China that
+  # `architect/sync-china-registry` uses (architect-orb#724).
+  #
+  # It does not sync the images file. It reads the `.copied` record that the GSOCI
+  # `retag-registry` run of the same file left in the workspace and copies each of those
+  # images on from GSOCI, which is why it requires that job.
+  mirror-to-aliyun:
+    docker:
+      - image: giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm/skopeo:v1.22.3
+        entrypoint: ["/bin/bash"]
+    resource_class: giantswarm/galaxy-runner
+    shell: /bin/bash
+    environment:
+      SOURCE_REGISTRY: gsoci.azurecr.io
+      TARGET_REGISTRY: giantswarm-registry.cn-shanghai.cr.aliyuncs.com
+    parameters:
+      images_file:
+        type: string
+      copy_attempts:
+        type: integer
+        default: 4
+        description: |
+          How many times to attempt a copy before giving up, 30 seconds apart, so four attempts
+          span about two minutes.
+
+          GSOCI is geo-replicated and this runner does not read the replica the GSOCI job
+          wrote, so a copy can start before the image is wholly readable here. Raise this for a
+          file whose images repeatedly fail to copy; a big image takes longer to replicate, and
+          nothing downstream depends on this job. An image that exhausts the attempts is
+          reported and picked up by the next run, which still sees it missing from Aliyun.
+
+          `latest`, `develop` and `debug` are the ones to watch: retagger treats them as always
+          missing, so they are re-pushed on every run and race replication every time.
+      dry_run:
+        type: boolean
+        default: false
+        description: |
+          Print what would be copied and copy nothing. `skopeo copy` has no dry-run of its
+          own, so this skips the command rather than passing a flag to it. Everything around
+          it still runs for real: the job is scheduled on the runner, pulls its image from
+          Aliyun, logs in to both registries and reads the record from the workspace.
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Log in to registries
+          command: |
+            skopeo login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} ${SOURCE_REGISTRY}
+            max_retry=5
+            counter=1
+            until skopeo login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} ${TARGET_REGISTRY}
+            do
+                sleep $((10 * $counter))
+                [[ counter -eq $max_retry ]] && echo "Failed by exhausting $max_retry retries" && exit 1
+                echo "Attempt $counter: trying again..."
+                ((counter++))
+            done
+      - run:
+          name: Copy the images gsoci received on to Aliyun
+          no_output_timeout: 1h
+          command: |
+            # One record for a skopeo file, which one `retag-gsoci` job syncs whole and
+            # `skopeo sync --digestfile` records; several for a renamed-images file, whose
+            # rules are split across five `retag-renamed-images` executors that each record
+            # their own share.
+            shopt -s nullglob
+            records=( "<<parameters.images_file>>"*.copied )
+            if [[ ${#records[@]} -eq 0 ]]; then
+              echo "No <<parameters.images_file>>*.copied in the workspace. The gsoci job writes the record; see its log."
+              exit 1
+            fi
+            echo "Reading ${#records[@]} record(s): ${records[*]}"
+            cat "${records[@]}" > /tmp/record
+
+            # copyWithRetries attempts the copy and, on failure, tries again a little later --
+            # the way the login steps retry, with nothing checked beforehand. It absorbs the
+            # source still replicating: an index is readable here before the platform manifests
+            # under it, so a copy started too early fails on a child digest and a later attempt
+            # succeeds.
+            #
+            # Do not replace this with a check that the image is visible first. That means
+            # deciding from the raw index JSON which digests are child manifests, and an index
+            # mentions digests that are not -- `crane:debug` annotates itself with
+            # `org.opencontainers.image.base.digest`, which lives in another repository, so the
+            # wait never ended. skopeo knows what it needs to read; let it try and report.
+            copyWithRetries() {
+              local source="$1" destination="$2" attempt=1
+              while true; do
+                if skopeo copy --all --retry-times 3 "${source}" "${destination}"; then
+                  return 0
+                fi
+                if [[ ${attempt} -ge <<parameters.copy_attempts>> ]]; then
+                  echo "Giving up on ${source} after ${attempt} attempts."
+                  return 1
+                fi
+                echo "Attempt ${attempt} failed, waiting 30s before trying again: ${source}"
+                attempt=$(( attempt + 1 ))
+                sleep 30
+              done
+            }
+
+            rm -f /tmp/failed
+            {
+              if [[ "<<parameters.dry_run>>" == "true" ]]; then
+                echo "DRY RUN: listing the copies only, nothing is written to ${TARGET_REGISTRY}."
+              fi
+              echo "Copying $(grep -c . /tmp/record) image(s) from ${SOURCE_REGISTRY} to ${TARGET_REGISTRY}"
+              while read -r line; do
+                if [[ -z "${line}" ]]; then
+                  continue
+                fi
+                # 'skopeo sync --digestfile' and 'retagger run' both write
+                # "<digest> <reference>"; the last field is the reference either way.
+                reference="${line##* }"
+                digest="${line%% *}"
+                # "docker://gsoci.azurecr.io/giantswarm/alpine:3.18" -> "giantswarm/alpine:3.18".
+                # Both registries hold the image under the same name -- 'skopeo sync' flattens
+                # the repository path to its last element, and a renamed-images rule names the
+                # one destination repository -- so only the host changes here.
+                image="${reference#docker://${SOURCE_REGISTRY}/}"
+                destination="docker://${TARGET_REGISTRY}/${image}"
+                # Read the source by the digest the gsoci job wrote, not by its tag; the
+                # destination keeps the tag. This runner reads another gsoci replica than the
+                # one written to, and until it catches up that replica can still serve a moved
+                # tag (`latest`, a re-pushed version) at its previous image: a copy by tag would
+                # succeed with the stale image. By digest it fails with "manifest unknown"
+                # instead, and copyWithRetries waits for the replica. A line without a digest
+                # (none in the current formats) falls back to the tag.
+                if [[ "${digest}" == sha256:* ]]; then
+                  source="${reference%:*}@${digest}"
+                else
+                  source="${reference}"
+                fi
+                echo ""
+                if [[ "<<parameters.dry_run>>" == "true" ]]; then
+                  echo "Would copy: skopeo copy --all --retry-times 3 ${source} ${destination}"
+                  continue
+                fi
+                echo "Copying ${source} to ${destination}"
+                if ! copyWithRetries "${source}" "${destination}"; then
+                  echo "Failed to copy ${source} to ${destination}"
+                  echo "${image}" >> /tmp/failed
+                fi
+              done < /tmp/record
+            } 2>&1 | tee /tmp/skopeo.log
+      - store_artifacts:
+          path: /tmp/skopeo.log
+          destination: "aliyun-<<parameters.images_file>>.log"
       - run:
           name: Validate success
           command: |
-            [[ -s <<parameters.images_file>>.errlog ]] || exit 0
-            echo "Errors have been encountered on the \"filter-skopeo-tags\" job, what could lead to some images and tags not being processed correctly."
-            echo "These errors could be to multiple reasons, e.g. connectivity problems, malfunctioning code, etc., for more details see the logs below.\n"
-            echo "Note, one common source of problems is when a target repository, for the image being retagged, does not exists in a target registries, e.g. Aliyun.\n"
-            cat  <<parameters.images_file>>.errlog
+            # Like 'skopeo sync --keep-going': one image that cannot be copied does not stop
+            # the rest, but the job still reports it.
+            [[ -s /tmp/failed ]] || exit 0
+            echo "Failed to copy the following images to ${TARGET_REGISTRY}:"
+            cat /tmp/failed
+            echo ""
+            echo "Note, one common source of problems is when a target repository, for the image being retagged, does not exists in a target registries, e.g. Aliyun."
+            echo "The other is an image not yet readable here, still replicating from ${SOURCE_REGISTRY}; a rerun picks it up."
             exit 1
 
   retag-renamed-images:
@@ -304,15 +506,9 @@ jobs:
           command: |
             docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} docker.io
             docker login -u ${ACR_GSOCI_RETAGGER_USERNAME} -p ${ACR_GSOCI_RETAGGER_PASSWORD} gsoci.azurecr.io
-            max_retry=5
-            counter=1
-            until docker login -u ${ALIYUN_USERNAME} -p ${ALIYUN_PASSWORD} giantswarm-registry.cn-shanghai.cr.aliyuncs.com
-            do
-                sleep $((10 * $counter))
-                [[ counter -eq $max_retry ]] && echo "Failed by exhausting $max_retry retries" && exit 1
-                echo "Attempt $counter: trying again..."
-                ((counter++))
-            done
+            # No Aliyun login here -- see the same step in `filter-skopeo-tags`. Doubly so now
+            # that `retagger run` no longer pushes to Aliyun at all: it only lists Aliyun tags,
+            # with skopeo, which logs in for itself in the step below.
       - run:
           name: "Log in to registries: skopeo"
           command: |
@@ -332,11 +528,34 @@ jobs:
           no_output_timeout: 1h
           command: |
             set -o pipefail
-            retagger run --log-level "<<parameters.log_level>>" --sign=<<parameters.sign>> \
-              --executor-count <<parameters.executor_count>> --executor-id <<parameters.executor_id>> --filename <<parameters.filename>> | tee /tmp/retagger.log
+            # The record must reach the workspace even when this run fails: a failed rule or
+            # signature says nothing about the copies that did land, and the Aliyun mirror
+            # still owes them. A failing step would skip the persist below, so the failure is
+            # noted here and reported by "Validate success" once the record is persisted.
+            # The touch covers a run that dies before `retagger run` creates the record.
+            touch "<<parameters.filename>>.<<parameters.executor_id>>.copied"
+            if ! retagger run --log-level "<<parameters.log_level>>" --sign=<<parameters.sign>> \
+              --executor-count <<parameters.executor_count>> --executor-id <<parameters.executor_id>> --filename <<parameters.filename>> | tee /tmp/retagger.log; then
+              touch /tmp/retagger-failed
+            fi
+      # `retagger run` writes "<digest> <reference>" per line, every tag this executor copied
+      # to gsoci.
+      # The Aliyun mirror reads the records of all the executors of this file and copies them
+      # on from gsoci, the same way it does for the skopeo files' `--digestfile` records.
+      - persist_to_workspace:
+          root: .
+          paths:
+            - "<<parameters.filename>>.<<parameters.executor_id>>.copied"
       - store_artifacts:
           path: /tmp/retagger.log
           destination: "retagger-<<parameters.filename>>-<<parameters.executor_id>>-of-<<parameters.executor_count>>.log"
+      - run:
+          name: Validate success
+          command: |
+            if [[ -e /tmp/retagger-failed ]]; then
+              echo "retagger run failed; see the \"Run retagger\" step or the retagger log artifact."
+              exit 1
+            fi
       - when:
           condition:
             and:
@@ -422,6 +641,26 @@ trivy_databases: &trivy_databases
         requires:
           - build-and-push-docker
 
+# TODO: drop `use-china-runners-for-aliyun` before merging. It is here to exercise the new
+# `mirror-to-aliyun` job on the China runner, which cannot be reached from a branch otherwise.
+retag_branches: &retag_branches
+  branches:
+    only:
+      - main
+      #- use-china-runners-for-aliyun
+
+# The renamed-images files, shared by the jobs that copy them to gsoci and the jobs that mirror
+# those copies on to Aliyun, so a new file is added in one place.
+renamed_images_files: &renamed_images_files
+              - images/renamed-images.yaml
+              - images/renamed-agentgateway.yaml
+              - images/renamed-agent-sandbox.yaml
+              - images/renamed-kagent.yaml
+              - images/renamed-cilium-prereleases.yaml
+              - images/renamed-upbound-aws.yaml
+              - images/renamed-upbound-azure.yaml
+              - images/renamed-upbound-gcp.yaml
+
 # Define 'build_and_retag' workflow steps, so we can reuse it.
 build_and_retag: &build_and_retag
   jobs:
@@ -444,154 +683,94 @@ build_and_retag: &build_and_retag
         context: architect
         name: filter-skopeo-docker-io
         filepath: images/skopeo-docker-io.yaml
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-eu-gcr-io
         filepath: images/skopeo-eu-gcr-io.yaml
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-gcr-io
         filepath: images/skopeo-gcr-io.yaml
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-ghcr-io
         filepath: images/skopeo-ghcr-io.yaml
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-mcr-microsoft-com
         filepath: images/skopeo-mcr-microsoft-com.yaml
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-nvcr-io
         filepath: images/skopeo-nvcr-io.yaml
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-public-ecr-aws
         filepath: images/skopeo-public-ecr-aws.yaml
-        filters:
-          branches:
-            only:
-              - main
-        requires:
-          - build-and-push-docker
-    - filter-skopeo-tags:
-        context: architect
-        name: filter-skopeo-gsoci-azurecr-io
-        filepath: images/skopeo-gsoci-azurecr-io.yaml
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-quay-io
         filepath: images/skopeo-quay-io.yaml
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-k8s-io
         filepath: images/skopeo-registry-k8s-io.yaml
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-k8s-io-kubernetes
         filepath: images/skopeo-registry-k8s-io-kubernetes.yaml
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         requires:
           - build-and-push-docker
     - filter-skopeo-tags:
         context: architect
         name: filter-skopeo-projects-registry-vmware-com
         filepath: images/skopeo-projects-registry-vmware-com.yaml
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         requires:
           - build-and-push-docker
-    - retag-registry:
+    - validate-filter-errors:
         context: architect
-        name: retag-aliyun-<<matrix.images_file>>
-        username: ${ALIYUN_USERNAME}
-        password: ${ALIYUN_PASSWORD}
-        registry: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com"
+        name: validate-filter-errors
         requires:
           - filter-skopeo-docker-io
           - filter-skopeo-eu-gcr-io
           - filter-skopeo-gcr-io
           - filter-skopeo-ghcr-io
           - filter-skopeo-mcr-microsoft-com
-          - filter-skopeo-public-ecr-aws
           - filter-skopeo-nvcr-io
-          - filter-skopeo-gsoci-azurecr-io
+          - filter-skopeo-public-ecr-aws
           - filter-skopeo-quay-io
           - filter-skopeo-k8s-io
           - filter-skopeo-k8s-io-kubernetes
-        matrix:
-          parameters:
-            images_file:
-              - images/skopeo-docker-io.yaml.filtered
-              - images/skopeo-eu-gcr-io.yaml.filtered
-              - images/skopeo-gcr-io.yaml.filtered
-              - images/skopeo-ghcr-io.yaml.filtered
-              - images/skopeo-gsoci-azurecr-io.yaml.filtered
-              - images/skopeo-mcr-microsoft-com.yaml.filtered
-              - images/skopeo-nvcr-io.yaml.filtered
-              - images/skopeo-public-ecr-aws.yaml.filtered
-              - images/skopeo-quay-io.yaml.filtered
-              - images/skopeo-registry-k8s-io.yaml.filtered
-              - images/skopeo-registry-k8s-io-kubernetes.yaml.filtered
+          - filter-skopeo-projects-registry-vmware-com
     - retag-registry:
         context: architect
         name: retag-gsoci-<<matrix.images_file>>
@@ -612,6 +791,9 @@ build_and_retag: &build_and_retag
           - filter-skopeo-k8s-io-kubernetes
           - filter-skopeo-projects-registry-vmware-com
         matrix:
+          # Named so the Aliyun mirror can require the whole matrix rather than each of its
+          # instances -- see `retag-renamed-images` for why that matters.
+          alias: retag-gsoci
           parameters:
             images_file:
               - images/skopeo-docker-io.yaml.filtered
@@ -625,30 +807,66 @@ build_and_retag: &build_and_retag
               - images/skopeo-registry-k8s-io.yaml.filtered
               - images/skopeo-registry-k8s-io-kubernetes.yaml.filtered
               - images/skopeo-projects-registry-vmware-com.yaml.filtered
+    # Reads what the gsoci jobs recorded, so it waits for all of them rather than for the
+    # filter jobs. CircleCI cannot express a per-matrix-instance dependency, hence the full
+    # list: every Aliyun copy waits for every gsoci copy, not just for its own file.
+    #
+    # It runs when a gsoci job failed too. Only successful copies are recorded, so a failure
+    # (a sync error, a failed signature) leaves nothing wrong to mirror -- requiring success
+    # would instead let one file's failure hold back every file's mirror.
+    - mirror-to-aliyun:
+        context: architect
+        name: retag-aliyun-<<matrix.images_file>>
+        requires:
+          - retag-gsoci: [success, failed]
+        matrix:
+          parameters:
+            images_file:
+              - images/skopeo-docker-io.yaml.filtered
+              - images/skopeo-eu-gcr-io.yaml.filtered
+              - images/skopeo-gcr-io.yaml.filtered
+              - images/skopeo-ghcr-io.yaml.filtered
+              - images/skopeo-mcr-microsoft-com.yaml.filtered
+              - images/skopeo-nvcr-io.yaml.filtered
+              - images/skopeo-public-ecr-aws.yaml.filtered
+              - images/skopeo-quay-io.yaml.filtered
+              - images/skopeo-registry-k8s-io.yaml.filtered
+              - images/skopeo-registry-k8s-io-kubernetes.yaml.filtered
     - retag-renamed-images:
         context: architect
-        name: retag-renamed-images
+        name: retag-renamed-images-<<matrix.filename>>-<<matrix.executor_id>>
         requires:
           - build-and-push-docker
         executor_count: 5
         sign: true
-        filters:
-          branches:
-            only:
-              - main
+        filters: *retag_branches
         matrix:
+          # Named so the Aliyun mirror can require the whole matrix with one entry. Listing the
+          # instances instead would have to be rewritten every time `executor_count` changes,
+          # and forgetting to would leave the mirror reading a half-written set of records.
+          alias: retag-renamed-images
           parameters:
-            filename:
-              - images/renamed-images.yaml
-              - images/renamed-agentgateway.yaml
-              - images/renamed-agent-sandbox.yaml
-              - images/renamed-kagent.yaml
-              - images/renamed-cilium-prereleases.yaml
-              - images/renamed-upbound-aws.yaml
-              - images/renamed-upbound-azure.yaml
-              - images/renamed-upbound-gcp.yaml
+            filename: *renamed_images_files
             # i in range(executor_count)
             executor_id: [0, 1, 2, 3, 4]
+
+    # The Aliyun half of the renamed-images mirror. Same job as for the skopeo files: it reads
+    # the records the gsoci copies left in the workspace and copies those references on from
+    # gsoci, on the runner inside China. A renamed-images file is split across five executors,
+    # so it has five records; the job globs them.
+    #
+    # CircleCI cannot express a per-matrix-instance dependency, so every mirror waits for every
+    # `retag-renamed-images` job rather than just for the five that share its file. It runs
+    # when one of them failed too, for the reason given at the skopeo mirror above.
+    - mirror-to-aliyun:
+        context: architect
+        name: retag-aliyun-<<matrix.images_file>>
+        requires:
+          - retag-renamed-images: [success, failed]
+        filters: *retag_branches
+        matrix:
+          parameters:
+            images_file: *renamed_images_files
 
     - ping-heartbeat:
         name: ping-heartbeat
@@ -656,6 +874,13 @@ build_and_retag: &build_and_retag
         # So this is better than nothing.
         requires:
           - filter-skopeo-k8s-io-kubernetes
+        # Stays on main. It used to inherit main-only from its dependency; now that the chain
+        # also runs from a test branch, a branch run would ping the cronjob heartbeat and hide
+        # a nightly run that never happened.
+        filters:
+          branches:
+            only:
+              - main
 
 workflows:
   build_retag:

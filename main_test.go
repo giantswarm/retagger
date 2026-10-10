@@ -4,7 +4,6 @@ import (
 	"errors"
 	"path/filepath"
 	"reflect"
-	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -141,73 +140,65 @@ func (r *recordingSigner) Sign(image string) signOutcome {
 	return outcomeSigned
 }
 
-// TestCopyTagSignsAzureBeforeAliyunReturns pins the ordering copyTag has to
-// keep: the AzureCR copy is signed as soon as it lands, while the Aliyun copy is
-// still running (a stalled Aliyun push must never hold back the signature), the
-// Aliyun copy runs under aliyunCopyTimeout and the AzureCR copy unbounded, and a
-// failed AzureCR copy is not signed.
-func TestCopyTagSignsAzureBeforeAliyunReturns(t *testing.T) {
-	defer func(orig func(string, string, time.Duration) error) { copyFn = orig }(copyFn)
+// TestCopyTagRecordsAndSignsTheCopy pins what copyTag does with a copy that
+// landed: it goes to AzureCR only, unbounded, and is then recorded, with the
+// digest it wrote, for the Aliyun mirror to pick up and signed. The Aliyun push copyTag used to make in parallel
+// is gone -- `mirror-to-aliyun` makes it, from the record.
+func TestCopyTagRecordsAndSignsTheCopy(t *testing.T) {
+	defer func(orig func(string, string, time.Duration) (string, error)) { copyFn = orig }(copyFn)
+	defer func(orig func(string, string)) { recordCopy = orig }(recordCopy)
 
-	release := make(chan struct{})
-	var mu sync.Mutex
+	var destinations []string
 	timeouts := map[string]time.Duration{}
-	copyFn = func(source, destination string, timeout time.Duration) error {
-		mu.Lock()
+	copyFn = func(source, destination string, timeout time.Duration) (string, error) {
+		destinations = append(destinations, destination)
 		timeouts[destination] = timeout
-		mu.Unlock()
-		if strings.Contains(destination, aliyunURL) {
-			<-release // the Aliyun push stalls until the test lets it go
-			return errors.New("stalled")
-		}
-		return nil
+		return "sha256:abc", nil
 	}
-	img := &RenamedImage{Image: "ghcr.io/example/app", OverrideRepoName: "example/app"}
-	signer := &recordingSigner{seen: make(chan string, 1)}
+	var recorded []string
+	recordCopy = func(digest, image string) { recorded = append(recorded, digest+" "+image) }
 
-	done := make(chan struct{})
-	go func() {
-		img.copyTag("docker://ghcr.io/example/app:1.2.3", "1.2.3", signer)
-		close(done)
-	}()
-
-	want := azureURL + "/example/app:1.2.3"
-	select {
-	case got := <-signer.seen:
-		if got != want {
-			t.Fatalf("signed %q, want %q", got, want)
-		}
-	case <-time.After(5 * time.Second):
-		t.Fatal("the AzureCR copy was not signed while the Aliyun copy was still running")
-	}
-	select {
-	case <-done:
-		t.Fatal("copyTag returned before the Aliyun copy did")
-	default:
-	}
-	close(release)
-	<-done
-
-	mu.Lock()
-	defer mu.Unlock()
-	if got := timeouts[dockerTransport+want]; got != 0 {
-		t.Errorf("AzureCR copy timeout = %v, want unbounded", got)
-	}
-	if got := timeouts[dockerTransport+aliyunURL+"/example/app:1.2.3"]; got != aliyunCopyTimeout {
-		t.Errorf("Aliyun copy timeout = %v, want %v", got, aliyunCopyTimeout)
-	}
-	if len(signer.calls) != 1 {
-		t.Errorf("signed %d times, want once: %v", len(signer.calls), signer.calls)
-	}
-}
-
-// TestCopyTagDoesNotSignAFailedAzureCopy: a copy that did not land is not signed.
-func TestCopyTagDoesNotSignAFailedAzureCopy(t *testing.T) {
-	defer func(orig func(string, string, time.Duration) error) { copyFn = orig }(copyFn)
-	copyFn = func(source, destination string, timeout time.Duration) error { return errors.New("push failed") }
 	img := &RenamedImage{Image: "ghcr.io/example/app", OverrideRepoName: "example/app"}
 	signer := &recordingSigner{seen: make(chan string, 1)}
 	img.copyTag("docker://ghcr.io/example/app:1.2.3", "1.2.3", signer)
+
+	want := azureURL + "/example/app:1.2.3"
+	if len(destinations) != 1 || destinations[0] != dockerTransport+want {
+		t.Errorf("copied to %v, want only %q", destinations, dockerTransport+want)
+	}
+	if got := timeouts[dockerTransport+want]; got != 0 {
+		t.Errorf("copy timeout = %v, want unbounded", got)
+	}
+	// The digest the copy wrote is recorded with the reference: the mirror copies
+	// by it, so a lagging replica cannot hand it an older image under the tag.
+	if wantRecord := "sha256:abc " + want; len(recorded) != 1 || recorded[0] != wantRecord {
+		t.Errorf("recorded %v, want %q once", recorded, wantRecord)
+	}
+	if len(signer.calls) != 1 || signer.calls[0] != want {
+		t.Errorf("signed %v, want %q once", signer.calls, want)
+	}
+}
+
+// TestCopyTagDoesNotRecordOrSignAFailedCopy: a copy that did not land is neither
+// recorded for the mirror nor signed. Recording it would hand the mirror job a
+// reference that is not at AzureCR, which it could only fail on.
+func TestCopyTagDoesNotRecordOrSignAFailedCopy(t *testing.T) {
+	defer func(orig func(string, string, time.Duration) (string, error)) { copyFn = orig }(copyFn)
+	defer func(orig func(string, string)) { recordCopy = orig }(recordCopy)
+
+	copyFn = func(source, destination string, timeout time.Duration) (string, error) {
+		return "", errors.New("push failed")
+	}
+	var recorded []string
+	recordCopy = func(digest, image string) { recorded = append(recorded, image) }
+
+	img := &RenamedImage{Image: "ghcr.io/example/app", OverrideRepoName: "example/app"}
+	signer := &recordingSigner{seen: make(chan string, 1)}
+	img.copyTag("docker://ghcr.io/example/app:1.2.3", "1.2.3", signer)
+
+	if len(recorded) != 0 {
+		t.Errorf("recorded a failed copy: %v", recorded)
+	}
 	if len(signer.calls) != 0 {
 		t.Errorf("signed a failed copy: %v", signer.calls)
 	}
