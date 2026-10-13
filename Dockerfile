@@ -3,7 +3,7 @@
 # comment manager, which reads the annotation line above each of them.
 ARG SKOPEO_VERSION=v1.19.0
 
-FROM gsoci.azurecr.io/giantswarm/golang:1.25.0-alpine3.22 AS builder
+FROM gsoci.azurecr.io/giantswarm/golang:1.26.4-alpine3.22 AS builder
 
 RUN apk add --no-cache git make bash curl
 
