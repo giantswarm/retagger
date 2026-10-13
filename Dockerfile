@@ -1,7 +1,7 @@
 # Every pin below is kept current by Renovate: the FROM tags and the skopeo ARG
 # (used in a FROM) by its Dockerfile manager, the other ARGs by the org preset's
 # comment manager, which reads the annotation line above each of them.
-ARG SKOPEO_VERSION=v1.19.0
+ARG SKOPEO_VERSION=v1.22.3
 
 FROM gsoci.azurecr.io/giantswarm/golang:1.26.4-alpine3.22 AS builder
 
