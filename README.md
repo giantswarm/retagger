@@ -21,6 +21,31 @@ images.
 Every image it copies to `gsoci.azurecr.io` is signed after the copy, see
 [Signed images](#signed-images).
 
+### The Aliyun mirror
+
+Upstream images go to `gsoci.azurecr.io` only. Aliyun is fed from gsoci
+afterwards, by the `mirror-to-aliyun` job running on Giant Swarm's self-hosted
+CircleCI runner inside China (`giantswarm/galaxy-runner`), where the hop to
+Aliyun is short:
+
+1. The gsoci jobs record every tag they copied, together with the digest they
+   wrote, in a `.copied` file in the workspace: `skopeo sync --digestfile` for
+   the skopeo files, `retagger run` (one record per executor) for the
+   [renamed images](#renamed-images) files. A copy that failed is not recorded.
+2. One `retag-aliyun-<file>` job per images file reads those records and copies
+   each image from gsoci to Aliyun under the same name and tag. It reads the
+   source by digest, not by tag: the runner reads a different gsoci
+   geo-replica than the one written to, and a lagging replica could otherwise
+   hand it the previous image of a moved tag such as `latest`. A copy that
+   fails, typically because the image has not replicated yet, is retried a few
+   times (`copy_attempts`) and otherwise reported.
+3. The mirror jobs wait for all the gsoci jobs, and run even when some of them
+   failed: only successful copies are recorded, so one file's failure does not
+   hold back the others.
+
+A tag missing from Aliyun is copied to gsoci again by the next run (the filters
+check both registries), and so recorded and mirrored again.
+
 ## How to add your image to the job
 
 You've come to the right place. Pick one of the following methods. For both methods, ensure that the repository exists in the desired container registry first.
@@ -34,8 +59,11 @@ You do **not** need any customizations. Great!
    [Skopeo](#skopeo) section or existing files for format definition.
 3. If you haven't created a new file, that's it. You're set. Otherwise, continue
    following the steps.
-4. Open [CircleCI config][ciconf] and add your file to both `retag-registry`
-   steps under `matrix.parameters.images_file`.
+4. Open [CircleCI config][ciconf], add a `filter-skopeo-tags` job for your file,
+   and add that job to the `requires` of `validate-filter-errors` and
+   `retag-gsoci`. Then add `<your file>.filtered` under
+   `matrix.parameters.images_file` of both the `retag-gsoci` (`retag-registry`)
+   and the skopeo `retag-aliyun` (`mirror-to-aliyun`) jobs.
 
 ### Manual copy
 
@@ -55,10 +83,10 @@ signature recorded in the Rekor transparency log and stored next to the image as
 an OCI referrer (cosign v3's bundle format, the same the architect orb uses for
 images Giant Swarm builds). What is signed is the digest of the manifest the
 registry serves for the tag, the image index for a multi-architecture image.
-The signature is made the moment the gsoci copy lands, independent of the copy
-to the Aliyun mirror that runs next to it: the Aliyun copy is bounded (skopeo's
-`--command-timeout`, 45 minutes) and its failure or stall only affects that
-mirror, never whether the gsoci copy is signed.
+The signature is made the moment the gsoci copy lands. The copy to Aliyun is
+made later by a separate job ([The Aliyun mirror](#the-aliyun-mirror)), so its
+failure or stall only affects that mirror, never whether the gsoci copy is
+signed.
 
 The signatures carry this identity:
 
