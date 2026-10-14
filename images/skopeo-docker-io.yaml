@@ -1,8 +1,6 @@
 # Docs: https://github.com/kubasobon/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
 docker.io:
   images:
-    1password/scim:
-      - "v2.9.13"
     alpine/socat:
       - "1.7.4.4"
     # The AWS CLI Agent Substrate's bundled snapshot store creates its bucket
@@ -10,9 +8,6 @@ docker.io:
     # every workday (500+ since this one), too many to mirror as a range.
     amazon/aws-cli:
       - "2.17.0"
-    # Redis is used by 1password/scim.
-    bitnami/redis:
-      - "6.0.9-debian-10-r13"
     centos:
       - "8.1.1911"
     cibuilds/github:
