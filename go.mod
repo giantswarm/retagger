@@ -7,7 +7,7 @@ require (
 	github.com/google/go-containerregistry v0.22.1
 	github.com/sirupsen/logrus v1.9.4
 	github.com/spf13/pflag v1.0.10
-	golang.org/x/exp v0.0.0-20261013213113-2ab7f3cbc5fb
+	golang.org/x/exp v0.0.0-20261014143641-f0251eb4aa3e
 	gopkg.in/yaml.v3 v3.0.1
 )
 
