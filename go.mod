@@ -3,7 +3,7 @@ module github.com/giantswarm/retagger
 go 1.25.0
 
 require (
-	github.com/Masterminds/semver/v3 v3.2.1
+	github.com/Masterminds/semver/v3 v3.5.0
 	github.com/google/go-containerregistry v0.22.1
 	github.com/sirupsen/logrus v1.9.4
 	github.com/spf13/pflag v1.0.10
