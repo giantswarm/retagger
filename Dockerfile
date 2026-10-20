@@ -30,7 +30,7 @@ RUN curl -O https://download.docker.com/linux/static/stable/x86_64/docker-${DOCK
 # version the architect image carries, so mirrored and built images are signed alike.
 WORKDIR /build/cosign
 # renovate: datasource=github-releases depName=sigstore/cosign
-ARG COSIGN_VERSION=v3.1.3
+ARG COSIGN_VERSION=v3.1.4
 RUN curl -sSLO https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64 && \
     curl -sSLO https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign_checksums.txt && \
     grep ' cosign-linux-amd64$' cosign_checksums.txt | sha256sum -c - && \
