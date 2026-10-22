@@ -28,6 +28,19 @@ docker.io:
     # Kyverno policy (see giantswarm/tunnelport helm/tunnelport).
     ghostunnel/ghostunnel:
       - "v1.10.0"
+    # Former quay.io/giantswarm tags that a repo still pulls and gsoci did not have
+    # when the quay.io org was deleted (giantswarm/giantswarm#37819). The
+    # docker.io/giantswarm copies are the last ones left, so keep them. Only the
+    # tags with a known consumer are listed.
+    # bats 0.4.0: test runner of giantswarm/test-app (helm/test-app/templates/test/test-runner.yaml).
+    # Its manifest is Docker schema 1, so the gsoci copy cannot be signed.
+    giantswarm/bats:
+      - "0.4.0"
+    # localstack v2.2.0-gsdev2: custom build for the localstack integration tests
+    # of giantswarm/aws-resolver-rules-operator (docker-compose.yaml). It lands in
+    # the same gsoci repository as localstack/localstack below.
+    giantswarm/localstack:
+      - "v2.2.0-gsdev2"
     golangci/golangci-lint:
       - "v1.23.8"
     janeczku/go-dnsmasq:
@@ -153,6 +166,7 @@ docker.io:
     kserve/router: ">= v0.20.0"
     kserve/storage-initializer: ">= v0.20.0"
     # Used in giantswarm/aws-resolver-rules-operator for testing AWS calls.
+    # Shares the gsoci repository with giantswarm/localstack above.
     localstack/localstack: ">= 4.7.0"
     mikefarah/yq: ">= 4.31.2"
     mintel/dex-k8s-authenticator: ">= 1.4.0"
