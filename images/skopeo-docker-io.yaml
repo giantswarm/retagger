@@ -28,14 +28,8 @@ docker.io:
     # Kyverno policy (see giantswarm/tunnelport helm/tunnelport).
     ghostunnel/ghostunnel:
       - "v1.10.0"
-    # Former quay.io/giantswarm tags that a repo still pulls and gsoci did not have
-    # when the quay.io org was deleted (giantswarm/giantswarm#37819). The
-    # docker.io/giantswarm copies are the last ones left, so keep them. Only the
-    # tags with a known consumer are listed.
-    # bats 0.4.0: test runner of giantswarm/test-app (helm/test-app/templates/test/test-runner.yaml).
-    # Its manifest is Docker schema 1, so the gsoci copy cannot be signed.
-    giantswarm/bats:
-      - "0.4.0"
+    # A former quay.io/giantswarm tag that only docker.io/giantswarm still serves since
+    # the quay.io org was deleted (giantswarm/giantswarm#37819), so keep that copy.
     # localstack v2.2.0-gsdev2: custom build for the localstack integration tests
     # of giantswarm/aws-resolver-rules-operator (docker-compose.yaml). It lands in
     # the same gsoci repository as localstack/localstack below.
