@@ -23,7 +23,7 @@ RUN CGO_ENABLED=0 go build -o retagger .
 # Fetch docker binary
 WORKDIR /build/docker
 # renovate: datasource=docker depName=docker
-ARG DOCKER_VERSION=25.0.5
+ARG DOCKER_VERSION=29.9.2
 RUN curl -O https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz && tar -xvf docker-${DOCKER_VERSION}.tgz
 
 # Fetch cosign, which `retagger sign` signs the mirrored images with. The same
