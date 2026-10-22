@@ -39,7 +39,7 @@ RUN curl -sSLO https://github.com/sigstore/cosign/releases/download/${COSIGN_VER
 FROM gsoci.azurecr.io/giantswarm/skopeo:${SKOPEO_VERSION} AS skopeo
 
 # Add all binaries to a fresh image
-FROM gsoci.azurecr.io/giantswarm/alpine:3.24.2
+FROM gsoci.azurecr.io/giantswarm/alpine:3.24.3
 
 # We need bash for CircleCI script execution
 RUN apk add --no-cache bash
