@@ -812,7 +812,7 @@ func commandFilter(filePath string) {
 
 func main() {
 	if len(flag.Args()) == 0 {
-		fmt.Println("retagger run             Retag images\nretagger filter <path>   Filter missing tags for skopeo YAML file\nretagger sign <path>     Sign the images a skopeo or renamed-images YAML file governs at the destination registry")
+		fmt.Println("retagger run             Retag images\nretagger filter <path>   Filter missing tags for skopeo YAML file\nretagger sign <path>     Sign the images a skopeo or renamed-images YAML file governs at the destination registry\nretagger verify-copied <filtered> <copied>   Fail when a tag the filtered file asks for has no line in the skopeo digestfile")
 		fmt.Println("")
 		flag.Usage()
 		os.Exit(0)
@@ -825,6 +825,8 @@ func main() {
 		commandFilter(flag.Arg(1))
 	case "sign":
 		commandSign(flag.Arg(1))
+	case "verify-copied":
+		commandVerifyCopied(flag.Arg(1), flag.Arg(2))
 	default:
 		logrus.Fatalf("unknown command: %v", flag.Args())
 	}

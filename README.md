@@ -144,8 +144,21 @@ curl -X POST -H "Circle-Token: $CIRCLE_TOKEN" -H "Content-Type: application/json
 The copies in the Aliyun registry are not signed, and neither are the Trivy
 vulnerability databases the `retag-image-name` jobs copy: OCI artifacts no pod
 runs. Mirrors in the Docker schema 1 manifest format (a few images from before
-2019, `etcd:v3.3` for one) cannot carry a cosign signature at all; `retagger
-sign` reports them as unsignable and moves on.
+2019) cannot carry a cosign signature at all; `retagger sign` reports them as
+unsignable and moves on. Only copies that predate the change can exist: `etcd:v3.3`
+is still on gsoci as schema 1, but gsoci now rejects a schema 1 push
+(`PUT manifests: UNKNOWN`), so a new one never arrives; `giantswarm/bats:0.4.0` was
+the first to be noticed. Such an image has to be rebuilt as an OCI or Docker
+schema 2 image before it can be mirrored.
+
+## Failed copies
+
+`skopeo sync --keep-going` logs a copy it could not make and still exits zero. So
+that a tag missing from the registry does not go unnoticed, the last step of a
+`retag-registry` job runs `retagger verify-copied <images file> <images file>.copied`:
+it compares the tags the filtered file asked for with the `--digestfile` record of
+what landed, names every tag without a line and fails the job. The reason is in
+the job's `skopeo.log` artifact. The Aliyun mirror still runs, for what did land.
 
 ## Image list formats
 

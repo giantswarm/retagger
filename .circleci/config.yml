@@ -264,6 +264,19 @@ jobs:
             - store_artifacts:
                 path: /tmp/retagger-sign.log
                 destination: "<<parameters.registry>>-<<parameters.images_file>>-sign.log"
+      # `skopeo sync --keep-going` logs a copy that failed and still exits zero, so a tag the
+      # registry refused (a Docker schema 1 manifest, say) would leave this job green. The
+      # `.copied` record holds a line for every copy that landed; a tag asked for with no line
+      # is a failure. Runs last and `always`, so a failing sign step does not hide it, and
+      # after the persist above, so the Aliyun mirror still receives what did land.
+      - run:
+          name: Verify every tag was copied
+          when: always
+          command: |
+            # The record is created by the retag step; without it an earlier step failed and
+            # said why, so do not bury that under a "no such file".
+            [[ -f "<<parameters.images_file>>.copied" ]] || { echo "No record: the retag step did not run."; exit 0; }
+            retagger verify-copied "<<parameters.images_file>>" "<<parameters.images_file>>.copied"
 
   # Reports the errors the `filter-skopeo-tags` jobs left in `<file>.filtered.errlog`, all of
   # them at once.
