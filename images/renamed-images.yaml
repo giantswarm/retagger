@@ -191,6 +191,61 @@
 - image: ghcr.io/fluxcd/source-controller
   override_repo_name: fluxcd/source-controller
   semver: ">= v1.9.0"
+# Sveltos (giantswarm/sveltos and giantswarm/sveltos-dashboard charts), under the upstream path
+# gsoci.azurecr.io/giantswarm/projectsveltos/<name>: the charts set one registry value
+# (global.registry), and addon-controller and classifier compose the drift-detection-manager,
+# sveltos-agent and sveltos-applier images they deploy at runtime from that same value.
+- image: docker.io/projectsveltos/access-manager
+  override_repo_name: projectsveltos/access-manager
+  semver: ">= v1.16.0"
+- image: docker.io/projectsveltos/addon-controller
+  override_repo_name: projectsveltos/addon-controller
+  semver: ">= v1.16.0"
+- image: docker.io/projectsveltos/classifier
+  override_repo_name: projectsveltos/classifier
+  semver: ">= v1.16.0"
+- image: docker.io/projectsveltos/clusterinventory-controller
+  override_repo_name: projectsveltos/clusterinventory-controller
+  semver: ">= v1.16.0"
+- image: docker.io/projectsveltos/crd-manager
+  override_repo_name: projectsveltos/crd-manager
+  semver: ">= v1.16.0"
+- image: docker.io/projectsveltos/dashboard
+  override_repo_name: projectsveltos/dashboard
+  semver: ">= v1.16.0"
+- image: docker.io/projectsveltos/drift-detection-manager
+  override_repo_name: projectsveltos/drift-detection-manager
+  semver: ">= v1.16.0"
+- image: docker.io/projectsveltos/event-manager
+  override_repo_name: projectsveltos/event-manager
+  semver: ">= v1.16.0"
+- image: docker.io/projectsveltos/healthcheck-manager
+  override_repo_name: projectsveltos/healthcheck-manager
+  semver: ">= v1.16.0"
+- image: docker.io/projectsveltos/mcp-server
+  override_repo_name: projectsveltos/mcp-server
+  semver: ">= v1.16.0"
+- image: docker.io/projectsveltos/register-mgmt-cluster
+  override_repo_name: projectsveltos/register-mgmt-cluster
+  semver: ">= v1.16.0"
+- image: docker.io/projectsveltos/shard-controller
+  override_repo_name: projectsveltos/shard-controller
+  semver: ">= v1.16.0"
+- image: docker.io/projectsveltos/sveltos-agent
+  override_repo_name: projectsveltos/sveltos-agent
+  semver: ">= v1.16.0"
+- image: docker.io/projectsveltos/sveltos-applier
+  override_repo_name: projectsveltos/sveltos-applier
+  semver: ">= v1.16.0"
+- image: docker.io/projectsveltos/sveltoscluster-manager
+  override_repo_name: projectsveltos/sveltoscluster-manager
+  semver: ">= v1.16.0"
+- image: docker.io/projectsveltos/techsupport
+  override_repo_name: projectsveltos/techsupport
+  semver: ">= v1.16.0"
+- image: docker.io/projectsveltos/ui-backend
+  override_repo_name: projectsveltos/ui-backend
+  semver: ">= v1.16.0"
 - image: registry.k8s.io/cluster-api-vsphere/cluster-api-vsphere-controller
   override_repo_name: cluster-api-vsphere-controller
   semver: ">= v1.5.1"
