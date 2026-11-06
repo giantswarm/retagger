@@ -7,14 +7,8 @@ gcr.io:
   images:
     google-containers/startup-script:
       - "v2"
-    heptio-images/gangway:
-      - "v3.1.0"
-    heptio-images/kube-conformance:
-      - "v1.11"
     go-containerregistry/crane:
       - "debug"
-    tekton-releases/dogfooding/tkn:
-      - "latest"
     k8s-staging-sig-storage/nfsplugin:
       - "canary"
     distroless/base-debian12:
