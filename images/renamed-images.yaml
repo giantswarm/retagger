@@ -267,9 +267,6 @@
 - image: kindest/node
   override_repo_name: kind-node
   semver: ">= v1.16"
-- image: kong/kubernetes-ingress-controller
-  override_repo_name: kong-ingress-controller
-  semver: ">= 2.6.0"
 - image: kylemanna/openvpn
   override_repo_name: kylemanna-openvpn
   tag_or_pattern: "2.4"
