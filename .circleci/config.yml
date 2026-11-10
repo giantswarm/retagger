@@ -330,7 +330,7 @@ jobs:
   # images on from GSOCI, which is why it requires that job.
   mirror-to-aliyun:
     docker:
-      - image: giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm/skopeo:v1.22.3
+      - image: giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm/skopeo:v1.24.1
         entrypoint: ["/bin/bash"]
     resource_class: giantswarm/galaxy-runner
     shell: /bin/bash
