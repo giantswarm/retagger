@@ -302,6 +302,16 @@
   override_repo_name: cilium-startup-script
   sha: 820155cb3b7f00c8d61c1cffa68c44440906cb046bdbad8ff544f5deb1103456
   tag_or_pattern: "19fb149fb3d5c7a37d3edfaf10a2be3ab7386661"
+# Cilium node-init image (nodeinit.image in giantswarm/cilium-app), pinned
+# by the index digests the v1.19.x and v1.20.x charts reference.
+- image: quay.io/cilium/startup-script
+  override_repo_name: cilium-startup-script
+  sha: 50b9cf9c280096b59b80d2fc8ee6638facef79ac18998a22f0cbc40d5d28c16f
+  tag_or_pattern: "1763560095-8f36c34"
+- image: quay.io/cilium/startup-script
+  override_repo_name: cilium-startup-script
+  sha: f99e2beda7324e93ba04d6240d9626a6b9ab023d7d56e3b029d3d9c823ce63ef
+  tag_or_pattern: "1782916218-36ae25f"
 - image: quay.io/helmpack/chart-testing
   override_repo_name: helm-chart-testing
   semver: ">= v3.4.0"
