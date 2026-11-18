@@ -342,6 +342,12 @@
 - image: quay.io/kubescape/http-request
   semver: ">= v0.2.11"
   override_repo_name: kubescape-http-request
+- image: quay.io/kubescape/kubescape-ops-tool
+  # Only the multi-arch x.y.z-rN tags: the repository also publishes per-arch
+  # (-amd64, -arm64) and test-<sha> tags. The filter extracts x.y.z for the
+  # semver comparison; 0.1.0-r1 is rejected by kubescape-operator chart 1.42.0.
+  filter: "^([0-9]+\\.[0-9]+\\.[0-9]+)-r[0-9]+$"
+  semver: ">= 0.2.0"
 - image: quay.io/kubescape/opentelemetry-collector
   semver: ">= 0.108.0"
   override_repo_name: kubescape-opentelemetry-collector
