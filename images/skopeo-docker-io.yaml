@@ -147,10 +147,10 @@ docker.io:
     # this will fail with release of go 1.100. Hopefully not soon.
     golang: "^1.[2-9][0-9].[0-9]+(-alpine.+)?$"
     memcached: ^1\.[6-9]\.[0-9]+-alpine$
-    # Patch tags from 1.31.9 on: a floating tag such as 1.31-alpine is copied only
-    # once, so images pin a patch tag.
-    nginx: ^1\.((2[3-9]|[3-9][0-9])|31\.(9|[1-9][0-9])|(3[2-9]|[4-9][0-9])\.[0-9]+)-alpine$
-    nginxinc/nginx-unprivileged: ^1\.((2[3-9]|[3-9][0-9])|31\.(9|[1-9][0-9])|(3[2-9]|[4-9][0-9])\.[0-9]+)-alpine$
+    # A floating tag such as 1.31-alpine is copied only once, so no new ones are
+    # added: images pin a patch tag, from the 1.30.7 and 1.31.9 security fixes on.
+    nginx: ^1\.((2[3-9]|3[01])|30\.([7-9]|[1-9][0-9])|31\.(9|[1-9][0-9])|(3[2-9]|[4-9][0-9])\.[0-9]+)-alpine$
+    nginxinc/nginx-unprivileged: ^1\.((2[3-9]|3[01])|30\.([7-9]|[1-9][0-9])|31\.(9|[1-9][0-9])|(3[2-9]|[4-9][0-9])\.[0-9]+)-alpine$
     # grafana security images for grafana 10+ - tag looks like `12.0.0-security-01`,
     # and the distroless variant the grafana Helm chart >= v13 defaults to - `13.2.1-distroless`
     grafana/grafana: ^[1-9][0-9]\.[0-9]+\.[0-9]+(-security-[0-9]+(-distroless)?|-distroless)$
