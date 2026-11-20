@@ -1097,8 +1097,10 @@
 - image: docker.io/dicebear/api
   override_repo_name: dicebear-api
   semver: ">= 4.9.0"
-# Per-OS selinuxd images security-profiles-operator uses for RHEL 8 and
-# Fedora nodes, at the upstream chart v1.1.2 digests.
+# Per-OS selinuxd images security-profiles-operator uses. Upstream publishes
+# only a moving latest tag and pins its digest in the chart, so latest is
+# copied on every run. The el9 image is published as selinuxd; the pinned
+# entry keeps the tag of security-profiles-operator-app v0.1.1.
 - image: quay.io/security-profiles-operator/selinuxd-el9
   override_repo_name: selinuxd
   # Destination tag (upstream has no tags, image is pinned by sha)
@@ -1106,11 +1108,10 @@
   sha: cddbd306c48ee8d19b8fb07b2acda1ee99cb3f1d9c3988f828d24b4f2de5ad3c
 - image: quay.io/security-profiles-operator/selinuxd-el8
   override_repo_name: selinuxd-el8
-  # Destination tag (upstream has no tags, image is pinned by sha)
-  tag_or_pattern: "v0.0.0-e6e7febc76f5f032d42d35b98cc651354dd14ac5ae7b2a7d7403222788e41e4d"
-  sha: e6e7febc76f5f032d42d35b98cc651354dd14ac5ae7b2a7d7403222788e41e4d
+  tag_or_pattern: "^latest$"
+- image: quay.io/security-profiles-operator/selinuxd-el9
+  override_repo_name: selinuxd
+  tag_or_pattern: "^latest$"
 - image: quay.io/security-profiles-operator/selinuxd-fedora
   override_repo_name: selinuxd-fedora
-  # Destination tag (upstream has no tags, image is pinned by sha)
-  tag_or_pattern: "v0.0.0-a5c36469e66bc44c32fc36d8d23571ed8903430233d32136b6272013a535627d"
-  sha: a5c36469e66bc44c32fc36d8d23571ed8903430233d32136b6272013a535627d
+  tag_or_pattern: "^latest$"
